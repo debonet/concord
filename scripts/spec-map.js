@@ -19,6 +19,17 @@ const reLinkLine = new RegExp(
   + "(?: +part=([a-z0-9-]+))?\\s*$"
 );
 const reLinkLoose = /@proves\s+([a-z]-[a-z0-9]*)@?(\S*)/;
+const reGuardText = /^\s*@guards/;
+const reGuardLine = new RegExp(
+  "^\\s*// @guards +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\\s*$"
+);
+const reGuardLoose = /@guards\s+([a-z]-[a-z0-9]*)@?(\S*)/;
+const aFormLink = {
+  reText: reLinkText, reLine: reLinkLine, reLoose: reLinkLoose, bGuard: false
+};
+const aFormGuard = {
+  reText: reGuardText, reLine: reGuardLine, reLoose: reGuardLoose, bGuard: true
+};
 const reFollowsText = /^\s*@follows/;
 const reFollowsLine = new RegExp(
   "^\\s*// @follows +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\\s*$"
@@ -35,7 +46,7 @@ const avsExtForLanguage = {
 const asLanguageTest = new Set([ "javascript" ]);
 const reNever = /(?!)/;
 const reFileCss = /\.css$/;
-const reRunLine = /^\s*\/\/\s*@(?:spec|proves)/;
+const reRunLine = /^\s*\/\/\s*@(?:spec|proves|guards)/;
 const reWrapperText = /^\s*@test-wrapper +([A-Za-z_$][\w$]*)\s*$/;
 const asNameCallTest = new Set([ "describe", "test", "it" ]);
 const reDocblock = /\/\*\*[\s\S]*?\*\//g;
@@ -1196,11 +1207,11 @@ const faOwnerForComment = ( aSource, vaCall, aHeader, nComment ) => {
   };
 };
 
-const faLinkForComment = ( aSource, vaCall, nComment ) => {
+const faLinkForComment = ( aSource, vaCall, nComment, aForm ) => {
   const [ nLine, sLine, sAfter ] = ftCommentAt( aSource, nComment );
-  if( !reLinkText.test( sAfter )){ return null;}
-  const vsWell = sLine.match( reLinkLine );
-  const vsLoose = sAfter.match( reLinkLoose );
+  if( !aForm.reText.test( sAfter )){ return null;}
+  const vsWell = sLine.match( aForm.reLine );
+  const vsLoose = sAfter.match( aForm.reLoose );
   return {
     nLine: nLine + 1,
     sText: sLine.trim(),
@@ -1208,11 +1219,16 @@ const faLinkForComment = ( aSource, vaCall, nComment ) => {
     sHash: vsLoose === null ? "" : vsLoose[ 2 ],
     sPart: vsWell === null || vsWell[ 3 ] === undefined ? null : vsWell[ 3 ],
     bWell: vsWell !== null,
+    bGuard: aForm.bGuard,
     aCall: fbLineRunWhole( aSource, nLine )
       ? faCallBelowRun( aSource, vaCall, nLine )
       : null
   };
 };
+
+const fvaLinkForForm = ( aSource, vaCall, vnComment, aForm ) => vnComment
+  .map(( nComment ) => faLinkForComment( aSource, vaCall, nComment, aForm ))
+  .filter( Boolean );
 
 const faParseTest = ( aFile ) => {
   const aSource = faSourceForText( aFile.sText );
@@ -1227,9 +1243,8 @@ const faParseTest = ( aFile ) => {
         faOwnerForComment( aSource, vaCall, aHeader, nComment )
       ))
       .filter( Boolean ),
-    vaLink: vnComment
-      .map(( nComment ) => faLinkForComment( aSource, vaCall, nComment ))
-      .filter( Boolean )
+    vaLink: fvaLinkForForm( aSource, vaCall, vnComment, aFormLink ),
+    vaGuard: fvaLinkForForm( aSource, vaCall, vnComment, aFormGuard )
   };
 };
 
@@ -1301,7 +1316,7 @@ const fsReasonForLink = ( aLink, aIndex ) => {
     return "names a line of type " + fsTypeLine( aFound.aLine.sType )
       + ", which no test proves";
   }
-  return fsReasonForPart( aLink, aFound.aLine );
+  return aLink.bGuard ? null : fsReasonForPart( aLink, aFound.aLine );
 };
 
 const fsReasonForPart = ( aLink, aMarker ) => {
@@ -1368,22 +1383,58 @@ const faCallProved = ( aCall, vaCallAll, vaLink ) => {
 };
 
 const fasOwnerDerived = ( aCall ) => new Set(
-  aCall.vaStmtLinked.map(( aStmt ) => aStmt.sPath )
+  aCall.vaStmtCounted.map(( aStmt ) => aStmt.sPath )
 );
 
-const faTestResolved = ( aTest, aIndex ) => {
-  const vaLink = aTest.vaLink.map(( aLink ) => (
+const faTestLinked = ( aTest, aIndex ) => {
+  const fvaResolved = ( vaLink ) => vaLink.map(( aLink ) => (
     faLinkResolved( aLink, aTest.sPath, aIndex )
   ));
-  const vaCall = aTest.vaCall.map(( aCall ) => (
-    faCallProved( aCall, aTest.vaCall, vaLink )
-  ));
-  const vaCallTest = vaCall.filter(( aCall ) => aCall.sKind === "test" );
-  const bFull = vaCallTest.length > 0
-    && vaCallTest.every(( aCall ) => aCall.vaStmtLinked.length > 0 );
+  const vaLink = fvaResolved( aTest.vaLink );
   return {
     ...aTest,
     vaLink,
+    vaGuard: fvaResolved( aTest.vaGuard ),
+    vaCall: aTest.vaCall.map(( aCall ) => (
+      faCallProved( aCall, aTest.vaCall, vaLink )
+    ))
+  };
+};
+
+const fasIdBacked = ( vaTestLinked ) => new Set(
+  vaTestLinked.flatMap(( aTest ) => aTest.vaCall
+    .filter(( aCall ) => aCall.sKind === "test" )
+    .flatMap(( aCall ) => aCall.vaStmt.concat(
+      aCall.vaPart.map(( aPart ) => aPart.aStmt )
+    )))
+    .map(( aStmt ) => aStmt.sId )
+);
+
+const faCallGuarded = ( aCall, vaGuard ) => {
+  const vaStmtGuard = fvaStmtUnique( vaGuard
+    .filter(( aGuard ) => aGuard.bBacked && fbEncloses( aGuard.aCall, aCall ))
+    .map(( aGuard ) => aGuard.aStmt ));
+  return {
+    ...aCall,
+    vaStmtGuard,
+    vaStmtCounted: fvaStmtUnique( aCall.vaStmtLinked.concat( vaStmtGuard ))
+  };
+};
+
+const faTestOwned = ( aTest, asIdBacked ) => {
+  const vaGuard = aTest.vaGuard.map(( aGuard ) => ({
+    ...aGuard,
+    bBacked: aGuard.sReason === null && asIdBacked.has( aGuard.aStmt.sId )
+  }));
+  const vaCall = aTest.vaCall.map(( aCall ) => (
+    faCallGuarded( aCall, vaGuard )
+  ));
+  const vaCallTest = vaCall.filter(( aCall ) => aCall.sKind === "test" );
+  const bFull = vaCallTest.length > 0
+    && vaCallTest.every(( aCall ) => aCall.vaStmtCounted.length > 0 );
+  return {
+    ...aTest,
+    vaGuard,
     bFull,
     vaCall: vaCall.map(( aCall ) => ({
       ...aCall,
@@ -1394,6 +1445,17 @@ const faTestResolved = ( aTest, aIndex ) => {
     }))
   };
 };
+
+const fvaTestResolved = ( vaTest, aIndex ) => {
+  const vaTestLinked = vaTest.map(( aFile ) => (
+    faTestLinked( faParseTest( aFile ), aIndex )
+  ));
+  const asIdBacked = fasIdBacked( vaTestLinked );
+  return vaTestLinked.map(( aTest ) => faTestOwned( aTest, asIdBacked ));
+};
+
+const fvaLinkAny = ( aTest ) => aTest.vaLink.concat( aTest.vaGuard )
+  .sort(( aA, aB ) => aA.nLine - aB.nLine );
 
 const fsReasonForOwner = ( aOwner, asPathSpec ) => {
   if( aOwner.sPathOwner === null ){ return "malformed";}
@@ -1477,9 +1539,7 @@ const faModel = ({
   }));
   const vaMarker = vaSpecParsed.flatMap(( aSpec ) => aSpec.vaMarker );
   const aIndex = faIndexForMarkers( vaMarker );
-  const vaTestParsed = vaTest.map(( aFile ) => faTestResolved(
-    faParseTest( aFile ), aIndex
-  ));
+  const vaTestParsed = fvaTestResolved( vaTest, aIndex );
   const aModel = {
     vaSpecParsed,
     vaMarker,
@@ -1488,7 +1548,9 @@ const faModel = ({
     vaCallTest: vaTestParsed.flatMap(( aTest ) => (
       aTest.vaCall.filter(( aCall ) => aCall.sKind === "test" )
     )),
-    vaLink: vaTestParsed.flatMap(( aTest ) => aTest.vaLink )
+    vaLink: vaTestParsed.flatMap(( aTest ) => aTest.vaLink ),
+    vaGuard: vaTestParsed.flatMap(( aTest ) => aTest.vaGuard ),
+    vaLinkAny: vaTestParsed.flatMap( fvaLinkAny )
   };
   return {
     ...aModel,
@@ -1975,7 +2037,7 @@ const faIncomplete = ( sPath, nLine, sWhat ) => ({
 
 const fvaUnprovingForSpec = ( aModel, aSpec ) => aModel.vaCallTest
   .filter(( aCall ) => aCall.asOwner.has( aSpec.sPath ))
-  .filter(( aCall ) => !aCall.vaStmtLinked.some(( aStmt ) => (
+  .filter(( aCall ) => !aCall.vaStmtCounted.some(( aStmt ) => (
     aStmt.sPath === aSpec.sPath
   )))
   .map(( aCall ) => faIncomplete(
@@ -2462,8 +2524,11 @@ const faStatements = ( aModel ) => {
         ...aStmt, sProof: fsProofForStmt( aStmt, aCallForPart )
       })),
     vaProposed: fvaProposedForModel( aModel, vaStmt ),
-    vaLinkBad: aModel.vaLink.filter(( aLink ) => aLink.sReason !== null ),
-    vaStale: aModel.vaLink.filter(( aLink ) => aLink.bStale ),
+    vaLinkBad: aModel.vaLinkAny.filter(( aLink ) => aLink.sReason !== null ),
+    vaStale: aModel.vaLinkAny.filter(( aLink ) => aLink.bStale ),
+    vaUnbacked: aModel.vaGuard.filter(( aGuard ) => (
+      aGuard.sReason === null && !aGuard.bBacked
+    )),
     vaStaleSibling: [],
     vaIncomplete: aModel.vaSpecParsed
       .filter(( aSpec ) => aSpec.bComplete )
@@ -2503,6 +2568,9 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
       aScope.asPathTest.has( aEntry.sPath )
     )),
     vaStale: aStmtList.vaStale.filter(( aEntry ) => fbSpec( aEntry.aStmt )),
+    vaUnbacked: aStmtList.vaUnbacked.filter(( aEntry ) => (
+      fbSpec( aEntry.aStmt )
+    )),
     vaStaleSibling: aStmtList.vaStale.filter(( aEntry ) => (
       !fbSpec( aEntry.aStmt ) && aScope.asPathTest.has( aEntry.sPath )
     )),
@@ -2525,7 +2593,9 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
 };
 
 const fbCallUnlinked = ( aCall ) => (
-  aCall.vaStmt.length === 0 && aCall.vaPart.length === 0
+  aCall.vaStmt.length === 0
+  && aCall.vaPart.length === 0
+  && aCall.vaStmtGuard.length === 0
 );
 
 const faUnlinkedForCalls = ( vaCallTest ) => {
@@ -2603,7 +2673,7 @@ const faMapForModel = ( aModel, aAnalysis, sPathSpec ) => {
     ? null
     : new Set([
       ...fasPathNaming( vaTestParsed, sPathSpec ),
-      ...fasPathLinking( aModel.vaLink, asIdStmt )
+      ...fasPathLinking( aModel.vaLinkAny, asIdStmt )
     ]);
   const aStmtList = faStatementsScoped(
     aAnalysis.aStmtList,
@@ -2638,8 +2708,16 @@ const fvsSectionUnlinked = ( aMap ) => [
   "Unlinked tests: " + aMap.cUnlinked + " of " + aMap.cTestRead
 ];
 
+const fsGuardWord = ( aEntry ) => aEntry.bGuard ? " guard" : "";
+
 const fsLineForBad = ( aEntry ) => (
-  fsPlace( aEntry ) + "  " + aEntry.sText + "  (" + aEntry.sReason + ")"
+  fsPlace( aEntry ) + "  " + aEntry.sText + " " + fsGuardWord( aEntry )
+  + " (" + aEntry.sReason + ")"
+);
+
+const fsLineForUnbacked = ( aGuard ) => (
+  fsPlace( aGuard ) + "  " + fsNameForLink( aGuard ) + "  " + aGuard.sId
+  + "  " + aGuard.aStmt.sPath
 );
 
 const fsLineForUnproved = ( aStmt ) => (
@@ -2710,6 +2788,9 @@ const fvsSectionStmt = ( aMap ) => [
     "statements with proposed parts",
     aMap.vaProposed.flatMap( fvsLineForProposed ),
     aMap.vaProposed.length
+  ),
+  fsSection(
+    "unbacked guard lines", aMap.vaUnbacked.map( fsLineForUnbacked )
   )
 ];
 
@@ -2724,7 +2805,8 @@ const fsNameForLink = ( aLink ) => (
 );
 
 const fsIdForLink = ( aLink ) => (
-  aLink.sId + ( aLink.sPart === null ? "" : " part=" + aLink.sPart )
+  aLink.sId + fsGuardWord( aLink )
+  + ( aLink.sPart === null ? "" : " part=" + aLink.sPart )
 );
 
 const fsIdShown = ( aMarker ) => aMarker.sId || "placeholder";
@@ -2932,6 +3014,12 @@ const fsSid = ( aModel, aStmt ) => {
       + aLink.sHash + "  " + ( aLink.sPart || "whole" ) + "  "
       + fsStateForLink( aLink )
     ));
+  const vsGuard = aModel.vaGuard
+    .filter(( aGuard ) => aGuard.sId === aStmt.sId )
+    .map(( aGuard ) => (
+      fsPlace( aGuard ) + "  " + fsNameForLink( aGuard ) + "  "
+      + aGuard.sHash + "  " + fsStateForLink( aGuard ) + "  guard"
+    ));
   const aCallForPart = faCallForPart( aModel );
   const vsPart = ( aStmt.vsPart || [] ).map(( sPart ) => (
     sPart + "  " + (
@@ -2940,7 +3028,7 @@ const fsSid = ( aModel, aStmt ) => {
   ));
   return [
     fsPlace( aStmt ) + "  " + aStmt.sId + "  " + fsWords( aStmt.sText )
-  ].concat( vsLink, vsPart ).join( "\n" ) + "\n";
+  ].concat( vsLink, vsGuard, vsPart ).join( "\n" ) + "\n";
 };
 
 const fsStateForLink = ( aLink ) => {

@@ -510,6 +510,72 @@ links the part it proves, and the statement is proved when every part is.
   nothing, and it lists no statement whose whole links all sit in one
   suite, however many files they span.
 
+## Guard lines
+
+Some tests prove no statement but keep another test's proof of one sound:
+a paired self-test that plants the failure the proof checks for and shows
+the check catches it; a guard that fails when the proof's loop would run
+over nothing; a guard that shows a source scan sees what it scans for.
+Such a test names the statement whose proof it guards.
+
+* {#s-9eix2j <arch} **The guard line.** A test guards a statement through a
+  guard line: a `//` line comment whose whole text, after optional leading
+  whitespace, is `// @guards s-xxxxxx@hhhhhhh`, with one or more spaces
+  after `@guards`, then the statement id, `@`, and the seven lowercase
+  hexadecimal characters of the statement's hash as the line's author
+  recorded it, and nothing after but trailing whitespace. One line guards
+  one statement, and a guard line carries no part label.
+  {#s-4o88k8 <arch} Any `//` line comment whose text begins `@guards` is read as
+  a guard line, well formed or not; `@guards` inside a `/* */` comment or
+  a string or template literal is not.
+* {#s-cs9i6p <arch} **Where a guard sits and what it covers.** A guard line sits,
+  is misplaced and covers tests as a link line does (Where a link sits,
+  What a link covers); wherever a rule reads a run of owner and link
+  lines, in any language, guard lines may stand in it. {#s-p6dv3k <arch} A test
+  guards the union of the statements named by its own guard lines and by
+  the guard lines of every `describe` enclosing it.
+* {#s-i6cch2 <arch} **When a guard resolves.** A guard line resolves when it is
+  well formed, well placed and names an id marked at exactly one place,
+  whether or not that statement has a part list. {#s-3klfsj <arch} A guard line
+  is a test link wherever `specs/spec-map-line-types.md` reads one
+  (Retyped references).
+* {#s-uny6ly <arch} **A guard proves nothing.** Every rule of this spec that
+  names a link line, a link or a test's links means `@proves` lines only,
+  except where this section counts a guard line. {#s-1yuomz <arch} A test that
+  guards a statement never proves it or any part of it, so a statement
+  whose only resolving lines are guard lines is unproved wherever an
+  unproved statement is reported or counted: (7), a complete spec's
+  completeness failures, a root's satisfaction, `--probes` and
+  `--cross-suite` included.
+* {#s-svtfjm <arch} **Backed guards.** A resolving guard line is backed when at
+  least one test proves its statement, or a part of it, through a resolving
+  link.
+* {#s-8usccv <arch} **Where a guard counts.** A test covered by a backed guard
+  line counts as proving that line's statement for derived owners, for the
+  unlinked tests (21), and for a complete spec's tests that prove none of
+  its statements, and nowhere else. {#s-0e75fk <arch} An unbacked guard line
+  counts for none of these, so the test it covers is unlinked unless
+  something else links it.
+* {#s-0yoabr <arch} **Unbacked guards.** Beside the other lists the command
+  reports (30) each unbacked guard line, naming the file, the line, the
+  test or `describe` it sits above, the id and the spec marking it.
+  {#s-fsp1a2 <arch} With no argument it reports (30) over the whole tree; with a
+  spec path, for guard lines naming that spec's statements wherever they
+  sit; (30) never changes the exit code.
+* {#s-ctbylk <arch} **Unresolved and stale guards.** A guard line that does not
+  resolve is reported in (8), and a guard line whose recorded hash differs
+  from its statement's current hash is stale and reported in (9) and (19),
+  each as a link line in its place would be, with the word `guard` beside
+  the id, and each changes the exit code as that link line would.
+  {#s-yltboo <arch} A stale guard line still resolves, as a stale link does.
+* {#s-aku8n2 <arch} **A spec's test files.** A test file holding a guard line
+  naming one of a spec's statements is one of that spec's test files.
+* {#s-qr72mj <arch} **Queries.** `--sid <id>` lists, after the link lines, one
+  line per guard line naming the id, giving the file, the line, the name of
+  the call it sits above, the recorded hash, whether it is stale, and the
+  word `guard`. {#s-nc5n19 <arch} `--candidates <id>` omits no test for guarding
+  the statement.
+
 ## Probe flags
 
 A real-process probe is a test that needs a real child process and may

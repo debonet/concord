@@ -276,6 +276,30 @@ installed.
   one of their ids links the statement it became. The checker stops reading
   case ids only after the last batch.
 
+## Guarding a proof
+
+* {#g-439vqk <arch for=fixer via=prompt} **Guard or link.** A test whose
+  assertions check what the code does links the statement that states it
+  with `@proves`. A test that checks only that another test's proof of a
+  statement is sound, a paired self-test planting the failure that proof
+  must catch, a guard against that proof's loop running over nothing, or a
+  guard that a source scan sees what it scans for, carries `@guards` for
+  that statement (`specs/spec-map.md`, Guard lines), stamped with the hash
+  the checker's hash query prints, and only when a test already proves
+  that statement or the fixer links one in the same pass.
+* {#g-y3m2uz <arch for=fixer via=prompt} **A guard is not a fix for a gap.** A
+  test that checks what the code does, where no marked statement states
+  it, is a spec gap: the fixer leaves it unlinked and reports the rule
+  under `Untagged behaviour`; it never marks such a test a guard to clear
+  the unlinked tests or a complete spec's completeness failures. A guard
+  whose statement no test proves, reported as unbacked, is a missing
+  proof: the fixer writes or links the proof, or reports the statement as
+  unproved; it never moves the guard to another statement.
+* {#g-m4816g <arch for=architect via=prompt} **Guards in a fixer's verdicts.**
+  When a fixer reports an unlinked test as guarding a proof, the
+  architect writes no statement for it; a statement is written only for
+  the rule of a test reported under `Untagged behaviour`.
+
 ## What stops a commit
 
 * {#s-nw4u9n <m-b2shvm@ff5b09c} **A stale citation anywhere.** A commit of an adopting
@@ -304,6 +328,11 @@ installed.
   root list holding a reference that names an id no marker holds; and, for
   each complete spec, every entry on which a run with that spec's path
   exits non-zero.
+* {#s-qvdtqg <arch} **Guard lines refuse as links do.** An entry of (8) for a
+  guard line (`specs/spec-map.md`, Guard lines) naming an id no marker
+  holds refuses a commit as the same entry for a link line does, and a
+  stale guard line, an entry of (9), refuses as every entry of (9) does;
+  an entry of (30) never refuses.
 * {#s-tlkzzq <s-1u8bef@fa85be2,m-2794qp@4644928} **Only those.** An entry not named in The
   refusing entries, of any list, never changes the gate's exit code and is
   not printed by it.

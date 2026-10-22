@@ -2,6 +2,7 @@
 
 const fs = require( "fs" );
 const path = require( "path" );
+const crypto = require( "crypto" );
 const { spawnSync } = require( "child_process" );
 
 const { sPathSpecMap, fWriteConcord } = require( "./concord-fixture.js" );
@@ -228,6 +229,75 @@ describe( "gate — what it reads", () => {
     expect( aRunAfter.sStdout ).not.toContain( "(9) " );
     expect( aRunAfter.sStdout ).not.toContain( "s-zzz999" );
     expect( aRunAfter.sStdout ).toContain( "Gate: refused, 6 entries\n" );
+  });
+});
+
+const fsHash = ( sText ) => (
+  crypto.createHash( "sha1" ).update( sText, "utf8" ).digest( "hex" )
+    .slice( 0, 7 )
+);
+
+// @proves s-qvdtqg@16f3fb4
+describe( "gate — guard lines", () => {
+  const vsText = [ "A rule a test proves.", "A rule no test proves." ];
+  const fWriteGuarded = ( vsGuard ) => fWriteTree({
+    "specs/a.md": [
+      "# A",
+      "",
+      "## API",
+      "",
+      "* {#s-gag001} " + vsText[ 0 ],
+      "* {#s-gag002} " + vsText[ 1 ],
+      ""
+    ].join( "\n" ),
+    "test/t.test.js": [
+      "// @spec specs/a.md",
+      "// @proves s-gag001@" + fsHash( vsText[ 0 ]),
+      "test( \"proves the rule\", () => {} );"
+    ].concat( vsGuard.flatMap(( sGuard, n ) => [
+      sGuard, "test( \"guard " + n + "\", () => {} );"
+    ]), [ "" ]).join( "\n" )
+  });
+
+  test( "a stale guard line and one naming an id no marker holds refuse "
+    + "as link lines do, and an unbacked or misplaced one does not", () => {
+    fWriteGuarded([
+      "// @guards s-gag001@0000000",
+      "// @guards s-zzz996@1234567",
+      "// @guards s-gag002@" + fsHash( vsText[ 1 ])
+    ]);
+    const sReport = faRun([]).sStdout;
+    expect( fvsLineInSection( sReport, "unbacked guard lines" )).toEqual(
+      [ "test/t.test.js:8  guard 2  s-gag002  specs/a.md" ]
+    );
+    const aRun = faRun([ "--gate" ]);
+    expect( aRun.cExit ).toBe( 1 );
+    const vsGate = aRun.sStdout.trim().split( "\n" );
+    expect( vsGate ).toHaveLength( 3 );
+    expect( vsGate[ 0 ]).toMatch(
+      /^\(8\) test\/t\.test\.js:6 .*s-zzz996.* guard +\(no such statement\)$/
+    );
+    expect( vsGate[ 1 ]).toMatch(
+      /^\(9\) test\/t\.test\.js:4 +guard 0 +s-gag001 guard +recorded 0000000/
+    );
+    expect( vsGate[ 2 ]).toBe( "Gate: refused, 2 entries" );
+    expect( aRun.sStdout ).not.toContain( "s-gag002" );
+  });
+
+  test( "PAIRED: a tree whose only guard lines are unbacked or misplaced "
+    + "passes", () => {
+    fWriteGuarded([
+      "// @guards s-gag002@" + fsHash( vsText[ 1 ]),
+      "// @guards s-gag001@0000000\n"
+    ]);
+    const sReport = faRun([]).sStdout;
+    expect( fvsLineInSection( sReport, "unbacked guard lines" ))
+      .toHaveLength( 1 );
+    expect( fvsLineInSection( sReport, "link lines that do not resolve" )
+      .join( "\n" )).toMatch( /misplaced/ );
+    const aRun = faRun([ "--gate" ]);
+    expect( aRun.sStdout ).toBe( "Gate: pass\n" );
+    expect( aRun.cExit ).toBe( 0 );
   });
 });
 

@@ -2527,3 +2527,301 @@ describe( "the spec map over the real tree", () => {
     expect( aRun.cExit ).toBe( 0 );
   });
 });
+
+const sTitleUnbacked = "unbacked guard lines";
+
+const fsGuard = ( sId, sHash ) => "// @guards " + sId + "@" + sHash;
+
+// @proves s-9eix2j@3b46d7e
+// @proves s-4o88k8@e467b6b
+// @proves s-i6cch2@35337df
+// @proves s-3klfsj@d4d9f32
+// @proves s-ctbylk@c20e0f1
+// @proves s-uny6ly@83363ca
+// @proves s-1yuomz@f2897f0
+describe( "spec-map-guard-line-forms — a guard line", () => {
+  test( "in each bad form is named in (8) with the word guard, a guard on "
+    + "a parted statement resolves, and a statement only guarded stays "
+    + "unproved, its root unsatisfied and its probe listing no test, PAIRED "
+    + "with @guards in a block comment and a string, which are not read",
+  () => {
+    const vsText = [ "Rule gd one.", "Rule gd two." ];
+    const vsHash = vsText.map( fsHash );
+    fWriteTree({
+      [ sPathSpecA ]: fsSpecStmt( "A", [
+        "* {#s-gd0000} The guard root holds.",
+        "* {#s-gd0001 <s-gd0000 parts=a,b probe} " + vsText[ 0 ],
+        "* {#s-gd0002} " + vsText[ 1 ],
+        "* {#d-gd0004} **Term gd.** A definition."
+      ]),
+      [ sPathTestOne ]: [
+        "// @spec specs/a.md",
+        fsGuard( "s-gd0001", vsHash[ 0 ]),
+        "test( \"guards a parted rule\", () => {} );",
+        "  " + fsGuard( "s-gd0002", vsHash[ 1 ]) + "   ",
+        "test( \"guards rule two\", () => {} );",
+        fsGuard( "s-gd0002", vsHash[ 1 ]) + " part=a",
+        "test( \"part label\", () => {} );",
+        fsGuard( "s-zzz999", "1234567" ),
+        "test( \"no such id\", () => {} );",
+        fsGuard( "s-gd0004", "1234567" ),
+        "test( \"retyped id\", () => {} );",
+        fsGuard( "d-gd0004", "1234567" ),
+        "test( \"a definition\", () => {} );",
+        fsGuard( "s-gd0002", "ABCDEFG" ),
+        "test( \"upper hash\", () => {} );",
+        "/* @guards s-gd0002@" + vsHash[ 1 ] + " */",
+        "const sGuard = \"// @guards s-gd0002@" + vsHash[ 1 ] + "\";",
+        fsGuard( "s-gd0002", vsHash[ 1 ]),
+        "",
+        "test( \"after a blank line\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    const aRun = faRun( [] );
+    const vsBad = fvsLineInSection( aRun.sOut, sTitleLinkBad );
+    expect( vsBad ).toHaveLength( 6 );
+    [
+      [ 6, /part=a +guard +\(malformed\)$/ ],
+      [ 8, /s-zzz999@1234567 +guard +\(no such statement\)$/ ],
+      [ 10, /guard +\(retyped: now d-gd0004/ ],
+      [ 12, /guard +\(names a line of type definition \(d\)/ ],
+      [ 14, /ABCDEFG +guard +\(malformed\)$/ ],
+      [ 18, /guard +\(misplaced\)$/ ]
+    ].forEach(( tBad, n ) => {
+      expect( vsBad[ n ]).toMatch(
+        new RegExp( "^test/one\\.test\\.js:" + tBad[ 0 ] + " " )
+      );
+      expect( vsBad[ n ]).toMatch( tBad[ 1 ]);
+    });
+    expect( fvsIdInSection( aRun.sOut, sTitleUnproved )).toEqual(
+      [ "s-gd0001", "s-gd0002" ]
+    );
+    expect( fvsLineInSection( aRun.sOut, sTitleRoot ))
+      .toContain( "0 of 1 satisfied" );
+    expect( aRun.cExit ).toBe( 0 );
+    expect( faRun( [ "--probes" ]).sStdout ).toBe( "specs/a.md:6  s-gd0001\n" );
+    const aRunPath = faRun( [ sPathSpecA ]);
+    expect( fvsLineInSection( aRunPath.sOut, sTitleLinkBad )).toEqual( vsBad );
+    expect( aRunPath.cExit ).not.toBe( 0 );
+  });
+});
+
+// @proves s-cs9i6p@5d38c13
+// @proves s-p6dv3k@447ea6b
+// @proves s-svtfjm@2e4759d
+// @proves s-8usccv@c0cc953
+// @proves s-0e75fk@780e493
+// @proves s-0yoabr@be8d70d
+// @proves s-fsp1a2@02fcf0a
+// @proves s-s7wgz7@eae0eef
+describe( "spec-map-guard-backed-counts — a backed guard", () => {
+  const vsText = [ "Rule bk one.", "Rule bk two." ];
+  const vsHash = vsText.map( fsHash );
+  const sTestGuarding = [
+    "// @spec specs/b.md",
+    fsLink( "s-bk0002", vsHash[ 1 ]),
+    fsGuard( "s-bk0001", vsHash[ 0 ]),
+    "test( \"linked and guarding\", () => {} );",
+    fsGuard( "s-bk0001", vsHash[ 0 ]),
+    "describe( \"guard block\", () => {",
+    "  test( \"self-test\", () => {} );",
+    "} );",
+    ""
+  ].join( "\n" );
+  const fWrite = ( bBacked, bComplete ) => fWriteTree({
+    [ sPathSpecA ]: fsSpecStmt( "A", [ "* {#s-bk0001} " + vsText[ 0 ]],
+      bComplete ),
+    [ sPathSpecB ]: fsSpecStmt( "B", [ "* {#s-bk0002} " + vsText[ 1 ]],
+      bComplete ),
+    [ sPathTestOne ]: sTestGuarding,
+    [ sPathTestTwo ]: [
+      "// @spec specs/a.md",
+      bBacked ? fsLink( "s-bk0001", vsHash[ 0 ]) : "",
+      "test( \"the proof\", () => {} );",
+      ""
+    ].join( "\n" )
+  });
+  const fvsNameFailing = ( sOut ) => fvsLineInSection( sOut, sTitleComplete )
+    .map(( sLine ) => sLine.replace( /^.*proves nothing: /, "" ));
+
+  test( "makes a file with linked tests fully linked, owned through the "
+    + "guard, with no unlinked test and nothing in (30), PAIRED with the "
+    + "guard unbacked, after which the file is not fully linked, its "
+    + "guarded test is unlinked and owned by the owner line, and (30) names "
+    + "each guard line", () => {
+    fWrite( true, true );
+    const aRun = faRun( [] );
+    expect( fvsLineInSection( aRun.sOut, sTitleRemovable ))
+      .toContain( "test/one.test.js:1  // @spec specs/b.md" );
+    expect( fvsLineInSection( aRun.sOut, sTitleUnlinked )).toEqual( [] );
+    expect( aRun.sOut ).toMatch( /^Unlinked tests: 0 of 3$/m );
+    expect( fvsLineInSection( aRun.sOut, sTitleUnbacked )).toEqual( [] );
+    expect( fvsLineInSection( aRun.sOut, sTitleLinkBad )).toEqual( [] );
+    const aRunA = faRun( [ sPathSpecA ]);
+    expect( fvsNameFailing( aRunA.sOut )).toEqual( [] );
+    expect( aRunA.cExit ).toBe( 0 );
+    const aRunB = faRun( [ sPathSpecB ]);
+    expect( fvsNameFailing( aRunB.sOut )).toEqual( [] );
+    expect( aRunB.cExit ).toBe( 0 );
+    fWrite( false, true );
+    const aRunCut = faRun( [] );
+    expect( fvsLineInSection( aRunCut.sOut, sTitleRemovable )).toEqual( [] );
+    expect( fvsLineInSection( aRunCut.sOut, sTitleUnlinked )).toEqual(
+      [ "test/one.test.js  1", "test/two.test.js  1" ]
+    );
+    expect( aRunCut.sOut ).toMatch( /^Unlinked tests: 2 of 3$/m );
+    const vsUnbacked = [
+      "test/one.test.js:3  linked and guarding  s-bk0001  specs/a.md",
+      "test/one.test.js:5  guard block  s-bk0001  specs/a.md"
+    ];
+    expect( fvsLineInSection( aRunCut.sOut, sTitleUnbacked ))
+      .toEqual( vsUnbacked );
+    expect( aRunCut.cExit ).toBe( 0 );
+    const aRunCutB = faRun( [ sPathSpecB ]);
+    expect( fvsNameFailing( aRunCutB.sOut )).toEqual( [ "self-test" ]);
+    expect( fvsLineInSection( aRunCutB.sOut, sTitleUnbacked )).toEqual( [] );
+    expect( aRunCutB.cExit ).not.toBe( 0 );
+    const aRunCutA = faRun( [ sPathSpecA ]);
+    expect( fvsLineInSection( aRunCutA.sOut, sTitleUnbacked ))
+      .toEqual( vsUnbacked );
+    expect( fvsNameFailing( aRunCutA.sOut )).toEqual( [ "the proof" ]);
+  });
+
+  test( "unbacked, never changes a path run's exit code", () => {
+    fWrite( false, false );
+    const aRun = faRun( [ sPathSpecA ]);
+    expect( fvsLineInSection( aRun.sOut, sTitleUnbacked )).toHaveLength( 2 );
+    expect( aRun.cExit ).toBe( 0 );
+  });
+});
+
+// @proves s-aku8n2@4ffc4f1
+describe( "spec-map-guard-scope-file — the path run's files", () => {
+  test( "include a file holding a guard line naming the spec's statement, "
+    + "PAIRED with the guard removed", () => {
+    const sText = "Rule ak one.";
+    const fWrite = ( sGuardLine ) => fWriteTree({
+      [ sPathSpecA ]: fsSpecStmt( "A", [ "* {#s-ak0001} " + sText ]),
+      [ sPathTestOne ]: [
+        "// @spec specs/gone.md",
+        sGuardLine,
+        "test( \"plain words\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    fWrite( fsGuard( "s-ak0001", fsHash( sText )));
+    const aRun = faRun( [ sPathSpecA ]);
+    expect( fvsLineInSection( aRun.sOut, sTitleUnresolved )).toEqual(
+      [ "test/one.test.js:1  // @spec specs/gone.md  (no such spec)" ]
+    );
+    expect( aRun.cExit ).not.toBe( 0 );
+    fWrite( "" );
+    const aRunCut = faRun( [ sPathSpecA ]);
+    expect( aRunCut.sOut ).not.toMatch( /one\.test\.js/ );
+    expect( aRunCut.cExit ).toBe( 0 );
+  });
+});
+
+// @proves s-ctbylk@c20e0f1
+// @proves s-yltboo@95a3db6
+describe( "spec-map-guard-stale — a stale guard line", () => {
+  test( "is named in (9) and (19) with the word guard, fails its "
+    + "statement's spec, and still resolves and counts, PAIRED with the "
+    + "hash corrected", () => {
+    const vsText = [ "Rule st one.", "Rule st two." ];
+    const vsHash = vsText.map( fsHash );
+    const fWrite = ( sHashGuard ) => fWriteTree({
+      [ sPathSpecA ]: fsSpecStmt( "A", [ "* {#s-st0001} " + vsText[ 0 ]]),
+      [ sPathSpecB ]: fsSpecStmt( "B", [ "* {#s-st0002} " + vsText[ 1 ]]),
+      [ sPathTestOne ]: [
+        "// @spec specs/b.md",
+        fsLink( "s-st0001", vsHash[ 0 ]),
+        "test( \"proof\", () => {} );",
+        fsLink( "s-st0002", vsHash[ 1 ]),
+        fsGuard( "s-st0001", sHashGuard ),
+        "test( \"stale guard\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    fWrite( "0000000" );
+    const aRun = faRun( [ sPathSpecA ]);
+    expect( fvsLineInSection( aRun.sOut, sTitleStale )).toEqual([
+      "test/one.test.js:5  stale guard  s-st0001 guard  recorded 0000000  "
+      + "current " + vsHash[ 0 ]
+    ]);
+    expect( fvsLineInSection( aRun.sOut, sTitleLinkBad )).toEqual( [] );
+    expect( fvsLineInSection( aRun.sOut, sTitleUnbacked )).toEqual( [] );
+    expect( aRun.sOut ).toMatch( /^Unlinked tests: 0 of 2$/m );
+    expect( aRun.cExit ).not.toBe( 0 );
+    const aRunB = faRun( [ sPathSpecB ]);
+    expect( fvsLineInSection( aRunB.sOut, sTitleStaleSibling )).toEqual([
+      "test/one.test.js:5  stale guard  s-st0001 guard  specs/a.md  "
+      + "recorded 0000000  current " + vsHash[ 0 ]
+    ]);
+    expect( aRunB.cExit ).toBe( 0 );
+    fWrite( vsHash[ 0 ]);
+    const aRunFixed = faRun( [ sPathSpecA ]);
+    expect( fvsLineInSection( aRunFixed.sOut, sTitleStale )).toEqual( [] );
+    expect( aRunFixed.cExit ).toBe( 0 );
+  });
+});
+
+// @proves s-qr72mj@9691d37
+// @proves s-nc5n19@aee9454
+// @proves s-1yuomz@f2897f0
+describe( "spec-map-guard-queries — the queries", () => {
+  test( "--sid lists each guard line after the links with the word guard, "
+    + "--candidates still ranks a guarding test, and --cross-suite counts "
+    + "no guard, PAIRED with the web guard made a link, which is listed",
+  () => {
+    const vsText = [ "The `fooGuard` rule holds.", "Rule qy two." ];
+    const vsHash = vsText.map( fsHash );
+    const fWrite = ( sLineWeb ) => fWriteTree({
+      [ sPathSpecA ]: fsSpecStmt( "A", [
+        "* {#s-qy0001} " + vsText[ 0 ],
+        "* {#s-qy0002} " + vsText[ 1 ]
+      ]),
+      [ sPathTestOne ]: [
+        "// @spec specs/a.md",
+        fsGuard( "s-qy0001", vsHash[ 0 ]),
+        "test( \"fooGuard self-test\", () => {} );",
+        fsLink( "s-qy0001", vsHash[ 0 ]),
+        "test( \"fooGuard proof\", () => {} );",
+        fsGuard( "s-qy0001", "0000000" ),
+        "test( \"stale self-test\", () => {} );",
+        fsLink( "s-qy0002", vsHash[ 1 ]),
+        "test( \"root two\", () => {} );",
+        ""
+      ].join( "\n" ),
+      [ sPathTestWeb ]: [
+        "// @spec specs/a.md",
+        sLineWeb,
+        "test( \"web two\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    fWrite( fsGuard( "s-qy0002", vsHash[ 1 ]));
+    const vsSid = faRun( [ "--sid", "s-qy0001" ]).sStdout.trim().split( "\n" );
+    expect( vsSid ).toHaveLength( 4 );
+    expect( vsSid[ 1 ]).toMatch( /^test\/one\.test\.js:4 +fooGuard proof/ );
+    expect( vsSid[ 1 ]).not.toMatch( /guard$/ );
+    expect( vsSid[ 2 ]).toBe(
+      "test/one.test.js:2  fooGuard self-test  " + vsHash[ 0 ]
+      + "  current  guard"
+    );
+    expect( vsSid[ 3 ]).toBe(
+      "test/one.test.js:6  stale self-test  0000000  stale  guard"
+    );
+    const sCandidates = faRun( [ "--candidates", "s-qy0001" ]).sStdout;
+    expect( sCandidates ).toMatch(
+      /^test\/one\.test\.js:3  fooGuard self-test  score 1/m
+    );
+    expect( sCandidates ).not.toMatch( /fooGuard proof/ );
+    expect( faRun( [ "--cross-suite" ]).sStdout ).toBe( "" );
+    fWrite( fsLink( "s-qy0002", vsHash[ 1 ]));
+    expect( faRun( [ "--cross-suite" ]).sStdout ).toMatch(
+      /^specs\/a\.md:6  s-qy0002\n/
+    );
+  });
+});
