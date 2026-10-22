@@ -4,12 +4,16 @@
   "private": true,
   "bin": {
     "spec-map": "bin/spec-map",
-    "spec-coverage": "bin/spec-coverage"
+    "spec-coverage": "bin/spec-coverage",
+    "agents-sync": "bin/agents-sync",
+    "concord-hook": "bin/concord-hook"
   },
   "scripts": {
     "test": "jest",
     "spec-map": "bin/spec-map",
-    "spec-coverage": "bin/spec-coverage"
+    "spec-coverage": "bin/spec-coverage",
+    "agents-sync": "bin/agents-sync",
+    "hook-install": "bin/concord-hook install"
   },
   "engines": {
     "node": ">=20"

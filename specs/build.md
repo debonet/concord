@@ -21,11 +21,17 @@ outside these.
   package.json               scripts, dependencies, jest configuration
   package-lock.json          committed
   README.md
+  AGENTS.md                  the shared instructions for every coding agent
+                             (specs/concord-process.md, Agent instructions)
+  roles/                     each role's text and its Claude Code frontmatter
+  .githooks/pre-commit       Concord's own pre-commit hook
+                             (specs/concord-hook.md)
   concord.json               Concord's own declared values: Concord is
                              linked by itself (specs/concord-process.md)
   spec-coverage-review.md    classified uncovered code of Concord's own
                              (specs/spec-coverage.md)
-  bin/                       the commands: spec-map, spec-coverage
+  bin/                       the commands: spec-map, spec-coverage,
+                             agents-sync, concord-hook
   scripts/                   the modules behind the commands, and the
                              worklist page template
   specs/                     Concord's specs
@@ -64,8 +70,8 @@ outside these.
 `package.json`:
 
 * `"name": "@debonet/concord"`, `"version": "0.0.0"`, `"private": true`.
-* `"bin"`: `spec-map` and `spec-coverage`, each mapped to its file under
-  `bin/`.
+* `"bin"`: `spec-map`, `spec-coverage`, `agents-sync` and `concord-hook`,
+  each mapped to its file under `bin/`.
 * dependencies: every npm module a file under `bin/` or `scripts/` loads,
   at the version AIOS resolved when the commands moved from it.
 * devDependencies: `"jest": "^29"`, and every npm module a test file loads
@@ -74,6 +80,8 @@ outside these.
   * `"test"`: `"jest"`
   * `"spec-map"`: `"bin/spec-map"`
   * `"spec-coverage"`: `"bin/spec-coverage"`
+  * `"agents-sync"`: `"bin/agents-sync"`
+  * `"hook-install"`: `"bin/concord-hook install"`
 * `"jest"`: roots `<rootDir>/test`.
 
 ## Build and Test
@@ -86,6 +94,11 @@ outside these.
   `~/@concord/bin/spec-map`.
 * Spec coverage: `npm run spec-coverage [-- <arguments>]`, on demand only,
   never part of `npm test`.
+* Agent files: `npm run agents-sync` after a change under `roles/`
+  regenerates Claude Code's agent files (`specs/agents-sync.md`).
+* Pre-commit hook: Concord's own commits are gated by the committed
+  `.githooks/pre-commit`; `npm run hook-install`, run once in each clone,
+  installs it (`specs/concord-hook.md`).
 
 ## Hermeticity
 

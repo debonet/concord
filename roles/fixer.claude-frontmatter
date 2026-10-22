@@ -1,0 +1,7 @@
+---
+name: fixer
+description: Implements code changes via TDD. Reads a spec, writes failing tests, implements until tests pass, refactors. Works alone — no sub-agents.
+model: inherit
+color: blue
+tools: Read, Write, Edit, Glob, Grep, Bash
+---

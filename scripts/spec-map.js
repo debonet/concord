@@ -1333,7 +1333,8 @@ const faLinkResolved = ( aLink, sPath, aIndex ) => {
     aStmtNamed,
     aStmt,
     bProposed,
-    bStale: aStmt !== null && aStmt.sHash !== aLink.sHash
+    bStale: aStmt !== null && aStmt.sHash !== aLink.sHash,
+    bIdAbsent: aLink.bWell && !aIndex.avaMarkerForId.has( aLink.sId )
   };
 };
 
@@ -1924,7 +1925,8 @@ const faFollowsResolved = ( aModel, aFollows ) => {
     sReason,
     aLine,
     sPathNamed: aFound.aNamed === null ? null : aFound.aNamed.sPath,
-    bStale: aLine !== null && aLine.sHash !== aFollows.sHash
+    bStale: aLine !== null && aLine.sHash !== aFollows.sHash,
+    bIdAbsent: aFollows.bWell && !aModel.avaMarkerForId.has( aFollows.sId )
   };
 };
 
@@ -1967,22 +1969,28 @@ const fsLineForCall = ( aCall, sLabel ) => (
   aCall.sPath + ":" + ( aCall.nLine + 1 ) + "  " + sLabel + aCall.sName
 );
 
+const faIncomplete = ( sPath, nLine, sWhat ) => ({
+  sPath, nLine, sLine: sPath + ":" + nLine + "  " + sWhat
+});
+
 const fvaUnprovingForSpec = ( aModel, aSpec ) => aModel.vaCallTest
   .filter(( aCall ) => aCall.asOwner.has( aSpec.sPath ))
   .filter(( aCall ) => !aCall.vaStmtLinked.some(( aStmt ) => (
     aStmt.sPath === aSpec.sPath
   )))
-  .map(( aCall ) => fsLineForCall( aCall, "proves nothing: " ));
+  .map(( aCall ) => faIncomplete(
+    aCall.sPath, aCall.nLine + 1, "proves nothing: " + aCall.sName
+  ));
 
-const fvsIncompleteForSpec = ( aModel, aSpec ) => (
+const fvaIncompleteForSpec = ( aModel, aSpec ) => (
   aSpec.vaUnmarked
-    .map(( aEntry ) => (
-      aEntry.sPath + ":" + aEntry.nLine + "  unmarked: " + aEntry.sWords
+    .map(( aEntry ) => faIncomplete(
+      aEntry.sPath, aEntry.nLine, "unmarked: " + aEntry.sWords
     ))
     .concat( fvaPlaceholderForMarker( aSpec.vaMarker ).map(( aMarker ) => (
-      aMarker.sPath + ":" + aMarker.nLine + "  placeholder: "
-      + fsWords( aMarker.sText )
-    )))
+      faIncomplete(
+        aMarker.sPath, aMarker.nLine, "placeholder: " + fsWords( aMarker.sText )
+    ))))
     .concat( fvaUnprovingForSpec( aModel, aSpec ))
 );
 
@@ -2096,7 +2104,8 @@ const faListForMarker = ( aMarker, aCtx ) => {
     nArch,
     vaRef: [],
     sReason: null,
-    sReasonBase: null
+    sReasonBase: null,
+    bIdAbsent: false
   };
   if( aMarker.sType === "p" ){
     const sReason = "root list on a line of type " + fsTypeLine( "p" );
@@ -2117,7 +2126,10 @@ const faListForMarker = ( aMarker, aCtx ) => {
     ...aList,
     vaRef,
     sReasonBase,
-    sReason: sReasonBase || fsReasonRetypedForRefs( vaRef )
+    sReason: sReasonBase || fsReasonRetypedForRefs( vaRef ),
+    bIdAbsent: vaRef.some(( aRef ) => (
+      aRef.sId !== null && !aCtx.avaMarkerForId.has( aRef.sId )
+    ))
   };
 };
 
@@ -2174,7 +2186,8 @@ const fvaLabelTwice = ( vaMarker ) => (
       sPath: aMarker.sPath,
       nLine: aMarker.nLine,
       sText: aMarker.sToken,
-      sReason: "label carried by two placeholders"
+      sReason: "label carried by two placeholders",
+      bIdAbsent: false
     }))
 );
 
@@ -2185,7 +2198,8 @@ const fvaRootBad = ( vaList, vaMarker ) => (
       sPath: aList.aMarker.sPath,
       nLine: aList.aMarker.nLine,
       sText: aList.aMarker.sToken,
-      sReason: aList.sReason
+      sReason: aList.sReason,
+      bIdAbsent: aList.bIdAbsent
     }))
     .concat( fvaLabelTwice( vaMarker ))
     .sort(( aA, aB ) => (
@@ -2410,16 +2424,18 @@ const faTypeLists = ( aModel, aRoots ) => {
   };
 };
 
-const fvsIncompleteForTypes = ( aTypes, sPathSpec ) => (
+const fvaIncompleteForTypes = ( aTypes, sPathSpec ) => (
   aTypes.vaUnused
     .filter(( aEntry ) => aEntry.sPath === sPathSpec )
-    .map(( aEntry ) => (
-      fsPlace( aEntry.aMarker ) + "  unused definition: " + aEntry.sTerm
+    .map(( aEntry ) => faIncomplete(
+      aEntry.aMarker.sPath, aEntry.aMarker.nLine,
+      "unused definition: " + aEntry.sTerm
     ))
     .concat( aTypes.vaUnderived
       .filter(( aMarker ) => aMarker.sPath === sPathSpec )
-      .map(( aMarker ) => (
-        fsPlace( aMarker ) + "  underived motive: " + fsWords( aMarker.sText )
+      .map(( aMarker ) => faIncomplete(
+        aMarker.sPath, aMarker.nLine,
+        "underived motive: " + fsWords( aMarker.sText )
       )))
 );
 
@@ -2452,9 +2468,9 @@ const faStatements = ( aModel ) => {
     vaIncomplete: aModel.vaSpecParsed
       .filter(( aSpec ) => aSpec.bComplete )
       .flatMap(( aSpec ) => (
-        fvsIncompleteForSpec( aModel, aSpec )
-          .concat( fvsIncompleteForTypes( aTypes, aSpec.sPath ))
-          .map(( sLine ) => ({ sPathSpec: aSpec.sPath, sLine }))
+        fvaIncompleteForSpec( aModel, aSpec )
+          .concat( fvaIncompleteForTypes( aTypes, aSpec.sPath ))
+          .map(( aEntry ) => ({ ...aEntry, sPathSpec: aSpec.sPath }))
       )),
     vaPlaceholder: fvaPlaceholderForMarker( aModel.vaMarker ),
     vaFenceUnclosed: aModel.vaSpecParsed.flatMap(( aSpec ) => (
@@ -2565,14 +2581,21 @@ const fbCompleteSpec = ( aModel, sPathSpec ) => aModel.vaSpecParsed.some((
   aSpec
 ) => aSpec.sPath === sPathSpec && aSpec.bComplete );
 
-const faMap = ( aInput ) => {
-  const sPathSpec = aInput.sPathSpec;
-  const aModel = faModel( aInput );
-  const vaTestParsed = aModel.vaTestParsed;
-  const aOwnership = faOwnership(
-    vaTestParsed,
+const faAnalysis = ( aModel ) => ({
+  aOwnership: faOwnership(
+    aModel.vaTestParsed,
     new Set( aModel.vaSpecParsed.map(( aSpec ) => aSpec.sPath ))
-  );
+  ),
+  aStmtList: faStatements( aModel )
+});
+
+const faMap = ( aInput ) => {
+  const aModel = faModel( aInput );
+  return faMapForModel( aModel, faAnalysis( aModel ), aInput.sPathSpec );
+};
+
+const faMapForModel = ( aModel, aAnalysis, sPathSpec ) => {
+  const vaTestParsed = aModel.vaTestParsed;
   const asIdStmt = sPathSpec === undefined
     ? null
     : fasIdStmtForSpec( aModel, sPathSpec );
@@ -2583,13 +2606,13 @@ const faMap = ( aInput ) => {
       ...fasPathLinking( aModel.vaLink, asIdStmt )
     ]);
   const aStmtList = faStatementsScoped(
-    faStatements( aModel ),
+    aAnalysis.aStmtList,
     sPathSpec === undefined
       ? null
       : { sPathSpec, asIdStmt, asPathTest: asPathOwnScope }
   );
   return {
-    ...faOwnershipScoped( aOwnership, asPathOwnScope ),
+    ...faOwnershipScoped( aAnalysis.aOwnership, asPathOwnScope ),
     ...aStmtList,
     bScoped: sPathSpec !== undefined,
     bComplete: fbCompleteSpec( aModel, sPathSpec ),
@@ -2615,13 +2638,22 @@ const fvsSectionUnlinked = ( aMap ) => [
   "Unlinked tests: " + aMap.cUnlinked + " of " + aMap.cTestRead
 ];
 
+const fsLineForBad = ( aEntry ) => (
+  fsPlace( aEntry ) + "  " + aEntry.sText + "  (" + aEntry.sReason + ")"
+);
+
+const fsLineForUnproved = ( aStmt ) => (
+  aStmt.sId + "  " + fsPlace( aStmt ) + aStmt.sProof
+);
+
+const fsLineForIncomplete = ( aEntry ) => aEntry.sLine;
+
+const fsLineForFence = ( aEntry ) => fsPlace( aEntry ) + "  " + aEntry.sText;
+
 const fvsSectionOwner = ( aMap ) => [
   fsSection( "test files with no owner line", aMap.vsPathNoOwner ),
   fsSection(
-    "owner lines that do not resolve",
-    aMap.vaUnresolved.map(( aEntry ) => (
-      fsPlace( aEntry ) + "  " + aEntry.sText + "  (" + aEntry.sReason + ")"
-    ))
+    "owner lines that do not resolve", aMap.vaUnresolved.map( fsLineForBad )
   )
 ];
 
@@ -2651,27 +2683,17 @@ const fvsSectionStaleSibling = ( aMap ) => (
 
 const fvsSectionStmt = ( aMap ) => [
   fsSection(
-    "malformed markers and duplicate ids",
-    aMap.vaMarkerBad.map(( aEntry ) => (
-      fsPlace( aEntry ) + "  " + aEntry.sText + "  (" + aEntry.sReason + ")"
-    ))
+    "malformed markers and duplicate ids", aMap.vaMarkerBad.map( fsLineForBad )
   ),
   fsSection(
-    "statements no test proves",
-    aMap.vaUnproved.map(( aStmt ) => (
-      aStmt.sId + "  " + fsPlace( aStmt ) + aStmt.sProof
-    ))
+    "statements no test proves", aMap.vaUnproved.map( fsLineForUnproved )
   ),
   fsSection(
-    "link lines that do not resolve",
-    aMap.vaLinkBad.map(( aLink ) => (
-      fsPlace( aLink ) + "  " + aLink.sText + "  (" + aLink.sReason + ")"
-    ))
+    "link lines that do not resolve", aMap.vaLinkBad.map( fsLineForBad )
   ),
   fsSection( "stale links", aMap.vaStale.map( fsLineStale )),
   fsSection(
-    "completeness failures",
-    aMap.vaIncomplete.map(( aEntry ) => aEntry.sLine )
+    "completeness failures", aMap.vaIncomplete.map( fsLineForIncomplete )
   ),
   fsSection(
     "removable owner lines",
@@ -2683,12 +2705,7 @@ const fvsSectionStmt = ( aMap ) => [
       fsPlace( aMarker ) + "  " + fsWords( aMarker.sText )
     ))
   ),
-  fsSection(
-    "unclosed fences",
-    aMap.vaFenceUnclosed.map(( aEntry ) => (
-      fsPlace( aEntry ) + "  " + aEntry.sText
-    ))
-  ),
+  fsSection( "unclosed fences", aMap.vaFenceUnclosed.map( fsLineForFence )),
   fsSection(
     "statements with proposed parts",
     aMap.vaProposed.flatMap( fvsLineForProposed ),
@@ -2740,23 +2757,19 @@ const fsLineForRefEntry = ( aEntry ) => (
   + ( aEntry.aRef.sId || aEntry.aRef.sRef )
 );
 
+const fsLineForRederive = ( aEntry ) => (
+  fsLineForRefEntry( aEntry ) + "  recorded " + aEntry.aRef.sStamp
+  + "  current " + aEntry.aRef.aTarget.sHash
+);
+
 const fvsSectionRoot = ( aMap ) => [
-  fsSection(
-    "malformed root lists",
-    aMap.vaRootBad.map(( aEntry ) => (
-      fsPlace( aEntry ) + "  " + aEntry.sText + "  (" + aEntry.sReason + ")"
-    ))
-  ),
+  fsSection( "malformed root lists", aMap.vaRootBad.map( fsLineForBad )),
   fsSection(
     "roots", aMap.vaRoot.flatMap( fvsLineForRoot ), aMap.vaRoot.length
   ),
   fsSectionArch( aMap.vaArch ),
   fsSection(
-    "re-derive: stale root references",
-    aMap.vaRederive.map(( aEntry ) => (
-      fsLineForRefEntry( aEntry ) + "  recorded " + aEntry.aRef.sStamp
-      + "  current " + aEntry.aRef.aTarget.sHash
-    ))
+    "re-derive: stale root references", aMap.vaRederive.map( fsLineForRederive )
   ),
   fsSection(
     "unstamped root references", aMap.vaUnstamped.map( fsLineForRefEntry )
@@ -2776,11 +2789,15 @@ const fsLineForMarker = ( aMarker ) => (
   fsPlace( aMarker ) + "  " + fsIdShown( aMarker )
 );
 
+const fsLineForDangling = ( aTarget ) => (
+  fsLineForMarker( aTarget.aMarker ) + " " + aTarget.sTarget + "  ("
+  + aTarget.sReason + ")"
+);
+
+const fsLineForNoCode = ( aCheck ) => fsLineForMarker( aCheck.aMarker );
+
 const fvsSectionLines = ( aMap ) => [
-  fsSection( "dangling targets", aMap.vaDangling.map(( aTarget ) => (
-    fsLineForMarker( aTarget.aMarker ) + " " + aTarget.sTarget + "  ("
-    + aTarget.sReason + ")"
-  ))),
+  fsSection( "dangling targets", aMap.vaDangling.map( fsLineForDangling )),
   fsSection( "unused definitions", aMap.vaUnused.map(( aEntry ) => (
     fsLineForMarker( aEntry.aMarker ) + "  " + aEntry.sTerm
   ))),
@@ -2798,10 +2815,7 @@ const fvsSectionLines = ( aMap ) => [
   fsSection(
     "guidance no reference names", aMap.vaUncited.map( fsLineForMarker )
   ),
-  fsSection(
-    sTitleNoCode,
-    aMap.vaNoCode.map(( aCheck ) => fsLineForMarker( aCheck.aMarker ))
-  ),
+  fsSection( sTitleNoCode, aMap.vaNoCode.map( fsLineForNoCode )),
   fsSectionProblem( aMap.vaProblem )
 ];
 
@@ -2828,21 +2842,86 @@ const fsReport = ( aMap ) => fvsSectionOwner( aMap ).concat(
   ]
 ).join( "\n" ) + "\n";
 
-const fbClean = ( aMap ) => (
-  aMap.vaUnresolved.length === 0
-  && aMap.vaMarkerBad.length === 0
-  && aMap.vaLinkBad.length === 0
-  && aMap.vaStale.length === 0
-  && aMap.vaRootBad.length === 0
-  && aMap.vaFenceUnclosed.length === 0
-  && aMap.vaDangling.length === 0
-  && aMap.vaFollowsBad.length === 0
-  && aMap.vaNoCode.length === 0
-  && (
-    !aMap.bComplete
-    || ( aMap.vaUnproved.length === 0 && aMap.vaIncomplete.length === 0 )
-  )
+const faMarkerOf = ( aEntry ) => aEntry.aMarker;
+
+const aListUnresolved = {
+  nList: 4, sKey: "vaUnresolved", fsLine: fsLineForBad
+};
+const aListMarkerBad = { nList: 6, sKey: "vaMarkerBad", fsLine: fsLineForBad };
+const aListUnproved = {
+  nList: 7, sKey: "vaUnproved", fsLine: fsLineForUnproved, bComplete: true
+};
+const aListLinkBad = { nList: 8, sKey: "vaLinkBad", fsLine: fsLineForBad };
+const aListStale = { nList: 9, sKey: "vaStale", fsLine: fsLineStale };
+const aListIncomplete = {
+  nList: 10, sKey: "vaIncomplete", fsLine: fsLineForIncomplete, bComplete: true
+};
+const aListRootBad = { nList: 13, sKey: "vaRootBad", fsLine: fsLineForBad };
+const aListRederive = {
+  nList: 16, sKey: "vaRederive", fsLine: fsLineForRederive, faPlace: faMarkerOf
+};
+const aListFence = {
+  nList: 18, sKey: "vaFenceUnclosed", fsLine: fsLineForFence
+};
+const aListDangling = {
+  nList: 22, sKey: "vaDangling", fsLine: fsLineForDangling, faPlace: faMarkerOf
+};
+const aListFollowsBad = {
+  nList: 26, sKey: "vaFollowsBad", fsLine: fsLineForFollows
+};
+const aListNoCode = {
+  nList: 28, sKey: "vaNoCode", fsLine: fsLineForNoCode, faPlace: faMarkerOf
+};
+
+const vaListFence = [
+  aListUnresolved, aListMarkerBad, aListUnproved, aListLinkBad, aListStale,
+  aListIncomplete, aListRootBad, aListFence, aListDangling, aListFollowsBad,
+  aListNoCode
+];
+
+const fbAlways = () => true;
+
+const fbIdAbsent = ( aEntry ) => aEntry.bIdAbsent;
+
+const vtListRefusing = [
+  [ aListLinkBad, fbIdAbsent ],
+  [ aListStale, fbAlways ],
+  [ aListRootBad, fbIdAbsent ],
+  [ aListRederive, fbAlways ],
+  [ aListFollowsBad, ( aEntry ) => aEntry.bStale || aEntry.bIdAbsent ]
+];
+
+const fbListCounts = ( aMap, aList ) => !aList.bComplete || aMap.bComplete;
+
+const fbClean = ( aMap ) => vaListFence.every(( aList ) => (
+  !fbListCounts( aMap, aList ) || aMap[ aList.sKey ].length === 0
+));
+
+const fvaGateForList = ( aMap, aList, fbRefuses ) => aMap[ aList.sKey ]
+  .filter( fbRefuses )
+  .map(( aEntry ) => ({
+    nList: aList.nList,
+    aPlace: aList.faPlace === undefined ? aEntry : aList.faPlace( aEntry ),
+    sLine: "(" + aList.nList + ") " + aList.fsLine( aEntry )
+  }));
+
+const fzCompareGate = ( aA, aB ) => (
+  aA.nList - aB.nList
+  || Number( aA.aPlace.sPath > aB.aPlace.sPath )
+  - Number( aA.aPlace.sPath < aB.aPlace.sPath )
+  || aA.aPlace.nLine - aB.aPlace.nLine
 );
+
+const fvsLineGate = ( aMapTree, vaMapComplete ) => Array.from( new Map(
+  vtListRefusing
+    .flatMap(( tList ) => fvaGateForList( aMapTree, tList[ 0 ], tList[ 1 ]))
+    .concat( vaMapComplete.flatMap(( aMap ) => vaListFence.flatMap((
+      aList
+    ) => fvaGateForList( aMap, aList, fbAlways ))))
+    .map(( aGate ) => [ aGate.sLine, aGate ])
+).values())
+  .sort( fzCompareGate )
+  .map(( aGate ) => aGate.sLine );
 
 const fsSid = ( aModel, aStmt ) => {
   const vaLink = aModel.vaLink.filter(( aLink ) => aLink.sId === aStmt.sId );
@@ -3763,6 +3842,15 @@ const fzArch = ( reader, fWrite ) => {
   return 0;
 };
 
+const faInputForReader = ( reader, vaSpec ) => ({
+  vaSpec,
+  vaTest: reader.fvaTest(),
+  vaCiter: reader.fvaCiter(),
+  vaRecord: reader.fvaRecord(),
+  fbExists: ( sPath ) => reader.fbExists( sPath ),
+  aFiles: reader
+});
+
 const fzReport = ( reader, sArg, fWrite ) => {
   const sDirRoot = reader.sDirRoot;
   const sPathSpec = sArg === undefined
@@ -3775,21 +3863,30 @@ const fzReport = ( reader, sArg, fWrite ) => {
     fWrite( "spec-map: no spec at " + sArg + "\n" );
     return 2;
   }
-  const aMap = faMap({
-    vaSpec,
-    vaTest: reader.fvaTest(),
-    vaCiter: reader.fvaCiter(),
-    vaRecord: reader.fvaRecord(),
-    fbExists: ( sPath ) => reader.fbExists( sPath ),
-    aFiles: reader,
-    sPathSpec
-  });
+  const aMap = faMap({ ...faInputForReader( reader, vaSpec ), sPathSpec });
   fWrite( fsReport( aMap ));
   return sPathSpec === undefined || fbClean( aMap ) ? 0 : 1;
 };
 
+const fzGate = ( reader, fWrite ) => {
+  const aModel = faModel( faInputForReader( reader, reader.fvaSpec()));
+  const aAnalysis = faAnalysis( aModel );
+  const vsLine = fvsLineGate(
+    faMapForModel( aModel, aAnalysis, undefined ),
+    aModel.vaSpecParsed
+      .filter(( aSpec ) => aSpec.bComplete )
+      .map(( aSpec ) => faMapForModel( aModel, aAnalysis, aSpec.sPath ))
+  );
+  fWrite( vsLine.concat([
+    vsLine.length === 0
+      ? "Gate: pass"
+      : "Gate: refused, " + vsLine.length + " entries"
+  ]).join( "\n" ) + "\n" );
+  return vsLine.length === 0 ? 0 : 1;
+};
+
 const sUsage = (
-  "usage: spec-map [<spec path>] | --hash <id> | --sid <id> "
+  "usage: spec-map [<spec path>] | --gate | --hash <id> | --sid <id> "
   + "| --candidates <id> | --root <id> | --cross-suite | --probes "
   + "| --interactive | --guidance [--for <label>] | --pass <id> [--note <text>] "
   + "| --fail <id> [--note <text>] | --unable <id> [--note <text>] "
@@ -3811,6 +3908,7 @@ const fbArgsValid = ( vsArg ) => {
     );
   }
   if( sFlag === "--answers" ){ return vsArg.length === 2;}
+  if( sFlag === "--gate" ){ return vsArg.length === 1;}
   if( sFlag === "--worklist" ){
     return vsArg.length === 2
       || ( vsArg.length === 4 && vsArg[ 2 ] === "--work" );
@@ -3831,6 +3929,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   const reader = new TreeReader( sDirRoot, aRead.aConfig );
   if( vsArg[ 0 ] === "--assign" ){ return fzAssign( reader, fWrite );}
   if( vsArg[ 0 ] === "--hashes" ){ return fzHashes( reader, fWrite );}
+  if( vsArg[ 0 ] === "--gate" ){ return fzGate( reader, fWrite );}
   if( Object.hasOwn( asVerdictForFlag, vsArg[ 0 ])){
     return fzRecord( reader, vsArg, fWriteErr || fWrite );
   }

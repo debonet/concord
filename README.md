@@ -6,6 +6,8 @@
 * It is one project, `~/@concord`, whose commands live in `~/@concord/bin`; every project that adopts it runs those commands and keeps no checker of its own.
 * An adopting project declares its own values (its suites, languages and directories) in one file, `concord.json`, at its root.
 * The commands are JavaScript on Node, whatever language the adopting project is written in.
+* Any coding agent, whatever its tool, follows one shared instruction file, `~/@concord/AGENTS.md`, and the architect and fixer role texts in `~/@concord/roles`; Claude Code's agent files are generated from them.
+* A committed pre-commit hook runs the checker's gate, so a commit that leaves a test citing an out-of-date spec sentence is refused.
 * AIOS was the first adopting project; the checker began inside it and moved here.
 
 ## Purpose (why?)
@@ -16,7 +18,9 @@ More than one project uses it. Keeping one shared checker means a change to how 
 
 ## Solution (what?)
 
-Concord is a set of command-line tools and the specs that define them. `spec-map` reads a project's specs, test files and code and reports which statement each test proves, which spec owns each test, and how every other kind of spec line is satisfied; it also mints ids, answers queries about one id, records verdicts on hand checks and writes the worklist page for them. `spec-coverage` runs a project's jest suites with coverage on and maps every source line to the statements whose tests execute it, so code that no statement depends on is surfaced for a person to classify.
+Concord is a set of command-line tools and the specs that define them. `spec-map` reads a project's specs, test files and code and reports which statement each test proves, which spec owns each test, and how every other kind of spec line is satisfied; it also mints ids, answers queries about one id, records verdicts on hand checks and writes the worklist page for them. `spec-coverage` runs a project's jest suites with coverage on and maps every source line to the statements whose tests execute it, so code that no statement depends on is surfaced for a person to classify. `concord-hook` installs, in a project, the pre-commit hook that runs `spec-map --gate`, and `agents-sync` writes Claude Code's agent files from Concord's role texts.
+
+Concord also holds the instructions agents follow. `AGENTS.md` at Concord's root is read by any coding agent, from any vendor, working in an adopting project; each project's own `AGENTS.md` points at it and adds only that project's facts. The two roles, an architect who owns specs and a fixer who owns code and tests, are written once in `roles/`, in tool-neutral terms, so the same process runs whichever model plays them.
 
 The rules those commands enforce, and how a project adopts them, are in [specs/concord-process.md](specs/concord-process.md), [specs/spec-map.md](specs/spec-map.md), [specs/spec-map-line-types.md](specs/spec-map-line-types.md), [specs/spec-map-interactive.md](specs/spec-map-interactive.md) and [specs/spec-coverage.md](specs/spec-coverage.md). How Concord itself is built and tested is in [specs/build.md](specs/build.md).
 

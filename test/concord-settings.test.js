@@ -53,6 +53,30 @@ const faRunCommand = ( sPathCommand, vsArg ) => {
 
 const faRun = ( vsArg ) => faRunCommand( sPathSpecMap, vsArg );
 
+const sPathConcordHook = path.join( sDirRepo, "bin", "concord-hook" );
+const sPathAgentsSync = path.join( sDirRepo, "bin", "agents-sync" );
+
+const faRunNode = ( sPathCommand, vsArg ) => {
+  const aResult = spawnSync(
+    process.execPath,
+    [ sPathCommand ].concat( vsArg ),
+    {
+      cwd: sDirFixture,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CONCORD_GIT: path.join( sDirFixture, "no-git-here" ),
+        HOME: path.join( sDirFixture, "home" )
+      }
+    }
+  );
+  return {
+    cExit: aResult.status,
+    sStdout: aResult.stdout,
+    sStderr: aResult.stderr
+  };
+};
+
 const fsSpec = ( sTitle, vsBody ) => (
   [ "# " + sTitle, "", "## API", "" ].concat( vsBody, [ "" ]).join( "\n" )
 );
@@ -77,7 +101,7 @@ afterAll(() => {
   fs.rmSync( sDirFixture, { recursive: true, force: true });
 });
 
-// @proves s-2fs4an@84fb32e
+// @proves s-2fs4an@26c553f
 // @proves s-jhtp93@4c4ca3c
 describe( "concord-settings — a command run with no settings file", () => {
   test( "spec-map and spec-coverage each print one stderr line naming "
@@ -90,6 +114,29 @@ describe( "concord-settings — a command run with no settings file", () => {
       expect( aRun.sStderr.split( "\n" ).filter( Boolean )).toHaveLength( 1 );
       expect( aRun.sStderr ).toContain( "concord.json" );
     });
+  });
+
+  test( "PAIRED: concord-hook, which acts on a project, does the same in a "
+    + "work tree's root; agents-sync, which acts on none, runs", () => {
+    fWriteTree({
+      "specs/a.md": fsSpec( "A", [ "* {#s-cfg001} A rule." ]),
+      ".git/HEAD": "",
+      "roles/r.md": "# R\n",
+      "roles/r.claude-frontmatter": "---\n---\n",
+      "agents/keep": ""
+    });
+    [[ "install" ], [ "check" ]].forEach(( vsArg ) => {
+      const aRun = faRunNode( sPathConcordHook, vsArg );
+      expect( aRun.cExit ).toBe( 2 );
+      expect( aRun.sStdout ).toBe( "" );
+      expect( aRun.sStderr.split( "\n" ).filter( Boolean )).toHaveLength( 1 );
+      expect( aRun.sStderr ).toContain( "concord.json" );
+    });
+    const aRunSync = faRunNode(
+      sPathAgentsSync, [ "--roles", "roles", "--dir", "agents" ]
+    );
+    expect( aRunSync.cExit ).toBe( 0 );
+    expect( fsRead( "agents/r.md" )).toBe( "---\n---\n# R\n" );
   });
 });
 
@@ -134,7 +181,7 @@ const vtBad = [
   ]
 ];
 
-// @proves s-w8ivpb@1b3d095
+// @proves s-w8ivpb@ffb0e3a
 // @proves s-zstgty@57da9d2
 // @proves s-am7qu4@f0bbacd
 // @proves s-i0n88z@442670e
@@ -149,12 +196,14 @@ describe( "concord-settings — a bad settings file", () => {
   ) => {
     fWriteTree({
       "concord.json": sText,
-      "specs/a.md": fsSpec( "A", [ "* {#s-?} A placeholder rule." ])
+      "specs/a.md": fsSpec( "A", [ "* {#s-?} A placeholder rule." ]),
+      ".git/HEAD": ""
     });
     const vsBefore = vsTreeFile();
     [
       faRun([ "--assign" ]),
-      faRunCommand( sPathSpecCoverage, [ "--report" ])
+      faRunCommand( sPathSpecCoverage, [ "--report" ]),
+      faRunNode( sPathConcordHook, [ "install" ])
     ].forEach(( aRun ) => {
       expect( aRun.cExit ).toBe( 2 );
       expect( aRun.sStdout ).toBe( "" );
@@ -374,7 +423,7 @@ describe( "concord-settings — the hash table", () => {
   });
 });
 
-// @proves s-92u5vq@033bd2e
+// @proves s-92u5vq@475d2f0
 // @proves s-4jegoj@05acd9f
 describe( "concord-settings — a command acts on its working directory",
 () => {
@@ -414,16 +463,60 @@ test( "concord-settings — Concord's own settings file declares Concord's "
 const sDirBin = path.join( sDirRepo, "bin" );
 
 // @proves s-c744tt@59ec83a
+// @proves s-y7klju@f24bf51
 test( "concord-settings — each command under bin is an executable file "
   + "with no extension opening with the node shebang", () => {
   const vsName = fs.readdirSync( sDirBin ).sort();
-  expect( vsName ).toEqual([ "spec-coverage", "spec-map" ]);
+  expect( vsName ).toEqual([
+    "agents-sync", "concord-hook", "spec-coverage", "spec-map"
+  ]);
   vsName.forEach(( sName ) => {
     const sPath = path.join( sDirBin, sName );
     expect( fs.statSync( sPath ).mode & 0o111 ).not.toBe( 0 );
     expect( fs.readFileSync( sPath, "utf8" ).split( "\n" )[ 0 ])
       .toBe( "#!/usr/bin/env node" );
   });
+});
+
+const fsRepoText = ( sPathRel ) => fs.readFileSync(
+  path.join( sDirRepo, sPathRel ), "utf8"
+);
+
+// @proves s-jblvc6@c2bd5a2
+test( "concord-settings — Concord's root AGENTS.md names the Concord specs "
+  + "under ~/@concord/specs and the role texts under ~/@concord/roles", () => {
+  const sAgents = fsRepoText( "AGENTS.md" );
+  [
+    "~/@concord/specs/concord-process.md",
+    "~/@concord/specs/spec-map.md",
+    "~/@concord/specs/spec-map-interactive.md",
+    "~/@concord/specs/spec-coverage.md",
+    "~/@concord/roles/architect.md",
+    "~/@concord/roles/fixer.md"
+  ].forEach(( sPath ) => expect( sAgents ).toContain( sPath ));
+});
+
+// @proves s-3jwl32@7c1cd67
+test( "concord-settings — each role, architect and fixer among them, has its "
+  + "text and its Claude Code frontmatter side by side under roles/", () => {
+  const vsName = fs.readdirSync( path.join( sDirRepo, "roles" )).sort();
+  const vsRole = Array.from( new Set(
+    vsName.map(( sName ) => sName.split( "." )[ 0 ])
+  ));
+  expect( vsRole ).toEqual( expect.arrayContaining([ "architect", "fixer" ]));
+  expect( vsName ).toEqual( vsRole.flatMap(( sRole ) => [
+    sRole + ".claude-frontmatter", sRole + ".md"
+  ]).sort());
+});
+
+// @proves s-s4l32i@b41f304
+test( "concord-settings — Concord's own commits are gated by its committed "
+  + "pre-commit hook, which runs the gate", () => {
+  const sPathHook = path.join( sDirRepo, ".githooks", "pre-commit" );
+  expect( fs.statSync( sPathHook ).mode & 0o777 ).toBe( 0o755 );
+  expect( fs.readFileSync( sPathHook, "utf8" )).toBe(
+    "#!/bin/sh\n\"$HOME/@concord/bin/spec-map\" --gate || exit 1\n"
+  );
 });
 
 const reRequire = /require\(\s*"([^".][^"]*)"\s*\)/g;

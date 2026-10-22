@@ -84,6 +84,20 @@ its own version of the rules."
 
 > {#m-c9ebz3} RULING (CEO) 2026-10-21, on whose rule book is the standard: "A"
 
+> {#m-asoxa8} RULING (CEO) 2026-10-22, on Concord and agent tools other
+> than Claude Code: "How do we make this more cross-model friendly (e.g. with
+> AGENTS.md in some commonly accessible place?)"
+
+The plan his next ruling answered was this (a summary of what was put to
+him, not his words): one shared instruction file, `~/@concord/AGENTS.md`,
+that any coding agent reads; the architect and fixer role texts moved into
+Concord, with Claude Code's settings for each role kept beside it; Claude
+Code's agent files generated from them; each adopting project's root
+`AGENTS.md` pointing at Concord's; and the pre-commit gate built and
+installed.
+
+> {#m-2794qp} RULING (CEO) 2026-10-22, on that plan: "Do it"
+
 ## Terms
 
 * {#d-xhw3y4 <arch,m-yy30zw@60906a5} **Adopting project** — a project whose specs, tests
@@ -150,17 +164,22 @@ its own version of the rules."
   they give; `spec-coverage` takes every argument form
   `specs/spec-coverage.md` gives after `npm run spec-coverage --`; any
   linter Concord adds is a command beside them.
+* {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} **Two more commands.** `agents-sync`, which
+  writes Claude Code's agent files (`specs/agents-sync.md`), and
+  `concord-hook`, which installs the pre-commit gate
+  (`specs/concord-hook.md`), are commands under `~/@concord/bin` beside
+  `spec-map` and `spec-coverage`.
 * {#s-gibswe <m-u4pusr@2be69ad} **JavaScript on Node.** The commands are written in
   JavaScript, and a machine that runs them needs Node at the version the
   Concord project's build spec declares, whatever languages the adopting
   project is written in.
-* {#s-92u5vq <arch,m-u4pusr@2be69ad} **Run from the project root.** A Concord command acts on
-  the adopting project whose root is its working directory, and reads,
+* {#s-92u5vq <arch,m-u4pusr@2be69ad} **Run from the project root.** Every Concord command but
+  `agents-sync` acts on the adopting project whose root is its working directory, and reads,
   writes and prints every project path relative to that root.
 * {#s-jhtp93 <arch,m-u4pusr@2be69ad} **One settings file.** An adopting project's declared
   values (What a project declares) are in one file, `concord.json` at its
-  root, which every Concord command reads; {#s-2fs4an <arch} a command run where
-  no `concord.json` is found prints a line naming the missing file to stderr
+  root, which every Concord command reads; {#s-2fs4an <arch} a command that acts on
+  a project, run where no `concord.json` is found, prints a line naming the missing file to stderr
   and exits 2.
 * {#s-6r39t3 <m-u4pusr@2be69ad} **Targets call the commands.** An adopting project's build
   spec declares each Concord target (in AIOS `npm run spec-map`, in Seed
@@ -183,6 +202,25 @@ its own version of the rules."
   checker of its own when it adopts Concord retires it, with every script and
   test of its own that does a Concord utility's work, in the pass that
   points its build spec's Concord targets at `~/@concord/bin`.
+
+## Agent instructions
+
+* {#s-jblvc6 <m-asoxa8@8f03701,m-2794qp@4644928} **One shared instruction file.** The Concord
+  project holds at its root `AGENTS.md`, the instructions every coding agent
+  working in an adopting project follows, whatever its tool, naming the
+  Concord specs by their paths under `~/@concord/specs` and the role texts by
+  their paths under `~/@concord/roles`.
+* {#s-3jwl32 <m-asoxa8@8f03701,m-2794qp@4644928} **Role texts live in Concord.** Each agent role,
+  `architect` and `fixer` among them, has its text, written for every agent
+  tool, in `roles/<role>.md` of the Concord project, and Claude Code's
+  frontmatter for it in `roles/<role>.claude-frontmatter` beside it.
+* {#s-299j3a <m-2794qp@4644928} **Claude Code's agent files are generated.** Claude Code's
+  agent file for each role is the file `agents-sync` writes from those two
+  files (`specs/agents-sync.md`).
+* {#g-43u63o <m-2794qp@4644928 for=main,architect,fixer via=prompt} **Edit the role, not
+  the agent file.** A change to a role is made in `roles/<role>.md` or
+  `roles/<role>.claude-frontmatter` of the Concord project, and then
+  `agents-sync` is run; nobody edits a generated agent file.
 
 ## Named cases are retired
 
@@ -231,6 +269,33 @@ its own version of the rules."
   exits 1; {#s-s4l32i <arch,m-b2shvm@ff5b09c} every adopting project runs it from a git
   pre-commit hook kept under version control in the project, which its build
   spec declares, so every commit, by a person or an agent, is gated.
+* {#s-ug5kvq <s-nw4u9n@3b57e9b,s-kkql92@90bba2d,s-i2ip58@705d3ec,m-2794qp@4644928} **The refusing entries.** In the
+  numbered lists of `specs/spec-map.md`, `specs/spec-map-line-types.md` and
+  `specs/spec-map-interactive.md`, the entries that refuse a commit are:
+  every entry of (9); every entry of (16); every entry of (26) for a
+  reference that is stale or names an id no marker holds; every entry of (8)
+  for a link line naming an id no marker holds; every entry of (13) for a
+  root list holding a reference that names an id no marker holds; and, for
+  each complete spec, every entry on which a run with that spec's path
+  exits non-zero.
+* {#s-tlkzzq <s-1u8bef@fa85be2,m-2794qp@4644928} **Only those.** An entry not named in The
+  refusing entries, of any list, never changes the gate's exit code and is
+  not printed by it.
+* {#s-eltyao <arch,m-2794qp@4644928} **What the gate reads.** `spec-map --gate` reads the
+  files a run with no argument reads, as they stand on disk when it runs,
+  not the content staged for the commit, and writes nothing.
+* {#s-rkd937 <arch,m-2794qp@4644928} **The gate's output.** It prints to stdout each
+  refusing entry once, as one line opening with the entry's list number in
+  parentheses and a space, then the entry as its list names it, the lines
+  ordered by list number, then by file or spec path, then by line number.
+  {#s-u88ict <arch,m-2794qp@4644928} Its last line on stdout is `Gate: refused, <n>
+  entries`, `<n>` the number of entry lines above it, when it exits 1, and
+  `Gate: pass`, its only line, when it exits 0.
+* {#s-uffk6s <arch,m-2794qp@4644928} **Nothing beside it.** A run given `--gate` with any
+  other argument, a spec path or another flag, maps nothing, prints its
+  usage line to stderr and exits 2.
+* {#p-0ymdef >specs/concord-hook.md} The hook file, how it runs the gate, and
+  how it is installed and checked in an adopting project.
 * {#g-gao8i0 <m-5cyvk4@ea2082e for=main via=prompt} **Check after every spec change.** After every
   change to a spec, an architect pass or a direct edit, and before the commit
   that holds it, the main thread runs the checker over the project (`spec-map`
@@ -312,6 +377,18 @@ its own version of the rules."
   as `node_modules` and `target`); and the record file for hand-check
   verdicts. Its build spec declares its Concord targets and its pre-commit
   hook (Where Concord lives, What stops a commit).
+* {#g-ljcs3l <m-2794qp@4644928 for=architect via=prompt} An adopting project's build spec
+  declares a target that runs `~/@concord/bin/concord-hook install`
+  (`specs/concord-hook.md`), run once in every clone, since the git setting
+  that makes git run a committed hook belongs to a clone and no commit
+  carries it.
+* {#g-zsom4k <m-asoxa8@8f03701,m-2794qp@4644928 for=architect,main via=prompt} **A project's
+  AGENTS.md.** An adopting project holds at its root an `AGENTS.md` that
+  opens by pointing at `~/@concord/AGENTS.md` and holds only facts of that
+  project: its build and test commands, its layout, its suites and its own
+  rules. The shared file is the authority: where the two disagree the shared
+  file governs, and a rule that binds every adopting project is written in
+  the shared file, never in a project's.
 * {#g-gd6e90 <arch,m-xjun0a@9dd245b for=architect via=prompt} The audience labels
   `architect`, `fixer` and `main` mean the same roles in every adopting
   project: the agents of those names and the top-level session that launches
@@ -349,7 +426,8 @@ its own version of the rules."
 * {#s-w8ivpb <s-jhtp93@4c4ca3c} **A bad settings file.** A `concord.json` that is not
   one JSON object, that lacks a required member, or that holds a member of
   another form than this section gives or a member this section does not
-  name, makes every Concord command print to stderr one line naming the
+  name, makes every Concord command that acts on a project print to stderr
+  one line naming the
   file and the member, and exit 2, acting on nothing.
 * {#s-4j8qm7 <s-jhtp93@4c4ca3c} **No coverage declared.** `spec-coverage` run in a
   project whose `concord.json` holds no `aCoverage` prints to stderr one

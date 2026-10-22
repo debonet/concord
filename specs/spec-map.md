@@ -19,7 +19,9 @@ which spec owns each test, and how every other type of spec line
   below), `-- --cross-suite` lists statements whole-linked from more than
   one suite (Statement parts, below), and `-- --assign` gives every
   placeholder an id (Assigning ids, below). `-- --hashes` prints every
-  id's current hash (Query forms, below). {#s-mp16u6 <arch} `-- --probes` lists
+  id's current hash (Query forms, below). `-- --gate` decides whether a
+  commit may proceed (`specs/concord-process.md`, What stops a commit).
+  {#s-mp16u6 <arch} `-- --probes` lists
   every probe statement and the tests that prove it (Probe flags, below).
 * {#s-rkzefi <arch} **At most one spec path.** A run given a second positional
   argument, or a spec path beside a query form or `--assign`, maps
