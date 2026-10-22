@@ -222,6 +222,32 @@ installed.
   `roles/<role>.claude-frontmatter` of the Concord project, and then
   `agents-sync` is run; nobody edits a generated agent file.
 
+> {#m-ckynhd} RULING (CEO) 2026-10-22, on who runs `agents-sync`: "No. The
+> individual AGENTS.md files for the different tools (Claude, Codex, etc)
+> should run the sync. And the sync should (if it doesn't already) work with
+> or like `make` so that no work is done if the files have not changed"
+
+* {#s-jhoxdv <m-ckynhd@8e6b53f} **Which tools' files carry the sync.** Concord's
+  `AGENTS.md` names every agent tool whose own instruction file must tell
+  its agent to run `~/@concord/bin/agents-sync` at the start of each
+  session, before any other work, with each such file's path: Claude Code's
+  `~/.claude/CLAUDE.md` and Codex's `~/.codex/AGENTS.md` among them.
+* {#g-af16h1 <m-ckynhd@8e6b53f for=main via=prompt} **Sync first.** At the start of each
+  session, before any other work, the agent runs `~/@concord/bin/agents-sync`
+  with no argument; every tool's instruction file that Concord's `AGENTS.md`
+  names carries this instruction, and the main thread that finds one
+  lacking it adds it.
+* {#g-m2rkgt <arch,m-ckynhd@8e6b53f for=main via=prompt} **When the sync cannot finish.**
+  When `agents-sync` exits 3, a write it needed was denied: the agent quotes
+  its stderr line to the human and asks him to run
+  `~/@concord/bin/agents-sync` in his own shell. When it exits 2 naming
+  hand-edited agent files, the agent shows the human those lines and asks
+  whether to move the edits into the role or to run it with `--force`; no
+  agent passes `--force` on its own. Either way the session's other work
+  goes on with the agent files as they stand.
+* {#p-t6j1tx >specs/agents-sync.md#when-nothing-changed} An up-to-date run of
+  `agents-sync` does no work and needs no write access.
+
 ## Named cases are retired
 
 * {#s-mrxt8t <m-f75zwe@2a13a42} **No named cases.** No spec of an adopting project lists

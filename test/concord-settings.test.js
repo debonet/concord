@@ -496,6 +496,19 @@ test( "concord-settings — Concord's root AGENTS.md names the Concord specs "
   ].forEach(( sPath ) => expect( sAgents ).toContain( sPath ));
 });
 
+// @proves s-jhoxdv@6b3c84f
+test( "concord-settings — Concord's root AGENTS.md names, with their paths, "
+  + "the tool files that must run agents-sync at session start", () => {
+  const vsParagraph = fsRepoText( "AGENTS.md" ).split( /\n\s*\n/ );
+  const vsSync = vsParagraph.filter(( s ) => (
+    s.includes( "~/@concord/bin/agents-sync" ) && /start/.test( s )
+  ));
+  expect( vsSync.length ).toBeGreaterThan( 0 );
+  [ "~/.claude/CLAUDE.md", "~/.codex/AGENTS.md" ].forEach(( sPath ) => (
+    expect( vsSync.some(( s ) => s.includes( sPath ))).toBe( true )
+  ));
+});
+
 // @proves s-3jwl32@7c1cd67
 test( "concord-settings — each role, architect and fixer among them, has its "
   + "text and its Claude Code frontmatter side by side under roles/", () => {

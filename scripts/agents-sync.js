@@ -93,8 +93,17 @@ class AgentDir {
     return fs.existsSync( sPath ) ? fs.readFileSync( sPath ) : null;
   }
 
-  fWrite( sName, y ){
-    fs.writeFileSync( path.join( this.sDir, sName ), y );
+  fbWritten( sName, y ){
+    try{
+      fs.writeFileSync( path.join( this.sDir, sName ), y );
+      return true;
+    }
+    catch( xErr ){ return false;}
+  }
+
+  fsNameFailed( vaWrite ){
+    const aWrite = vaWrite.find(( a ) => !this.fbWritten( a.sName, a.y ));
+    return aWrite ? aWrite.sName : null;
   }
 
   faRecord(){
@@ -126,28 +135,37 @@ const fbUnchanged = ( aPlan ) => (
   aPlan.yOld !== null && aPlan.yOld.equals( aPlan.yAgent )
 );
 
-const fsRecordText = ( aRecord ) => JSON.stringify( aRecord, null, 2 ) + "\n";
+const fzByKey = ([ sA ], [ sB ]) => ( sA < sB ? -1 : sA > sB ? 1 : 0 );
 
-const fvsWritten = ( agentDir, vaPlan, aRecordBase ) => {
-  const vsLine = vaPlan.map(( aPlan ) => {
-    if( fbUnchanged( aPlan )){
-      return "unchanged " + agentDir.fsShown( aPlan.sName );
-    }
-    agentDir.fWrite( aPlan.sName, aPlan.yAgent );
-    return "wrote " + agentDir.fsShown( aPlan.sName );
-  });
+const fsRecordText = ( aRecord ) => JSON.stringify(
+  Object.fromEntries( Object.entries( aRecord ).sort( fzByKey )), null, 2
+) + "\n";
+
+const fsLine = ( agentDir, aPlan ) => (
+  ( fbUnchanged( aPlan ) ? "unchanged " : "wrote " )
+  + agentDir.fsShown( aPlan.sName )
+);
+
+const fvaWrite = ( vaPlan, aRecordBase, yRecordOld ) => {
   const sRecord = fsRecordText({
     ...aRecordBase,
     ...Object.fromEntries( vaPlan.map(( aPlan ) => [
       aPlan.sName, fsSha( aPlan.yAgent )
     ]))
   });
-  const yRecordOld = agentDir.fyRead( sFileRecord );
-  if( yRecordOld === null || yRecordOld.toString( "utf8" ) !== sRecord ){
-    agentDir.fWrite( sFileRecord, sRecord );
-  }
-  return vsLine;
+  const bRecordSame = (
+    yRecordOld !== null && yRecordOld.toString( "utf8" ) === sRecord
+  );
+  return vaPlan
+    .filter(( aPlan ) => !fbUnchanged( aPlan ))
+    .map(( aPlan ) => ({ sName: aPlan.sName, y: aPlan.yAgent }))
+    .concat( bRecordSame ? [] : [{ sName: sFileRecord, y: sRecord }]);
 };
+
+const fsFailedWrite = ( agentDir, sName ) => (
+  "agents-sync: " + agentDir.fsShown( sName ) + " needed a write that could"
+  + " not be made; run agents-sync where the target directory is writable\n"
+);
 
 const fsProblemForSync = ( aRoles, agentDir ) => {
   if( aRoles.sProblem !== null ){ return aRoles.sProblem;}
@@ -202,8 +220,16 @@ const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
     fWriteErr( vsRefusal.map(( s ) => "agents-sync: " + s + "\n" ).join( "" ));
     return 2;
   }
-  const vsLine = fvsWritten( agentDir, vaPlan, aRecordRead.aRecord );
-  fWrite( vsLine.map(( s ) => s + "\n" ).join( "" ));
+  const sNameFailed = agentDir.fsNameFailed( fvaWrite(
+    vaPlan, aRecordRead.aRecord, agentDir.fyRead( sFileRecord )
+  ));
+  if( sNameFailed !== null ){
+    fWriteErr( fsFailedWrite( agentDir, sNameFailed ));
+    return 3;
+  }
+  fWrite( vaPlan.map(( aPlan ) => (
+    fsLine( agentDir, aPlan ) + "\n"
+  )).join( "" ));
   return 0;
 };
 

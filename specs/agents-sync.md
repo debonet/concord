@@ -2,8 +2,14 @@
 
 ## Purpose
 
-`agents-sync` writes Claude Code's agent file for each Concord role from the
-role's text and its Claude Code frontmatter.
+`agents-sync` writes every agent-tool file Concord generates from its roles,
+which is Claude Code's agent file for each role, and writes nothing that is
+already current.
+
+* {#s-trvwv3 <arch} **Every tool, one run.** Every run regenerates every file
+  Concord generates for any agent tool; it takes no option naming a tool,
+  and what it writes and prints does not depend on which agent tool's
+  session runs it or on any environment variable but `HOME`.
 
 ## API
 
@@ -46,6 +52,45 @@ role's text and its Claude Code frontmatter.
   `<path>` being the target directory as given, or `$HOME/.claude/agents`
   with `$HOME` expanded, joined with the file name; and exits 0.
 
+## When nothing changed
+
+* {#m-uk0okl <arch} **Content, not times.** Whether a file is current is
+  decided by comparing the bytes a run would write with the bytes the file
+  holds, not by modification times as `make` does: a role file touched but
+  unchanged then costs no write, and a wrong clock or a copy that keeps old
+  times cannot make a run skip a role whose text changed. An up-to-date run
+  costs only reading the role files, the agent files and the record file.
+* {#s-sjq95s <m-uk0okl@a350656,m-ckynhd@8e6b53f} **Up to date.** A run is up to date when every role's
+  agent file in the target directory already holds the bytes the run would
+  write it and the record file already holds the text the run would write
+  it.
+* {#s-i062i7 <m-uk0okl@a350656,m-ckynhd@8e6b53f} **An up-to-date run does no work.** An up-to-date run
+  opens no file for writing, creates, deletes and renames no file, changes no
+  file's bytes or modification time, prints `unchanged <path>` for each role
+  as Output gives, and exits 0.
+* {#s-4gru26 <m-uk0okl@a350656,m-ckynhd@8e6b53f} **No write access needed.** An up-to-date run does so,
+  and exits 0, when the target directory and every file in it deny writing.
+* {#s-8e60a5 <m-uk0okl@a350656,m-ckynhd@8e6b53f} **Only what differs is written.** A run that is not
+  refused writes an agent file only when it does not exist or its bytes
+  differ from the bytes the run would write it, and writes the record file
+  only when it does not exist or its text differs from the text the run
+  would write it; every other file keeps its bytes and its modification
+  time.
+* {#s-cmdkv2 <arch} **Record text fixed by its entries.** The text a run writes
+  to the record file depends only on the set of entries it holds, so a run
+  that follows a run that exited 0, with no file in the roles directory or
+  the target directory changed between them, is up to date.
+* {#s-d9mhcc <arch} **Record last.** A run writes the record file after every
+  agent file it writes.
+* {#s-i1uuvg <arch} **A failed write.** When a needed write is refused by the
+  system or otherwise fails, it prints to stderr one line naming the file's
+  path, saying a write was needed and could not be made and that
+  `agents-sync` must be run where the target directory is writable, and
+  exits 3. {#s-aqxbjg <arch} No other outcome exits 3, so a failed write is told
+  apart from a usage error, a bad roles or record file and a hand-edit
+  refusal, which exit 2. {#s-tgbh92 <arch} After a failed write, every file the
+  run had not begun to write is as it was.
+
 ## Detecting a hand edit
 
 * {#s-utqlgq <arch} **The record file.** The record file is
@@ -59,6 +104,16 @@ role's text and its Claude Code frontmatter.
   SHA-256 differs from the hash the record file holds for its name, or the
   record file holds none; a file `agents-sync` wrote that nobody has
   changed since is not hand-edited.
+* {#m-32ur2f <arch} **Why a first run refuses.** An agent file that
+  predates the record file can hold edits made by hand that no role carries
+  yet, and overwriting it unasked would lose them with no trace; so the
+  first run after adoption, where such a file differs from the generated
+  bytes, refuses until the human has moved any edit worth keeping into the
+  role and runs it with `--force`.
+* {#s-kn4es1 <m-32ur2f@de576ec} **No record file.** A target directory with no record
+  file is read as a record file with no entries: an existing agent file
+  whose bytes differ from the bytes the run would write is hand-edited, and
+  one whose bytes equal them is not.
 * {#s-h1qxdb <arch} **Refusal.** Without `--force`, when any role's agent file
   is hand-edited, it prints to stderr one line per such file, naming its
   path and saying the file was edited since it was generated and that
@@ -79,5 +134,8 @@ role's text and its Claude Code frontmatter.
 
 ## Error Handling
 
-Errors reach the caller as exit code 2 and one stderr line each, as above;
-on any error it writes nothing.
+An error found before any write (a usage error, missing or incomplete
+roles, a missing target directory, a bad record file, a hand-edit refusal)
+reaches the caller as exit code 2 and one stderr line each, as above, and
+the run writes nothing. A write that fails reaches the caller as exit code
+3, as A failed write gives.
