@@ -1,0 +1,18 @@
+{
+  "sName": "Concord",
+  "vaSuite": [
+    { "sName": "root", "vsDir": [ "test" ] }
+  ],
+  "vsLanguage": [ "javascript" ],
+  "vsDirRead": [ "bin", "scripts", "test" ],
+  "vsDirIgnored": [ "node_modules" ],
+  "sPathRecord": "test/interactive-passes.jsonl",
+  "aCoverage": {
+    "vaRun": [
+      { "sName": "root", "sDirRun": "." }
+    ],
+    "vsCommandBefore": [],
+    "vsDirSource": [ "bin", "scripts" ],
+    "sPathReview": "spec-coverage-review.md"
+  }
+}

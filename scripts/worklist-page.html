@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>__NAME__ hand checks</title>
+<style>
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --fg: #1d2330;
+  --muted: #5d6677;
+  --line: #d9dee7;
+  --accent: #2b5fd9;
+  --accent-soft: #e6edfc;
+  --ok: #1f7a4d;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151b; --card: #1b2029; --fg: #e6e9ef; --muted: #9aa3b4; --line: #2c3340;
+  --accent: #7ea2ff; --accent-soft: #232d44; --ok: #5cc28f; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12151b; --card: #1b2029; --fg: #e6e9ef; --muted: #9aa3b4; --line: #2c3340;
+  --accent: #7ea2ff; --accent-soft: #232d44; --ok: #5cc28f; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.45; padding-inline: 16px; padding-block: 20px 48px; }
+main { max-width: 640px; margin: 0 auto; display: grid; gap: 18px; }
+h1 { font-size: 1.35rem; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); margin: 4px 0 0; font-size: 0.95rem; }
+.q { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 10px; }
+.num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); letter-spacing: 0.04em; overflow-wrap: anywhere; }
+.q p { margin: 0; font-size: 0.95rem; }
+.why { color: var(--accent); }
+.empty { color: var(--muted); }
+.opts { display: grid; gap: 8px; }
+.opt { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line); border-radius: 10px; padding: 12px; cursor: pointer; }
+.opt input { margin-top: 3px; width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
+.opt:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.opt span { min-width: 0; }
+textarea { width: 100%; box-sizing: border-box; min-height: 52px; font: inherit; font-size: 0.95rem; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+textarea:focus-visible, .opt:focus-within { outline: 2px solid var(--accent); outline-offset: 1px; }
+.status { font-size: 0.8rem; color: var(--muted); min-height: 1em; }
+.status.ok { color: var(--ok); }
+.stack { display: grid; gap: 18px; }
+details.answered { display: grid; gap: 18px; }
+details.answered[hidden] { display: none; }
+details.answered > summary { cursor: pointer; color: var(--muted); font-size: 0.95rem; padding: 10px 0; }
+details.answered[open] > summary { margin-bottom: 18px; }
+#banner { font-size: 0.85rem; color: var(--muted); }
+.sendbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 0.85rem; color: var(--muted); }
+.sendbar button { font: inherit; font-size: 0.9rem; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--fg); cursor: pointer; }
+.sendbar button[hidden] { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>__NAME__ hand checks</h1>
+    <p class="lede">Do each check and pick what you saw; it saves as you go. Add a note for anything the options miss.</p>
+    <p id="banner"></p>
+    <div class="sendbar"><span id="sendstate"></span><button id="sendnow" type="button" hidden>Send changes to Claude</button></div>
+  </header>
+  <div id="list" class="stack">
+__CARDS__
+  </div>
+  <details class="answered" id="answered" hidden><summary>Already answered</summary><div class="stack" id="answeredlist"></div></details>
+</main>
+<script>
+const vaCheck = __DATA__;
+const msSend = 3000;
+const msNote = 700;
+const aAnswerForId = {};
+const asIdPending = new Set();
+const eBanner = document.getElementById( "banner" );
+const eSendState = document.getElementById( "sendstate" );
+const eSendNow = document.getElementById( "sendnow" );
+const eAnswered = document.getElementById( "answered" );
+const eAnsweredList = document.getElementById( "answeredlist" );
+const eAnsweredSummary = eAnswered.querySelector( "summary" );
+let db = null;
+let comments = null;
+let sIdThread = null;
+let idSend = null;
+
+const feCard = ( sId ) => document.querySelector(
+  "section[data-id=\"" + sId + "\"]"
+);
+
+const faCheck = ( sId ) => vaCheck.find(( aCheck ) => aCheck.sId === sId );
+
+const fbHashesSame = ( asA, asB ) => {
+  const vsA = Object.keys( asA || {});
+  return vsA.length === Object.keys( asB ).length
+    && vsA.every(( sTarget ) => asA[ sTarget ] === asB[ sTarget ]);
+};
+
+const fbAnswerCurrent = ( aAnswer ) => {
+  const aCheck = faCheck( aAnswer.sId );
+  return aCheck !== undefined
+    && aAnswer.sHash === aCheck.sHash
+    && fbHashesSame( aAnswer.asHashForTarget, aCheck.asHashForTarget );
+};
+
+function fFold( sId ){
+  eAnsweredList.appendChild( feCard( sId ));
+  eAnswered.hidden = false;
+  eAnsweredSummary.textContent = (
+    "Already answered (" + eAnsweredList.children.length + ")"
+  );
+}
+
+function fShowAnswer( aAnswer ){
+  const eCard = feCard( aAnswer.sId );
+  const eInput = eCard.querySelector(
+    "input[value=\"" + aAnswer.sKey + "\"]"
+  );
+  if( eInput ){ eInput.checked = true;}
+  eCard.querySelector( "textarea" ).value = aAnswer.sNote || "";
+}
+
+function fStatus( sId, sText, bOk ){
+  const eStatus = feCard( sId ).querySelector( ".status" );
+  eStatus.textContent = sText;
+  eStatus.className = bOk ? "status ok" : "status";
+}
+
+function faAnswerForCard( sId ){
+  const eCard = feCard( sId );
+  const eChecked = eCard.querySelector( "input:checked" );
+  const aCheck = faCheck( sId );
+  return eChecked === null ? null : {
+    sId,
+    sHash: aCheck.sHash,
+    asHashForTarget: aCheck.asHashForTarget,
+    sKey: eChecked.value,
+    sNote: eCard.querySelector( "textarea" ).value
+  };
+}
+
+async function fpSave( sId ){
+  const aAnswer = faAnswerForCard( sId );
+  if( aAnswer === null ){ return;}
+  aAnswerForId[ sId ] = aAnswer;
+  if( !db ){
+    fStatus( sId, "Not saved: storage isn't available in this view." );
+    return;
+  }
+  try{
+    await db.doc( "answers/" + sId ).set( aAnswer );
+    fStatus( sId, "Saved.", true );
+    fFold( sId );
+    fQueueSend( sId );
+  }
+  catch( x ){
+    fStatus( sId, "Not saved: " + (( x && x.message ) || "try again" ));
+  }
+}
+
+function fQueueSend( sId ){
+  asIdPending.add( sId );
+  clearTimeout( idSend );
+  eSendState.textContent = "Sending to Claude in a few seconds…";
+  idSend = setTimeout(() => fpSend( false ), msSend );
+}
+
+function fSendFallback( sText ){
+  eSendState.textContent = sText;
+  eSendNow.hidden = !comments || asIdPending.size === 0;
+}
+
+async function fpsCanSend(){
+  try{ return await comments.canSendToClaude();}
+  catch( x ){ return "off";}
+}
+
+async function fpaSent( sText ){
+  if( sIdThread ){
+    return comments.sendToClaude({ threadId: sIdThread, text: sText });
+  }
+  const anchor = await comments.anchorFor( document.querySelector( "main header" ));
+  return comments.sendToClaude({ anchor, text: sText });
+}
+
+async function fpSend( bButton ){
+  if( !asIdPending.size ){ return;}
+  if( !comments ){
+    fSendFallback( "Claude can't be notified from this view; tell Claude \"updated\"." );
+    return;
+  }
+  const sCan = await fpsCanSend();
+  if( sCan !== "available" ){
+    fSendFallback( "Sending to Claude isn't available here; tell Claude \"updated\"." );
+    return;
+  }
+  const vaAnswer = Array.from( asIdPending, ( sId ) => aAnswerForId[ sId ]);
+  try{
+    sIdThread = ( await fpaSent( JSON.stringify( vaAnswer ))).threadId;
+    vaAnswer
+      .filter(( aAnswer ) => aAnswerForId[ aAnswer.sId ] === aAnswer )
+      .forEach(( aAnswer ) => asIdPending.delete( aAnswer.sId ));
+    eSendNow.hidden = asIdPending.size === 0;
+    eSendState.textContent = "Sent to Claude.";
+  }
+  catch( x ){
+    fSendFallback( bButton
+      ? "Not sent (" + (( x && x.code ) || "error" ) + "); tell Claude \"updated\"."
+      : "Tap to send your changes to Claude." );
+  }
+}
+
+document.querySelectorAll( "section[data-id]" ).forEach(( eCard ) => {
+  const sId = eCard.dataset.id;
+  let idNote = null;
+  eCard.querySelectorAll( "input[type=radio]" ).forEach(( eInput ) => {
+    eInput.addEventListener( "change", () => fpSave( sId ));
+  });
+  eCard.querySelector( "textarea" ).addEventListener( "input", () => {
+    clearTimeout( idSend );
+    clearTimeout( idNote );
+    idNote = setTimeout(() => fpSave( sId ), msNote );
+  });
+});
+
+eSendNow.addEventListener( "click", () => fpSend( true ));
+
+( async () => {
+  try{ db = await window.claude?.use?.( "db" );}
+  catch( x ){ db = null;}
+  if( !db ){
+    eBanner.textContent = "Saving isn't available here; open this page signed in on claude.ai.";
+    return;
+  }
+  try{
+    const aSnap = await db.collection( "answers" ).get();
+    ( aSnap.docs || aSnap || []).forEach(( doc ) => {
+      const aAnswer = typeof doc.data === "function" ? doc.data() : doc.data;
+      if( !aAnswer || !fbAnswerCurrent( aAnswer )){ return;}
+      aAnswerForId[ aAnswer.sId ] = aAnswer;
+      fShowAnswer( aAnswer );
+      fFold( aAnswer.sId );
+    });
+  }
+  catch( x ){
+    eBanner.textContent = "Earlier answers could not be read.";
+  }
+})();
+
+( async () => {
+  try{ comments = await window.claude?.use?.( "comments" );}
+  catch( x ){ comments = null;}
+})();
+</script>
+</body>
+</html>

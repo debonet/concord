@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+"use strict";
+
+const { fzMain } = require( "../scripts/spec-coverage.js" );
+
+process.exitCode = fzMain(
+  process.argv.slice( 2 ),
+  process.cwd(),
+  ( s ) => process.stdout.write( s ),
+  ( s ) => process.stderr.write( s )
+);
