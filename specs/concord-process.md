@@ -1,4 +1,6 @@
-# STC Concord: the process
+# ConcordSTC: the process
+
+Statement ids: complete
 
 ## Purpose
 
@@ -16,71 +18,19 @@ Concord where it stands.
 > ids: "Overhaul an area we a NOT currently working on, and progressively do
 > the things we are working on currently. That way we can work in parallel."
 
-The question his next ruling answered was this: "Where should the program
-that checks specs against tests live, now that two projects use it? Today the
-checker (the program that lists which spec sentences have tests and which
-tests are out of date) sits inside AIOS and is written in JavaScript. Seed's
-last session started its own smaller copy for Seed. When Seed wakes up, its
-checker has to read Rust tests. Example: later you change how a hand-check
-answer is recorded. With one shared checker that change is made once; with
-one checker per project, each copy is changed and a shared set of example
-cases shows whether they still agree. A: One shared checker: AIOS's existing
-JavaScript one, moved into a small project of its own that both AIOS and Seed
-run (Seed's machine needs Node to run it). B: One shared checker that stays
-inside AIOS; Seed runs it from the AIOS folder. C: Each project keeps its own
-checker in its own language, and one shared set of example cases proves they
-behave the same. D: One shared checker, rewritten in Rust."
-
 > {#m-u4pusr} RULING (CEO) 2026-10-21, on where the checker lives: "A | note:
 > we decided on ~/@concord would be its own project. All utilities should be
 > in ~/@concord/bin"
 
-The question his next ruling answered was this: "Should specs keep their
-lists of named tests now that each sentence can carry a code?", with the
-options A, keep both; B, stop adding names and convert each list when its
-spec is next converted; C, convert every named list in both projects now, in
-one sweep, and retire names.
-
 > {#m-f75zwe} RULING (CEO) 2026-10-21, on named tests beside coded sentences:
 > "C"
-
-The question his next ruling answered was this: "(Only if named tests stay)
-How does a Rust test show which named case it covers?"
 
 > {#m-1irlik} RULING (CEO) 2026-10-21, on how a Rust test names a case: "n/a.
 > See 86 above"
 
-The question his next ruling answered was this: "Should a spec whose tests
-have fallen behind stop a commit? … A: Only specs marked as fully converted
-stop the commit; every other spec just reports. B: Any out-of-date citation
-in any spec stops the commit; untested sentences stop it only in fully
-converted specs. C: Nothing stops a commit; the main session works through
-the report. D: Every flag in every spec stops the commit."
-
 > {#m-b2shvm} RULING (CEO) 2026-10-21, on what stops a commit: "B"
 
-The question his next ruling answered was this: "What else should stop a
-commit, beyond out-of-date tests? Following your q93 answer (B), a commit will
-be refused when any test cites an out-of-date wording of a spec sentence, and
-when a fully converted spec has a sentence with no test. The architect
-proposed (its own decision, not yours yet) refusing a commit for three more
-things of the same kind: a test or spec citing a sentence code that no longer
-exists anywhere (for example a test still pointing at a sentence that was
-deleted); a guidance note cited in code whose wording has since changed; and a
-spec sentence whose recorded reason (one of your quoted rulings it was derived
-from) has been reworded since. Today these are only reported. A: Yes: all
-three also stop the commit. B: Only a citation of a code that no longer exists
-stops the commit; the other two just report. C: No: exactly your q93 answer
-and nothing more; these three just report."
-
 > {#m-5cyvk4} RULING (CEO) 2026-10-21, on what else stops a commit: "A", with the note: "Basically all spec changes should run the spec-map validator to ensure that the stc linkages all remain valid"
-
-The question his next ruling answered was this: "Should the stricter rule
-book Seed's last session wrote replace AIOS's rules? … A: AIOS's current rules
-are the standard and Seed follows them; the draft's ideas come up one at a
-time later. B: Take only the parts that break nothing in AIOS … C: The Seed
-draft becomes the standard and AIOS changes to match. D: Each project keeps
-its own version of the rules."
 
 > {#m-c9ebz3} RULING (CEO) 2026-10-21, on whose rule book is the standard: "A"
 
@@ -88,15 +38,9 @@ its own version of the rules."
 > than Claude Code: "How do we make this more cross-model friendly (e.g. with
 > AGENTS.md in some commonly accessible place?)"
 
-The plan his next ruling answered was this (a summary of what was put to
-him, not his words): one shared instruction file, `~/@concord/AGENTS.md`,
-that any coding agent reads; the architect and fixer role texts moved into
-Concord, with Claude Code's settings for each role kept beside it; Claude
-Code's agent files generated from them; each adopting project's root
-`AGENTS.md` pointing at Concord's; and the pre-commit gate built and
-installed.
-
 > {#m-2794qp} RULING (CEO) 2026-10-22, on that plan: "Do it"
+
+> {#m-jz8p3b} USER 2026-10-23: "make concord also support typescript"
 
 ## Terms
 
@@ -107,14 +51,15 @@ installed.
   project's specs, tests and code and reports how Concord's rules are met:
   the `spec-map` command of the Concord project (Where Concord lives).
 * {#d-oao7jg <arch,m-yy30zw@60906a5} **Language reading** — how the checker reads files of
-  one programming language: which comments carry directives, which comment
+  one programming language: which comments carry directives, including
+  implementation, test-file and hand-check references, which comment
   and literal forms are masked so nothing inside them is read as a
   directive, which files are test files, the test units and the grouping
   units that enclose them with their names and extents, which line a run of
   directives must sit directly above, where a file's header ends, which
-  constructs define a function for a function target, and how a file or a
-  function is normalised for a content hash. A language in which a project
-  writes code but no tests needs only the comment, literal, function and
+  constructs define a test unit, and how a file is normalised for a content
+  hash. A language in which a project writes code but no tests needs only
+  the comment, literal and
   normalisation parts.
 * {#d-sbz0qe <arch,m-yy30zw@60906a5} **Porting** — bringing an adopting project whose
   specs and tests were written before it adopted Concord under Concord in
@@ -130,14 +75,11 @@ installed.
   `specs/spec-map-interactive.md`, in every adopting project as written,
   except where a section of this spec (What varies by project, Language
   readings) replaces a part of them that is AIOS's own or JavaScript's own.
-* {#s-321sei <m-c9ebz3@6ad3d71} **One rule book.** The rules of Concord's own specs are the
-  standard every adopting project follows; no other draft of them, the one
-  written in the Seed project (`~/@seed/docs/concord-spec.md`) among them,
-  binds an adopting project.
+* {#g-6ev45j <m-c9ebz3@6ad3d71 for=main,architect,fixer via=prompt} **One rule book.** Follow Concord's own specs in every adopting project; do not follow another draft, including `~/@seed/docs/concord-spec.md`.
 * {#p-uovly3 >specs/spec-map-line-types.md#line-types} The six line types, their
   markers, placeholders, retyping and the satisfaction of each type.
 * {#p-gdbw3z >specs/spec-map.md#statement-ids,specs/spec-map.md#statement-roots,specs/spec-map.md#statement-parts}
-  Statement ids, the text hash, test links, what a link covers, derived
+  Statement ids, the text hash, test links, implementation links, what each link covers, derived
   owners, completeness, roots and conclusions, and statements proved by
   parts.
 * {#p-34ub8h >specs/spec-map.md#test-files-and-owner-lines} Owner lines, where
@@ -148,15 +90,12 @@ installed.
   verdicts, their status and the worklist page.
 * {#p-cjkg4m >s-k4mfcb,s-w2zn7d,s-aw5cvb,g-8luxyf} Guidance: audiences, delivery
   by prompt, guidance references, and which spec holds a guidance line.
+* {#p-wmy83x >specs/spec-map.md#the-three-way-map,specs/spec-map-line-types.md#code-references} The reverse links from tests and implementation files, and the map that checks coverage.
 * {#p-ph98jc >s-e287lm,s-3pkw1n,s-b8vvpd,s-xuw25u} What a run with no argument
   reports and what a run with one spec's path, that spec's fence, fails on.
-
 ## Where Concord lives
 
-* {#s-uy2whp <m-u4pusr@2be69ad} **One project.** Concord is one project, `~/@concord`, with
-  its own specs, build spec, tests and `README.md`; every adopting project,
-  AIOS among them, runs Concord from there and carries no checker or other
-  Concord utility of its own.
+* {#g-5z4iuo <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **One project.** Keep Concord's specs, build spec, tests and `README.md` in `~/@concord`; adopting projects run its tools from there and carry no duplicate checker or Concord utility.
 * {#s-4pq89a <m-u4pusr@2be69ad} **Commands in `bin`.** Every Concord utility is a command
   under `~/@concord/bin`: `spec-map` takes every argument form the Concord
   specs give after `npm run spec-map --`, the assign command, the hash,
@@ -164,15 +103,13 @@ installed.
   they give; `spec-coverage` takes every argument form
   `specs/spec-coverage.md` gives after `npm run spec-coverage --`; any
   linter Concord adds is a command beside them.
-* {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} **Two more commands.** `agents-sync`, which
-  writes Claude Code's agent files (`specs/agents-sync.md`), and
+* {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} **Two more commands.** `agents-sync` and
   `concord-hook`, which installs the pre-commit gate
   (`specs/concord-hook.md`), are commands under `~/@concord/bin` beside
   `spec-map` and `spec-coverage`.
-* {#s-gibswe <m-u4pusr@2be69ad} **JavaScript on Node.** The commands are written in
-  JavaScript, and a machine that runs them needs Node at the version the
-  Concord project's build spec declares, whatever languages the adopting
-  project is written in.
+* {#p-v7e4l5 >specs/agents-sync.md#the-agent-file} `agents-sync` generates the
+  supported tools' agent files from the role texts and their metadata.
+* {#g-njdhjd <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **JavaScript on Node.** Run Concord's JavaScript commands with the Node version declared in its build spec, regardless of the adopting project's language.
 * {#s-92u5vq <arch,m-u4pusr@2be69ad} **Run from the project root.** Every Concord command but
   `agents-sync` acts on the adopting project whose root is its working directory, and reads,
   writes and prints every project path relative to that root.
@@ -181,45 +118,27 @@ installed.
   root, which every Concord command reads; {#s-2fs4an <arch} a command that acts on
   a project, run where no `concord.json` is found, prints a line naming the missing file to stderr
   and exits 2.
-* {#s-6r39t3 <m-u4pusr@2be69ad} **Targets call the commands.** An adopting project's build
-  spec declares each Concord target (in AIOS `npm run spec-map`, in Seed
-  `make spec-map`) as a call to the command of that name under
-  `~/@concord/bin`, passing the target's arguments through unchanged and in
-  order.
-* {#s-un25aq <arch,m-u4pusr@2be69ad} **Concord's specs live in Concord.** This spec, the three
-  specs The rules every adopting project follows names, and
-  `specs/spec-coverage.md` have their one home in `~/@concord/specs`; an
-  adopting project keeps no copy of them.
+* {#g-q91vxm <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Targets call the commands.** In an adopting project's build spec, declare each Concord target as a call to the command of that name under `~/@concord/bin`, passing arguments through unchanged and in order.
+* {#g-isak36 <arch,m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Concord's specs live in Concord.** Keep these specs in `~/@concord/specs`; adopting projects do not keep copies.
 * {#s-j8ahje <arch,m-u4pusr@2be69ad} **Nothing resolves across projects.** A pointer target, a
-  root and a link line resolve only within the project whose files hold
-  them; an adopting project cites a rule of Concord's in prose, by its path
+  root, a test link, an implementation reference, a test-file reference,
+  a hand-check reference and a guidance reference resolve only within the
+  project whose files hold them; an adopting project cites a rule of Concord's in prose, by its path
   under `~/@concord/specs`, and a line of an adopting project whose rule is
   Concord's own lives in Concord's specs.
-* {#s-ti8opm <arch,m-u4pusr@2be69ad} **Concord's tests are Concord's.** The tests that prove
-  the statements of Concord's specs live in the Concord project and run in
-  its suite; an adopting project's suites prove only its own specs' statements.
-* {#s-duh32k <m-u4pusr@2be69ad} **A carried checker retires.** A project that carries a
-  checker of its own when it adopts Concord retires it, with every script and
-  test of its own that does a Concord utility's work, in the pass that
-  points its build spec's Concord targets at `~/@concord/bin`.
+* {#g-h1uulv <arch,m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Concord's tests are Concord's.** Keep tests for Concord's specs in this project; adopting projects test only their own specs.
+* {#g-c5u386 <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **A carried checker retires.** When adopting Concord, retire the local checker and the scripts and tests that duplicate its work as build targets move to `~/@concord/bin`.
 
 ## Agent instructions
 
-* {#s-jblvc6 <m-asoxa8@8f03701,m-2794qp@4644928} **One shared instruction file.** The Concord
-  project holds at its root `AGENTS.md`, the instructions every coding agent
-  working in an adopting project follows, whatever its tool, naming the
-  Concord specs by their paths under `~/@concord/specs` and the role texts by
-  their paths under `~/@concord/roles`.
-* {#s-3jwl32 <m-asoxa8@8f03701,m-2794qp@4644928} **Role texts live in Concord.** Each agent role,
-  `architect` and `fixer` among them, has its text, written for every agent
-  tool, in `roles/<role>.md` of the Concord project, and Claude Code's
-  frontmatter for it in `roles/<role>.claude-frontmatter` beside it.
-* {#s-299j3a <m-2794qp@4644928} **Claude Code's agent files are generated.** Claude Code's
-  agent file for each role is the file `agents-sync` writes from those two
-  files (`specs/agents-sync.md`).
+* {#g-adp8mx <m-asoxa8@8f03701,m-2794qp@4644928 for=main,architect,fixer via=prompt} **One shared instruction file.** Keep `AGENTS.md` at the Concord project root as the instructions every coding agent follows, naming the Concord specs under `~/@concord/specs` and role texts under `~/@concord/roles`.
+* {#g-13efbo <m-asoxa8@8f03701,m-2794qp@4644928,m-mzt14m@7dbb5d4 for=main,architect,fixer via=prompt} **Role texts live in Concord.** Keep each role's text in `roles/<role>.md` and its tool metadata beside it.
+* {#s-gaewu5 <m-2794qp@4644928,m-mzt14m@7dbb5d4} **Tool agent files are generated.** `agents-sync` writes each
+  supported tool's agent file for every role from the role text and that
+  tool's metadata (`specs/agents-sync.md`).
 * {#g-43u63o <m-2794qp@4644928 for=main,architect,fixer via=prompt} **Edit the role, not
-  the agent file.** A change to a role is made in `roles/<role>.md` or
-  `roles/<role>.claude-frontmatter` of the Concord project, and then
+  the agent file.** A change to a role is made in `roles/<role>.md` or one
+  of its tool metadata files in the Concord project, and then
   `agents-sync` is run; nobody edits a generated agent file.
 
 > {#m-ckynhd} RULING (CEO) 2026-10-22, on who runs `agents-sync`: "No. The
@@ -227,11 +146,7 @@ installed.
 > should run the sync. And the sync should (if it doesn't already) work with
 > or like `make` so that no work is done if the files have not changed"
 
-* {#s-jhoxdv <m-ckynhd@8e6b53f} **Which tools' files carry the sync.** Concord's
-  `AGENTS.md` names every agent tool whose own instruction file must tell
-  its agent to run `~/@concord/bin/agents-sync` at the start of each
-  session, before any other work, with each such file's path: Claude Code's
-  `~/.claude/CLAUDE.md` and Codex's `~/.codex/AGENTS.md` among them.
+* {#g-dv6in2 <m-ckynhd@8e6b53f for=main,architect,fixer via=prompt} **Which tools' files carry the sync.** In Concord's `AGENTS.md`, name every tool instruction file that tells its agent to run `~/@concord/bin/agents-sync` first, including Claude Code's and Codex's.
 * {#g-af16h1 <m-ckynhd@8e6b53f for=main via=prompt} **Sync first.** At the start of each
   session, before any other work, the agent runs `~/@concord/bin/agents-sync`
   with no argument; every tool's instruction file that Concord's `AGENTS.md`
@@ -312,6 +227,9 @@ installed.
 * {#s-i2ip58 <m-b2shvm@ff5b09c} **Untested sentences only where complete.** A statement no
   test proves refuses the commit only when its spec declares `Statement ids:
   complete`, as do the other entries that spec's fence fails on.
+* {#s-y86kt5 <arch,m-6pxcni@29fc8b1} A malformed, unresolved or stale `@implements`, `@tested-by` or `@checks` reference refuses the commit; a statement with no implementation link refuses when its spec is complete; an implementation file with no test link refuses when it implements a statement of a complete spec.
+* {#s-ol2dmr <arch,m-r3llz8@7fee9b6} An interactive check with no resolving `@checks` reference refuses the commit.
+* {#s-t8un02 <arch,m-ulzcp5@41ae8af} A pointer target outside the spec set, or a malformed pointer target, refuses the commit.
 * {#s-1u8bef <m-b2shvm@ff5b09c} **Everything else reports.** Every other entry of the
   checker's whole-tree report leaves a commit allowed.
 * {#s-nlm91d <arch,m-b2shvm@ff5b09c} **The gate.** `spec-map --gate` exits 0 when no entry of
@@ -325,8 +243,10 @@ installed.
   every entry of (9); every entry of (16); every entry of (26) for a
   reference that is stale or names an id no marker holds; every entry of (8)
   for a link line naming an id no marker holds; every entry of (13) for a
-  root list holding a reference that names an id no marker holds; and, for
-  each complete spec, every entry on which a run with that spec's path
+  root list holding a reference that names an id no marker holds; every
+  entry of (22); every entry of (33); every entry of (28); every (31) entry in a complete spec;
+  every (32) entry for an implementation file naming a statement in a
+  complete spec; and, for each complete spec, every entry on which a run with that spec's path
   exits non-zero.
 * {#s-qvdtqg <arch} **Guard lines refuse as links do.** An entry of (8) for a
   guard line (`specs/spec-map.md`, Guard lines) naming an id no marker
@@ -383,20 +303,19 @@ installed.
   `--cross-suite` counts the project's declared suites in place of AIOS's
   three.
 * {#s-5un01z <arch,m-yy30zw@60906a5} **Directives in each language's comments.** Owner
-  lines, link lines, wrapper lines and guidance references are written in the
+  lines, link lines, wrapper lines, implementation links and guidance references are written in the
   directive comment of the file's language reading, with the same text after
   the comment opener as in JavaScript (`@spec specs/<path>.md`,
-  `@proves s-xxxxxx@hhhhhhh`, `@follows g-xxxxxx@hhhhhhh`).
+  `@proves s-xxxxxx@hhhhhhh`, `@implements s-xxxxxx@hhhhhhh`,
+  `@tested-by test/file.test.js`, `@checks i-xxxxxx@hhhhhhh` and
+  `@follows g-xxxxxx@hhhhhhh`).
   {#s-rkbz86 <arch,m-yy30zw@60906a5} Wherever Concord's specs say a `//` line comment,
   `describe`, or `test` and `it`, they mean, in a file of another language,
   that language's directive comment, grouping unit and test unit.
-* {#s-nrp172 <arch,m-yy30zw@60906a5} **Where references and targets are read.** Guidance
-  references are read in every file of a language the project declares,
-  under its declared source and test directories and outside its declared
-  ignored directories; a function target and a content hash follow the
-  reading of the target file's language. This replaces the file and
-  directory lists of Guidance references, Function targets and Code
-  normalisation.
+* {#s-nrp172 <arch,m-yy30zw@60906a5} **Where code references are read.** Guidance,
+  implementation, test-file and hand-check references are read in every
+  implementation file under `vsDirRead`, outside ignored directories; comment
+  recognition and content hashes follow the file's language reading.
 * {#s-iz8176 <arch,m-58bbc0@97f6bed,m-p5u7hb@920f72c} **The record file and the page.** Verdicts
   on hand checks are recorded, in the form Recording a verdict gives, in the
   record file the project declares, and the worklist page is titled
@@ -413,10 +332,7 @@ installed.
   the runs ends the measurement as a suite that fails to run does.
   {#s-c4ht17 <arch,m-u4pusr@2be69ad} The measurement writes under
   `tmp/spec-coverage/` at the project root, in every adopting project.
-* {#s-vgn7yq <arch,m-yy30zw@60906a5} **One command line.** Every form the Concord specs
-  give as `npm run spec-map -- <arguments>` is run in an adopting project by
-  its declared command with the same arguments, unchanged and in the same
-  order, and behaves as given.
+* {#g-rn2085 <arch,m-yy30zw@60906a5 for=main,architect,fixer via=prompt} **One command line.** Declare the adopting project's `spec-map` target to call Concord's command with arguments unchanged and in order.
 * {#s-jmslkk <arch,m-yy30zw@60906a5} **The same ruling labels.** The ruling labels
   `RULING (CEO)` and `RULING (architect)` are the labels in every adopting
   project, the CEO being the person whose words are recorded.
@@ -460,11 +376,11 @@ installed.
   each an object with `sName`, a non-empty string no other suite of the
   file holds, and `vsDir`, a non-empty array of directories relative to the
   project root, as in `{ "sName": "web", "vsDir": [ "packages/web-client/test" ] }`.
-* {#s-j38rej <s-jhtp93@4c4ca3c} **Languages.** `vsLanguage` is a non-empty array of
-  language names, each `javascript`, `css` or `rust`, naming the readings
+* {#s-j38rej <arch,s-jhtp93@4c4ca3c,m-jz8p3b@ccdaa82} **Languages.** `vsLanguage` is a non-empty array of
+  language names, each `javascript`, `typescript`, `css`, `html` or `rust`, naming the readings
   Language readings defines.
 * {#s-sx6vdb <s-jhtp93@4c4ca3c} **Read and ignored directories.** `vsDirRead` is an array
-  of the directories read for guidance references and code targets, and
+  of the directories read for code and guidance references, and
   `vsDirIgnored` an array of directory names never read at any depth.
   {#s-zupjie <s-jhtp93@4c4ca3c} A path segment `*` in `vsDirRead` stands for every
   directory at that place, so `packages/*` names each directory directly
@@ -490,13 +406,82 @@ installed.
 
 ## Language readings
 
-* {#p-jczx2d >specs/spec-map.md#test-files-and-owner-lines,s-pjx54j,s-8ck61z,s-zcb6gq}
+* {#p-jczx2d >specs/spec-map.md#test-files-and-owner-lines,s-pjx54j,s-2l6ys1}
   The JavaScript reading is the one `specs/spec-map.md` and its siblings write
   out: `//` directives, `describe` groups and `test` and `it` units with their
   `.each`, `.only` and `.skip` forms, names read from string literals, the
-  jest docblock pinned above the header, declared test wrappers, function
-  targets and code normalisation. CSS has the comment, literal and
+  jest docblock pinned above the header, declared test wrappers and code
+  normalisation. Implementation files also read `@implements`, `@tested-by`
+  and `@checks` directives in their file headers. CSS has the comment,
+  literal, implementation-directive and
   normalisation parts only, as Code normalisation gives them.
+
+### JavaScript
+
+* {#s-wthfms <arch,m-yy30zw@60906a5} **Files.** The JavaScript reading reads files whose
+  names end `.js`, `.mjs`, `.cjs` or `.jsx`. {#s-dnog08 <arch,m-yy30zw@60906a5} A test file
+  is such a file under a declared suite's directory whose name ends
+  `.test.js`, `.test.mjs`, `.test.cjs` or `.test.jsx`; it is read with the
+  same comments, directives, test and grouping units and header as a
+  `.test.js` file.
+* {#s-lwbls1 <arch,m-yy30zw@60906a5} **JSX.** In a file whose name ends `.jsx` or `.tsx`,
+  JSX elements are read: JSX text and the string values of JSX attributes
+  are literals, so nothing inside them is read as a directive or as a
+  `describe`, `test` or `it` call, and an apostrophe, a quote or `//` in
+  JSX text opens no literal and no comment. {#s-z7g07z <arch,m-yy30zw@60906a5} A comment
+  inside a JSX expression container, as `{/* … */}`, is a block comment,
+  so a directive keyword in it is no directive.
+* {#s-9guyrl <arch,m-yy30zw@60906a5} **No JSX elsewhere.** A file whose name ends `.js`,
+  `.mjs` or `.cjs` is read with no JSX: a `<` in it never opens a JSX
+  element.
+* {#s-rolffo <arch,m-yy30zw@60906a5} **JSX normalisation.** In the normalised text of a
+  `.jsx` or `.tsx` file (Code normalisation), every run of whitespace in
+  JSX text becomes one space, and the string values of JSX attributes are
+  kept as written.
+
+### TypeScript
+
+* {#s-qap8tu <arch,m-jz8p3b@ccdaa82} **Files.** The TypeScript reading reads files whose names end
+  `.ts` or `.tsx`; a test file is such a file under a declared suite's
+  directory whose name ends `.test.ts` or `.test.tsx`.
+* {#s-3mnehj <arch,m-jz8p3b@ccdaa82} **Comments and directives.** TypeScript uses JavaScript's line
+  and block comments, and reads `@spec`, `@proves`, `@guards`,
+  `@test-wrapper`, `@follows`, `@implements`, `@tested-by` and `@checks` directives with the JavaScript reading's
+  text and placement rules.
+* {#s-qkq11z <arch,m-jz8p3b@ccdaa82} **Tests and groups.** TypeScript uses JavaScript's `describe`,
+  `test` and `it` calls, including their supported modifiers and declared
+  wrappers, as grouping and test units; test names follow the JavaScript
+  reading.
+* {#s-me9dys <arch,m-jz8p3b@ccdaa82} **Normalisation.** TypeScript normalization removes comments outside literals and syntax
+  erased by TypeScript, while preserving runtime syntax and literal contents.
+
+### HTML
+
+* {#s-nachij <arch,m-yy30zw@60906a5} **Files.** The HTML reading reads files whose names
+  end `.html` or `.htm`. {#s-uhmyhr <arch,m-yy30zw@60906a5} An HTML file is never a test
+  file, wherever it sits: an `@spec`, `@proves`, `@guards` or
+  `@test-wrapper` comment in it is not read.
+* {#s-tn4ty4 <arch,m-yy30zw@60906a5} **Comments.** Its comments run from `<!--` to the
+  next `-->`, outside the content of `<script>` and `<style>` elements and
+  outside attribute values. {#s-1j5z4y <arch,m-yy30zw@60906a5} Nothing inside the content
+  of a `<script>` or `<style>` element or inside an attribute value is read
+  as a directive.
+* {#s-2jld9b <arch,m-yy30zw@60906a5} **Directives.** A directive is a comment that opens
+  and closes on one line holding nothing else but whitespace, whose text
+  between `<!--` and `-->`, trimmed, is the directive's text, as
+  `<!-- @checks i-xxxxxx@hhhhhhh -->`, `<!-- @implements s-xxxxxx@hhhhhhh -->`,
+  `<!-- @tested-by test/page.test.js -->` or
+  `<!-- @follows g-xxxxxx@hhhhhhh -->`. {#s-zney60 <arch,m-yy30zw@60906a5} A comment whose
+  trimmed text begins `@implements`, `@tested-by`, `@checks` or `@follows`
+  is read as that directive, well formed or not; one spanning several
+  lines, or sharing its line with other text, is malformed.
+* {#s-qb233y <arch,m-yy30zw@60906a5} **Header.** An HTML file's header ends at its first
+  line holding, outside comments, anything but whitespace and a
+  `<!DOCTYPE …>` declaration, so its directives may sit above or below the
+  doctype.
+* {#s-zsxa7g <arch,m-yy30zw@60906a5} **Normalisation.** The normalised text of an HTML
+  file is its text with every comment removed, then every run of
+  whitespace collapsed to one space and both ends trimmed.
 
 ### Rust
 
@@ -514,7 +499,9 @@ installed.
   directive.
 * {#s-trdu1m <arch,m-yy30zw@60906a5} **Directives.** A directive is a `//` line comment
   that is not a doc comment, the line optionally indented, as
-  `// @proves s-xxxxxx@hhhhhhh`. {#s-wut129 <arch,m-yy30zw@60906a5} A directive keyword at
+  `// @proves s-xxxxxx@hhhhhhh`, `// @implements s-xxxxxx@hhhhhhh`,
+  `// @tested-by test/path.test.rs` or `// @checks i-xxxxxx@hhhhhhh`.
+  {#s-wut129 <arch,m-yy30zw@60906a5} A directive keyword at
   the start of a doc comment's or a block comment's text is no directive.
 * {#s-846yjd <arch,m-yy30zw@60906a5} **Tests and groups.** A function item carrying a test
   attribute is a test unit, named by its identifier. {#s-n4r9dw <arch,m-yy30zw@60906a5}
@@ -535,15 +522,8 @@ installed.
   module.
 * {#s-k6leed <arch,m-yy30zw@60906a5} **No wrappers.** Wrapper lines are read only in
   JavaScript files; in a Rust file a wrapper line is misplaced.
-* {#s-47u0kc <arch,m-yy30zw@60906a5} **Function targets.** A target `<path>.rs#<identifier>`
-  names an `fn <identifier>` item with a body, at any depth, free or inside
-  an `impl` or `trait` block. {#s-md5uf3 <arch,m-yy30zw@60906a5} Its definition's source
-  text runs from the item's visibility or first qualifier (`pub`, `const`,
-  `async`, `unsafe`, `extern`), or from `fn` when it has none, to the closing
-  brace of its body. {#s-1ulj8t <arch,m-yy30zw@60906a5} It resolves when exactly one such
-  item of that identifier exists in the file.
 * {#s-1a9ecj <arch,m-yy30zw@60906a5} **Normalisation.** The normalised text of a Rust file
-  or function is its source with every comment, doc comments included,
+  is its source with every comment, doc comments included,
   removed outside literals, then every run of whitespace outside literals
   removed, except a run between two characters each a letter, a digit or
   `_`, which becomes one space.

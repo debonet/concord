@@ -1,4 +1,6 @@
-# STC Concord: line types
+# ConcordSTC: line types
+
+Statement ids: complete
 
 ## Purpose
 
@@ -34,11 +36,11 @@ is marked, and how Concord checks that each is satisfied.
 
 * {#d-yhsx1r <m-v9bxg2@2a81a64} **Concord** — the spec, test and code linking framework
   that `specs/spec-map.md` and its sibling specs define, run as
-  `npm run spec-map`; also called STC Concord, STC or sid.
+  `npm run spec-map`; also called ConcordSTC, STC or sid.
 * {#s-fc5ccj <m-k55xs4@88cd8e4} **Six line types.** A line is the text a marker covers
   (The statement a marker covers), and its type is the letter its id
-  opens with: `s` a statement, which tests prove; `p` a pointer, to files
-  or to other lines; `d` a definition of a term; `m` a motive, which the
+  opens with: `s` a statement, which tests prove; `p` a pointer, to spec files
+  or to other lines in specs; `d` a definition of a term; `m` a motive, which the
   lines derived from it carry out; `i` an interactive check, which the
   CEO performs by hand; and `g` guidance, an instruction that tests and
   code cite when they are built one way and not another. Wherever
@@ -61,14 +63,15 @@ is marked, and how Concord checks that each is satisfied.
   change of the letter in its marker alone: its body, text, hash, root
   list and stamps stay as they were.
 * {#s-rmpj20 <arch} **Retyped references.** A reference is a root reference, a
-  pointer target, a test link or a guidance reference. A reference naming
+  pointer target, a test link, an implementation reference, a test-file reference, a hand-check reference or a guidance reference. A reference naming
   an id that no marker holds, while exactly one marker holds its body
   under another type letter, is retyped: it does not resolve, and every
   list naming it gives the id it now has. {#s-psysjj <arch} `--assign` rewrites
-  each retyped root reference and pointer target in a spec to that id,
-  keeping its stamp, and prints one line per rewrite,
-  `<spec path>:<line>  <old id> -> <new id>`. {#s-j8bplx <arch} It never
-  rewrites a test file or a code file.
+  each retyped root reference and pointer target in a spec, and each retyped
+  implementation or hand-check reference in code, to that id, keeping its stamp, and
+  prints one line per rewrite, `<file path>:<line>  <old id> -> <new id>`.
+  {#s-j8bplx <arch} It never rewrites a test file or the path in a `@tested-by`
+  reference.
 * {#s-wakfil <arch} **Labels of every type.** A label reference names its
   placeholder's type letter, as in `<m-?ruling1`, and resolves only to
   the placeholder in its own spec carrying that letter and that label.
@@ -79,35 +82,31 @@ is marked, and how Concord checks that each is satisfied.
 
 ### Pointers
 
-* {#s-7h4j0s <m-k55xs4@88cd8e4} **Target lists.** A `p` line points at files or at
-  other lines through the target list its marker carries after its id
+* {#s-7h4j0s <m-k55xs4@88cd8e4} **Target lists.** A `p` line points only within the spec set through
+  the target list its marker carries after its id
   part: one space, `>`, then one or more targets separated by commas with
   no spaces, before the closing `}`, as in
   `{#p-xxxxxx >specs/build.md#build-and-test,s-aaaaaa}`. {#s-en1xk7 <arch} A
-  target is a line id of any type; a path relative to the repo root,
-  naming a file or a directory; a code path, `#`, and a JavaScript
-  identifier, naming a function (Function targets, below); or a spec
-  path, `#`, and a heading slug,
+  target is a line id of any type, or a spec path, optionally followed by
+  `#` and a heading slug,
   the heading's text lowercased with every run of characters other than
   letters and digits replaced by one `-` and a leading or trailing `-`
   removed. {#s-m176ue <arch} The target list is part of the marker, not of the
   line's text, so it never changes the line's hash.
 * {#s-dhs2hx <arch} A target resolves when its id is held by exactly one
-  marker, when its path exists in the tree, or when its spec holds a
-  heading of any level whose slug is its slug. {#s-w75973 <arch} A `p` or `i`
-  line with no target list, a target list on a marker of any other type,
-  an empty target, and a target in none of the forms above are malformed,
-  each reported in (6).
-* {#s-8ck61z <m-p5u7hb@920f72c} **Function targets.** A target that is a path ending
-  `.js`, `.mjs` or `.cjs`, `#`, and a JavaScript identifier names a
-  function in that file: a function declaration of that name, a variable
-  declaration of that name whose initialiser is a function or arrow
-  function expression, or a method or object property of that name whose
-  value is a function, at any depth. {#s-e6tln3 <arch} Its definition's source
-  text runs from the start of that declaration, method or property to the
-  end of the function's body. {#s-pr83of <arch} It resolves when the file exists
-  and holds exactly one such definition; with none, or more than one, it
-  is reported in (22) saying which.
+  marker in a spec, or when its path names a `.md` file under `specs/` or
+  its spec holds a heading of any level whose slug is its slug. {#s-w75973 <arch} A `p`
+  line with no target list, a target list on a marker of any type other
+  than `p`, an empty target, and a target in none of the forms above are
+  malformed, each reported in (6). An `i` marker carries no target list.
+### Code references
+
+* {#s-5i9gec <arch,m-r3llz8@7fee9b6} **Implementation reference.** `@implements s-xxxxxx@hhhhhhh` in an implementation file names one statement implemented by that file; it resolves when the id names exactly one `s` line and the recorded hash matches.
+* {#s-50dzy6 <arch,m-r3llz8@7fee9b6} **Test-file reference.** `@tested-by <path>` in an implementation file names a project-relative test file; it resolves when the path names exactly one test file the project declares.
+* {#s-bqioq5 <arch,m-r3llz8@7fee9b6} **Hand-check reference.** `@checks i-xxxxxx@hhhhhhh` in an implementation file names an interactive check that the file supports; it resolves when the id names exactly one `i` line and its recorded hash matches.
+* {#s-7tlfzo <arch,m-r3llz8@7fee9b6} An implementation, test-file or hand-check reference is a directive comment of the implementation file's language reading, sits in its header, and applies to that whole file.
+* {#s-rv4wbq <arch,m-r3llz8@7fee9b6} JavaScript, TypeScript, Rust, CSS and HTML implementation files use the comment syntax of their declared language reading; no directive inside a string, literal or block comment is read unless that language's reading expressly accepts it.
+* {#s-tghouh <arch,m-r3llz8@7fee9b6} Malformed, unresolved and stale implementation, test-file and hand-check references are reported with the implementation path, line and target.
 * {#s-gueyj8 <m-k55xs4@88cd8e4} **Dangling pointers.** Beside the other lists Concord
   reports (22) each target that does not resolve, naming the spec, the
   line, the pointer's id, the target and why. {#s-6ls2oh <arch} With no argument
@@ -211,10 +210,12 @@ is marked, and how Concord checks that each is satisfied.
   `// @follows g-xxxxxx@hhhhhhh`, the guidance id, `@` and the seven
   lowercase hexadecimal characters of its hash as the citer recorded it,
   or the same text inside one `/* */` comment on one line.
-  {#s-z28ucn <arch} Concord reads guidance references in every `.js`, `.mjs`,
-  `.cjs` and `.css` file under `src/`, `scripts/`, `test/` and each
-  `packages/*/` directory, outside `node_modules`; any such comment whose
-  text begins `@follows` is read as one, well formed or not, on any line.
+  {#s-z28ucn <arch} Concord reads guidance references in every file that a
+  language reading the project declares reads (`specs/concord-process.md`,
+  Language readings), test files included, under the project's read
+  directories and outside its ignored ones; any directive comment of that
+  reading whose text begins `@follows` is read as one, well formed or not,
+  on any line.
 * {#s-b05h80 <arch} A guidance reference resolves when it is well formed and
   names a `g` line held by exactly one marker; it is stale when its
   recorded hash differs from that line's current hash.
@@ -249,8 +250,8 @@ is marked, and how Concord checks that each is satisfied.
 
 ### Retyping a spec
 
-A retyping batch takes one spec, or a few, and gives every line in them
-its type. These lines guide it.
+{#g-1uwei4 <arch for=architect via=prompt} A retyping batch takes one spec, or a few, and gives every line in them
+its type. Follow these lines when doing the batch.
 
 * {#g-zt5uq8 <arch for=architect via=prompt} **Rulings in a line.** A line whose
   whole text is a ruling is retyped `m` by its marker's letter alone. A

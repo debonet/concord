@@ -19,6 +19,12 @@ const yFrontA = Buffer.from( "---\r\nname: alpha\r\n---", "utf8" );
 const yTextA = Buffer.from( "\n# Alpha — role ✓\n\ntext\n", "utf8" );
 const yFrontB = Buffer.from( "---\nname: beta\n---\n", "utf8" );
 const yTextB = Buffer.from( "# Beta\n", "utf8" );
+const yCodexFrontA = Buffer.from(
+  'name = "alpha"\ndescription = "Alpha role"\n', "utf8"
+);
+const yCodexFrontB = Buffer.from(
+  'name = "beta"\ndescription = "Beta role"\n', "utf8"
+);
 
 const fsSha = ( y ) => (
   crypto.createHash( "sha256" ).update( y ).digest( "hex" )
@@ -26,6 +32,20 @@ const fsSha = ( y ) => (
 
 const yAgentA = Buffer.concat([ yFrontA, yTextA ]);
 const yAgentB = Buffer.concat([ yFrontB, yTextB ]);
+const yAgentCodexA = Buffer.concat([
+  yCodexFrontA,
+  Buffer.from(
+    "developer_instructions = " + JSON.stringify( yTextA.toString( "utf8" ))
+      + "\n", "utf8"
+  )
+]);
+const yAgentCodexB = Buffer.concat([
+  yCodexFrontB,
+  Buffer.from(
+    "developer_instructions = " + JSON.stringify( yTextB.toString( "utf8" ))
+      + "\n", "utf8"
+  )
+]);
 
 const fWriteRoles = ( ayForName ) => {
   fs.mkdirSync( sDirRoles, { recursive: true });
@@ -42,8 +62,10 @@ const fSetup = ( aOption ) => {
     fWriteRoles({
       "beta.md": yTextB,
       "beta.claude-frontmatter": yFrontB,
+      "beta.codex-frontmatter": yCodexFrontB,
       "alpha.md": yTextA,
-      "alpha.claude-frontmatter": yFrontA
+      "alpha.claude-frontmatter": yFrontA,
+      "alpha.codex-frontmatter": yCodexFrontA
     });
   }
   if( aSet.bTarget ){ fs.mkdirSync( sDirTarget, { recursive: true });}
@@ -56,7 +78,7 @@ const faRun = ( vsArg, sCwd ) => {
     {
       cwd: sCwd || sDirScratch,
       encoding: "utf8",
-      env: { ...process.env, HOME: sDirHome }
+      env: { ...process.env, HOME: sDirHome, CODEX_HOME: path.join( sDirHome, ".codex" ) }
     }
   );
   return {
@@ -142,8 +164,10 @@ describe( "agents-sync — no project", () => {
   });
 });
 
-// @proves s-z7h1uz@4b80991
-// @proves s-299j3a@0cb7752
+// @proves s-z7h1uz@6f81274
+// @proves s-yf8wyo@0128e34
+// @proves s-jlo94e@7c8068c
+// @proves s-ab1xqm@af290be
 describe( "agents-sync — Concord's own roles", () => {
   test( "with no --roles it reads the roles directory of the Concord "
     + "project it belongs to, whatever its working directory", () => {
@@ -155,7 +179,8 @@ describe( "agents-sync — Concord's own roles", () => {
     )).sort();
     expect( vsRole.length ).toBeGreaterThan( 0 );
     expect( fs.readdirSync( sDirTarget ).sort()).toEqual(
-      vsRole.map(( sRole ) => sRole + ".md" ).concat([ sFileRecord ]).sort()
+      vsRole.flatMap(( sRole ) => [ sRole + ".md", sRole + ".toml" ])
+        .concat([ sFileRecord ]).sort()
     );
     const fyOwn = ( sName ) => fs.readFileSync(
       path.join( sDirRolesOwn, sName )
@@ -165,11 +190,19 @@ describe( "agents-sync — Concord's own roles", () => {
         fyOwn( sRole + ".claude-frontmatter" ), fyOwn( sRole + ".md" )
       ])
     ));
+    vsRole.forEach(( sRole ) => {
+      const sText = fyOwn( sRole + ".md" ).toString( "utf8" );
+      const sMeta = fyOwn( sRole + ".codex-frontmatter" ).toString( "utf8" );
+      expect( fyTarget( sRole + ".toml" ).toString( "utf8" )).toBe(
+        sMeta + "developer_instructions = " + JSON.stringify( sText ) + "\n"
+      );
+    });
   });
 });
 
-// @proves s-odwk2n@85b0e6b
-// @proves s-q4dp5b@fdb6065
+// @proves s-jlo94e@7c8068c
+// @proves s-ab1xqm@af290be
+// @proves s-gaewu5@b5462f6
 describe( "agents-sync — the agent file", () => {
   test( "for each name with both files it writes the frontmatter's bytes "
     + "followed directly by the role text's, unconverted", () => {
@@ -178,8 +211,10 @@ describe( "agents-sync — the agent file", () => {
     expect( faRun( vsArgSync ).cExit ).toBe( 0 );
     expect( fyTarget( "alpha.md" )).toEqual( yAgentA );
     expect( fyTarget( "beta.md" )).toEqual( yAgentB );
+    expect( fyTarget( "alpha.toml" )).toEqual( yAgentCodexA );
+    expect( fyTarget( "beta.toml" )).toEqual( yAgentCodexB );
     expect( fs.readdirSync( sDirTarget ).sort()).toEqual([
-      sFileRecord, "alpha.md", "beta.md"
+      sFileRecord, "alpha.md", "alpha.toml", "beta.md", "beta.toml"
     ]);
   });
 });
@@ -200,7 +235,8 @@ const vtRolesBad = [
   ), "delta" ]
 ];
 
-// @proves s-bd1fn4@c9dfdd3
+// @proves s-npmw3x@2ff75c0
+// @proves s-048ffy@dc732cc
 describe( "agents-sync — incomplete roles", () => {
   test.each( vtRolesBad )( "%s: one stderr line naming the problem, "
     + "nothing written, exit 2", ( sWhat, fBreak, sNeedle ) => {
@@ -216,8 +252,7 @@ describe( "agents-sync — incomplete roles", () => {
   });
 });
 
-// @proves s-svb3n9@4c64616
-// @proves s-1kulh7@d65288e
+// @proves s-pite2d@c490345
 describe( "agents-sync — the target directory", () => {
   test( "with no --dir it writes into $HOME/.claude/agents and prints that "
     + "path with $HOME expanded", () => {
@@ -230,30 +265,38 @@ describe( "agents-sync — the target directory", () => {
     expect( aRun.cExit ).toBe( 0 );
     expect( aRun.sStdout ).toBe(
       "wrote " + path.join( sDirAgents, "alpha.md" ) + "\n"
+      + "wrote " + path.join( sDirHome, ".codex", "agents", "alpha.toml" ) + "\n"
       + "wrote " + path.join( sDirAgents, "beta.md" ) + "\n"
+      + "wrote " + path.join( sDirHome, ".codex", "agents", "beta.toml" ) + "\n"
     );
     expect( fs.readFileSync( path.join( sDirAgents, "beta.md" )))
       .toEqual( yAgentB );
+    expect( fs.readFileSync( path.join( sDirHome, ".codex", "agents", "beta.toml" )))
+      .toEqual( yAgentCodexB );
   });
 
-  test.each([
-    [[ "--roles", "roles", "--dir", "absent" ], "absent" ],
-    [[ "--roles", "roles" ], ".claude" ]
-  ])( "PAIRED: %j with no such directory prints one line naming it, "
-    + "writes nothing and exits 2", ( vsArg, sNeedle ) => {
+  test( "PAIRED: creates default and explicit target directories", () => {
     fSetup();
-    const vsBefore = fvsScratchFile();
-    const aRun = faRun( vsArg );
-    expect( aRun.cExit ).toBe( 2 );
-    expect( aRun.sStdout ).toBe( "" );
-    expect( fvsLineErr( aRun )).toHaveLength( 1 );
-    expect( aRun.sStderr ).toContain( sNeedle );
-    expect( fvsScratchFile()).toEqual( vsBefore );
+    fs.rmSync( sDirTarget, { recursive: true, force: true });
+    expect( faRun( vsArgSync ).cExit ).toBe( 0 );
+    expect( fyTarget( "alpha.toml" )).toEqual( yAgentCodexA );
+  });
+
+  test( "PAIRED: uses CODEX_HOME for the Codex target", () => {
+    fSetup();
+    const sCodexHome = path.join( sDirScratch, "custom-codex-home" );
+    const aRun = faRunEnv( [ "--roles", "roles" ], {
+      ...process.env, HOME: sDirHome, CODEX_HOME: sCodexHome
+    });
+    const sCodexAgent = path.join( sCodexHome, "agents", "alpha.toml" );
+    expect( aRun.cExit ).toBe( 0 );
+    expect( aRun.sStdout ).toContain( "wrote " + sCodexAgent );
+    expect( fs.readFileSync( sCodexAgent )).toEqual( yAgentCodexA );
   });
 });
 
-// @proves s-2p939f@950d455
-// @proves s-3qwypa@f285098
+// @proves s-7ul58j@7eae97c
+// @proves s-jmhct4@e503ded
 describe( "agents-sync — what it writes and prints", () => {
   test( "only the agent files and the record file, in the target directory; "
     + "every other file there is left as it was", () => {
@@ -265,11 +308,12 @@ describe( "agents-sync — what it writes and prints", () => {
     const aRun = faRun( vsArgSync );
     expect( aRun ).toEqual({
       cExit: 0,
-      sStdout: "wrote agents/alpha.md\nwrote agents/beta.md\n",
+      sStdout: "wrote agents/alpha.md\nwrote agents/alpha.toml\n"
+        + "wrote agents/beta.md\nwrote agents/beta.toml\n",
       sStderr: ""
     });
     const vsAfter = fvsScratchFile();
-    const sPrefixNew = [ "alpha.md", "beta.md", sFileRecord ].map(( sName ) => (
+    const sPrefixNew = [ "alpha.md", "alpha.toml", "beta.md", "beta.toml", sFileRecord ].map(( sName ) => (
       path.join( sDirTarget, sName ) + "\n"
     ));
     expect( vsAfter.filter(( s ) => !sPrefixNew.some(( sP ) => (
@@ -283,14 +327,16 @@ describe( "agents-sync — what it writes and prints", () => {
     faRun([ "--roles", "roles", "--dir", "agents/" ]);
     expect( faRun([ "--roles", "roles", "--dir", "agents/" ])).toEqual({
       cExit: 0,
-      sStdout: "unchanged agents/alpha.md\nunchanged agents/beta.md\n",
+      sStdout: "unchanged agents/alpha.md\nunchanged agents/alpha.toml\n"
+        + "unchanged agents/beta.md\nunchanged agents/beta.toml\n",
       sStderr: ""
     });
   });
 });
 
-// @proves s-utqlgq@7be2387
-// @proves s-ct9wos@8885a24
+// @proves s-utqlgq@59ec117
+// @proves s-ct9wos@02f9aaf
+// @proves s-jmhct4@e503ded
 describe( "agents-sync — the record file", () => {
   test( "maps each agent file to the SHA-256 of the bytes written, keeping "
     + "entries for names no role has", () => {
@@ -301,7 +347,9 @@ describe( "agents-sync — the record file", () => {
     expect( faRecord()).toEqual({
       "gone.md": sHashOther,
       "alpha.md": fsSha( yAgentA ),
-      "beta.md": fsSha( yAgentB )
+      "beta.md": fsSha( yAgentB ),
+      "alpha.toml": fsSha( yAgentCodexA ),
+      "beta.toml": fsSha( yAgentCodexB )
     });
   });
 });
@@ -334,11 +382,14 @@ describe( "agents-sync — a hand edit", () => {
     const aRun = faRun( vsArgSync.concat([ "--force" ]));
     expect( aRun.cExit ).toBe( 0 );
     expect( aRun.sStdout ).toBe(
-      "unchanged agents/alpha.md\nwrote agents/beta.md\n"
+      "unchanged agents/alpha.md\nunchanged agents/alpha.toml\n"
+        + "wrote agents/beta.md\nunchanged agents/beta.toml\n"
     );
     expect( fyTarget( "beta.md" )).toEqual( yAgentB );
+    expect( fyTarget( "beta.toml" )).toEqual( yAgentCodexB );
     expect( faRecord()[ "beta.md" ])
       .toBe( fsSha( yAgentB ));
+    expect( faRecord()[ "beta.toml" ]).toBe( fsSha( yAgentCodexB ));
   });
 
   test( "PAIRED: a file it wrote that nobody changed is rewritten when its "
@@ -349,7 +400,8 @@ describe( "agents-sync — a hand edit", () => {
     const aRun = faRun( vsArgSync );
     expect( aRun.cExit ).toBe( 0 );
     expect( aRun.sStdout ).toBe(
-      "wrote agents/alpha.md\nunchanged agents/beta.md\n"
+      "wrote agents/alpha.md\nwrote agents/alpha.toml\n"
+        + "unchanged agents/beta.md\nunchanged agents/beta.toml\n"
     );
     expect( fyTarget( "alpha.md" ).toString( "utf8" ))
       .toBe( yFrontA.toString( "utf8" ) + "# Alpha changed\n" );
@@ -368,7 +420,9 @@ describe( "agents-sync — a hand edit", () => {
     expect( aRun.sStderr ).toContain( "agents/beta.md" );
     fs.rmSync( path.join( sDirTarget, "beta.md" ));
     expect( faRun( vsArgSync ).sStdout ).toBe(
-      "unchanged agents/alpha.md\nwrote agents/beta.md\n"
+      "unchanged agents/alpha.md\nwrote agents/alpha.toml\n"
+        + "wrote agents/beta.md\n"
+        + "wrote agents/beta.toml\n"
     );
   });
 });
@@ -404,7 +458,9 @@ describe( "agents-sync — a bad record file", () => {
     expect( faRun( vsArgSync.concat([ "--force" ])).cExit ).toBe( 0 );
     expect( faRecord()).toEqual({
       "alpha.md": fsSha( yAgentA ),
-      "beta.md": fsSha( yAgentB )
+      "beta.md": fsSha( yAgentB ),
+      "alpha.toml": fsSha( yAgentCodexA ),
+      "beta.toml": fsSha( yAgentCodexB )
     });
   });
 });
@@ -451,7 +507,9 @@ const fsStateTargetFile = ( sName ) => (
 
 afterEach( fUnlockTarget );
 
-const sOutUnchanged = "unchanged agents/alpha.md\nunchanged agents/beta.md\n";
+const sOutUnchanged = "unchanged agents/alpha.md\n"
+  + "unchanged agents/alpha.toml\nunchanged agents/beta.md\n"
+  + "unchanged agents/beta.toml\n";
 
 // @proves s-sjq95s@3031d2d
 // @proves s-i062i7@696127c
@@ -502,7 +560,9 @@ describe( "agents-sync — only what differs is written", () => {
     const sRecordBefore = fsStateTargetFile( sFileRecord );
     fWriteRoles({ "alpha.md": "# Alpha changed\n" });
     expect( faRun( vsArgSync ).sStdout ).toBe(
-      "wrote agents/alpha.md\nunchanged agents/beta.md\n"
+      "wrote agents/alpha.md\n"
+        + "wrote agents/alpha.toml\nunchanged agents/beta.md\n"
+        + "unchanged agents/beta.toml\n"
     );
     expect( fsStateTargetFile( "beta.md" )).toBe( sBetaBefore );
     expect( fsStateTargetFile( sFileRecord )).not.toBe( sRecordBefore );
@@ -516,15 +576,19 @@ describe( "agents-sync — only what differs is written", () => {
     expect( faRun( vsArgSync ).cExit ).toBe( 0 );
     fs.rmSync( sPathRecord );
     fAgeTarget();
-    const vsAgentBefore = [ "alpha.md", "beta.md" ].map( fsStateTargetFile );
+    const vsAgentBefore = [ "alpha.md", "alpha.toml", "beta.md", "beta.toml" ]
+      .map( fsStateTargetFile );
     expect( faRun( vsArgSync )).toEqual({
       cExit: 0, sStdout: sOutUnchanged, sStderr: ""
     });
-    expect([ "alpha.md", "beta.md" ].map( fsStateTargetFile ))
+    expect([ "alpha.md", "alpha.toml", "beta.md", "beta.toml" ]
+      .map( fsStateTargetFile ))
       .toEqual( vsAgentBefore );
     expect( faRecord()).toEqual({
       "alpha.md": fsSha( yAgentA ),
-      "beta.md": fsSha( yAgentB )
+      "beta.md": fsSha( yAgentB ),
+      "alpha.toml": fsSha( yAgentCodexA ),
+      "beta.toml": fsSha( yAgentCodexB )
     });
   });
 });
@@ -586,6 +650,16 @@ const fChangeBothRoles = () => fWriteRoles({
 // @proves s-aqxbjg@5b401f4
 // @proves s-tgbh92@04130f6
 describe( "agents-sync — a failed write", () => {
+  test( "a missing target directory whose parent is a file exits 3", () => {
+    fSetup({ bTarget: false });
+    fs.writeFileSync( sDirTarget, "not a directory" );
+    const aRun = faRun([ "--roles", "roles", "--dir", "agents/sub" ]);
+    expect( aRun.cExit ).toBe( 3 );
+    expect( aRun.sStdout ).toBe( "" );
+    fvsLineFailed( aRun, "agents/sub/." );
+    fs.unlinkSync( sDirTarget );
+  });
+
   test( "a target directory denying writing: one line naming the file and "
     + "saying where to run it, nothing written, exit 3", () => {
     fSetup();
@@ -683,7 +757,6 @@ const aEnvTool = {
   CLAUDECODE: "1",
   CLAUDE_CODE_ENTRYPOINT: "cli",
   CLAUDE_CONFIG_DIR: "elsewhere",
-  CODEX_HOME: "elsewhere",
   CODEX_SANDBOX: "seatbelt",
   GEMINI_CLI: "1",
   AGENTS_SYNC_TOOL: "codex",
@@ -696,25 +769,30 @@ const faSyncForEnv = ( aEnvMore ) => {
   fs.mkdirSync( path.join( sDirClaude, "agents" ), { recursive: true });
   fs.symlinkSync( sDirClaude, path.join( sDirHome, ".claude" ));
   const aRun = faRunEnv([ "--roles", "roles" ], {
-    HOME: sDirHome, ...aEnvMore
+    ...process.env, HOME: sDirHome, ...aEnvMore
   });
   const sDirAgents = path.join( sDirHome, ".claude", "agents" );
+  const sDirCodexAgents = path.join( sDirHome, ".codex", "agents" );
   return {
     aRun,
-    vsFile: fs.readdirSync( sDirAgents ).sort().map(( sName ) => (
-      sName + " " + fs.readFileSync( path.join( sDirAgents, sName ), "hex" )
+    vsFile: [ sDirAgents, sDirCodexAgents ].flatMap(( sDir ) => (
+      fs.readdirSync( sDir ).sort().map(( sName ) => (
+        path.basename( sDir ) + "/" + sName + " "
+          + fs.readFileSync( path.join( sDir, sName ), "hex" )
+      ))
     ))
   };
 };
 
-// @proves s-trvwv3@ae9b3ce
+// @proves s-7ul58j@7eae97c
+// @proves s-jmhct4@e503ded
 describe( "agents-sync — every tool, one run", () => {
   test( "what it writes and prints is the same under any agent tool's "
     + "environment, given the same HOME", () => {
     const aBare = faSyncForEnv({});
     expect( aBare.aRun.sStderr ).toBe( "" );
     expect( aBare.aRun.cExit ).toBe( 0 );
-    expect( aBare.vsFile ).toHaveLength( 3 );
+    expect( aBare.vsFile ).toHaveLength( 6 );
     expect( faSyncForEnv( aEnvTool )).toEqual( aBare );
   });
 

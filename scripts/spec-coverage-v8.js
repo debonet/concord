@@ -1,3 +1,8 @@
+// @implements s-l38b55@a9d4313
+// @implements s-yzz1r5@16c2353
+// @implements s-3afft9@1a50263
+// @tested-by test/spec-coverage-jest.test.js
+// @tested-by test/spec-coverage.test.js
 "use strict";
 
 const fs = require( "fs" );

@@ -103,6 +103,7 @@ afterAll(() => {
 
 // @proves s-2fs4an@26c553f
 // @proves s-jhtp93@4c4ca3c
+// @proves s-pa182t@8008053
 describe( "concord-settings — a command run with no settings file", () => {
   test( "spec-map and spec-coverage each print one stderr line naming "
     + "concord.json and exit 2", () => {
@@ -116,6 +117,7 @@ describe( "concord-settings — a command run with no settings file", () => {
     });
   });
 
+  // @proves s-ab1xqm@af290be
   test( "PAIRED: concord-hook, which acts on a project, does the same in a "
     + "work tree's root; agents-sync, which acts on none, runs", () => {
     fWriteTree({
@@ -123,6 +125,7 @@ describe( "concord-settings — a command run with no settings file", () => {
       ".git/HEAD": "",
       "roles/r.md": "# R\n",
       "roles/r.claude-frontmatter": "---\n---\n",
+      "roles/r.codex-frontmatter": 'name = "r"\ndescription = "role"\n',
       "agents/keep": ""
     });
     [[ "install" ], [ "check" ]].forEach(( vsArg ) => {
@@ -137,6 +140,10 @@ describe( "concord-settings — a command run with no settings file", () => {
     );
     expect( aRunSync.cExit ).toBe( 0 );
     expect( fsRead( "agents/r.md" )).toBe( "---\n---\n# R\n" );
+    expect( fsRead( "agents/r.toml" )).toBe(
+      'name = "r"\ndescription = "role"\n'
+        + 'developer_instructions = "# R\\n"\n'
+    );
   });
 });
 
@@ -185,11 +192,22 @@ const vtBad = [
 // @proves s-zstgty@57da9d2
 // @proves s-am7qu4@f0bbacd
 // @proves s-i0n88z@442670e
-// @proves s-j38rej@fd07b13
-// @proves s-sx6vdb@2b2e720
+// @proves s-j38rej@32cf0ae
+// @proves s-sx6vdb@35a08a5
 // @proves s-wu6tv6@3c7912b
 // @proves s-xqx0r5@13898cb
 describe( "concord-settings — a bad settings file", () => {
+  test( "a concord.json directory is reported as unreadable", () => {
+    fWriteTree({});
+    fs.mkdirSync( path.join( sDirFixture, "concord.json" ));
+    const aRun = faRun([ "--assign" ]);
+    expect( aRun.cExit ).toBe( 2 );
+    expect( aRun.sStdout ).toBe( "" );
+    expect( aRun.sStderr ).toBe(
+      "spec-map: concord.json cannot be read\n"
+    );
+  });
+
   test.each( vtBad )( "%s makes every command print one line naming the "
     + "file and the member, exit 2 and act on nothing", (
     sWhat, sText, sMember
@@ -224,6 +242,19 @@ describe( "concord-settings — a bad settings file", () => {
     expect( faRun([ "--assign" ]).cExit ).toBe( 0 );
     expect( fsRead( "specs/a.md" )).toMatch( /\{#s-[a-z0-9]{6}\} A/ );
   });
+
+  // @proves s-j38rej@32cf0ae
+  test( "PAIRED: a file naming every language Language readings defines "
+    + "is well formed", () => {
+    fWriteTree({
+      "concord.json": fsConcordJson({
+        vsLanguage: [ "javascript", "typescript", "css", "html", "rust" ]
+      }),
+      "specs/a.md": fsSpec( "A", [ "* {#s-?} A placeholder rule." ])
+    });
+    expect( faRun([ "--assign" ]).cExit ).toBe( 0 );
+    expect( fsRead( "specs/a.md" )).toMatch( /\{#s-[a-z0-9]{6}\} A/ );
+  });
 });
 
 // @proves s-4j8qm7@1fe7250
@@ -242,7 +273,7 @@ test( "concord-settings — spec-coverage in a project declaring no coverage "
 });
 
 // @proves s-zupjie@8e06977
-// @proves s-nrp172@a8afa18
+// @proves s-nrp172@f93d24a
 describe( "concord-settings — where guidance references are read", () => {
   test( "under every directory a `*` segment names, in files of a declared "
     + "language, outside the ignored directories, and nowhere else", () => {
@@ -344,6 +375,7 @@ const sSpecCheck = fsSpec( "C", [
 
 // @proves s-iz8176@bb80e0d
 // @proves s-4jegoj@05acd9f
+// @proves s-m4jorm@da16eb4
 describe( "concord-settings — the record file and the page title", () => {
   test( "a verdict is recorded in the declared record file and the worklist "
     + "page is titled with the declared name", () => {
@@ -386,6 +418,8 @@ const sSpecHashes = [
 
 // @proves s-kyro7r@3064fa5
 // @proves s-95ao2f@9b59968
+// @proves s-rapf8f@dd2cbd3
+// @proves s-n7ky2n@33d998e
 describe( "concord-settings — the hash table", () => {
   test( "--hashes prints each singly-marked id of every type with the hash "
     + "--hash prints and its spec, by spec and line, writing nothing", () => {
@@ -441,7 +475,7 @@ describe( "concord-settings — a command acts on its working directory",
 
 const sPathConcord = path.join( sDirRepo, "concord.json" );
 
-// @proves s-230c67@63b134b
+// @proves s-ins4p7@19e76c1
 test( "concord-settings — Concord's own settings file declares Concord's "
   + "suite, language, directories, record file and coverage", () => {
   expect( JSON.parse( fs.readFileSync( sPathConcord, "utf8" ))).toEqual({
@@ -458,12 +492,48 @@ test( "concord-settings — Concord's own settings file declares Concord's "
       sPathReview: "spec-coverage-review.md"
     }
   });
+  const aGate = spawnSync(
+    process.execPath,
+    [ path.join( sDirRepo, "bin", "spec-map" ), "--gate" ],
+    { cwd: sDirRepo, encoding: "utf8" }
+  );
+  expect( aGate.status ).toBe( 0 );
+  expect( aGate.stdout ).toBe( "Gate: pass\n" );
+});
+
+// @proves s-ins4p7@19e76c1
+test( "concord-settings — Concord's own build targets call the commands "
+  + "under bin and preserve the npm target names", () => {
+  const aPackage = JSON.parse( fsRepoText( "package.json" ));
+  expect( aPackage.scripts ).toMatchObject({
+    "spec-map": "bin/spec-map",
+    "spec-coverage": "bin/spec-coverage",
+    "agents-sync": "bin/agents-sync",
+    "hook-install": "bin/concord-hook install"
+  });
+  fAssertProjectGate();
+});
+
+// @proves s-ins4p7@19e76c1
+test( "concord-settings — Concord has one root containing its specs, build "
+  + "spec, tests and README", () => {
+  [ "specs", "test", "README.md", "package.json" ].forEach(( sPath ) => {
+    expect( fs.existsSync( path.join( sDirRepo, sPath ))).toBe( true );
+  });
+  expect( fsRepoText( "README.md" )).toContain( "ConcordSTC" );
+  const aGate = spawnSync(
+    process.execPath, [ path.join( sDirRepo, "bin", "spec-map" ), "--gate" ],
+    { cwd: sDirRepo, encoding: "utf8" }
+  );
+  expect( aGate.status ).toBe( 0 );
+  expect( aGate.stdout ).toBe( "Gate: pass\n" );
 });
 
 const sDirBin = path.join( sDirRepo, "bin" );
 
 // @proves s-c744tt@59ec83a
-// @proves s-y7klju@f24bf51
+// @proves s-4pq89a@d19cad5
+// @proves s-y7klju@f22102b
 test( "concord-settings — each command under bin is an executable file "
   + "with no extension opening with the node shebang", () => {
   const vsName = fs.readdirSync( sDirBin ).sort();
@@ -481,8 +551,16 @@ test( "concord-settings — each command under bin is an executable file "
 const fsRepoText = ( sPathRel ) => fs.readFileSync(
   path.join( sDirRepo, sPathRel ), "utf8"
 );
+const fAssertProjectGate = () => {
+  const aGate = spawnSync(
+    process.execPath, [ path.join( sDirRepo, "bin", "spec-map" ), "--gate" ],
+    { cwd: sDirRepo, encoding: "utf8" }
+  );
+  expect( aGate.status ).toBe( 0 );
+  expect( aGate.stdout ).toBe( "Gate: pass\n" );
+};
 
-// @proves s-jblvc6@c2bd5a2
+// @proves s-ins4p7@19e76c1
 test( "concord-settings — Concord's root AGENTS.md names the Concord specs "
   + "under ~/@concord/specs and the role texts under ~/@concord/roles", () => {
   const sAgents = fsRepoText( "AGENTS.md" );
@@ -494,9 +572,10 @@ test( "concord-settings — Concord's root AGENTS.md names the Concord specs "
     "~/@concord/roles/architect.md",
     "~/@concord/roles/fixer.md"
   ].forEach(( sPath ) => expect( sAgents ).toContain( sPath ));
+  fAssertProjectGate();
 });
 
-// @proves s-jhoxdv@6b3c84f
+// @proves s-ins4p7@19e76c1
 test( "concord-settings — Concord's root AGENTS.md names, with their paths, "
   + "the tool files that must run agents-sync at session start", () => {
   const vsParagraph = fsRepoText( "AGENTS.md" ).split( /\n\s*\n/ );
@@ -507,19 +586,21 @@ test( "concord-settings — Concord's root AGENTS.md names, with their paths, "
   [ "~/.claude/CLAUDE.md", "~/.codex/AGENTS.md" ].forEach(( sPath ) => (
     expect( vsSync.some(( s ) => s.includes( sPath ))).toBe( true )
   ));
+  fAssertProjectGate();
 });
 
-// @proves s-3jwl32@7c1cd67
+// @proves s-ins4p7@19e76c1
 test( "concord-settings — each role, architect and fixer among them, has its "
-  + "text and its Claude Code frontmatter side by side under roles/", () => {
+  + "text and each tool's metadata side by side under roles/", () => {
   const vsName = fs.readdirSync( path.join( sDirRepo, "roles" )).sort();
   const vsRole = Array.from( new Set(
     vsName.map(( sName ) => sName.split( "." )[ 0 ])
   ));
   expect( vsRole ).toEqual( expect.arrayContaining([ "architect", "fixer" ]));
   expect( vsName ).toEqual( vsRole.flatMap(( sRole ) => [
-    sRole + ".claude-frontmatter", sRole + ".md"
+    sRole + ".claude-frontmatter", sRole + ".codex-frontmatter", sRole + ".md"
   ]).sort());
+  fAssertProjectGate();
 });
 
 // @proves s-s4l32i@b41f304

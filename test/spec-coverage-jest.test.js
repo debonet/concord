@@ -1,4 +1,5 @@
 "use strict";
+// @follows g-7scul0@4eebdb3
 
 const fs = require( "fs" );
 const path = require( "path" );
@@ -43,6 +44,7 @@ const aTree = {
   ].join( "\n" ),
   "package.json": JSON.stringify({
     jest: {
+      testEnvironment: "<rootDir>/test/fixture-environment.js",
       roots: [ "<rootDir>/test" ],
       setupFilesAfterEnv: [ "<rootDir>/test/setup.js" ],
       transform: {
@@ -52,6 +54,18 @@ const aTree = {
       testTimeout: msTimeoutFixture
     }
   }),
+  "test/fixture-environment.js": [
+    "const NodeEnvironment = require( 'jest-environment-node' ).TestEnvironment;",
+    "module.exports = class FixtureEnvironment extends NodeEnvironment {",
+    "  async handleTestEvent( aEvent, aState ){",
+    "    this.global.cFixtureEvents = ( this.global.cFixtureEvents || 0 ) + 1;",
+    "    if( typeof super.handleTestEvent === 'function' ){",
+    "      await super.handleTestEvent( aEvent, aState );",
+    "    }",
+    "  }",
+    "};",
+    ""
+  ].join( "\n" ),
   "test/setup.js": "globalThis.bFixtureSetup = true;\n",
   "src/kid.js": [
     "\"use strict\";",
@@ -103,17 +117,30 @@ const aTree = {
   ].join( "\n" ),
   "test/child.test.js": [
     "const path = require( \"path\" );",
-    "const { spawn, spawnSync } = require( \"child_process\" );",
+    "const { execSync, spawn, spawnSync } = require( \"child_process\" );",
     "const fzStatus = ( sFile, aOptions ) => spawnSync(",
     "  process.execPath, [ path.join( __dirname, sFile )], aOptions",
     ").status;",
     "test( \"a child runs a source function\", () => {",
     "  expect( fzStatus( \"kid-main.js\" )).toBe( 0 );",
     "});",
+    "test( \"a child still runs when measurement argument rewriting fails\", () => {",
+    "  let cEnvRead = 0;",
+    "  const aOptions = new Proxy({}, { get( aTarget, sKey ){",
+    "    if( sKey === \"env\" && cEnvRead++ === 0 ){ throw new Error( \"retry\" ); }",
+    "    return sKey === \"env\" ? process.env : aTarget[ sKey ];",
+    "  }});",
+    "  expect( spawnSync( process.execPath, [ \"-e\", \"0\" ], aOptions ).status )",
+    "    .toBe( 0 );",
+    "});",
     "test( \"a child drops the measurement's settings\", () => {",
     "  expect( spawnSync( process.execPath, [ \"-e\", \"0\" ], {",
     "    env: { PATH: process.env.PATH }",
     "  }).status ).toBe( 0 );",
+    "  try{",
+    "    execSync( \"node -e 'setInterval(() => {}, 1000)'\", { timeout: 25 });",
+    "  }",
+    "  catch( xErr ){}",
     "});",
     "test( \"a child is killed before it exits\", async () => {",
     "  const child = spawn( process.execPath, [",
@@ -209,6 +236,9 @@ const aTree = {
     "    s.includes( \"node_modules\" )",
     "  ))).toEqual([]);",
     "});",
+    "test( \"the wrapped environment forwards test events\", () => {",
+    "  expect( globalThis.cFixtureEvents ).toBeGreaterThan( 0 );",
+    "});",
     ""
   ].join( "\n" ),
   "test/calc.test.js": [
@@ -290,13 +320,15 @@ afterAll(() => {
 // @proves s-bi8reu@bf16aef
 // @proves s-qpkoc3@5bb9377
 // @proves s-mrpnyc@03b594d
+// @proves s-ifdflw@601453e
+// @proves s-bfp0se@62eefb2
 describe( "a real jest run under the coverage setup", () => {
   test( "the suite runs with its own setup file and reports its counts, "
     + "every test passing as it does without coverage: one evaluating a "
     + "function's own source in a fresh scope, one listing the modules its "
     + "registry holds", () => {
     expect( aRun.aSummary ).toMatchObject({
-      cPassed: 12,
+      cPassed: 14,
       cFailed: 1,
       cSkipped: 0,
       cSuiteRuntimeError: 0,
@@ -353,6 +385,7 @@ const faUnmeasured = ( sKind, sNeedle ) => aMeasurement.vaUnmeasured.find((
 
 // @proves s-exgipl@7205327
 // @proves s-mrpnyc@03b594d
+// @proves s-i5esri@cca5118
 describe( "spec-coverage-credits-child-process", () => {
   test( "a source function a spawned Node.js child calls is attributed to "
     + "the test that spawned it; the one it never calls stays "
@@ -382,6 +415,12 @@ describe( "spec-coverage-lists-unmeasured-child", () => {
     + "is listed with its test and command", () => {
     expect( faUnmeasured( "node", "setInterval" )).toMatchObject({
       vnUnit: [ fnUnitNamed( "a child is killed before it exits" )]
+    });
+  });
+
+  test( "a Node.js child started through a shell command is listed", () => {
+    expect( faUnmeasured( "node", "'setInterval" )).toMatchObject({
+      vnUnit: [ fnUnitNamed( "a child drops the measurement's settings" )]
     });
   });
 

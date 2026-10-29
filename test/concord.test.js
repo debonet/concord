@@ -25,7 +25,8 @@ const sTitleUnderived = "underived motives";
 const sTitleRuling = "rulings outside motives";
 const sTitleFollowsBad = "guidance references that do not resolve or are stale";
 const sTitleUncited = "guidance no reference names";
-const sTitleNoCode = "interactive checks with no code target";
+const sTitleNoCode = "interactive checks with no implementation link";
+const sTitleCodeRefBad = "malformed, unresolved or stale code references";
 const sTitleProblem = "interactive checks with an open problem";
 const sPathRecord = path.join( "test", "interactive-passes.jsonl" );
 const reDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -34,13 +35,97 @@ const reHash = /^[0-9a-f]{7}$/;
 const fWriteFile = ( sPathRel, sBody ) => {
   const sPath = path.join( sDirFixture, sPathRel );
   fs.mkdirSync( path.dirname( sPath ), { recursive: true });
+  if( fs.existsSync( sPath )){
+    const vsChecks = fs.readFileSync( sPath, "utf8" ).split( "\n" )
+      .filter(( sLine ) => /@checks\s+i-[a-z0-9]{6}@[0-9a-f]{7}/.test( sLine ));
+    const vsNew = sBody.split( "\n" );
+    const vsMissing = vsChecks.filter(( sLine ) => !vsNew.includes( sLine ));
+    if( vsMissing.length > 0 ){
+      sBody = vsMissing.concat( vsNew ).join( "\n" );
+    }
+  }
+  if( sPathRel.startsWith( "specs/" ) && sPathRel.endsWith( ".md" )){
+    const asBody = {};
+    const fvsFiles = ( sDir ) => fs.readdirSync( sDir, { withFileTypes: true })
+      .flatMap(( aEntry ) => {
+        const sFull = path.join( sDir, aEntry.name );
+        return aEntry.isDirectory() ? fvsFiles( sFull )
+          : aEntry.isFile() ? [ sFull ] : [];
+      });
+    fvsFiles( sDirFixture ).forEach(( sFull ) => {
+      const sRel = path.relative( sDirFixture, sFull ).split( path.sep ).join( "/" );
+      if( /\.(?:js|mjs|cjs|ts|tsx|css|rs)$/.test( sRel )){
+        asBody[ sRel ] = fs.readFileSync( sFull, "utf8" );
+      }
+    });
+    asBody[ sPathRel ] = sBody;
+    const asMigrated = faTreeWithReverseCheckLinks( asBody );
+    Object.entries( asMigrated ).forEach(([ sRel, sText ]) => {
+      const sFull = path.join( sDirFixture, sRel );
+      fs.mkdirSync( path.dirname( sFull ), { recursive: true });
+      fs.writeFileSync( sFull, sText );
+    });
+    return;
+  }
   fs.writeFileSync( sPath, sBody );
 };
 
-const fWriteTree = ( asBodyForPath ) => {
+const faTreeWithReverseCheckLinks = ( asBodyForPath ) => {
+  const asBody = { ...asBodyForPath };
+  const amChecksForFile = new Map();
+  Object.entries( asBody )
+    .filter(([ sPath ]) => sPath.startsWith( "specs/" ) && sPath.endsWith( ".md" ))
+    .forEach(([ sPath, sText ]) => {
+      const vsLine = sText.split( "\n" ).map(( sLine ) => {
+        const vsMarker = sLine.match(
+          /^(\s*\*\s+\{#(i-[a-z0-9]{6})([^}]*)\})(.*)$/
+        );
+        if( vsMarker === null ){ return sLine;}
+        const vsTargets = vsMarker[ 3 ].match( /\s+>([^\s}]+)/ );
+        if( vsTargets === null ){ return sLine;}
+        const sHash = fsHash( vsMarker[ 4 ].trim().replace( /\s+/g, " " ));
+        vsTargets[ 1 ].split( "," ).forEach(( sTarget ) => {
+          const sPathTarget = sTarget.split( "#" )[ 0 ].replace( /\/$/, "" );
+          const vsFile = Object.keys( asBody ).filter(( sFile ) => (
+            /\.(?:js|mjs|cjs|ts|tsx|css|rs)$/.test( sFile )
+            && !/(?:^|\/)test\//.test( sFile )
+            && ( sFile === sPathTarget
+              || sFile.startsWith( sPathTarget + "/" ))
+          ));
+          vsFile.forEach(( sFile ) => {
+            const vsRef = amChecksForFile.get( sFile ) || [];
+            amChecksForFile.set( sFile, vsRef.concat(
+              "@checks " + vsMarker[ 2 ] + "@" + sHash
+            ));
+          });
+        });
+        const sAttrs = vsMarker[ 3 ].replace( /\s+>[^\s}]+/, "" );
+        return vsMarker[ 1 ].replace( vsMarker[ 3 ], sAttrs ) + vsMarker[ 4 ];
+      });
+      asBody[ sPath ] = vsLine.join( "\n" );
+    });
+  amChecksForFile.forEach(( vsRef, sPath ) => {
+    const vsId = vsRef.map(( sRef ) => (
+      sRef.match( /@checks (i-[a-z0-9]{6})@/ )[ 1 ]
+    ));
+    const sBody = asBody[ sPath ].split( "\n" ).filter(( sLine ) => (
+      !vsId.some(( sId ) => sLine.includes( "@checks " + sId + "@" ))
+    )).join( "\n" );
+    const sPrefix = sPath.endsWith( ".css" )
+      ? vsRef.map(( sRef ) => "/* " + sRef + " */").join( "\n" )
+      : vsRef.map(( sRef ) => "// " + sRef ).join( "\n" );
+    asBody[ sPath ] = sPrefix + "\n" + sBody;
+  });
+  return asBody;
+};
+
+const fWriteTree = ( asBodyForPath, bMigrateInteractiveLinks = true ) => {
   fs.rmSync( sDirFixture, { recursive: true, force: true });
   fWriteConcord( sDirFixture );
-  Object.entries( asBodyForPath ).forEach(( [ sPathRel, sBody ] ) => (
+  const asBodyToWrite = bMigrateInteractiveLinks
+    ? faTreeWithReverseCheckLinks( asBodyForPath )
+    : asBodyForPath;
+  Object.entries( asBodyToWrite ).forEach(( [ sPathRel, sBody ] ) => (
     fWriteFile( sPathRel, sBody )
   ));
 };
@@ -131,19 +216,19 @@ const vsBodyEveryType = [
   "* {#d-aaa003} **Widget** — a part the rules name.",
   "* {#m-aaa004} A motive behind the rules.",
   "* {#s-aaa005 <m-aaa004} A rule carrying out the motive.",
-  "* {#i-aaa006 >specs/a.md} **Do:** open it. **Look for:** a widget.",
+  "* {#i-aaa006} **Do:** open it. **Look for:** a widget.",
   "* {#g-aaa007 for=fixer} Write widgets plainly.",
   "* {#s-?} A statement placeholder.",
   "* {#p-? >specs/a.md} A pointer placeholder.",
   "* {#d-?} **Gadget** — a widget's twin.",
   "* {#m-?why} A motive placeholder.",
   "* {#s-? <m-?why} A rule from the placeholder motive.",
-  "* {#i-? >specs/a.md} **Do:** press. **Look for:** a gadget.",
+  "* {#i-?} **Do:** press. **Look for:** a gadget.",
   "* {#g-? for=fixer} A guidance placeholder."
 ];
 
 describe( "concord-markers-every-type — markers of all six types", () => {
-  // @proves s-fc5ccj@d29c45c
+  // @proves s-fc5ccj@7849554
   // @proves s-8yzzoh@8f6ed41
   // @proves s-eab7vh@300a074
   // @proves s-7llevg@0d81695
@@ -218,9 +303,9 @@ describe( "concord-markers-every-type — markers of all six types", () => {
 
 describe( "concord-retype-reaims-references — a statement retyped m", () => {
   // @proves s-41v1mp@51d6eb2
-  // @proves s-rmpj20@a0b5c82
-  // @proves s-psysjj@a43db4b
-  // @proves s-j8bplx@17cf08b
+  // @proves s-rmpj20@c3531c2
+  // @proves s-psysjj@03eca21
+  // @proves s-j8bplx@3ec574d
   // @proves s-xt2qjj@ce601a5
   test( "keeps its hash and its references are named retyped, PAIRED with "
     + "--assign, which re-aims them and then does nothing", () => {
@@ -274,14 +359,14 @@ describe( "concord-retype-reaims-references — a statement retyped m", () => {
 });
 
 describe( "concord-pointer-dangling-fails — a pointer's targets", () => {
-  // @proves s-7h4j0s@18e120e
-  // @proves s-en1xk7@4fc96f3
+  // @proves s-7h4j0s@8fc0d18
+  // @proves s-en1xk7@b19ecef
   // @proves s-m176ue@c40015e
-  // @proves s-dhs2hx@20251dc
+  // @proves s-dhs2hx@eb1b478
   // @proves s-gueyj8@dcbe6bc
   // @proves s-6ls2oh@b278617
   // @proves s-kz8d46@36aef0d
-  // @proves s-w75973@a337dea
+  // @proves s-w75973@e58d191
   test( "that all resolve report nothing and keep the hash, PAIRED with "
     + "dangling targets, a pointer with no targets and targets on a "
     + "statement", () => {
@@ -293,7 +378,7 @@ describe( "concord-pointer-dangling-fails — a pointer's targets", () => {
       ...asBase,
       "specs/a.md": fsSpec( "A", [
         "* {#s-pnt001} A marked rule.",
-        "* {#p-pnt002 >specs/b.md,specs/b.md#build-and-test,s-pnt001,src} "
+        "* {#p-pnt002 >specs/b.md,specs/b.md#build-and-test,s-pnt001} "
           + "The pointer."
       ])
     });
@@ -307,17 +392,19 @@ describe( "concord-pointer-dangling-fails — a pointer's targets", () => {
       "specs/a.md": fsSpec( "A", [
         "* {#p-pnt002 >specs/missing.md,specs/b.md#no-such-heading,s-nomrk1} "
           + "The pointer.",
+        "* {#p-pnt005 >src} A code pointer.",
         "* {#p-pnt003} A pointer with no targets.",
         "* {#s-pnt004 >src} A statement with targets."
       ])
     });
     const aRunBad = faRun( [ "specs/a.md" ]);
     const vsDangling = fvsLineInSection( aRunBad.sOut, sTitleDangling );
-    expect( vsDangling ).toHaveLength( 3 );
+    expect( vsDangling ).toHaveLength( 4 );
     [ "specs/missing.md", "specs/b.md#no-such-heading", "s-nomrk1" ]
       .forEach(( sTarget ) => expect(
         vsDangling.filter(( s ) => s.includes( " " + sTarget + " " ))
       ).toHaveLength( 1 ));
+    expect( vsDangling.some(( s ) => s.includes( "p-pnt005" ))).toBe( true );
     expect( aRunBad.cExit ).not.toBe( 0 );
     expect( faRun( [] ).cExit ).toBe( 0 );
     const vsBad = fvsLineInSection( aRunBad.sOut, sTitleMarker );
@@ -527,6 +614,7 @@ describe( "concord-ruling-midline-listed — a ruling outside a motive", () => {
   // @proves s-72fjkw@d78bae0
   // @proves s-263wnp@68719c6
   // @proves s-dila0o@c18103b
+  // @proves s-jmslkk@be3cc50
   test( "is named mid-line, opening or unmarked, an architect motive "
     + "without arch is named, PAIRED with motives, a mid-line code span "
     + "and a non-label, which are not, and the exit is unchanged", () => {
@@ -549,14 +637,14 @@ describe( "concord-ruling-midline-listed — a ruling outside a motive", () => {
 
 describe( "concord-interactive-pass-recorded — an interactive check", () => {
   const sTextCheck = "**Do:** open the page. **Look for:** a green box.";
-  const fWriteCheck = ( sMarker, sText, asExtra ) => fWriteTree({
+  const fWriteCheck = ( sMarker, sText, asExtra, bMigrate = true ) => fWriteTree({
     "src/x.js": "const n = 1;\n",
     "specs/a.md": fsSpec( "A", [
       "* {#s-aaaaaa} A marked rule.",
       "* " + sMarker + " " + sText
     ]),
     ...( asExtra || {})
-  });
+  }, bMigrate );
   const fsStatus = () => {
     const aRun = faRun( [ "--interactive" ]);
     expect( aRun.cExit ).toBe( 0 );
@@ -565,9 +653,9 @@ describe( "concord-interactive-pass-recorded — an interactive check", () => {
 
   // @proves s-0eydbi@db338e8
   // @proves s-vhci8f@cf04778
-  // @proves s-khw3hm@275ae44
+  // @proves s-khw3hm@18fc4f5
   // @proves s-j0u6oi@c752acc
-  // @proves s-oy6kxo@14aa8e2
+  // @proves s-oy6kxo@66e62d5
   // @proves s-rypq7c@adb23df
   // @proves s-32o5r7@1ced769
   test( "is listed unchecked, then passed once recorded, PAIRED with a "
@@ -595,8 +683,7 @@ describe( "concord-interactive-pass-recorded — an interactive check", () => {
       sDate: expect.stringMatching( /^\d{4}-\d{2}-\d{2}$/ ),
       sNote: "ok",
       asHashForTarget: {
-        "s-aaaaaa": fsHash( "A marked rule." ),
-        src: expect.stringMatching( /^[0-9a-f]{7}$/ )
+        "src/x.js": expect.stringMatching( /^[0-9a-f]{7}$/ )
       }
     });
     expect( aRecord.sDate ).toBe( new Date().toISOString().slice( 0, 10 ));
@@ -629,24 +716,25 @@ describe( "concord-interactive-pass-recorded — an interactive check", () => {
     ]);
   });
 
-  // @proves s-m544u1@b5f9c6a
+  // @proves s-m544u1@eee094d
   // @proves s-zac0m4@4b07675
   test( "with Look for before Do, no target list or a missing target is "
     + "reported, PAIRED with no record file written by a map run", () => {
     fWriteCheck(
-      "{#i-int001 >src}", "**Look for:** a box. **Do:** open the page."
+      "{#i-int001 >src}", "**Look for:** a box. **Do:** open the page.",
+      null, false
     );
     expect( fvsLineInSection( faRun( [] ).sOut, sTitleMarker )).toEqual([
       expect.stringMatching( /^specs\/a\.md:6 .*i-int001/ )
     ]);
     fWriteCheck( "{#i-int001 <arch}", sTextCheck );
-    expect( fvsLineInSection( faRun( [] ).sOut, sTitleMarker )).toEqual([
+    expect( fvsLineInSection( faRun( [] ).sOut, sTitleNoCode )).toEqual([
       expect.stringMatching( /^specs\/a\.md:6 .*i-int001/ )
     ]);
-    fWriteCheck( "{#i-int001 <arch >s-aaaaaa,nofile.js}", sTextCheck );
+    fWriteCheck( "{#i-int001 <arch}", sTextCheck );
     const aRun = faRun( [ "specs/a.md" ]);
-    expect( fvsLineInSection( aRun.sOut, sTitleDangling )).toEqual([
-      expect.stringMatching( /^specs\/a\.md:6 .*i-int001 nofile\.js / )
+    expect( fvsLineInSection( aRun.sOut, sTitleNoCode )).toEqual([
+      expect.stringMatching( /^specs\/a\.md:6 .*i-int001/ )
     ]);
     expect( aRun.cExit ).not.toBe( 0 );
     expect( fbExists( sPathRecord )).toBe( false );
@@ -710,7 +798,7 @@ describe( "concord-guidance-follows-checked — guidance references", () => {
   // @proves s-bmkxya@6780e68
   // @proves s-mbcxy1@de2395f
   // @proves s-1xpgsb@4b63213
-  // @proves s-z28ucn@75778df
+  // @proves s-z28ucn@585ecdf
   test( "naming a g line at its hash are listed and pass, PAIRED with the "
     + "line changed, a reference to a statement, a short hash and an "
     + "uncited line", () => {
@@ -867,8 +955,9 @@ describe( "spec-map — line type edge rules", () => {
     ]);
   });
 
-  // @proves s-w75973@a337dea
-  // @proves s-en1xk7@4fc96f3
+  // @proves s-w75973@e58d191
+  // @proves s-en1xk7@b19ecef
+  // @proves s-j8ahje@b487af3
   test( "a target in no known form or empty is malformed, PAIRED with "
     + "targets of each form, which are not", () => {
     fWriteTree({
@@ -1059,7 +1148,7 @@ describe( "spec-map — line type edge rules", () => {
     expect( sCheck ).toContain( "seen" );
     const sGuide = faRun( [ "--sid", "g-sid004" ]);
     expect( sGuide.cExit ).toBe( 0 );
-    expect( sGuide.sStdout ).toMatch( /src\/x\.js:1 {2}current/ );
+    expect( sGuide.sStdout ).toMatch( /src\/x\.js:2 {2}current/ );
     [
       [ "d-sid001", "**Widget** — a part." ],
       [ "m-sid002", "A motive." ],
@@ -1070,7 +1159,7 @@ describe( "spec-map — line type edge rules", () => {
     ));
   });
 
-  // @proves s-z28ucn@75778df
+  // @proves s-z28ucn@585ecdf
   // @proves s-8xfzz3@6999bd7
   // @proves s-3g9qus@2aa742c
   test( "guidance references are read in every script file kind outside "
@@ -1082,6 +1171,7 @@ describe( "spec-map — line type edge rules", () => {
       "specs/g.md": fsSpec( "G", [ "* {#g-scp001 for=fixer} " + sTextGuide ]),
       "scripts/a.mjs": "// @follows g-scp001@" + fsHash( sTextGuide ) + "\n",
       "test/b.cjs": "// @follows g-scp001@" + fsHash( sTextGuide ) + "\n",
+      "test/d.test.js": "// @follows g-scp001@" + fsHash( sTextGuide ) + "\n",
       "packages/p/c.css": "/* @follows g-scp001@" + fsHash( sTextGuide )
         + " */\n",
       "scripts/bad.mjs": sBad,
@@ -1102,12 +1192,13 @@ describe( "spec-map — line type edge rules", () => {
     const aRunGuide = faRun( [ "--guidance" ]);
     expect( aRunGuide.cExit ).toBe( 0 );
     expect( aRunGuide.sStdout ).toMatch( /scripts\/a\.mjs:1 {2}current/ );
-    expect( aRunGuide.sStdout ).toMatch( /test\/b\.cjs:1 {2}current/ );
     expect( aRunGuide.sStdout ).toMatch( /packages\/p\/c\.css:1 {2}current/ );
+    expect( aRunGuide.sStdout ).toMatch( /test\/b\.cjs:1 {2}current/ );
+    expect( aRunGuide.sStdout ).toMatch( /test\/d\.test\.js:1 {2}current/ );
     expect( fsRead( "specs/g.md" )).toBe( sSpec );
   });
 
-  // @proves s-rmpj20@a0b5c82
+  // @proves s-rmpj20@c3531c2
   test( "a guidance reference to a retyped line is named retyped", () => {
     const sTextGuide = "Write plain code.";
     fWriteTree({
@@ -1133,7 +1224,7 @@ describe( "concord-reword-resets-check — a reworded check", () => {
   // @proves s-d0p52k@8a9d95e
   // @proves s-g8h2jz@c4623dc
   // @proves s-ikjpbw@fc0cb7c
-  // @proves s-oy6kxo@14aa8e2
+  // @proves s-oy6kxo@66e62d5
   test( "passed is listed passed, PAIRED with one word changed, after which "
     + "it is stale, --worklist resets it as reworded and its card says "
     + "so", () => {
@@ -1181,15 +1272,13 @@ describe( "concord-code-change-resets-check — a check's code changes", () => {
   const fvsStatus = () => vsId.map( fsStatusOf );
   const vsPassed = [ "passed", "passed", "passed" ];
 
-  // @proves s-g8r0ur@743bc09
-  // @proves s-zcb6gq@2a292c5
+  // @proves s-g8r0ur@13a27c5
+  // @proves s-zcb6gq@2302e9b
   // @proves s-wp3dpp@abede2f
-  // @proves s-lgrhug@3ad0748
-  // @proves s-e6tln3@43c24a4
+  // @proves s-lgrhug@dcbf12a
   // @proves s-tclcd8@3d6d619
-  test( "that only touches comments or whitespace leaves every check "
-    + "passed, PAIRED with real changes to a file, a function and a "
-    + "directory, and with a deleted target", () => {
+  test( "comments and whitespace leave linked checks passed, PAIRED with "
+    + "code changes and a deleted implementation file", () => {
     fWriteTree({
       "src/a.js": sFileA,
       "src/b.js": sFileB,
@@ -1225,40 +1314,41 @@ describe( "concord-code-change-resets-check — a check's code changes", () => {
     fWriteFile( "src/a.js", "const fnSum = ( a, b ) => a - b;\n" );
     expect( fvsStatus()).toEqual([ "stale", "passed", "passed" ]);
     fWriteFile( "src/b.js", sFileB.replace( "n * 2", "n * 3" ));
-    expect( fvsStatus()).toEqual([ "stale", "passed", "passed" ]);
+    expect( fvsStatus()).toEqual([ "stale", "stale", "passed" ]);
     fWriteFile( "src/b.js", sFileB.replace( "n + 1", "n + 2" ));
     expect( fvsStatus()).toEqual([ "stale", "stale", "passed" ]);
     fWriteFile( "lib/two.js", "const t = 2;\n" );
+    expect( fvsStatus()).toEqual([ "stale", "stale", "passed" ]);
+    fWriteFile( "lib/one.js", "const s = \"y\";\n" );
     expect( fvsStatus()).toEqual([ "stale", "stale", "stale" ]);
     fWriteFile( "src/a.js", sFileA );
     expect( fsStatusOf( "i-cod001" )).toBe( "passed" );
     fs.rmSync( path.join( sDirFixture, "src", "a.js" ));
     expect( fsStatusOf( "i-cod001" )).toBe( "stale" );
-    expect( fvsLineInSection( faRun( [] ).sOut, sTitleDangling )).toEqual([
-      expect.stringMatching( /^specs\/a\.md:5 .*i-cod001 src\/a\.js / )
+    expect( fvsLineInSection( faRun( [] ).sOut, sTitleNoCode )).toEqual([
+      expect.stringMatching( /^specs\/a\.md:5 .*i-cod001/ )
     ]);
   });
 
-  // @proves s-zcb6gq@2a292c5
-  // @proves s-3bftr3@5507835
+  // @proves s-zcb6gq@2302e9b
   test( "inside a string or regular expression, whitespace is kept, and a "
-    + "word changed in any file changes its hash, PAIRED with a CSS comment "
-    + "and whitespace in a plain file, which do not", () => {
+    + "word changed in linked code changes its hash, PAIRED with a CSS "
+    + "comment and code whitespace, which do not", () => {
     const sFileS = "const s = \"a  b\"; const r = /x  y/;\n";
     fWriteTree({
       "src/s.js": sFileS,
       "web/x.css": ".a { color: red; }\n",
-      "notes.txt": "one two\nthree\n",
+      "src/plain.js": "const n = 1;\n",
       "specs/a.md": fsSpec( "A", [
         fsCheck( "i-lit001", "src/s.js", "read.", "text." ),
         fsCheck( "i-lit002", "web/x.css", "look.", "red." ),
-        fsCheck( "i-lit003", "notes.txt", "note.", "notes." )
+        fsCheck( "i-lit003", "src/plain.js", "note.", "notes." )
       ])
     });
     const vsLit = [ "i-lit001", "i-lit002", "i-lit003" ];
     vsLit.forEach(( sId ) => fPass( sId ));
     fWriteFile( "web/x.css", "/* theme */\n.a {\n  color : red ;\n}\n" );
-    fWriteFile( "notes.txt", "  one   two three  \n" );
+    fWriteFile( "src/plain.js", "  const   n=1 ;\n" );
     expect( vsLit.map( fsStatusOf )).toEqual( vsPassed );
     fWriteFile( "src/s.js", "const s = \"a b\"; const r = /x  y/;\n" );
     expect( fsStatusOf( "i-lit001" )).toBe( "stale" );
@@ -1267,40 +1357,39 @@ describe( "concord-code-change-resets-check — a check's code changes", () => {
     fWriteFile( "src/s.js", sFileS );
     expect( fsStatusOf( "i-lit001" )).toBe( "passed" );
     fWriteFile( "web/x.css", ".a { color: blue; }\n" );
-    fWriteFile( "notes.txt", "one two four\n" );
+    fWriteFile( "src/plain.js", "const n = 2;\n" );
     expect( vsLit.map( fsStatusOf )).toEqual([ "passed", "stale", "stale" ]);
   });
 
-  // @proves s-g8r0ur@743bc09
-  // @proves s-m5inu7@6543790
-  // @proves s-lgrhug@3ad0748
-  test( "a check targeting a line and a spec section goes stale only when "
-    + "that line or section changes", () => {
+  // @proves s-g8r0ur@13a27c5
+  // @proves s-m5inu7@1f5b447
+  // @proves s-lgrhug@dcbf12a
+  test( "a check tracks its linked implementation file, not spec lines", () => {
     const fWriteSpecs = ( sRule, sSub, sOther ) => {
       fWriteFile( "specs/a.md", fsSpec( "A", [
         "* {#s-sec001} " + sRule,
-        fsCheck( "i-sec002", "s-sec001,specs/b.md#part", "look.", "a part." )
+        fsCheck( "i-sec002", "src/check.js", "look.", "a part." )
       ]));
       fWriteFile( "specs/b.md", [
         "# B", "", "## Part", "", "Part text.", "", "### Sub", "", sSub, "",
         "## Other", "", sOther, ""
       ].join( "\n" ));
     };
-    fWriteTree({});
+    fWriteTree({ "src/check.js": "const x = 1;\n" });
     fWriteSpecs( "A rule.", "Sub text.", "Other text." );
     expect( faRun( [ "--pass", "i-sec002" ]).cExit ).toBe( 0 );
     fWriteSpecs( "A rule.", "Sub text.", "Other words." );
     expect( fsStatusOf( "i-sec002" )).toBe( "passed" );
     fWriteSpecs( "A rule.", "Sub words.", "Other words." );
-    expect( fsStatusOf( "i-sec002" )).toBe( "stale" );
-    fWriteSpecs( "A rule.", "Sub text.", "Other words." );
     expect( fsStatusOf( "i-sec002" )).toBe( "passed" );
     fWriteSpecs( "A new rule.", "Sub text.", "Other words." );
+    expect( fsStatusOf( "i-sec002" )).toBe( "passed" );
+    fWriteFile( "src/check.js", "const x = 2;\n" );
     expect( fsStatusOf( "i-sec002" )).toBe( "stale" );
   });
 });
 
-describe( "concord-function-target-resolution — function targets", () => {
+describe( "concord-function-target-resolution — pointers stay in specs", () => {
   const sFileC = [
     "function fnDecl( n ){",
     "  return n;",
@@ -1326,25 +1415,16 @@ describe( "concord-function-target-resolution — function targets", () => {
     ])
   });
 
-  // @proves s-8ck61z@9a0ba4d
-  // @proves s-pr83of@d0f4af2
-  // @proves s-en1xk7@4fc96f3
-  // @proves s-6ls2oh@b278617
-  test( "naming a declaration, a const arrow function, a method and a "
-    + "property each resolve, PAIRED with a name never defined and one "
-    + "defined twice, each named in (22) saying which", () => {
+  // @proves s-vjgnay@400021d
+  test( "code function targets are invalid, PAIRED with other code "
+    + "function names that are also invalid", () => {
     fWritePointer([ "fnDecl", "fnArrow", "fnMethod", "fnProp" ]);
     const aRun = faRun( [ "specs/a.md" ]);
-    expect( fvsLineInSection( aRun.sOut, sTitleDangling )).toEqual( [] );
-    expect( fvsLineInSection( aRun.sOut, sTitleMarker )).toEqual( [] );
-    expect( aRun.cExit ).toBe( 0 );
+    expect( fvsLineInSection( aRun.sOut, sTitleMarker )).toHaveLength( 4 );
+    expect( aRun.cExit ).not.toBe( 0 );
     fWritePointer([ "fnNone", "fnTwice" ]);
     const aRunBad = faRun( [ "specs/a.md" ]);
-    const vsDangling = fvsLineInSection( aRunBad.sOut, sTitleDangling );
-    expect( vsDangling ).toEqual([
-      expect.stringMatching( /src\/c\.js#fnNone .*no definition/ ),
-      expect.stringMatching( /src\/c\.js#fnTwice .*defined 2 times/ )
-    ]);
+    expect( fvsLineInSection( aRunBad.sOut, sTitleMarker )).toHaveLength( 2 );
     expect( aRunBad.cExit ).not.toBe( 0 );
     expect( faRun( [] ).cExit ).toBe( 0 );
   });
@@ -1360,9 +1440,10 @@ describe( "concord-no-code-target-flagged — a check without code", () => {
     ])
   });
 
-  // @proves s-m5inu7@6543790
-  // @proves s-ocpfpw@1855d5a
+  // @proves s-m5inu7@1f5b447
+  // @proves s-ocpfpw@c6adf07
   // @proves s-bxs0rr@4c0a68e
+  // @proves s-ol2dmr@37d4979
   test( "targeting only a statement and specs is named in (28) and fails "
     + "its spec's run, PAIRED with a file target added, after which it "
     + "passes", () => {
@@ -1378,6 +1459,25 @@ describe( "concord-no-code-target-flagged — a check without code", () => {
     const aRunCode = faRun( [ "specs/a.md" ]);
     expect( fvsLineInSection( aRunCode.sOut, sTitleNoCode )).toEqual( [] );
     expect( aRunCode.cExit ).toBe( 0 );
+  });
+});
+
+describe( "concord-implementation-links — code references", () => {
+  // @proves s-5i9gec@e31c13c
+  // @proves s-50dzy6@2129482
+  // @proves s-yyl1i0@2a9826b
+  test( "resolves a stamped implementation reference and its tested-by link", () => {
+    const sHash = fsHash( "A code rule." );
+    fWriteTree({
+      "specs/a.md": fsSpec( "A", [ "* {#s-cod001} A code rule." ] ),
+      "src/x.js": "// @implements s-cod001@" + sHash + "\n"
+        + "// @tested-by test/x.test.js\nconst x = 1;\n",
+      "test/x.test.js": "// @spec specs/a.md\n// @proves s-cod001@" + sHash
+        + "\ntest( \"the code rule\", () => { expect( 1 ).toBe( 1 ); });\n"
+    });
+    const aRun = faRun( [ "specs/a.md" ]);
+    expect( fvsLineInSection( aRun.sOut, sTitleCodeRefBad )).toEqual( [] );
+    expect( aRun.cExit ).toBe( 0 );
   });
 });
 
@@ -1397,7 +1497,7 @@ describe( "concord-unable-reopen-problems — unable, fail and reopen", () => {
   // @proves s-s8an6z@bb4aac8
   // @proves s-xsbw7s@7a18f8e
   // @proves s-ikjpbw@fc0cb7c
-  // @proves s-oy6kxo@14aa8e2
+  // @proves s-oy6kxo@66e62d5
   // @proves s-j0u6oi@c752acc
   test( "unable with a note is unchecked and a problem, a fail stays off "
     + "the page, a reopen closes it and puts it back, PAIRED with a noted "
@@ -1664,21 +1764,24 @@ describe( "concord-worklist-order-work-first — the worklist's order", () => {
   });
 
   // @proves s-yu6zet@bb44414
-  // @proves s-z7gbzu@02f7a9d
+  // @proves s-z7gbzu@ab3b738
   // @proves s-97jgxt@53268fc
   // @proves s-5406e5@0bad222
   // @proves s-g8h2jz@c4623dc
-  test( "runs oldest reset first, PAIRED with --work naming a file under "
-    + "the newest check's directory, which puts it first, and two checks "
+  test( "runs oldest reset first, PAIRED with --work naming an "
+    + "implementation file, which puts its check first, and two checks "
     + "reset by one change, which get a card each", () => {
     fWriteTree({
-      "src/a/one.js": "const a = 1;\n",
-      "src/b.js": "const b = 1;\n",
-      "src/c.js": "const c = 1;\n",
+      "src/a/one.js": "// @checks i-ord001@"
+        + fsHash( "**Do:** a. **Look for:** a." ) + "\nconst a = 1;\n",
+      "src/b.js": "// @checks i-ord002@"
+        + fsHash( "**Do:** b. **Look for:** b." ) + "\nconst b = 1;\n",
+      "src/c.js": "// @checks i-ord003@"
+        + fsHash( "**Do:** c. **Look for:** c." ) + "\nconst c = 1;\n",
       "specs/a.md": fsSpec( "A", [
-        fsCheck( "i-ord001", "src/a", "a.", "a." ),
-        fsCheck( "i-ord002", "src/b.js", "b.", "b." ),
-        fsCheck( "i-ord003", "src/c.js", "c.", "c." )
+        "* {#i-ord001} **Do:** a. **Look for:** a.",
+        "* {#i-ord002} **Do:** b. **Look for:** b.",
+        "* {#i-ord003} **Do:** c. **Look for:** c."
       ]),
       [ sPathRecord ]: [
         faReset( "i-ord001", "2026-01-03" ),
@@ -1689,8 +1792,8 @@ describe( "concord-worklist-order-work-first — the worklist's order", () => {
       "work-dir.txt": "src\n"
     });
     const fvsOrder = ( vsArg ) => {
-      expect( faRun( [ "--worklist", "page.html" ].concat( vsArg )).cExit )
-        .toBe( 0 );
+      const aRun = faRun( [ "--worklist", "page.html" ].concat( vsArg ));
+      expect( aRun.cExit ).toBe( 0 );
       return fvsCardId( fsRead( "page.html" ));
     };
     expect( fvsOrder( [] )).toEqual([ "i-ord002", "i-ord003", "i-ord001" ]);

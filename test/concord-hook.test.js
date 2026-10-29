@@ -131,6 +131,7 @@ afterAll(() => {
 
 // @proves s-khifjg@c398f54
 // @proves s-5r1y67@f5cc739
+// @proves s-l366c3@ab4230b
 describe( "concord-hook — its forms", () => {
   test.each([
     [[]],
@@ -188,6 +189,41 @@ describe( "concord-hook — which git it runs", () => {
     expect( vaCall.length ).toBeGreaterThan( 0 );
     vaCall.forEach(( aCall ) => expect( aCall.sName ).toBe( "git" ));
     expect( fsHooksPath()).toBe( ".githooks" );
+  });
+});
+
+// @proves s-l366c3@ab4230b
+describe( "concord-hook — git failures", () => {
+  test( "a missing git program is reported as an install error", () => {
+    fSetup();
+    const aRun = faRun([ "install" ], {
+      CONCORD_GIT: path.join( sDirGitBin, "missing-git" )
+    });
+    expect( aRun.cExit ).toBe( 2 );
+    expect( aRun.sStderr ).toContain( "cannot run" );
+  });
+
+  test( "a failing git config command is reported as an install error", () => {
+    fSetup();
+    const sPathFailConfig = path.join( sDirGitBin, "git-fail-config" );
+    fs.writeFileSync( sPathFailConfig, [
+      "#!/bin/sh",
+      "if [ \"$1\" = rev-parse ]; then echo git-common-dir; exit 0; fi",
+      "exit 1",
+      ""
+    ].join( "\n" ), { mode: 0o755 });
+    const aRun = faRun([ "install" ], { CONCORD_GIT: sPathFailConfig });
+    expect( aRun.cExit ).toBe( 2 );
+    expect( aRun.sStderr ).toContain( "git could not set core.hooksPath" );
+  });
+
+  test( "a failing git directory lookup is reported as an install error", () => {
+    fSetup();
+    const sPathFail = path.join( sDirGitBin, "git-fail" );
+    fs.writeFileSync( sPathFail, "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+    const aRun = faRun([ "install" ], { CONCORD_GIT: sPathFail });
+    expect( aRun.cExit ).toBe( 2 );
+    expect( aRun.sStderr ).toContain( "git could not name its directory" );
   });
 });
 

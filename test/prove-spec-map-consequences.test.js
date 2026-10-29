@@ -2,6 +2,7 @@
 
 const fs = require( "fs" );
 const path = require( "path" );
+const crypto = require( "crypto" );
 const { spawnSync } = require( "child_process" );
 
 const { sPathSpecMap: sPathScript, fWriteConcord } = require(
@@ -14,9 +15,19 @@ const sDirFixture = path.join(
 );
 const sPathRecord = path.join( "test", "interactive-passes.jsonl" );
 
+const fsHash = ( sText ) => crypto.createHash( "sha1" )
+  .update( sText, "utf8" ).digest( "hex" ).slice( 0, 7 );
+
 const fWriteFile = ( sPathRel, sBody ) => {
   const sPath = path.join( sDirFixture, sPathRel );
   fs.mkdirSync( path.dirname( sPath ), { recursive: true });
+  if( fs.existsSync( sPath )){
+    const vsCheck = fs.readFileSync( sPath, "utf8" ).split( "\n" )
+      .filter(( sLine ) => /@checks\s+i-[a-z0-9]{6}@[0-9a-f]{7}/.test( sLine ));
+    const vsNew = sBody.split( "\n" );
+    sBody = vsCheck.filter(( sLine ) => !vsNew.includes( sLine ))
+      .concat( vsNew ).join( "\n" );
+  }
   fs.writeFileSync( sPath, sBody );
 };
 
@@ -41,8 +52,8 @@ const fsSpec = ( sTitle, vsBody ) => (
   [ "# " + sTitle, "", "## API", "" ].concat( vsBody, [ "" ]).join( "\n" )
 );
 
-const fsCheck = ( sId, sTarget ) => (
-  "* {#" + sId + " >" + sTarget + "} **Do:** open it. **Look for:** a box."
+const fsCheck = ( sId ) => (
+  "* {#" + sId + "} **Do:** open it. **Look for:** a box."
 );
 
 const fvaRecord = () => (
@@ -106,25 +117,28 @@ describe( "spec-map — a guidance line's area is the spec holding it", () => {
 
 describe( "spec-map — the checks a change touches", () => {
   const sTextFunc = "function fOne(){ return 1;}\nfunction fTwo(){ return 1;}\n";
+  const sTextCheck = "**Do:** open it. **Look for:** a box.";
 
-  // @proves s-lgrhug@3ad0748
-  test( "the worklist resets, with reason code, the checks whose targets "
-    + "name a changed file, a directory holding one, a function whose "
-    + "definition changed, or a statement whose hash changed, PAIRED with "
-    + "an untouched file and a function whose neighbour changed, which "
-    + "are not reset", () => {
+  // @proves s-lgrhug@dcbf12a
+  test( "the worklist resets checks linked from changed implementation "
+    + "files, PAIRED with an untouched file and a reworded spec statement, "
+    + "which do not reset the checks", () => {
     fWriteTree({
-      "src/a.js" : "const a = 1;\n",
-      "src/dir/x.js" : "const x = 1;\n",
-      "src/f.js" : sTextFunc,
-      "src/same.js" : "const same = 1;\n",
+      "src/a.js" : "// @checks i-con001@" + fsHash( sTextCheck )
+        + "\nconst a = 1;\n",
+      "src/dir/x.js" : "// @checks i-con002@" + fsHash( sTextCheck )
+        + "\nconst x = 1;\n",
+      "src/f.js" : "// @checks i-con003@" + fsHash( sTextCheck )
+        + "\n" + sTextFunc,
+      "src/same.js" : "// @checks i-con004@" + fsHash( sTextCheck )
+        + "\nconst same = 1;\n",
       "specs/a.md" : fsSpec( "A", [
         "* {#s-con000} A rule.",
-        fsCheck( "i-con001", "src/a.js" ),
-        fsCheck( "i-con002", "src/dir" ),
-        fsCheck( "i-con003", "src/f.js#fOne" ),
-        fsCheck( "i-con004", "src/same.js" ),
-        fsCheck( "i-con005", "s-con000" )
+        fsCheck( "i-con001" ),
+        fsCheck( "i-con002" ),
+        fsCheck( "i-con003" ),
+        fsCheck( "i-con004" ),
+        fsCheck( "i-con005" )
       ])
     });
     [ "i-con001", "i-con002", "i-con003", "i-con004", "i-con005" ]
@@ -141,14 +155,14 @@ describe( "spec-map — the checks a change touches", () => {
     ));
     fWriteFile( "specs/a.md", fsSpec( "A", [
       "* {#s-con000} A reworded rule.",
-      fsCheck( "i-con001", "src/a.js" ),
-      fsCheck( "i-con002", "src/dir" ),
-      fsCheck( "i-con003", "src/f.js#fOne" ),
-      fsCheck( "i-con004", "src/same.js" ),
-      fsCheck( "i-con005", "s-con000" )
+      fsCheck( "i-con001" ),
+      fsCheck( "i-con002" ),
+      fsCheck( "i-con003" ),
+      fsCheck( "i-con004" ),
+      fsCheck( "i-con005" )
     ]));
     expect( faRun([ "--worklist", "page.html" ]).cExit ).toBe( 0 );
-    expect( fvsResetId()).toEqual([ "i-con001", "i-con002", "i-con005" ]);
+    expect( fvsResetId()).toEqual([ "i-con001", "i-con002", "i-con003" ]);
     fvaRecord().filter(( aRecord ) => aRecord.sVerdict === "reset" )
       .forEach(( aRecord ) => expect( aRecord.sReason ).toBe( "code" ));
 
@@ -156,9 +170,7 @@ describe( "spec-map — the checks a change touches", () => {
       "fOne(){ return 1;", "fOne(){ return 3;"
     ));
     expect( faRun([ "--worklist", "page.html" ]).cExit ).toBe( 0 );
-    expect( fvsResetId()).toEqual(
-      [ "i-con001", "i-con002", "i-con003", "i-con005" ]
-    );
+    expect( fvsResetId()).toEqual([ "i-con001", "i-con002", "i-con003" ]);
     expect( fvsResetId()).not.toContain( "i-con004" );
   });
 });

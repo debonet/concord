@@ -1,3 +1,17 @@
+// @implements s-jhtp93@4c4ca3c
+// @implements s-2fs4an@26c553f
+// @implements s-92u5vq@475d2f0
+// @implements s-zstgty@57da9d2
+// @implements s-am7qu4@f0bbacd
+// @implements s-i0n88z@442670e
+// @implements s-j38rej@32cf0ae
+// @implements s-sx6vdb@35a08a5
+// @implements s-zupjie@8e06977
+// @implements s-wu6tv6@3c7912b
+// @implements s-xqx0r5@13898cb
+// @implements s-w8ivpb@ffb0e3a
+// @implements s-4j8qm7@1fe7250
+// @tested-by test/concord-settings.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -5,7 +19,7 @@ const path = require( "path" );
 
 const sFileConfig = "concord.json";
 const sSegmentAny = "*";
-const vsLanguageKnown = [ "javascript", "css", "rust" ];
+const vsLanguageKnown = [ "javascript", "typescript", "css", "html", "rust" ];
 
 const fbObject = ( x ) => (
   x !== null && typeof x === "object" && !Array.isArray( x )

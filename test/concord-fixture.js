@@ -25,7 +25,7 @@ const aConfigFixture = {
     { sName: "remote-pacts", vsDir: [ "packages/remote-pacts/test" ] }
   ],
   vsLanguage: [ "javascript", "css" ],
-  vsDirRead: [ "src", "scripts", "test", "packages/*" ],
+  vsDirRead: [ "src", "scripts", "test", "packages/*", "lib", "web" ],
   vsDirIgnored: [ "node_modules" ],
   sPathRecord: "test/interactive-passes.jsonl"
 };

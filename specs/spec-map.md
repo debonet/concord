@@ -1,18 +1,36 @@
-# STC Concord: the spec map
+# ConcordSTC: the spec map
+
+Statement ids: complete
 
 ## Purpose
 
-STC Concord (Concord, STC or sid for short) links specs, tests and code:
-`npm run spec-map` reports, from the specs, the test files and the code
-alone, which statement each test proves,
-which spec owns each test, and how every other type of spec line
+ConcordSTC (Concord, STC or sid for short) links specs, tests and code:
+`npm run spec-map` reports which statements tests prove, which statements
+code implements, which tests are declared to verify each implementation
+file, which spec owns each test, and how every other type of spec line
 (`specs/spec-map-line-types.md`) is satisfied.
+
+> {#m-ulzcp5} USER 2026-10-28: "So spec pointing to tests and code seems broken. The spec files should stand alone, and not depend on anything else."
+
+> {#m-r3llz8} USER 2026-10-28: "It should be:
+>
+> spec <-- test
+> spec <-- code
+> test <-- code"
+
+> {#m-6pxcni} USER 2026-10-28: "Then there should a tool that makes sure:
+>
+> * every spec is convered by tests
+> * every spec is covered by code
+> * every code is covered by tests"
 
 ## API
 
-* `npm run spec-map [-- <spec path>]` at the root maps marked statements
+* {#d-hdecyv <arch} **Spec map** — the Concord command that maps marked statements
   to the tests that prove them, and tests to the specs that own them,
-  across every test file (Test files, below).
+  across every test file (Test files, below); it also accepts the query and
+  assignment forms described here.
+  `npm run spec-map [-- <spec path>]` at the root runs it.
   `npm run spec-map -- --hash <id>`, `-- --sid <id>` and
   `-- --candidates <id>` answer one statement id each (Query forms, below),
   `-- --root <id>` lists the conclusions under a root (Statement roots,
@@ -23,6 +41,7 @@ which spec owns each test, and how every other type of spec line
   commit may proceed (`specs/concord-process.md`, What stops a commit).
   {#s-mp16u6 <arch} `-- --probes` lists
   every probe statement and the tests that prove it (Probe flags, below).
+* {#s-1fwxnq <arch} A path naming no spec produces no report and exits non-zero.
 * {#s-rkzefi <arch} **At most one spec path.** A run given a second positional
   argument, or a spec path beside a query form or `--assign`, maps
   nothing, prints its usage line to stderr and exits 2, so no extra path
@@ -38,7 +57,7 @@ which spec owns each test, and how every other type of spec line
   the worklist page (`specs/spec-map-interactive.md`); {#s-6zo013 <arch} given a spec
   path beside any of these four, a run maps nothing, prints its usage line
   to stderr and exits 2.
-* It reads `specs/`, and writes it only under `--assign`, writes the
+* {#s-yurmkw <arch} It reads `specs/`, and writes it only under `--assign`, writes the
   project's record file (`specs/concord-process.md`, The settings file)
   only under `--pass`, `--fail`, `--unable`, `--reopen`, `--answers` and
   `--worklist`, and writes the worklist page only under `--worklist`, at
@@ -59,6 +78,8 @@ which spec owns each test, and how every other type of spec line
 * {#s-dpoj4a <arch} **How a name is read.** A name is read as written in the
   source: a `.each` name with its placeholders unexpanded, and a name
   written as string literals joined by `+` as their join.
+* {#s-cwbb50 <arch} An unterminated string literal in a test call's name is read as no name.
+* {#s-k9c32y <arch} An unterminated bracket group while masking a test file's source extends to the end of that file; text after its opening bracket is not read as test declarations.
 * {#s-b1flmr <s-mrxt8t@4a0c235} **Required headings are ordinary.** A heading or a line
   whose text begins with the word `Required`, and the blocks after it, are
   read as any other heading, paragraph or bullet: a backticked token
@@ -256,7 +277,7 @@ which spec owns each test, and how every other type of spec line
   completeness failures of each complete spec; (11) each removable
   owner line, naming the file and the line; and (12) each placeholder,
   naming the spec, the line and its statement's opening words. {#s-e287lm}
-  With no argument it reports all seven over the whole tree and exits 0.
+  With no argument it reports all lists over the whole tree and exits 0.
   {#s-b8vvpd} With a spec path it reports (6), (7), (10) and (12) for that
   spec, (8) and (11) over that spec's test files, and (9) for links
   naming that spec's statements wherever they sit. It exits non-zero
@@ -271,6 +292,9 @@ which spec owns each test, and how every other type of spec line
   `describe` it sits above, the id, the spec marking it and both hashes.
   {#s-nudxy0 <arch} (19) never changes the exit code, so a stale link fails
   only the run with the path of the spec whose statement it names.
+* {#s-i6rjuw <arch,m-6pxcni@29fc8b1} The command reports (31) each statement with no resolving `@implements` reference, (32) each implementation file with no resolving `@implements` reference or no resolving `@tested-by` reference, and (33) each malformed, unresolved or stale code reference, naming its implementation file, line and target.
+* {#s-tdw4gj <arch,m-6pxcni@29fc8b1} With no argument it reports (31), (32) and (33) over the whole tree and exits 0; with a spec path it reports (31) for that spec's statements, (32) over implementation files naming those statements and (33) for references naming that spec's statements, exiting non-zero on (33), on (31) when the spec is complete, and on (32) when the implementation file names a statement in a complete spec.
+* {#s-yyl1i0 <arch,m-6pxcni@29fc8b1} A `@tested-by` reference resolves only when its test file has at least one test that proves a statement implemented by the referring file.
 * {#s-tvuwev <arch} **Unlinked tests.** Beside the other lists the command
   reports (21) the unlinked tests: each `test` or `it` that proves no
   statement through a resolving link, counted once whatever its owners. (21) gives one line per test
@@ -285,8 +309,9 @@ which spec owns each test, and how every other type of spec line
 * {#s-eel840} **Query forms.** `--hash <id>` prints the statement's
   current hash alone on one line and exits 0. {#s-6gfnun} `--sid <id>`
   prints the spec and line where the id is marked, then one line per
-  link line naming the id, giving the file, the line, the name of the
-  call it sits above, the recorded hash and whether it is stale; when
+  test link and implementation reference naming the id, giving the file,
+  the line and the recorded hash and whether it is stale; for test links it
+  also gives the name of the call they cover; when
   none names it, it says so; it exits 0. {#s-wrdbhk} `--candidates <id>`
   ranks the statement's spec's tests that its links do not already
   cover. A test scores 1 for each distinctive term of the statement found,
@@ -327,7 +352,7 @@ which spec owns each test, and how every other type of spec line
 
 ## Statement roots
 
-A root is a statement that other statements, its conclusions, stem from:
+{#d-2rc0nq <arch} **Root** — a statement that other statements, its conclusions, stem from:
 a ruling or goal of the CEO's recorded verbatim, or a statement derived from
 one. A conclusion that no recorded words of his support names `arch`
 instead, a decision made on his behalf; one that his words support only
@@ -448,7 +473,7 @@ in part names `arch` beside the references to them.
 
 ## Statement parts
 
-Some statements are proved only by several tests together, none of which
+{#d-9mmtw8 <arch} **Statement parts** — several tests may prove a statement together, none of which
 proves the whole: a rule stated once for every surface, proved by a
 terminal test and a web test in different suites, or a rule with two arms
 tested in two places. Such a statement names its arms as parts, each test
@@ -512,7 +537,7 @@ links the part it proves, and the statement is proved when every part is.
 
 ## Guard lines
 
-Some tests prove no statement but keep another test's proof of one sound:
+{#d-44xe27 <arch} **Guard lines** — tests that prove no statement but keep another test's proof of one sound:
 a paired self-test that plants the failure the proof checks for and shows
 the check catches it; a guard that fails when the proof's loop would run
 over nothing; a guard that shows a source scan sees what it scans for.
@@ -578,7 +603,7 @@ Such a test names the statement whose proof it guards.
 
 ## Probe flags
 
-A real-process probe is a test that needs a real child process and may
+{#d-1hzkcp <arch} **Real-process probe** — a test that needs a real child process and may
 therefore raise its timeout, where an adopting project's test rules allow
 it. The spec owning the module that starts the child declares it with a
 probe statement, and the project's timeout fence asks this command which
@@ -599,6 +624,18 @@ tests prove one.
   statement's resolving links cover (What a link covers), part links
   included, giving the test's file, the line of its call and its name, and
   exits 0. {#s-nksahd <arch} It writes nothing.
+
+## The three-way map
+
+* {#s-vjgnay <arch,m-ulzcp5@41ae8af} A spec's `p` pointers resolve only to spec files, spec headings or marked lines in specs; a pointer to a test or implementation file is reported as an invalid target. An `i` line has no target list; implementation files name it with `@checks` references.
+* {#s-2l6ys1 <arch,m-r3llz8@7fee9b6} An implementation file is a non-test code file in a directory and language the project declares for reading (`specs/concord-process.md`, The settings file).
+* {#s-01nsp8 <arch,m-r3llz8@7fee9b6} Each `@implements` reference in an implementation file names one statement that the file implements.
+* {#s-23wmhe <arch,m-r3llz8@7fee9b6} Each `@tested-by` reference in an implementation file names a test file that verifies code in that implementation file.
+* {#s-3m6dwj <arch,m-r3llz8@7fee9b6} Each `@checks` reference in an implementation file names an interactive check that the implementation file supports.
+* {#s-gpqy5p <arch,m-6pxcni@29fc8b1} The command reports each statement with no resolving test link and each statement with no resolving `@implements` reference.
+* {#s-4hsltb <arch,m-6pxcni@29fc8b1} The command reports each implementation file with no resolving `@tested-by` reference, and each `@tested-by` reference whose test file proves none of the statements that file implements.
+* {#p-y0pvqs >specs/spec-coverage.md} These reports check the declared link graph; measured execution and source-line attribution are specified in `specs/spec-coverage.md`.
+* {#p-m2fyo9 >specs/spec-coverage.md} `spec-coverage` reports which tests execute each source line, with uncovered regions visible for review.
 
 ## Dependencies
 

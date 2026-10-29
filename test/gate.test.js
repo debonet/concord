@@ -83,6 +83,34 @@ const sSpecComplete = [
   ""
 ].join( "\n" );
 
+// @proves s-y86kt5@2f48faa
+test( "the report lists a complete statement without an implementation "
+  + "reference and an implementation file without links", () => {
+  const sText = "The complete rule holds.";
+  const sHash = fsHash( sText );
+  fWriteTree({
+    "specs/a.md": [
+      "# A", "", "Statement ids: complete", "", "## API", "",
+      "* {#s-gatc01} " + sText, ""
+    ].join( "\n" ),
+    "test/t.test.js": [
+      "// @spec specs/a.md",
+      "// @proves s-gatc01@" + sHash,
+      "test( \"proves the complete rule\", () => {} );",
+      ""
+    ].join( "\n" ),
+    "src/x.js": "const x = 1;\n"
+  });
+  const aReport = faRun([]);
+  expect( aReport.cExit ).toBe( 0 );
+  expect( aReport.sStdout ).toContain( "specs/a.md:7  s-gatc01" );
+  expect( aReport.sStdout ).toContain( "src/x.js" );
+  const aGate = faRun([ "--gate" ]);
+  expect( aGate.cExit ).toBe( 1 );
+  expect( aGate.sStdout ).toContain( "(31) specs/a.md" );
+  expect( aGate.sStdout ).toContain( "Gate: refused, 1 entries\n" );
+});
+
 const vsTestReporting = [
   "// @proves d-gat006@1234567",
   "test( \"cites a definition\", () => {} );",
@@ -131,7 +159,8 @@ const vtRefusing = [
   [ 26, "guidance references that do not resolve or are stale",
     "scripts/x.js:1" ],
   [ 26, "guidance references that do not resolve or are stale",
-    "scripts/x.js:2" ]
+    "scripts/x.js:2" ],
+  [ 31, "statements with no implementation link", "s-gat0c1" ]
 ];
 
 const vtReporting = [
@@ -160,12 +189,13 @@ afterAll(() => {
 });
 
 // @proves s-nlm91d@4f76fd6
-// @proves s-ug5kvq@e597ba2
+// @proves s-ug5kvq@115d4bb
 // @proves s-rkd937@6d33bc3
 // @proves s-u88ict@b5a6934
 // @proves s-nw4u9n@3b57e9b
 // @proves s-kkql92@90bba2d
 // @proves s-i2ip58@705d3ec
+// @proves s-t8un02@c986a9a
 describe( "gate — a tree with refusing entries", () => {
   test( "prints each refusing entry once as its list names it, by list "
     + "number, path and line, then the refused count, and exits 1", () => {
@@ -228,7 +258,7 @@ describe( "gate — what it reads", () => {
     const aRunAfter = faRun([ "--gate" ]);
     expect( aRunAfter.sStdout ).not.toContain( "(9) " );
     expect( aRunAfter.sStdout ).not.toContain( "s-zzz999" );
-    expect( aRunAfter.sStdout ).toContain( "Gate: refused, 6 entries\n" );
+    expect( aRunAfter.sStdout ).toContain( "Gate: refused, 7 entries\n" );
   });
 });
 

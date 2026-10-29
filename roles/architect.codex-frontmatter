@@ -1,0 +1,2 @@
+name = "architect"
+description = "Designs Concord behavior in specs and returns a precise fixer plan; never edits code."

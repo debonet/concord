@@ -1,5 +1,9 @@
 # Build, Layout, and Run
 
+Statement ids: complete
+
+> {#m-bvlr0p} USER 2026-10-29: "eliminate the concordstc coverage gap in this project"
+
 ## Purpose
 
 Define Concord's toolchain, layout, dependencies and the named commands
@@ -8,11 +12,10 @@ outside these.
 
 ## Toolchain
 
-* Runtime: Node (>= 20). Plain JavaScript, CommonJS modules (`require` /
-  `module.exports`). No TypeScript, no ESM, no bundler.
-* Test framework: jest `^29`.
-* Interpreted-language project: nothing is built. `npm install` is the
-  only setup step.
+* {#g-tzsnw9 <arch for=main,architect,fixer via=prompt} Use Node >= 20 and plain JavaScript with CommonJS modules (`require` /
+  `module.exports`); do not add TypeScript, ESM or a bundler.
+* {#g-19cdvc <arch for=main,architect,fixer via=prompt} Keep Jest at major version 29.
+* {#g-hmu7ok <arch for=main,architect,fixer via=prompt} Keep this an interpreted-language project: do not add a build step; `npm install` is the only setup step.
 
 ## Project Layout
 
@@ -23,7 +26,7 @@ outside these.
   README.md
   AGENTS.md                  the shared instructions for every coding agent
                              (specs/concord-process.md, Agent instructions)
-  roles/                     each role's text and its Claude Code frontmatter
+  roles/                     each role's text and tool-specific metadata
   .githooks/pre-commit       Concord's own pre-commit hook
                              (specs/concord-hook.md)
   concord.json               Concord's own declared values: Concord is
@@ -39,7 +42,7 @@ outside these.
   tmp/                       scratch and fixture trees (gitignored)
 ```
 
-`node_modules/` and `tmp/` are gitignored.
+* {#g-pief9h <arch for=main,architect,fixer via=prompt} Keep `node_modules/` and `tmp/` gitignored.
 
 ## The commands
 
@@ -58,60 +61,47 @@ outside these.
 
 ## Concord's own settings
 
-* {#s-230c67 <arch} Concord's `concord.json` declares the name `Concord`; one
-  suite `root` (`test`); the language `javascript`; the read directories
-  `bin`, `scripts` and `test` and the ignored directory `node_modules`; the
-  record file `test/interactive-passes.jsonl`; and one coverage run `root`
-  at the project root, with no command before it, over the source `bin` and
-  `scripts`, with the review file `spec-coverage-review.md`.
+* {#g-hmmu3p <arch for=main,architect,fixer via=prompt} Declare Concord's own name, suite, language readings, read and ignored directories, record file, coverage run and review file in `concord.json`; keep those values aligned with this spec.
 
 ## Packages and Dependencies
 
 `package.json`:
 
-* `"name": "@debonet/concord"`, `"version": "0.0.0"`, `"private": true`.
-* `"bin"`: `spec-map`, `spec-coverage`, `agents-sync` and `concord-hook`,
-  each mapped to its file under `bin/`.
-* dependencies: every npm module a file under `bin/` or `scripts/` loads,
-  at the version AIOS resolved when the commands moved from it.
-* devDependencies: `"jest": "^29"`, and every npm module a test file loads
-  that no command loads.
+* {#g-673253 <arch for=main,architect,fixer via=prompt} Keep the package private and named `@debonet/concord`.
+* {#g-4p0u7n <arch for=main,architect,fixer via=prompt} Expose `spec-map`, `spec-coverage`, `agents-sync` and `concord-hook` from their files under `bin/`.
+* {#g-0cjx6u <arch for=main,architect,fixer via=prompt} Keep every module loaded by `bin/` or `scripts/` in `dependencies`, at the version resolved when the commands moved from AIOS.
+* {#g-m4xokh <arch for=main,architect,fixer via=prompt} Keep Jest `^29` and test-only modules in `devDependencies`.
 * scripts:
-  * `"test"`: `"jest"`
-  * `"spec-map"`: `"bin/spec-map"`
-  * `"spec-coverage"`: `"bin/spec-coverage"`
-  * `"agents-sync"`: `"bin/agents-sync"`
-  * `"hook-install"`: `"bin/concord-hook install"`
-* `"jest"`: roots `<rootDir>/test`.
+  * {#g-smevwe <arch for=main,architect,fixer via=prompt} Set `"test"` to `"jest"`.
+  * {#g-53gzsk <arch for=main,architect,fixer via=prompt} Set `"spec-map"` to `"bin/spec-map"`.
+  * {#g-m1hkj5 <arch for=main,architect,fixer via=prompt} Set `"spec-coverage"` to `"bin/spec-coverage"`.
+  * {#g-1nmzd1 <arch for=main,architect,fixer via=prompt} Set `"agents-sync"` to `"bin/agents-sync"`.
+  * {#g-oczcgk <arch for=main,architect,fixer via=prompt} Set `"hook-install"` to `"bin/concord-hook install"`.
+* {#g-uetbxu <arch for=main,architect,fixer via=prompt} Set Jest's root to `<rootDir>/test`.
 
 ## Build and Test
 
-* Install: `npm install` at `~/@concord`.
-* Test: `npm test` at `~/@concord` runs jest over `test/`. A new file
-  matching `test/**/*.test.js` is picked up automatically.
-* Spec map: `npm run spec-map [-- <arguments>]` at `~/@concord` runs the
-  command over Concord itself; in an adopting project its own target runs
-  `~/@concord/bin/spec-map`.
-* Spec coverage: `npm run spec-coverage [-- <arguments>]`, on demand only,
-  never part of `npm test`.
-* Agent files: `npm run agents-sync` after a change under `roles/`
-  regenerates Claude Code's agent files (`specs/agents-sync.md`).
-* Pre-commit hook: Concord's own commits are gated by the committed
-  `.githooks/pre-commit`; `npm run hook-install`, run once in each clone,
-  installs it (`specs/concord-hook.md`).
+* {#g-hzqtr1 <arch for=main,architect,fixer via=prompt} Install dependencies with `npm install` at `~/@concord`.
+* {#g-pw9m2r <arch for=main,architect,fixer via=prompt} Run the test suite with `npm test` at `~/@concord`; add tests under `test/**/*.test.js`.
+* {#g-dkmfi5 <arch for=main,architect,fixer via=prompt} Run `npm run spec-map [-- <arguments>]` at `~/@concord` to check Concord itself; in adopting projects, declare targets that call `~/@concord/bin/spec-map`.
+* {#g-yx3xrj <arch for=main,architect,fixer via=prompt} Run `npm run spec-coverage [-- <arguments>]` on demand; do not add it to `npm test`.
+* {#g-etaqj7 <arch for=main,architect,fixer via=prompt} After changing `roles/`, run `npm run agents-sync` to regenerate supported agent files (`specs/agents-sync.md`).
+* {#g-09bik5 <arch for=main,architect,fixer via=prompt} Keep Concord commits gated by `.githooks/pre-commit`; install it in each clone with `npm run hook-install` (`specs/concord-hook.md`).
 
 ## Hermeticity
 
-* {#s-auho7v <arch} No test writes outside `tmp/` under the project root, reads
-  or writes a file outside the project, opens a network connection, or runs
-  `git`; a fixture tree a test builds lies under `tmp/` and carries its own
-  `concord.json`.
-* {#s-hkjc0n <arch} No test reads a file under `specs/`: a test builds the specs
-  it needs in a fixture tree, except a case that runs a command over
-  Concord's own tree and reads only what the command prints.
+* {#g-y6nnld <arch for=fixer via=prompt} Keep tests hermetic: do not write outside project `tmp/`, access files outside the project, open network connections or run `git`; put fixture trees under `tmp/` and give each its own `concord.json`.
+* {#g-m2y3g6 <arch for=fixer via=prompt} Tests do not read files under `specs/`; build needed specs in fixtures, except when a case runs a command over Concord's own tree and reads only its output.
 
 ## Error Handling
 
-A command's errors reach its caller as its exit code and stderr lines, as
+* {#s-pa182t <arch} A command's errors reach its caller as its exit code and stderr lines, as
 the spec of each command gives; a missing or bad `concord.json` exits 2
-(`specs/concord-process.md`, Where Concord lives, The settings file).
+  (`specs/concord-process.md`, Where Concord lives, The settings file).
+
+## Concord's own link coverage
+
+* {#s-ins4p7 <m-bvlr0p@8f35918} Every marked statement in every Concord spec has a proving test
+  and a resolving implementation reference; every implementation file has
+  a resolving `@tested-by` reference; and every test proves at least one
+  statement.

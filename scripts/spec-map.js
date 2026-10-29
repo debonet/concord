@@ -1,8 +1,339 @@
+// @implements s-5i9gec@e31c13c
+// @implements s-c744tt@59ec83a
+// @implements s-4jegoj@05acd9f
+// @implements s-zrgt7e@a066ef0
+// @implements s-pa182t@8008053
+// @implements s-4pq89a@d19cad5
+// @implements s-yurmkw@16faf1e
+// @implements s-j8ahje@b487af3
+// @implements s-y86kt5@2f48faa
+// @implements s-ol2dmr@37d4979
+// @implements s-t8un02@c986a9a
+// @implements s-1u8bef@fa85be2
+// @implements s-nlm91d@4f76fd6
+// @implements s-nw4u9n@3b57e9b
+// @implements s-kkql92@90bba2d
+// @implements s-i2ip58@705d3ec
+// @implements s-s4l32i@b41f304
+// @implements s-ug5kvq@115d4bb
+// @implements s-qvdtqg@16f3fb4
+// @implements s-tlkzzq@39b39e7
+// @implements s-eltyao@a23e292
+// @implements s-rkd937@6d33bc3
+// @implements s-u88ict@b5a6934
+// @implements s-uffk6s@99fde62
+// @implements s-mrxt8t@4a0c235
+// @implements s-62b8ec@c221937
+// @implements s-rapf8f@dd2cbd3
+// @implements s-n7ky2n@33d998e
+// @implements s-m4jorm@da16eb4
+// @implements s-jmslkk@be3cc50
+// @implements s-k6leed@80135a4
+// @implements s-3oxidy@1ccac2e
+// @implements s-nrp172@f93d24a
+// @implements s-iz8176@bb80e0d
+// @implements s-wthfms@d2c5ecd
+// @implements s-dnog08@dde78ed
+// @implements s-lwbls1@62d3bb8
+// @implements s-z7g07z@6db8f99
+// @implements s-9guyrl@067706f
+// @implements s-rolffo@1dccf9b
+// @implements s-nachij@b9de24b
+// @implements s-uhmyhr@5d69172
+// @implements s-tn4ty4@2ce57be
+// @implements s-1j5z4y@58afac8
+// @implements s-2jld9b@f37640f
+// @implements s-zney60@13f1359
+// @implements s-qb233y@6930374
+// @implements s-zsxa7g@af4b09e
+// @implements s-0eydbi@db338e8
+// @implements s-zac0m4@4b07675
+// @implements s-vhci8f@cf04778
+// @implements s-m544u1@eee094d
+// @implements s-lgrhug@dcbf12a
+// @implements s-khw3hm@18fc4f5
+// @implements s-ggobif@5312bb8
+// @implements s-j0u6oi@c752acc
+// @implements s-oy6kxo@66e62d5
+// @implements s-tclcd8@3d6d619
+// @implements s-31cdr2@9bb914f
+// @implements s-32o5r7@1ced769
+// @implements s-g8r0ur@13a27c5
+// @implements s-zcb6gq@2302e9b
+// @implements s-3bftr3@5507835
+// @implements s-1fwxnq@6500111
+// @implements s-ins4p7@19e76c1
+// @implements s-wp3dpp@abede2f
+// @implements s-m5inu7@1f5b447
+// @implements s-ocpfpw@c6adf07
+// @implements s-bxs0rr@4c0a68e
+// @implements s-ddsepn@99dbc98
+// @implements s-s8an6z@bb4aac8
+// @implements s-xsbw7s@7a18f8e
+// @implements s-rypq7c@adb23df
+// @implements s-khy3o7@2aa742c
+// @implements s-ikjpbw@fc0cb7c
+// @implements s-d0p52k@8a9d95e
+// @implements s-b0mknl@02d4cb5
+// @implements s-pclybh@b87b7b1
+// @implements s-yu6zet@bb44414
+// @implements s-z7gbzu@ab3b738
+// @implements s-97jgxt@53268fc
+// @implements s-5406e5@0bad222
+// @implements s-i5r6dl@fd54b50
+// @implements s-3m5iin@4d4e26f
+// @implements s-g8h2jz@c4623dc
+// @implements s-4kpjgj@804210f
+// @implements s-6zslo8@0373285
+// @implements s-kglaz5@2c93058
+// @implements s-ezm2c1@86313be
+// @implements s-hiu3ve@27db7b5
+// @implements s-1r46le@6aec157
+// @implements s-21250a@9a79a7a
+// @implements s-fc5ccj@7849554
+// @implements s-8yzzoh@8f6ed41
+// @implements s-eab7vh@300a074
+// @implements s-7llevg@0d81695
+// @implements s-n10cb0@01b16a4
+// @implements s-41v1mp@51d6eb2
+// @implements s-rmpj20@c3531c2
+// @implements s-psysjj@03eca21
+// @implements s-j8bplx@3ec574d
+// @implements s-wakfil@7deeb77
+// @implements s-xt2qjj@ce601a5
+// @implements s-1jdhhf@941303a
+// @implements s-7h4j0s@8fc0d18
+// @implements s-en1xk7@b19ecef
+// @implements s-m176ue@c40015e
+// @implements s-dhs2hx@eb1b478
+// @implements s-w75973@e58d191
+// @implements s-50dzy6@2129482
+// @implements s-bqioq5@e78161a
+// @implements s-7tlfzo@3813b5e
+// @implements s-rv4wbq@86ed5ff
+// @implements s-tghouh@f811aec
+// @implements s-gueyj8@dcbe6bc
+// @implements s-6ls2oh@b278617
+// @implements s-bmgkci@7568101
+// @implements s-fgmj0s@836cdf0
+// @implements s-irjox3@ac44757
+// @implements s-atk0wi@ffaf3bb
+// @implements s-ly5nn3@190736f
+// @implements s-m5k9wy@4aaa864
+// @implements s-c05xna@89aded1
+// @implements s-jvsu3w@dc81311
+// @implements s-cid631@c71dd26
+// @implements s-kgnjaq@cedcec8
+// @implements s-je03s2@6b1aa0b
+// @implements s-3k6zj0@6b700e3
+// @implements s-nb9o4b@6b81b96
+// @implements s-erendz@999c6cc
+// @implements s-f1np35@35d6720
+// @implements s-wc98ss@69659c7
+// @implements s-72fjkw@d78bae0
+// @implements s-263wnp@68719c6
+// @implements s-dila0o@c18103b
+// @implements s-m4hujx@1ae0005
+// @implements s-w2zn7d@ea7e5d0
+// @implements s-johg6m@f4b11b4
+// @implements s-yyli5x@c1ccada
+// @implements s-trjdbr@93aa3fd
+// @implements s-k4mfcb@f02be14
+// @implements s-y1fknl@991055d
+// @implements s-5ljuu2@60dd002
+// @implements s-aw5cvb@d8a5949
+// @implements s-z28ucn@585ecdf
+// @implements s-b05h80@16440fe
+// @implements s-bmkxya@6780e68
+// @implements s-8xfzz3@6999bd7
+// @implements s-mbcxy1@de2395f
+// @implements s-1xpgsb@4b63213
+// @implements s-3g9qus@2aa742c
+// @implements s-v5vfac@ccc50fe
+// @implements s-zi228u@46140ad
+// @implements s-zx5mcq@5669484
+// @implements s-aphyp7@1f4c6b6
+// @implements s-kz8d46@36aef0d
+// @implements s-1igmuk@d5a7a54
+// @implements s-xuw25u@ed827df
+// @implements s-mp16u6@a924b32
+// @implements s-rkzefi@94d4b4a
+// @implements s-6umdw1@f9827d2
+// @implements s-ukzm8a@7dde6e2
+// @implements s-rzwovs@5b76e45
+// @implements s-6zo013@7dde6e2
+// @implements s-ns2gme@9b9beb2
+// @implements s-l9g0ah@33e01a9
+// @implements s-dpoj4a@064704f
+// @implements s-b1flmr@52ccc3c
+// @implements s-pjx54j@88fdbba
+// @implements s-8xr9d5@2a15ba6
+// @implements s-0nmcwv@fcc34b4
+// @implements s-te9wza@59881f7
+// @implements s-0abyvp@9e5dd00
+// @implements s-98jxk4@9f80ece
+// @implements s-i6rjuw@9b207b9
+// @implements s-tdw4gj@a46db7b
+// @implements s-bnkk62@d702f3b
+// @implements s-pslzjw@bb3ff6d
+// @implements s-3pkw1n@fddd73e
+// @implements s-cwbb50@b1fa155
+// @implements s-k9c32y@39fbb4e
+// @implements s-gry2es@f927a10
+// @implements s-ar1i87@b6009f5
+// @implements s-ilmml1@de70889
+// @implements s-w2msh4@29d36fe
+// @implements s-jg7ill@f9c0b61
+// @implements s-ytmdql@7d7407c
+// @implements s-pwxuov@536babd
+// @implements s-mm67bx@fb5e980
+// @implements s-du4nns@bbb6351
+// @implements s-cov7pg@e6a079b
+// @implements s-vcpu9h@6d6ac07
+// @implements s-qln1ta@5cda1f6
+// @implements s-mijuu3@eb255fe
+// @implements s-eawgvu@395098a
+// @implements s-tw3l62@fa30747
+// @implements s-jcgn2k@e1b8cf8
+// @implements s-s7wgz7@eae0eef
+// @implements s-n7deu7@edc83ae
+// @implements s-tv24sx@df2c2d6
+// @implements s-u2lhta@c6845db
+// @implements s-emmdvh@9cf3fb4
+// @implements s-e287lm@a1b403a
+// @implements s-b8vvpd@decbc6c
+// @implements s-5vv5ht@bdd521d
+// @implements s-nudxy0@3495135
+// @implements s-i6rjuw@9b207b9
+// @implements s-tdw4gj@a46db7b
+// @implements s-yyl1i0@2a9826b
+// @implements s-tvuwev@e251ade
+// @implements s-ggaonb@b8526d7
+// @implements s-zvzlp8@2e63bdc
+// @implements s-eel840@1bbc17a
+// @implements s-6gfnun@f6e1b42
+// @implements s-wrdbhk@01b46ef
+// @implements s-kzyb2a@f30bbf3
+// @implements s-kyro7r@3064fa5
+// @implements s-95ao2f@9b59968
+// @implements s-i63o6a@7f6cc9b
+// @implements s-2deigh@58b055c
+// @implements s-taoc14@2518951
+// @implements s-pe5j7a@8fee8c2
+// @implements s-l2muht@44dd0fb
+// @implements s-s0vyhy@802fc2f
+// @implements s-v20yz5@b63123d
+// @implements s-y462l3@3b6cea9
+// @implements s-gymqyq@6187733
+// @implements s-6p2zp4@94323aa
+// @implements s-5i1owy@cb86673
+// @implements s-8haq5h@4d22c53
+// @implements s-gg0pvt@84345af
+// @implements s-cp0cte@9e6f9c2
+// @implements s-6or7az@00097e5
+// @implements s-gq9hu3@a2edb9f
+// @implements s-lkfk0g@47ba420
+// @implements s-jie6z5@09cd30a
+// @implements s-fm2sqk@135c61a
+// @implements s-sfuntg@4b5ec33
+// @implements s-hgk19s@c3ec943
+// @implements s-n8uc4k@80b6109
+// @implements s-1f2z8r@e38b9ea
+// @implements s-8wn2ou@c5e7984
+// @implements s-jhjrqa@2306326
+// @implements s-n7yhjf@0cf1206
+// @implements s-wqdxix@ceec0e2
+// @implements s-tzxhy9@09c0d8a
+// @implements s-fsguh5@f040017
+// @implements s-6mvnjc@5b04323
+// @implements s-wiqxdx@e73adf5
+// @implements s-ttqu59@2d43781
+// @implements s-mpvxr2@47329b9
+// @implements s-r8oroe@88ce6f3
+// @implements s-tigqtu@9c4179b
+// @implements s-0x0s1q@10948bc
+// @implements s-xgaa11@29ab487
+// @implements s-khpw01@7abcf6e
+// @implements s-prz9tg@140065e
+// @implements s-kx3xgb@3351043
+// @implements s-kxfivt@d7f9173
+// @implements s-v8gy0d@16e4568
+// @implements s-qjt3c3@4ade3ec
+// @implements s-2j8jma@d3bb8a8
+// @implements s-zybg31@84ebe18
+// @implements s-b21zr4@69cc33d
+// @implements s-9eix2j@3b46d7e
+// @implements s-4o88k8@e467b6b
+// @implements s-cs9i6p@5d38c13
+// @implements s-p6dv3k@447ea6b
+// @implements s-i6cch2@35337df
+// @implements s-3klfsj@d4d9f32
+// @implements s-uny6ly@83363ca
+// @implements s-1yuomz@f2897f0
+// @implements s-svtfjm@2e4759d
+// @implements s-8usccv@c0cc953
+// @implements s-0e75fk@780e493
+// @implements s-0yoabr@be8d70d
+// @implements s-fsp1a2@02fcf0a
+// @implements s-ctbylk@c20e0f1
+// @implements s-yltboo@95a3db6
+// @implements s-aku8n2@4ffc4f1
+// @implements s-qr72mj@9691d37
+// @implements s-nc5n19@aee9454
+// @implements s-ptc52y@be60f27
+// @implements s-r1opde@e6a3bd1
+// @implements s-vwf1wr@af28dcd
+// @implements s-0ovkpr@0316722
+// @implements s-nksahd@2aa742c
+// @implements s-vjgnay@400021d
+// @implements s-2l6ys1@d966d32
+// @implements s-01nsp8@60401fe
+// @implements s-23wmhe@fec8ae0
+// @implements s-3m6dwj@187ed85
+// @implements s-gpqy5p@7ed12de
+// @implements s-4hsltb@35856a9
+// @implements s-jqqjjj@cfe7b54
+// @implements s-rdpnaf@0033647
+// @implements s-z6r8qu@bc64f8c
+// @implements s-m7xrlq@a850adb
+// @implements s-trdu1m@34986f1
+// @implements s-wut129@714b56a
+// @implements s-846yjd@fa50804
+// @implements s-n4r9dw@4bcc808
+// @implements s-8tx2ob@cc1c510
+// @implements s-op9bak@37c9f3e
+// @implements s-rv4wbq@86ed5ff
+// @implements s-2l6ys1@d966d32
+// @implements s-01nsp8@60401fe
+// @implements s-23wmhe@fec8ae0
+// @implements s-3m6dwj@187ed85
+// @implements s-qap8tu@38172ce
+// @implements s-3mnehj@681e132
+// @implements s-qkq11z@1273ca2
+// @implements s-me9dys@227966a
+// @implements s-1a9ecj@2117295
+// @implements s-zrjuk3@760428d
+// @implements s-p069rs@d53d867
+// @implements s-5un01z@b74caaa
+// @implements s-rkbz86@59f60c9
+// @implements s-bqioq5@e78161a
+// @implements s-tghouh@f811aec
+// @implements s-qap8tu@38172ce
+// @implements s-3mnehj@681e132
+// @implements s-qkq11z@1273ca2
+// @implements s-me9dys@227966a
+// @tested-by test/concord.test.js
+// @tested-by test/spec-map.test.js
+// @tested-by test/project-coverage.test.js
+// @tested-by test/concord-settings.test.js
+// @tested-by test/language-readings.test.js
+// @tested-by test/spec-map-source.test.js
 "use strict";
 
 const fs = require( "fs" );
 const path = require( "path" );
 const crypto = require( "crypto" );
+const babelParser = require( "@babel/parser" );
 const { ConfigReader, fnPrefixMatched } = require( "./concord-config.js" );
 
 const reHeading = /^(#{1,6})\s/;
@@ -38,14 +369,33 @@ const reFollowsBlock = new RegExp(
   "^\\s*/\\* *@follows +([a-z]-[a-z0-9]{6})@([0-9a-f]{7}) *\\*/\\s*$"
 );
 const reFollowsLoose = /@follows\s+([a-z]-[a-z0-9]*)@?([0-9a-f]*)/;
+const reImplementsText = /^\s*@implements/;
+const reImplementsLine = /^\s*\/\/ @implements +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\s*$/;
+const reImplementsLoose = /@implements\s+([a-z]-[a-z0-9]*)@?([0-9a-f]*)/;
+const reTestedByText = /^\s*@tested-by/;
+const reTestedByLine = /^\s*\/\/ @tested-by +(\S+)\s*$/;
+const reTestedByBlock = /^\s*\/\* *@tested-by +(\S+) *\*\/\s*$/;
+const reTestedByLoose = /@tested-by\s+(\S+)/;
+const reChecksText = /^\s*@checks/;
+const reChecksLine = /^\s*\/\/ @checks +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\s*$/;
+const reChecksBlock = /^\s*\/\* *@checks +([a-z]-[a-z0-9]{6})@([0-9a-f]{7}) *\*\/\s*$/;
+const reChecksLoose = /@checks\s+([a-z]-[a-z0-9]*)@?([0-9a-f]*)/;
 const avsExtForLanguage = {
-  javascript: [ ".js", ".mjs", ".cjs" ],
+  javascript: [ ".js", ".mjs", ".cjs", ".jsx" ],
+  typescript: [ ".ts", ".tsx" ],
   css: [ ".css" ],
-  rust: []
+  html: [ ".html", ".htm" ],
+  rust: [ ".rs" ]
 };
-const asLanguageTest = new Set([ "javascript" ]);
+const asLanguageTest = new Set([ "javascript", "typescript", "rust" ]);
+const asTestSuffixForLanguage = {
+  javascript: [ "js", "mjs", "cjs", "jsx" ],
+  typescript: [ "ts", "tsx" ], rust: [ "rs" ]
+};
 const reNever = /(?!)/;
 const reFileCss = /\.css$/;
+const reFileHtml = /\.html?$/;
+const reFileJsx = /\.(?:jsx|tsx)$/;
 const reRunLine = /^\s*\/\/\s*@(?:spec|proves|guards)/;
 const reWrapperText = /^\s*@test-wrapper +([A-Za-z_$][\w$]*)\s*$/;
 const asNameCallTest = new Set([ "describe", "test", "it" ]);
@@ -57,7 +407,6 @@ const asWordBeforeRegex = new Set([
 ]);
 const reSpacePlus = /\s*\+\s*/y;
 const reSpace = /\s*/y;
-const reFileTest = /\.test\.js$/;
 const reMarkerOpen = /\{#[a-z]-/g;
 const reMarkerToken = new RegExp(
   "\\{#([a-z]-[^}\\s{]*)"
@@ -79,7 +428,7 @@ const sArch = "arch";
 const reBodyAny = /[a-z]-([a-z0-9]{6})/g;
 const sTypeLine = "spdmig";
 const sTypeRoot = "sm";
-const sTypeTargeted = "pi";
+const sTypeTargeted = "p";
 const asNameForType = {
   s: "statement",
   p: "pointer",
@@ -95,8 +444,8 @@ const reTargetSlug = new RegExp(
 const reTargetPath = new RegExp(
   "^(?!/)(?!(?:.*/)?\\.\\.(?:/|$))[\\w.@-]+(?:/[\\w.@-]+)*/?$"
 );
-const reTargetFunction = /^([\w.@/-]+\.(?:js|mjs|cjs))#([A-Za-z_$][\w$]*)$/;
-const reFileCode = /\.(?:js|mjs|cjs)$/;
+const reFileTypeScript = /\.(?:ts|tsx)$/;
+const reFileCode = /\.(?:js|mjs|cjs|jsx|ts|tsx)$/;
 const reCharWord = /[\p{L}\p{N}_$]/u;
 const reCharSpace = /\s/;
 const reSlashEnd = /\/+$/;
@@ -115,7 +464,7 @@ const asWhyForReason = {
   reworded: "Reworded since its pass on ",
   code: "The code it checks changed since its pass on "
 };
-const sTitleNoCode = "interactive checks with no code target";
+const sTitleNoCode = "interactive checks with no implementation link";
 const sTitleProblem = "interactive checks with an open problem";
 const reSlugGap = /[^\p{L}\p{N}]+/gu;
 const reSlugEdge = /^-+|-+$/g;
@@ -337,17 +686,9 @@ const fsOnType = ( sWhat, sType ) => (
   sWhat + " on a line of type " + fsTypeLine( sType )
 );
 
-const ftFunctionForTarget = ( sTarget ) => {
-  const vsGroup = sTarget.match( reTargetFunction );
-  return vsGroup === null || !reTargetPath.test( vsGroup[ 1 ])
-    ? null
-    : [ vsGroup[ 1 ], vsGroup[ 2 ]];
-};
-
 const fsKindForTarget = ( sTarget ) => {
   if( reTargetId.test( sTarget )){ return "id";}
   if( reTargetSlug.test( sTarget )){ return "slug";}
-  if( ftFunctionForTarget( sTarget ) !== null ){ return "function";}
   return reTargetPath.test( sTarget ) ? "path" : null;
 };
 
@@ -357,7 +698,6 @@ const fsPathClean = ( sPath ) => (
 
 const fbCodeTarget = ( sTarget ) => {
   const sKind = fsKindForTarget( sTarget );
-  if( sKind === "function" ){ return true;}
   if( sKind !== "path" ){ return false;}
   const sPath = fsPathClean( sTarget );
   return sPath !== sDirSpecs && !sPath.startsWith( sDirSpecs + "/" );
@@ -810,6 +1150,238 @@ class SourceMasker {
 
 const ftMaskForSource = ( sText ) => new SourceMasker( sText ).ft();
 
+const asTypeOnly = new Set([
+  "TSTypeAnnotation", "TSTypeParameterDeclaration",
+  "TSTypeParameterInstantiation", "TSInterfaceDeclaration",
+  "TSTypeAliasDeclaration", "TSDeclareFunction", "TSModuleDeclaration",
+  "TSImportEqualsDeclaration", "TSExportAssignment",
+  "TSNamespaceExportDeclaration", "TSDeclareMethod",
+  "TSAsExpression", "TSSatisfiesExpression"
+]);
+const asTypeAfterExpression = new Set([
+  "TSNonNullExpression", "TSInstantiationExpression"
+]);
+const asTypeJsxTag = new Set([
+  "JSXOpeningElement", "JSXClosingElement",
+  "JSXOpeningFragment", "JSXClosingFragment"
+]);
+const asTypeJsxHole = new Set([
+  "JSXExpressionContainer", "JSXSpreadAttribute", "JSXSpreadChild"
+]);
+const asKeyUnvisited = new Set([ "loc", "tokens", "comments" ]);
+const asClassForJsx = { t: "c", j: "j", s: "l" };
+
+const ftRangeErased = ( x ) => {
+  if( asTypeOnly.has( x.type )){
+    return [ x.expression === undefined ? x.start : x.expression.end, x.end ];
+  }
+  if( x.type === "TSTypeAssertion" ){ return [ x.start, x.expression.start ];}
+  if( asTypeAfterExpression.has( x.type )){ return [ x.expression.end, x.end ];}
+  if( x.type === "ImportDeclaration" && x.importKind === "type" ){
+    return [ x.start, x.end ];
+  }
+  return x.declare === true ? [ x.start, x.end ] : null;
+};
+
+const ftRangeJsx = ( x, xParent ) => {
+  if( asTypeJsxTag.has( x.type )){ return [ x.start, x.end, "t" ];}
+  if( x.type === "JSXText" ){ return [ x.start, x.end, "j" ];}
+  if(
+    x.type === "StringLiteral"
+    && xParent !== null
+    && xParent.type === "JSXAttribute"
+  ){
+    return [ x.start, x.end, "s" ];
+  }
+  return asTypeJsxHole.has( x.type ) ? [ x.start + 1, x.end - 1, null ] : null;
+};
+
+class SyntaxCollector {
+  constructor(){
+    this.vtErased = [];
+    this.vtJsx = [];
+  }
+
+  fNode( x, xParent ){
+    const tErased = ftRangeErased( x );
+    const tJsx = ftRangeJsx( x, xParent );
+    if( tErased !== null ){ this.vtErased.push( tErased );}
+    if( tJsx !== null ){ this.vtJsx.push( tJsx );}
+  }
+
+  fVisit( x, xParent ){
+    if( x === null || typeof x !== "object" ){ return;}
+    if( Array.isArray( x )){
+      x.forEach(( xItem ) => this.fVisit( xItem, xParent ));
+      return;
+    }
+    const bNode = typeof x.type === "string";
+    if( bNode ){ this.fNode( x, xParent );}
+    Object.keys( x )
+      .filter(( sKey ) => !asKeyUnvisited.has( sKey ))
+      .forEach(( sKey ) => this.fVisit( x[ sKey ], bNode ? x : xParent ));
+  }
+}
+
+const fvsPluginForPath = ( sPath ) => [].concat(
+  reFileTypeScript.test( sPath ) ? [ "typescript" ] : [],
+  reFileJsx.test( sPath ) ? [ "jsx" ] : []
+);
+
+const faProgramForPath = ( sText, sPath ) => {
+  const vsPlugin = fvsPluginForPath( sPath );
+  if( vsPlugin.length === 0 ){ return null;}
+  try{
+    return babelParser.parse( sText, {
+      sourceType: "unambiguous", errorRecovery: true, plugins: vsPlugin
+    }).program;
+  }
+  catch( xErr ){ return null;}
+};
+
+const fbCharKept = ( ch ) => ch === "\n" || ch === "\r";
+
+const fsBlankedForRanges = ( sText, vtRange ) => {
+  const vsChar = sText.split( "" );
+  vtRange.forEach(([ nStart, nEnd ]) => {
+    for( let n = nStart; n < nEnd; n++ ){
+      if( !fbCharKept( vsChar[ n ])){ vsChar[ n ] = " ";}
+    }
+  });
+  return vsChar.join( "" );
+};
+
+const fvsKindForJsx = ( cChar, vtJsx ) => {
+  const vsKind = new Array( cChar ).fill( null );
+  vtJsx.forEach(([ nStart, nEnd, sKind ]) => {
+    for( let n = nStart; n < nEnd; n++ ){ vsKind[ n ] = sKind;}
+  });
+  return vsKind;
+};
+
+const fsBlankedForKinds = ( sText, vsKind ) => sText.split( "" )
+  .map(( ch, n ) => vsKind[ n ] === null || fbCharKept( ch ) ? ch : " " )
+  .join( "" );
+
+const faReadingForPath = ( sText, sPath ) => {
+  const aProgram = faProgramForPath( sText, sPath );
+  if( aProgram === null ){
+    return { sSource: sText, sBlanked: sText, vsJsx: null };
+  }
+  const collector = new SyntaxCollector();
+  collector.fVisit( aProgram, null );
+  const sSource = fsBlankedForRanges( sText, collector.vtErased );
+  if( !reFileJsx.test( sPath )){
+    return { sSource, sBlanked: sSource, vsJsx: null };
+  }
+  const vsJsx = fvsKindForJsx( sText.length, collector.vtJsx );
+  return { sSource, sBlanked: fsBlankedForKinds( sSource, vsJsx ), vsJsx };
+};
+
+const ftMaskRust = ( sText ) => {
+  const vch = sText.split( "" );
+  const vnComment = [];
+  const vnCommentBlock = [];
+  const vtComment = [];
+  const vtLiteral = [];
+  const fBlank = ( n ) => {
+    if( n < vch.length && vch[ n ] !== "\n" && vch[ n ] !== "\r" ){
+      vch[ n ] = " ";
+    }
+  };
+  const fBlankRange = ( nStart, nEnd ) => {
+    for( let n = nStart; n < nEnd; n++ ){ fBlank( n );}
+  };
+  let n = 0;
+  while( n < vch.length ){
+    const sTail = sText.slice( n );
+    const vsRaw = sTail.match( /^(?:br|r)(#*)"/ );
+    if( vsRaw !== null ){
+      const sClose = "\"" + vsRaw[ 1 ];
+      const nClose = sText.indexOf( sClose, n + vsRaw[ 0 ].length );
+      const nEnd = nClose < 0 ? vch.length : nClose + sClose.length;
+      vtLiteral.push([ n, nEnd ]);
+      fBlankRange( n, nEnd );
+      n = nEnd;
+      continue;
+    }
+    const sByteOrString = sText.startsWith( "b\"", n ) ? "\""
+      : sText[ n ] === "\"" ? "\"" : null;
+    if( sByteOrString !== null ){
+      const nQuote = n + ( sText[ n ] === "b" ? 1 : 0 );
+      let nEnd = nQuote + 1;
+      while( nEnd < vch.length ){
+        if( sText[ nEnd ] === "\\" ){ nEnd += 2; continue;}
+        if( sText[ nEnd++ ] === "\"" ){ break;}
+      }
+      vtLiteral.push([ n, nEnd ]);
+      fBlankRange( n, nEnd );
+      n = nEnd;
+      continue;
+    }
+    if( sText.startsWith( "//", n )){
+      const bDoc = sText.startsWith( "///", n )
+        || sText.startsWith( "//!", n );
+      if( !bDoc ){ vnComment.push( n );}
+      const nEnd = sText.indexOf( "\n", n );
+      const nStop = nEnd < 0 ? vch.length : nEnd;
+      vtComment.push([ n, nStop ]);
+      fBlankRange( n, nStop );
+      n = nStop;
+      continue;
+    }
+    if( sText.startsWith( "/*", n )){
+      const bDoc = sText.startsWith( "/**", n )
+        || sText.startsWith( "/*!", n );
+      if( !bDoc ){ vnCommentBlock.push( n );}
+      let cDepth = 1;
+      let nEnd = n + 2;
+      while( nEnd < vch.length && cDepth > 0 ){
+        if( sText.startsWith( "/*", nEnd )){ cDepth++; nEnd += 2;}
+        else if( sText.startsWith( "*/", nEnd )){ cDepth--; nEnd += 2;}
+        else{ nEnd++;}
+      }
+      vtComment.push([ n, nEnd ]);
+      fBlankRange( n, nEnd );
+      n = nEnd;
+      continue;
+    }
+    if( sText[ n ] === "'" ){
+      const vsChar = sText.slice( n ).match( /^'(?:\\.|[^'\\\n])'/ );
+      if( vsChar !== null ){
+        vtLiteral.push([ n, n + vsChar[ 0 ].length ]);
+        fBlankRange( n, n + vsChar[ 0 ].length );
+        n += vsChar[ 0 ].length;
+        continue;
+      }
+    }
+    n++;
+  }
+  return [ vch.join( "" ), vnComment, vnCommentBlock, {
+    vtComment, vtLiteral
+  }];
+};
+
+const fvsClassRust = ( sText ) => {
+  const aRanges = ftMaskRust( sText )[ 3 ];
+  const vsClass = new Array( sText.length ).fill( "c" );
+  aRanges.vtComment.forEach(([ nStart, nEnd ]) => {
+    for( let n = nStart; n < nEnd; n++ ){ vsClass[ n ] = "m";}
+  });
+  aRanges.vtLiteral.forEach(([ nStart, nEnd ]) => {
+    for( let n = nStart; n < nEnd; n++ ){ vsClass[ n ] = "l";}
+  });
+  return vsClass;
+};
+
+const ftMaskForPath = ( sText, sPath ) => {
+  if( sPath.endsWith( ".rs" )){
+    const [ sMasked, vnComment, vnCommentBlock ] = ftMaskRust( sText );
+    return [ sMasked, new Set( vnComment.concat( vnCommentBlock )) ];
+  }
+  return ftMaskForSource( faReadingForPath( sText, sPath ).sBlanked );
+};
+
 const asStateComment = new Set([ "fnLine", "fnBlock" ]);
 
 const fsClassForStep = ( sStateBefore, sStateAfter ) => {
@@ -884,12 +1456,21 @@ class CssClassifier {
   }
 }
 
+const fbSpaceJsx = ( sText, vsClass, n ) => (
+  vsClass[ n ] === "j" && reCharSpace.test( sText[ n ])
+);
+
 const fsCodeNormal = ( sText, vsClass ) => {
   let sOut = "";
   let bGap = false;
   for( let n = 0; n < sText.length; n++ ){
     const ch = sText[ n ];
     if( vsClass[ n ] === "m" ){ continue;}
+    if( fbSpaceJsx( sText, vsClass, n )){
+      if( !fbSpaceJsx( sText, vsClass, n - 1 )){ sOut += " ";}
+      bGap = false;
+      continue;
+    }
     if( vsClass[ n ] === "c" && reCharSpace.test( ch )){
       bGap = true;
       continue;
@@ -903,139 +1484,29 @@ const fsCodeNormal = ( sText, vsClass ) => {
   return sOut;
 };
 
-const fvsClassForPath = ( sPath, sText ) => (
-  reFileCss.test( sPath )
-    ? new CssClassifier( sText ).fvsClass()
-    : new SourceClassifier( sText ).fvsClass()
-);
-
-const fsNormalForFile = ( sPath, sText ) => (
-  reFileCss.test( sPath ) || reFileCode.test( sPath )
-    ? fsCodeNormal( sText, fvsClassForPath( sPath, sText ))
-    : fsNormal( sText )
-);
-
-const sReIdent = "[A-Za-z_$][\\w$]*";
-const reAsync = /async\b\s*/y;
-const reFunctionHead = new RegExp( "function\\b\\s*\\*?\\s*(?:" + sReIdent
-  + ")?\\s*(?=\\()", "y" );
-const reArrowIdent = new RegExp( sReIdent + "\\s*=>\\s*", "y" );
-const reArrow = /\s*=>\s*/y;
-const reBlankLine = /\n[ \t]*\n/y;
-const asCharBeforeMember = new Set([ "", "{", "}", ";", "," ]);
-const asCharBeforeProperty = new Set([ "{", "," ]);
-
-const fchBefore = ( sMasked, n ) => {
-  const sBefore = sMasked.slice( 0, n ).trimEnd();
-  return sBefore.slice( -1 );
+const fvsClassForReading = ( aReading ) => {
+  const vsClass = new SourceClassifier( aReading.sBlanked ).fvsClass();
+  return aReading.vsJsx === null
+    ? vsClass
+    : vsClass.map(( sClass, n ) => (
+      aReading.vsJsx[ n ] === null || aReading.vsJsx[ n ] === undefined
+        ? sClass
+        : asClassForJsx[ aReading.vsJsx[ n ]]
+    ));
 };
 
-const fnAfterExpression = ( sMasked, nStart ) => {
-  let cDepth = 0;
-  for( let n = nStart; n < sMasked.length; n++ ){
-    const ch = sMasked[ n ];
-    if( ch === "\"" || ch === "'" || ch === "`" ){
-      n = sMasked.indexOf( ch, n + 1 );
-      if( n < 0 ){ return sMasked.length;}
-    }
-    else if( "([{".includes( ch )){ cDepth++;}
-    else if( ")]}".includes( ch )){
-      if( cDepth === 0 ){ return n;}
-      cDepth--;
-    }
-    else if( cDepth === 0 && ( ch === ";" || ch === "," )){ return n;}
-    else if( cDepth === 0 && fnAfterSticky( reBlankLine, sMasked, n ) >= 0 ){
-      return n;
-  }}
-  return sMasked.length;
-};
-
-const ftBlockAfter = ( sMasked, nParen ) => {
-  const nBrace = fnAfterSticky(
-    reSpace, sMasked, fnAfterGroup( sMasked, nParen )
-  );
-  return sMasked[ nBrace ] === "{"
-    ? [ nBrace, fnAfterGroup( sMasked, nBrace )]
-    : null;
-};
-
-const ftArrowBody = ( sMasked, nBody ) => (
-  sMasked[ nBody ] === "{"
-    ? [ nBody, fnAfterGroup( sMasked, nBody )]
-    : [ nBody, fnAfterExpression( sMasked, nBody )]
-);
-
-const ftBodyForInit = ( sMasked, nInit ) => {
-  const nAsync = fnAfterSticky( reAsync, sMasked, nInit );
-  const n = nAsync < 0 ? nInit : nAsync;
-  const nHead = fnAfterSticky( reFunctionHead, sMasked, n );
-  if( nHead >= 0 ){ return ftBlockAfter( sMasked, nHead );}
-  if( sMasked[ n ] === "(" ){
-    const nArrow = fnAfterSticky( reArrow, sMasked, fnAfterGroup( sMasked, n ));
-    return nArrow < 0 ? null : ftArrowBody( sMasked, nArrow );
+const fsNormalForFile = ( sPath, sText ) => {
+  if( reFileHtml.test( sPath )){ return fsNormalForHtml( sText );}
+  if( reFileCss.test( sPath )){
+    return fsCodeNormal( sText, new CssClassifier( sText ).fvsClass());
   }
-  const nArrow = fnAfterSticky( reArrowIdent, sMasked, n );
-  return nArrow < 0 ? null : ftArrowBody( sMasked, nArrow );
-};
-
-const fvaDefinitionForRe = ( sMasked, re, ftBody ) => Array.from(
-  sMasked.matchAll( re ),
-  ( vsGroup ) => {
-    const tBody = ftBody( vsGroup );
-    return tBody === null
-      ? null
-      : { nStart: vsGroup.index, nBodyStart: tBody[ 0 ], nEnd: tBody[ 1 ]};
+  if( sPath.endsWith( ".rs" )){
+    return fsCodeNormal( sText, fvsClassRust( sText ));
   }
-).filter( Boolean );
-
-const fvreDefinitionForName = ( sName ) => {
-  const sReName = sName.replace( /\$/g, "\\$" );
-  return [
-    new RegExp( "(?<![\\w$.])(?:async\\s+)?function\\s*\\*?\\s*" + sReName
-      + "\\s*(?=\\()", "g" ),
-    new RegExp( "(?<![\\w$.])(?:const|let|var)\\s+" + sReName
-      + "\\s*=(?![=>])\\s*", "g" ),
-    new RegExp( "(?<![\\w$.])(?:(?:static|async|get|set)\\s+|\\*\\s*)*"
-      + sReName + "\\s*(?=\\()", "g" ),
-    new RegExp( "(?<![\\w$.])" + sReName + "\\s*:\\s*", "g" )
-  ];
+  if( !reFileCode.test( sPath )){ return fsNormal( sText );}
+  const aReading = faReadingForPath( sText, sPath );
+  return fsCodeNormal( aReading.sSource, fvsClassForReading( aReading ));
 };
-
-const fvaDefinitionFor = ( sText, sName ) => {
-  const sMasked = ftMaskForSource( sText )[ 0 ];
-  const [ reDeclared, reVariable, reMember, reProperty ] = (
-    fvreDefinitionForName( sName )
-  );
-  const fnEnd = ( vsGroup ) => vsGroup.index + vsGroup[ 0 ].length;
-  const vaDefinition = [
-    fvaDefinitionForRe( sMasked, reDeclared, ( vsGroup ) => (
-      ftBlockAfter( sMasked, fnEnd( vsGroup ))
-    )),
-    fvaDefinitionForRe( sMasked, reVariable, ( vsGroup ) => (
-      ftBodyForInit( sMasked, fnEnd( vsGroup ))
-    )),
-    fvaDefinitionForRe( sMasked, reMember, ( vsGroup ) => (
-      asCharBeforeMember.has( fchBefore( sMasked, vsGroup.index ))
-        ? ftBlockAfter( sMasked, fnEnd( vsGroup ))
-        : null
-    )),
-    fvaDefinitionForRe( sMasked, reProperty, ( vsGroup ) => (
-      asCharBeforeProperty.has( fchBefore( sMasked, vsGroup.index ))
-        ? ftBodyForInit( sMasked, fnEnd( vsGroup ))
-        : null
-    ))
-  ].flat();
-  return vaDefinition.filter(( aDef ) => !vaDefinition.some(( aOuter ) => (
-    aOuter !== aDef
-    && aOuter.nStart <= aDef.nStart
-    && aDef.nStart < aOuter.nBodyStart
-  )));
-};
-
-const fsNormalForFunction = ( sText, aDef ) => fsCodeNormal(
-  sText.slice( aDef.nStart, aDef.nEnd ),
-  new SourceClassifier( sText ).fvsClass().slice( aDef.nStart, aDef.nEnd )
-);
 
 const fvnLineStart = ( vsLine ) => {
   const vnLineStart = [ 0 ];
@@ -1091,8 +1562,59 @@ const fvaCallForRe = ( aSource, re, bWrapper ) => (
   ).filter( Boolean )
 );
 
+const fnRustBlockEnd = ( sMasked, nOpen ) => {
+  let cDepth = 0;
+  for( let n = nOpen; n < sMasked.length; n++ ){
+    if( sMasked[ n ] === "{" ){ cDepth++;}
+    else if( sMasked[ n ] === "}" && --cDepth === 0 ){ return n + 1;}
+  }
+  return sMasked.length;
+};
+
+const faRustCall = ( aSource, sKind, sName, nStart, nAt ) => {
+  const nOpen = aSource.sMasked.indexOf( "{", nAt );
+  return {
+    sKind,
+    sName,
+    sBody: aSource.sText.slice( nStart, fnRustBlockEnd(
+      aSource.sMasked, nOpen
+    )),
+    nStart,
+    nEnd: fnRustBlockEnd( aSource.sMasked, nOpen ),
+    nLine: fnLineAt( aSource.vnLineStart, nAt )
+  };
+};
+
+const fvaCallForRust = ( aSource ) => {
+  const vaCall = [];
+  const reModule = /\bmod\s+([A-Za-z_]\w*)\s*\{/g;
+  for( const vsModule of aSource.sMasked.matchAll( reModule )){
+    const nOpen = vsModule.index + vsModule[ 0 ].lastIndexOf( "{" );
+    const aCall = faRustCall(
+      aSource, "describe", vsModule[ 1 ], vsModule.index, nOpen
+    );
+    vaCall.push( aCall );
+  }
+  const reTestAttr = /#\[\s*(?:[A-Za-z_]\w*\s*::\s*)*test\s*\]/g;
+  for( const vsAttr of aSource.sMasked.matchAll( reTestAttr )){
+    const nAfterAttr = vsAttr.index + vsAttr[ 0 ].length;
+    const vsFn = aSource.sMasked.slice( nAfterAttr )
+      .match( /^\s*(?:(?:async|unsafe)\s+)*fn\s+([A-Za-z_]\w*)\s*\(/ );
+    if( vsFn === null ){ continue;}
+    const nFn = nAfterAttr + vsFn[ 0 ].search( /\S/ );
+    const nName = nAfterAttr + vsFn[ 0 ].indexOf( vsFn[ 1 ]);
+    const aCall = faRustCall(
+      aSource, "test", vsFn[ 1 ], nFn, nName
+    );
+    vaCall.push( aCall );
+  }
+  return vaCall.sort(( aA, aB ) => aA.nStart - aB.nStart );
+};
+
 const fvaCallForSource = ( aSource ) => (
-  fvaCallForRe( aSource, reCallTest, false )
+  aSource.sPath.endsWith( ".rs" )
+    ? fvaCallForRust( aSource )
+    : fvaCallForRe( aSource, reCallTest, false )
     .concat( aSource.reCallWrapper === null
       ? []
       : fvaCallForRe( aSource, aSource.reCallWrapper, true )
@@ -1130,10 +1652,20 @@ const fvsWrapperForSource = ( aSource, aHeader ) => Array.from( new Set(
     .filter(( sName ) => !asNameCallTest.has( sName ))
 ));
 
-const faSourceForText = ( sText ) => {
-  const [ sMasked, asnComment ] = ftMaskForSource( sText );
+const faSourceForText = ( sText, sPath ) => {
+  let sMasked;
+  let asnComment;
+  if( sPath.endsWith( ".rs" )){
+    const [ sRustMasked, vnLineComment, vnBlockComment ] = ftMaskRust( sText );
+    sMasked = sRustMasked;
+    asnComment = new Set( vnLineComment.concat( vnBlockComment ));
+  }
+  else{
+    [ sMasked, asnComment ] = ftMaskForPath( sText, sPath );
+  }
   const vsLine = sText.split( "\n" );
   const aSource = {
+    sPath,
     sText,
     sMasked,
     asnComment,
@@ -1174,7 +1706,12 @@ const fbLineRunWhole = ( aSource, nLine ) => (
 
 const faCallBelowRun = ( aSource, vaCall, nLine ) => {
   let nNext = nLine + 1;
-  while( fbLineRunWhole( aSource, nNext )){ nNext++;}
+  while( fbLineRunWhole( aSource, nNext )
+    || ( aSource.sPath.endsWith( ".rs" )
+      && /^\s*(?:#\[|\/\/\/|\/\/!)/.test(
+        aSource.vsLine[ nNext ] || ""
+      ))
+  ){ nNext++;}
   return vaCall.find(( aCall ) => (
     aCall.nLine === nNext
     && aSource.sMasked.slice( aSource.vnLineStart[ nNext ], aCall.nStart )
@@ -1231,7 +1768,7 @@ const fvaLinkForForm = ( aSource, vaCall, vnComment, aForm ) => vnComment
   .filter( Boolean );
 
 const faParseTest = ( aFile ) => {
-  const aSource = faSourceForText( aFile.sText );
+  const aSource = faSourceForText( aFile.sText, aFile.sPath );
   const vaCall = fvaCallForSource( aSource );
   const aHeader = aSource.aHeader;
   const vnComment = Array.from( aSource.asnComment );
@@ -1532,7 +2069,7 @@ const aFilesNone = {
 };
 
 const faModel = ({
-  vaSpec, vaTest, vaCiter, vaRecord, fbExists, aFiles
+  vaSpec, vaTest, vaCiter, vaGuided, vaRecord, fbExists, aFiles
 }) => {
   const vaSpecParsed = vaSpec.map(( aSpec ) => faParseSpec({
     sPath: fsPosix( aSpec.sPath ), sText: aSpec.sText
@@ -1540,6 +2077,7 @@ const faModel = ({
   const vaMarker = vaSpecParsed.flatMap(( aSpec ) => aSpec.vaMarker );
   const aIndex = faIndexForMarkers( vaMarker );
   const vaTestParsed = fvaTestResolved( vaTest, aIndex );
+  const vaCode = vaCiter || [];
   const aModel = {
     vaSpecParsed,
     vaMarker,
@@ -1550,12 +2088,15 @@ const faModel = ({
     )),
     vaLink: vaTestParsed.flatMap(( aTest ) => aTest.vaLink ),
     vaGuard: vaTestParsed.flatMap(( aTest ) => aTest.vaGuard ),
-    vaLinkAny: vaTestParsed.flatMap( fvaLinkAny )
+    vaLinkAny: vaTestParsed.flatMap( fvaLinkAny ),
+    vaCode,
+    vaCodeRef: [],
+    vaTestParsed
   };
   return {
     ...aModel,
     aLines: faLines( aModel, {
-      vaCiter: vaCiter || [],
+      vaGuided: vaGuided || vaCiter || [],
       vaRecord: vaRecord || [],
       fbExists: fbExists || (() => false ),
       aFiles: aFiles || aFilesNone
@@ -1699,17 +2240,6 @@ const fvaDefinitionForModel = ( aModel ) => {
   });
 };
 
-const fsReasonForFunction = ( aFiles, sTarget ) => {
-  const [ sPath, sName ] = ftFunctionForTarget( sTarget );
-  const sText = aFiles.fsTextAt( sPath );
-  if( sText === null ){ return "no such file";}
-  const cDefinition = fvaDefinitionFor( sText, sName ).length;
-  if( cDefinition === 0 ){ return "no definition of " + sName;}
-  return cDefinition === 1
-    ? null
-    : sName + " defined " + cDefinition + " times";
-};
-
 const fsTextForSlug = ( aModel, sTarget ) => {
   const vsGroup = sTarget.match( reTargetSlug );
   const aSpec = aModel.vaSpecParsed.find(( aSpecParsed ) => (
@@ -1747,6 +2277,13 @@ class TargetHasher {
 
   fsHashFresh( sTarget ){
     const sKind = fsKindForTarget( sTarget );
+    if( sKind === "path" && fbCodeTarget( sTarget )){
+      return this.aEnv.aFiles.fsKind( sTarget ) === "file"
+        ? this.fsHashForFile( fsPathClean( sTarget ))
+        : this.aEnv.aFiles.fsKind( sTarget ) === "dir"
+          ? this.fsHashForDir( fsPathClean( sTarget ))
+          : null;
+    }
     if(
       sKind === null
       || fsReasonForTargetFound( this.aModel, this.aEnv, sTarget ) !== null
@@ -1759,18 +2296,9 @@ class TargetHasher {
     if( sKind === "slug" ){
       return fsHashForText( fsNormal( fsTextForSlug( this.aModel, sTarget )));
     }
-    if( sKind === "function" ){ return this.fsHashForFunction( sTarget );}
     return this.aEnv.aFiles.fsKind( sTarget ) === "file"
       ? this.fsHashForFile( fsPathClean( sTarget ))
       : this.fsHashForDir( fsPathClean( sTarget ));
-  }
-
-  fsHashForFunction( sTarget ){
-    const [ sPath, sName ] = ftFunctionForTarget( sTarget );
-    const sText = this.aEnv.aFiles.fsTextAt( sPath );
-    return fsHashForText( fsNormalForFunction(
-      sText, fvaDefinitionFor( sText, sName )[ 0 ]
-    ));
   }
 
   fsHashForFile( sPath ){
@@ -1798,10 +2326,12 @@ const fsReasonForTargetFound = ( aModel, aEnv, sTarget ) => {
     );
   }
   if( sKind === "path" ){
+    const sPath = fsPathClean( sTarget );
+    if( sPath !== sDirSpecs && !sPath.startsWith( sDirSpecs + "/" ) ){
+      return "pointer target is outside specs";
+    }
+    if( !sPath.endsWith( ".md" )){ return "target is not a spec file";}
     return aEnv.fbExists( sTarget ) ? null : "no such file or directory";
-  }
-  if( sKind === "function" ){
-    return fsReasonForFunction( aEnv.aFiles, sTarget );
   }
   const vsGroup = sTarget.match( reTargetSlug );
   const aSpec = aModel.vaSpecParsed.find(( aSpecParsed ) => (
@@ -1861,8 +2391,13 @@ const fasHashForRecord = ( aRecord ) => (
 
 const fbRecordCurrent = ( aRecord, aMarker, hasher ) => {
   const asHash = fasHashForRecord( aRecord );
+  const vsTarget = hasher.aModel.vaCodeRef
+    .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
+      && aRef.sId === aMarker.sId )
+    .map(( aRef ) => aRef.sPath );
   return aRecord.sHash === aMarker.sHash
-    && fvsTargetForMarker( aMarker ).every(( sTarget ) => {
+    && Object.keys( asHash ).sort().join( "\n" ) === vsTarget.slice().sort().join( "\n" )
+    && vsTarget.every(( sTarget ) => {
       const sHash = hasher.fsHash( sTarget );
       return sHash !== null
         && Object.hasOwn( asHash, sTarget )
@@ -1917,9 +2452,325 @@ const fvaProblemForChecks = ( vaCheck ) => (
   vaCheck.map( faProblemForCheck ).filter( Boolean )
 );
 
-const fvaNoCodeForChecks = ( vaCheck ) => vaCheck.filter(( aCheck ) => (
-  !fvsTargetForMarker( aCheck.aMarker ).some( fbCodeTarget )
+const fvaNoCodeForChecks = ( vaCheck, vaChecks ) => vaCheck.filter(( aCheck ) => (
+  !vaChecks.some(( aRef ) => aRef.sId === aCheck.aMarker.sId )
 ));
+
+const reHtmlTagName = /[A-Za-z][\w:.-]*/y;
+const reHtmlTagStart = /[A-Za-z]/;
+const reHtmlDeclaration = /^<(?:!|\?|\/[A-Za-z])/;
+const reHtmlDoctype = /^<!doctype/i;
+const asHtmlTagRaw = new Set([ "script", "style" ]);
+const sHtmlCommentOpen = "<!--";
+const sHtmlCommentClose = "-->";
+
+class HtmlScanner {
+  constructor( sText ){
+    this.sText = sText;
+    this.sLower = sText.toLowerCase();
+    this.vtComment = [];
+    this.vtDoctype = [];
+  }
+
+  fnAfter( sClose, n ){
+    const nClose = this.sText.indexOf( sClose, n );
+    return nClose < 0 ? this.sText.length : nClose + sClose.length;
+  }
+
+  fnComment( n ){
+    const nEnd = this.fnAfter(
+      sHtmlCommentClose, n + sHtmlCommentOpen.length
+    );
+    this.vtComment.push([ n, nEnd ]);
+    return nEnd;
+  }
+
+  fnDeclaration( n ){
+    const nEnd = this.fnAfter( ">", n );
+    if( reHtmlDoctype.test( this.sText.slice( n, n + 9 ))){
+      this.vtDoctype.push([ n, nEnd ]);
+    }
+    return nEnd;
+  }
+
+  fnAfterRaw( sName, n ){
+    const nClose = this.sLower.indexOf( "</" + sName, n );
+    return nClose < 0 ? this.sText.length : nClose;
+  }
+
+  fnTag( n ){
+    reHtmlTagName.lastIndex = n + 1;
+    const sName = reHtmlTagName.exec( this.sText )[ 0 ].toLowerCase();
+    let nAt = reHtmlTagName.lastIndex;
+    while( nAt < this.sText.length && this.sText[ nAt ] !== ">" ){
+      const ch = this.sText[ nAt ];
+      nAt = ch === "\"" || ch === "'" ? this.fnAfter( ch, nAt + 1 ) : nAt + 1;
+    }
+    const nEnd = Math.min( nAt + 1, this.sText.length );
+    return asHtmlTagRaw.has( sName ) ? this.fnAfterRaw( sName, nEnd ) : nEnd;
+  }
+
+  fnAt( n ){
+    if( this.sText.startsWith( sHtmlCommentOpen, n )){
+      return this.fnComment( n );
+    }
+    if( reHtmlDeclaration.test( this.sText.slice( n, n + 3 ))){
+      return this.fnDeclaration( n );
+    }
+    return reHtmlTagStart.test( this.sText[ n + 1 ] || "" )
+      ? this.fnTag( n )
+      : n + 1;
+  }
+
+  fScan(){
+    let n = this.sText.indexOf( "<" );
+    while( n >= 0 ){ n = this.sText.indexOf( "<", this.fnAt( n ));}
+    return this;
+  }
+}
+
+const faHtmlForText = ( sText ) => new HtmlScanner( sText ).fScan();
+
+const fsNormalForHtml = ( sText ) => fsNormal(
+  faHtmlForText( sText ).vtComment.reduceRight(
+    ( s, [ nStart, nEnd ]) => s.slice( 0, nStart ) + s.slice( nEnd ), sText
+  )
+);
+
+const fnLineHeaderHtml = ( sText, aHtml ) => {
+  const n = fsBlankedForRanges(
+    sText, aHtml.vtComment.concat( aHtml.vtDoctype )
+  ).split( "\n" ).findIndex(( sLine ) => sLine.trim() !== "" );
+  return n < 0 ? Infinity : n;
+};
+
+const fbHtmlClosed = ( sText, nStart, nEnd ) => (
+  nEnd - sHtmlCommentClose.length >= nStart + sHtmlCommentOpen.length
+  && sText.startsWith( sHtmlCommentClose, nEnd - sHtmlCommentClose.length )
+);
+
+const faCommentForHtml = ( sText, aPlace, tComment ) => {
+  const [ nStart, nEnd ] = tComment;
+  const nLine = fnLineAt( aPlace.vnLineStart, nStart );
+  const sLine = aPlace.vsLine[ nLine ];
+  const nCol = nStart - aPlace.vnLineStart[ nLine ];
+  const bClosed = fbHtmlClosed( sText, nStart, nEnd );
+  const bOneLine = bClosed
+    && fnLineAt( aPlace.vnLineStart, nEnd - 1 ) === nLine;
+  return {
+    nLine,
+    bHeader: nLine < aPlace.nLineHeader,
+    bAlone: bOneLine && (
+      sLine.slice( 0, nCol ) + sLine.slice( nCol + nEnd - nStart )
+    ).trim() === "",
+    sBody: sText.slice(
+      nStart + sHtmlCommentOpen.length,
+      bClosed ? nEnd - sHtmlCommentClose.length : nEnd
+    ).trim(),
+    sText: sLine.trim()
+  };
+};
+
+const fvaCommentForHtml = ( sText ) => {
+  const aHtml = faHtmlForText( sText );
+  const vsLine = sText.split( "\n" );
+  const aPlace = {
+    vsLine,
+    vnLineStart: fvnLineStart( vsLine ),
+    nLineHeader: fnLineHeaderHtml( sText, aHtml )
+  };
+  return aHtml.vtComment.map(( tComment ) => (
+    faCommentForHtml( sText, aPlace, tComment )
+  ));
+};
+
+const freBodyStamped = ( sKind ) => new RegExp(
+  "^@" + sKind + " +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})$"
+);
+
+const areBodyForKind = {
+  implements: freBodyStamped( "implements" ),
+  "tested-by": /^@tested-by +(\S+)$/,
+  checks: freBodyStamped( "checks" ),
+  follows: freBodyStamped( "follows" )
+};
+
+const areLooseForKind = {
+  implements: reImplementsLoose,
+  "tested-by": reTestedByLoose,
+  checks: reChecksLoose,
+  follows: reFollowsLoose
+};
+
+const vsKindCodeReference = [ "implements", "tested-by", "checks" ];
+
+const faDirectiveForHtml = ( sPath, aComment, sKind ) => {
+  if( !aComment.sBody.startsWith( "@" + sKind )){ return null;}
+  const vsLoose = aComment.sBody.match( areLooseForKind[ sKind ]);
+  return {
+    sPath: fsPosix( sPath ),
+    nLine: aComment.nLine + 1,
+    sKind,
+    sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
+    sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
+    bWell: aComment.bAlone && areBodyForKind[ sKind ].test( aComment.sBody ),
+    sText: aComment.sText
+  };
+};
+
+const fvaCodeReferenceForHtml = ( aFile ) => fvaCommentForHtml( aFile.sText )
+  .filter(( aComment ) => aComment.bHeader )
+  .flatMap(( aComment ) => vsKindCodeReference.map(( sKind ) => (
+    faDirectiveForHtml( aFile.sPath, aComment, sKind )
+  )))
+  .filter( Boolean );
+
+const fvaFollowsForHtml = ( aFile ) => fvaCommentForHtml( aFile.sText )
+  .map(( aComment ) => faDirectiveForHtml( aFile.sPath, aComment, "follows" ))
+  .filter( Boolean )
+  .map(( aRef ) => ({
+    sPath: aRef.sPath,
+    nLine: aRef.nLine,
+    sText: aRef.sText,
+    bWell: aRef.bWell,
+    sId: aRef.sTarget,
+    sHash: aRef.sStamp
+  }));
+
+const fvaCodeReferenceForFile = ( aFile ) => (
+  reFileHtml.test( aFile.sPath )
+    ? fvaCodeReferenceForHtml( aFile )
+    : fvaCodeReferenceForScript( aFile )
+);
+
+const fvaCodeReferenceForScript = ( aFile ) => {
+  if( aFile.sPath.endsWith( ".rs" )){
+    const [ sMasked, vnLineComment ] = ftMaskRust( aFile.sText );
+    const vsLine = aFile.sText.split( "\n" );
+    const vnLineStart = fvnLineStart( vsLine );
+    const nLineCode = sMasked.split( "\n" )
+      .findIndex(( sLine ) => sLine.trim() !== "");
+    return vnLineComment.flatMap(( nComment ) => {
+      const nLine = fnLineAt( vnLineStart, nComment );
+      if( nLine >= nLineCode ){ return [];}
+      const sLine = vsLine[ nLine ];
+      const sAfter = sLine.slice( nComment - vnLineStart[ nLine ] + 2 );
+      return [
+        [ "implements", reImplementsText, reImplementsLine, reImplementsLoose ],
+        [ "tested-by", reTestedByText, reTestedByLine, reTestedByLoose ],
+        [ "checks", reChecksText, reChecksLine, reChecksLoose ]
+      ].flatMap(([ sKind, reText, reWell, reLoose ]) => {
+        if( !reText.test( sAfter )){ return [];}
+        const vsLoose = sAfter.match( reLoose );
+        return [{
+          sPath: fsPosix( aFile.sPath ), nLine: nLine + 1, sKind,
+          sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
+          sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
+          bWell: reWell.test( sLine ),
+          sText: sLine.trim()
+        }];
+      });
+    });
+  }
+  const vsLine = aFile.sText.split( "\n" );
+  const vaRef = [];
+  let bHeader = true;
+  let bBlock = false;
+  vsLine.forEach(( sLine, n ) => {
+    const sTrim = sLine.trim();
+    if( bHeader ){
+      const bComment = sTrim === "" || sTrim.startsWith( "//" )
+        || sTrim.startsWith( "/*" ) || sTrim.startsWith( "*" )
+        || sTrim.startsWith( "*/" );
+      if( !bComment ){ bHeader = false;}
+    }
+    if( !bHeader && !bBlock ){ return;}
+    const asDirective = [
+      [ "implements", reImplementsText, reImplementsLine, reImplementsLoose ],
+      [ "tested-by", reTestedByText, reTestedByLine, reTestedByLoose ],
+      [ "checks", reChecksText, reChecksLine, reChecksLoose ]
+    ];
+    asDirective.forEach(([ sKind, reText, reWell, reLoose ]) => {
+      const sComment = sLine.replace( /^\s*(?:\/\/|\/\*|\*)\s?/, "" );
+      if( !reText.test( sComment )){ return;}
+      const vsWell = sLine.match( reWell )
+        || sLine.match( reKindBlock( sKind ));
+      const vsLoose = sComment.match( reLoose );
+      vaRef.push({
+        sPath: fsPosix( aFile.sPath ), nLine: n + 1, sKind,
+        sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
+        sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
+        bWell: vsWell !== null,
+        sText: sLine.trim()
+      });
+    });
+    if( sTrim.startsWith( "/*" ) && !sTrim.includes( "*/" )){ bBlock = true;}
+    if( bBlock && sTrim.includes( "*/" )){ bBlock = false;}
+  });
+  return vaRef;
+};
+
+const reKindBlock = ( sKind ) => new RegExp(
+  "^\\s*/\\* *@" + sKind + " +([^*]+) *\\*/\\s*$"
+);
+
+const fvaCodeReferenceResolved = ( aModel ) => {
+  const vaTestPath = new Set( aModel.vaTestParsed.map(( aTest ) => aTest.sPath ));
+  const vaRef = aModel.vaCode.flatMap( fvaCodeReferenceForFile );
+  aModel.vaCodeRef = vaRef.filter(( aRef ) => aRef.sKind === "implements" )
+    .map(( aRef ) => {
+      const vsId = ( aRef.sTarget + "@" + aRef.sStamp ).match(
+        /^([a-z]-[a-z0-9]{6})@([0-9a-f]{7})$/
+      );
+      const aFound = vsId === null ? null : faLineForId( aModel, vsId[ 1 ] );
+      const sReason = !aRef.bWell || vsId === null
+        ? "malformed"
+        : aFound.cPlace !== 1 ? "statement id does not resolve uniquely"
+          : aFound.aLine.sType !== "s" ? "names a line of type " + fsTypeLine( aFound.aLine.sType )
+            : aFound.aLine.sHash !== vsId[ 2 ] ? "stale hash" : null;
+      return { ...aRef, sReason, sId: sReason === null ? vsId[ 1 ] : null };
+    });
+  return vaRef.map(( aRef ) => {
+    const vsId = aRef.sTarget.match( /^([a-z]-[a-z0-9]{6})$/ );
+    const vsStamped = ( aRef.sTarget + "@" + aRef.sStamp ).match(
+      /^([a-z]-[a-z0-9]{6})@([0-9a-f]{7})$/
+    );
+    let sReason = null;
+    let aLine = null;
+    let aTest = null;
+    if( !aRef.bWell ){ sReason = "malformed";}
+    else if( aRef.sKind === "tested-by" ){
+      const sPath = aRef.sTarget;
+      aTest = aModel.vaTestParsed.find(( aEntry ) => aEntry.sPath === sPath );
+      if( !vaTestPath.has( sPath )){ sReason = "no such declared test file";}
+      else {
+        const asImpl = new Set( aModel.vaCodeRef
+          .filter(( aEntry ) => aEntry.sPath === aRef.sPath
+            && aEntry.sKind === "implements" && aEntry.sReason === null )
+          .map(( aEntry ) => aEntry.sId ));
+        const bOverlap = aTest.vaLink.some(( aLink ) => (
+          aLink.sReason === null && asImpl.has( aLink.sId )
+        ));
+        if( !bOverlap ){ sReason = "test proves no statement implemented here";}
+      }
+    }
+    else {
+      const sId = vsStamped === null ? null : vsStamped[ 1 ];
+      const aFound = sId === null ? null : faLineForId( aModel, sId );
+      if( vsStamped === null ){ sReason = "malformed";}
+      else if( aFound.cPlace !== 1 ){ sReason = "statement id does not resolve uniquely";}
+      else {
+        aLine = aFound.aLine;
+        const sExpectedType = aRef.sKind === "implements" ? "s" : "i";
+        if( aLine.sType !== sExpectedType ){
+          sReason = "names a line of type " + fsTypeLine( aLine.sType );
+        }
+        else if( aLine.sHash !== vsStamped[ 2 ]){ sReason = "stale hash";}
+      }
+    }
+    return { ...aRef, sReason, sId: aLine === null ? null : aLine.sId };
+  });
+};
 
 const fvnCommentCss = ( sText ) => {
   const vnComment = [];
@@ -1936,7 +2787,11 @@ const ftCommentsForCiter = ( aFile ) => {
   if( reFileCss.test( aFile.sPath )){
     return [[], fvnCommentCss( aFile.sText )];
   }
-  const tMask = ftMaskForSource( aFile.sText );
+  if( aFile.sPath.endsWith( ".rs" )){
+    const [ , vnLine, vnBlock ] = ftMaskRust( aFile.sText );
+    return [ vnLine, vnBlock ];
+  }
+  const tMask = ftMaskForPath( aFile.sText, aFile.sPath );
   return [ Array.from( tMask[ 1 ]), tMask[ 2 ]];
 };
 
@@ -1961,7 +2816,13 @@ const faFollowsAt = ( aFile, vnLineStart, nComment, bBlock ) => {
   };
 };
 
-const fvaFollowsForFile = ( aFile ) => {
+const fvaFollowsForFile = ( aFile ) => (
+  reFileHtml.test( aFile.sPath )
+    ? fvaFollowsForHtml( aFile )
+    : fvaFollowsForScript( aFile )
+);
+
+const fvaFollowsForScript = ( aFile ) => {
   const vnLineStart = fvnLineStart( aFile.sText.split( "\n" ));
   const [ vnLine, vnBlock ] = ftCommentsForCiter( aFile );
   return vnLine
@@ -2011,6 +2872,7 @@ const fasMarkerSatisfiedOwn = ( aModel, aLines ) => new Set(
 
 const faLines = ( aModel, aEnv ) => {
   const hasher = new TargetHasher( aModel, aEnv );
+  aModel.vaCodeRef = fvaCodeReferenceResolved( aModel );
   const aLines = {
     hasher,
     vaDefinition: fvaDefinitionForModel( aModel ),
@@ -2018,10 +2880,34 @@ const faLines = ( aModel, aEnv ) => {
     vaCheck: fvaLineOfType( aModel, "i" ).map(( aMarker ) => (
       faCheckForMarker( aMarker, aEnv.vaRecord, hasher )
     )),
-    vaFollows: aEnv.vaCiter
+    vaFollows: aEnv.vaGuided
       .flatMap( fvaFollowsForFile )
-      .map(( aFollows ) => faFollowsResolved( aModel, aFollows ))
+      .map(( aFollows ) => faFollowsResolved( aModel, aFollows )),
+    vaCodeRef: []
   };
+  aModel.vaCodeRef = fvaCodeReferenceResolved( aModel );
+  aLines.vaCodeRef = aModel.vaCodeRef;
+  aLines.vaImplements = aModel.vaCodeRef.filter(( aRef ) => (
+    aRef.sKind === "implements" && aRef.sReason === null
+  ));
+  aLines.vaTestedBy = aModel.vaCodeRef.filter(( aRef ) => (
+    aRef.sKind === "tested-by" && aRef.sReason === null
+  ));
+  aLines.vaChecks = aModel.vaCodeRef.filter(( aRef ) => (
+    aRef.sKind === "checks" && aRef.sReason === null
+  ));
+  aLines.vaCodeRefBad = aModel.vaCodeRef.filter(( aRef ) => (
+    aRef.sReason !== null
+  ));
+  aLines.vaNoImplementation = fvaLineOfType( aModel, "s" ).filter(( aStmt ) => (
+    !aLines.vaImplements.some(( aRef ) => aRef.sId === aStmt.sId )
+  ));
+  aLines.vaNoTestedBy = aModel.vaCode.filter(( aFile ) => (
+    !aLines.vaTestedBy.some(( aRef ) => aRef.sPath === fsPosix( aFile.sPath ))
+  ));
+  aLines.vaNoChecks = fvaLineOfType( aModel, "i" ).filter(( aCheck ) => (
+    !aLines.vaChecks.some(( aRef ) => aRef.sId === aCheck.sId )
+  ));
   return {
     ...aLines, asMarkerSatisfiedOwn: fasMarkerSatisfiedOwn( aModel, aLines )
   };
@@ -2481,7 +3367,11 @@ const faTypeLists = ( aModel, aRoots ) => {
         aMarker.sId !== null && aFollows.sId === aMarker.sId
       ))
     )),
-    vaNoCode: fvaNoCodeForChecks( aLines.vaCheck ),
+    vaNoCode: fvaNoCodeForChecks( aLines.vaCheck, aLines.vaChecks ),
+    vaNoImplementation: aLines.vaNoImplementation,
+    vaNoTestedBy: aLines.vaNoTestedBy,
+    vaCodeRefBad: aLines.vaCodeRefBad,
+    vaImplements: aLines.vaImplements,
     vaProblem: fvaProblemForChecks( aLines.vaCheck )
   };
 };
@@ -2588,6 +3478,16 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
     )),
     vaUncited: aStmtList.vaUncited.filter( fbSpec ),
     vaNoCode: aStmtList.vaNoCode.filter( fbSpec ),
+    vaNoImplementation: aStmtList.vaNoImplementation.filter( fbSpec ),
+    vaNoTestedBy: aStmtList.vaNoTestedBy.filter(( aFile ) => (
+      aStmtList.vaImplements.some(( aRef ) => (
+        aRef.sPath === fsPosix( aFile.sPath )
+        && aScope.asIdStmt.has( aRef.sId )
+      ))
+    )),
+    vaCodeRefBad: aStmtList.vaCodeRefBad.filter(( aRef ) => (
+      aRef.sId === null || aScope.asIdStmt.has( aRef.sId )
+    )),
     vaProblem: aStmtList.vaProblem.filter( fbSpec )
   };
 };
@@ -2877,6 +3777,9 @@ const fsLineForDangling = ( aTarget ) => (
 );
 
 const fsLineForNoCode = ( aCheck ) => fsLineForMarker( aCheck.aMarker );
+const fsLineForCodeRef = ( aRef ) => (
+  fsPlace( aRef ) + "  " + aRef.sText + " (" + aRef.sReason + ")"
+);
 
 const fvsSectionLines = ( aMap ) => [
   fsSection( "dangling targets", aMap.vaDangling.map( fsLineForDangling )),
@@ -2898,6 +3801,9 @@ const fvsSectionLines = ( aMap ) => [
     "guidance no reference names", aMap.vaUncited.map( fsLineForMarker )
   ),
   fsSection( sTitleNoCode, aMap.vaNoCode.map( fsLineForNoCode )),
+  fsSection( "statements with no implementation link", aMap.vaNoImplementation.map( fsLineForMarker )),
+  fsSection( "implementation files with no test link", aMap.vaNoTestedBy.map(( aFile ) => aFile.sPath )),
+  fsSection( "malformed, unresolved or stale code references", aMap.vaCodeRefBad.map( fsLineForCodeRef )),
   fsSectionProblem( aMap.vaProblem )
 ];
 
@@ -2954,11 +3860,23 @@ const aListFollowsBad = {
 const aListNoCode = {
   nList: 28, sKey: "vaNoCode", fsLine: fsLineForNoCode, faPlace: faMarkerOf
 };
+const aListNoImplementation = {
+  nList: 31, sKey: "vaNoImplementation", fsLine: fsLineForMarker,
+  bComplete: true, faPlace: faMarkerOf
+};
+const aListNoTestedBy = {
+  nList: 32, sKey: "vaNoTestedBy", fsLine: ( aFile ) => aFile.sPath,
+  bComplete: true, faPlace: ( aFile ) => ({ sPath: aFile.sPath, nLine: 1 })
+};
+const aListCodeRefBad = {
+  nList: 33, sKey: "vaCodeRefBad", fsLine: fsLineForCodeRef,
+  faPlace: ( aRef ) => aRef
+};
 
 const vaListFence = [
   aListUnresolved, aListMarkerBad, aListUnproved, aListLinkBad, aListStale,
   aListIncomplete, aListRootBad, aListFence, aListDangling, aListFollowsBad,
-  aListNoCode
+  aListNoCode, aListNoImplementation, aListNoTestedBy, aListCodeRefBad
 ];
 
 const fbAlways = () => true;
@@ -2971,6 +3889,7 @@ const vtListRefusing = [
   [ aListRootBad, fbIdAbsent ],
   [ aListRederive, fbAlways ],
   [ aListFollowsBad, ( aEntry ) => aEntry.bStale || aEntry.bIdAbsent ]
+  , [ aListNoCode, fbAlways ], [ aListCodeRefBad, fbAlways ]
 ];
 
 const fbListCounts = ( aMap, aList ) => !aList.bComplete || aMap.bComplete;
@@ -2989,9 +3908,9 @@ const fvaGateForList = ( aMap, aList, fbRefuses ) => aMap[ aList.sKey ]
 
 const fzCompareGate = ( aA, aB ) => (
   aA.nList - aB.nList
-  || Number( aA.aPlace.sPath > aB.aPlace.sPath )
-  - Number( aA.aPlace.sPath < aB.aPlace.sPath )
-  || aA.aPlace.nLine - aB.aPlace.nLine
+  || Number(( aA.aPlace || {}).sPath > ( aB.aPlace || {}).sPath )
+  - Number(( aA.aPlace || {}).sPath < ( aB.aPlace || {}).sPath )
+  || (( aA.aPlace || {}).nLine || 0 ) - (( aB.aPlace || {}).nLine || 0 )
 );
 
 const fvsLineGate = ( aMapTree, vaMapComplete ) => Array.from( new Map(
@@ -3364,15 +4283,20 @@ class TreeReader {
   }
 
   fvaTest(){
-    const bJavascript = this.aConfig.vsLanguage.some(( sLanguage ) => (
+    const vsSuffix = this.aConfig.vsLanguage.flatMap(( sLanguage ) => (
+      asTestSuffixForLanguage[ sLanguage ] || []
+    ));
+    const bTestLanguage = this.aConfig.vsLanguage.some(( sLanguage ) => (
       asLanguageTest.has( sLanguage )
     ));
+    const reTest = new RegExp( "\\.test\\.(?:"
+      + vsSuffix.join( "|" ) + ")$" );
     const vsDirSuite = this.fvsDirExpanded(
       this.aConfig.vaSuite.flatMap(( aSuite ) => aSuite.vsDir )
     );
     return this.fvaFile( Array.from( new Set(
       vsDirSuite.flatMap(( sDir ) => this.fvsPathUnder( sDir, ( sPath ) => (
-        bJavascript && reFileTest.test( sPath )
+        bTestLanguage && reTest.test( sPath )
       )))
     )));
   }
@@ -3421,14 +4345,22 @@ class TreeReader {
       });
   }
 
-  fvaCiter(){
-    const reFileCiter = freFileForLanguages( this.aConfig.vsLanguage );
-    const vsDirRead = this.fvsDirExpanded( this.aConfig.vsDirRead );
-    return this.fvaFile( Array.from( new Set(
-      vsDirRead
+  faFilesRead(){
+    const reFileRead = freFileForLanguages( this.aConfig.vsLanguage );
+    const vsDirSuite = this.fvsDirExpanded(
+      this.aConfig.vaSuite.flatMap(( aSuite ) => aSuite.vsDir )
+    );
+    const vaGuided = this.fvaFile( Array.from( new Set(
+      this.fvsDirExpanded( this.aConfig.vsDirRead )
         .flatMap(( sDir ) => this.fvsPathWalk( sDir ))
-        .filter(( sPath ) => reFileCiter.test( sPath ))
-    )).sort()).filter(( aFile ) => aFile.sText.includes( "@follows" ));
+        .filter(( sPath ) => reFileRead.test( sPath ))
+    )).sort());
+    return {
+      vaGuided,
+      vaCiter: vaGuided.filter(( aFile ) => !vsDirSuite.some(( sDir ) => (
+        aFile.sPath === sDir || aFile.sPath.startsWith( sDir + path.sep )
+      )))
+    };
   }
 
   fvaRecord(){
@@ -3461,7 +4393,7 @@ const faRecordForLine = ( sLine ) => {
 const faModelForReader = ( reader, bTest ) => faModel({
   vaSpec: reader.fvaSpec(),
   vaTest: bTest ? reader.fvaTest() : [],
-  vaCiter: reader.fvaCiter(),
+  ...reader.faFilesRead(),
   vaRecord: reader.fvaRecord(),
   fbExists: ( sPath ) => reader.fbExists( sPath ),
   aFiles: reader
@@ -3602,6 +4534,7 @@ const fsDateToday = () => new Date().toISOString().slice( 0, 10 );
 const faModelForRecord = ( reader ) => faModel({
   vaSpec: reader.fvaSpec(),
   vaTest: [],
+  ...reader.faFilesRead(),
   vaRecord: reader.fvaRecord(),
   fbExists: ( sPath ) => reader.fbExists( sPath ),
   aFiles: reader
@@ -3616,7 +4549,10 @@ const fsProblemForCheckId = ( aModel, sId ) => {
 };
 
 const fasHashForTargets = ( aMarker, hasher ) => Object.fromEntries(
-  fvsTargetForMarker( aMarker ).map(( sTarget ) => [
+  hasher.aModel.vaCodeRef
+    .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
+      && aRef.sId === aMarker.sId )
+    .map(( aRef ) => aRef.sPath ).map(( sTarget ) => [
     sTarget, hasher.fsHash( sTarget )
   ])
 );
@@ -3749,24 +4685,10 @@ const fsDateReset = ( aCheck ) => {
   return nReset < 0 ? "" : String( aCheck.vaRecord[ nReset ].sDate );
 };
 
-const fbTargetMeetsWork = ( sTarget, sWork ) => {
-  const tFunction = ftFunctionForTarget( sTarget );
-  if( tFunction !== null ){ return fsPathClean( tFunction[ 0 ]) === sWork;}
-  const sPath = fsPathClean( sTarget );
-  return (
-    sPath === sWork
-    || sPath.startsWith( sWork + "/" )
-    || sWork.startsWith( sPath + "/" )
-  );
-};
-
-const fbCheckInWork = ( aCheck, vsWork ) => (
-  fvsTargetForMarker( aCheck.aMarker )
-    .filter( fbCodeTarget )
-    .some(( sTarget ) => vsWork.some(( sWork ) => (
-      fbTargetMeetsWork( sTarget, sWork )
-    )))
-);
+const fbCheckInWork = ( aModel, aCheck, vsWork ) => aModel.aLines.vaCodeRef
+  .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
+    && aRef.sId === aCheck.aMarker.sId )
+  .some(( aRef ) => vsWork.includes( fsPathClean( aRef.sPath )));
 
 const fzCompareWorklist = ( aA, aB ) => (
   Number( aB.bWork ) - Number( aA.bWork )
@@ -3781,7 +4703,7 @@ const fvaCheckWorklist = ( aModel, vsWork ) => fvaCheckRecordable( aModel )
   ))
   .map(( aCheck ) => ({
     ...aCheck,
-    bWork: fbCheckInWork( aCheck, vsWork ),
+    bWork: fbCheckInWork( aModel, aCheck, vsWork ),
     sDateReset: fsDateReset( aCheck )
   }))
   .sort( fzCompareWorklist );
@@ -3933,7 +4855,7 @@ const fzArch = ( reader, fWrite ) => {
 const faInputForReader = ( reader, vaSpec ) => ({
   vaSpec,
   vaTest: reader.fvaTest(),
-  vaCiter: reader.fvaCiter(),
+  ...reader.faFilesRead(),
   vaRecord: reader.fvaRecord(),
   fbExists: ( sPath ) => reader.fbExists( sPath ),
   aFiles: reader
@@ -4051,5 +4973,20 @@ module.exports = {
   fsWords,
   fvnLineStart,
   fnLineAt,
-  TreeReader
+  TreeReader,
+  ftMaskRust,
+  ftMaskForPath,
+  fsNormalForFile,
+  faProgramForPath,
+  fnAfterGroup,
+  fnAfterTemplate,
+  fnRustBlockEnd,
+  fsNameAt,
+  fvsTargetForMarker,
+  fsReasonForTargetForm,
+  TargetHasher,
+  fsJsonForScript,
+  aFilesNone,
+  aListNoTestedBy,
+  aListCodeRefBad,
 };

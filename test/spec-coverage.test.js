@@ -8,12 +8,17 @@ const { SourceMapGenerator } = require( "source-map" );
 const { fzMain } = require( "../scripts/spec-coverage.js" );
 const SpecCoverageReporter = require( "../scripts/spec-coverage-reporter.js" );
 const {
-  fsPathWindow, fxJsonRead, faRecordForResult
+  fsPathWindow, fxJsonRead, faRecordForResult, fxMapForSource, SourceIndex,
+  fvaPosStmtForSource
 } = require( "../scripts/spec-coverage-collect.js" );
 const { fsPathSpawnLog } = require( "../scripts/spec-coverage-window.js" );
+const { TestWindows } = require( "../scripts/spec-coverage-setup.js" );
+const { createTransformer } = require( "../scripts/spec-coverage-transform.js" );
 const {
-  faConfigForSuite, fsHashForRegion, SuiteRunner
+  faConfigForSuite, fsHashForRegion, SuiteRunner, faMeasurementForRecords,
+  fsEnvironmentResolved, fsPathModuleResolved
 } = require( "../scripts/spec-coverage-measure.js" );
+const { ChildCoverage } = require( "../scripts/spec-coverage-v8.js" );
 const { spawnSync } = require( "child_process" );
 const {
   sPathSpecCoverage, aCoverageFixture, fWriteConcord
@@ -357,6 +362,184 @@ const fsHashUnused = () => {
     fnLineOf( sText, "return zT" )
   );
 };
+
+// @proves s-igoasz@b481867
+test( "a source whose comment names an unreadable source map has no map", () => {
+  const sText = "const value = 1;\n//# sourceMappingURL=missing.map\n";
+  const sPath = fsPathAbs( "src/missing-map.js" );
+  fWrite( "src/missing-map.js", sText );
+  expect( fxMapForSource( sText, sPath )).toBe( null );
+});
+
+// @proves s-m3tqg6@8e17ef1
+test( "an in-scope source carrying an inline map is attributed in its own "
+  + "line numbering", () => {
+  const sPathRel = "src/inline-map.js";
+  const sPathAbs = fsPathAbs( sPathRel );
+  const generator = new SourceMapGenerator({ file: "inline-map.js" });
+  generator.addMapping({
+    generated: { line: 1, column: 14 },
+    original: { line: 3, column: 14 },
+    source: "inline-map.js"
+  });
+  const sMap = Buffer.from( generator.toString(), "utf8" ).toString( "base64" );
+  const sText = [ "// a header", "", "const value = 1;",
+    "//# sourceMappingURL=data:application/json;base64," + sMap, ""
+  ].join( "\n" );
+  fWrite( sPathRel, sText );
+  const index = new SourceIndex();
+  expect( Array.from( index.fasPos( sPathAbs ))).toContain( "3:14" );
+  const aRecord = faRecordForResult({
+    sDirRoot: sDir,
+    sSuite: "root",
+    sPathTest: fsPathAbs( "test/inline.test.js" ),
+    aCoverage: { [ sPathAbs ]: {
+      statementMap: { 0: { start: { line: 1, column: 14 }}},
+      s: { 0: 1 },
+      inputSourceMap: generator.toJSON()
+    }},
+    aWindow: null,
+    index
+  });
+  expect( aRecord.aFile ).toEqual(expect.objectContaining({
+    [ sPathRel ]: { vnLine: [ 3 ], avnUnitForLine: { 3: [ -1 ]}}
+  }));
+});
+
+// @proves s-ddknwk@bad1045
+// @proves s-ujk1xp@559fff0
+test( "the same unmeasured command started by two tests names both tests", () => {
+  const aMeasurement = faMeasurementForRecords({
+    vaRecord: [ "test/a.test.js", "test/b.test.js" ].map(( sPathTest ) => ({
+      sSuite: "root", sPathTest, vaTest: [], aFile: {},
+      vaUnmeasured: [{ sKind: "node", sText: "node child.js", vnUnit: [ 0 ] }]
+    })),
+    avsTextForPath: new Map(), aSuite: {},
+    aGit: { sRevision: "r", bDirty: false }, sTime: "t"
+  });
+  expect( aMeasurement.vaUnmeasured ).toEqual([{
+    sKind: "node", sText: "node child.js", vnUnit: [ 1, 2 ]
+  }]);
+});
+
+// @proves s-itmj4d@a1e8c28
+test( "the suite runner records the revision and dirty state returned by git", () => {
+  const vaCall = [];
+  const fxGit = ( sCommand, vsArg, aOptions ) => {
+    vaCall.push({ sCommand, vsArg, aOptions });
+    return { stdout: vsArg[ 0 ] === "rev-parse" ? "abc123\n" : " M file\n" };
+  };
+  expect( new SuiteRunner( sDir, () => {}, fxGit ).ftGit()).toEqual({
+    sRevision: "abc123", bDirty: true
+  });
+  expect( vaCall.map(( aCall ) => [ aCall.sCommand, aCall.vsArg ])).toEqual([
+    [ "git", [ "rev-parse", "HEAD" ]],
+    [ "git", [ "status", "--porcelain" ]]
+  ]);
+  expect( vaCall.every(( aCall ) => aCall.aOptions.cwd === sDir)).toBe( true );
+});
+
+// @proves s-yzz1r5@16c2353
+test( "the per-test window setup can create its tracker", () => {
+  const windows = new TestWindows();
+  windows.sDirRun = sDir;
+  expect( windows.sDirRun ).toBe( sDir );
+  expect( windows.avzBefore ).toEqual({});
+  expect( windows.vaTest ).toEqual([]);
+  expect( windows.sPathTest ).toBe( null );
+});
+
+// @proves s-kmo08a@7b1a38d
+test( "source that neither instrumenter can parse has no statement positions", () => {
+  expect( fvaPosStmtForSource( "const = ;", "broken.js" )).toEqual([]);
+});
+
+// @proves s-3afft9@1a50263
+test( "a malformed V8 file URL contributes no child coverage", () => {
+  const index = { fxMap(){ throw new Error( "malformed URL must be skipped" );} };
+  expect(() => new ChildCoverage( sDir, sDir, index ).fAddScript(
+    {}, { url: "file://%ZZ", functions: [] }, 0
+  )).not.toThrow();
+});
+
+// @proves s-1lktaq@64cbd78
+test( "an unknown Jest environment name is passed through to Jest", () => {
+  expect( fsEnvironmentResolved( "concord-missing-environment", sDir ))
+    .toBe( "concord-missing-environment" );
+});
+
+// @proves s-bi8reu@bf16aef
+test( "an unknown transform module resolves to its suite-relative path", () => {
+  expect( fsPathModuleResolved( "missing-transformer", sDir ))
+    .toBe( path.resolve( sDir, "missing-transformer" ));
+  const aConfig = faConfigForSuite({
+    aConfig: { transform: { "\\.fixture$": "missing-transformer" } },
+    sDirSuite: sDir,
+    sDirRoot: sDir,
+    sDirRun: path.join( sDir, "unknown-transform-run" ),
+    sSuite: "root",
+    sPathSetup: "setup.js",
+    sPathReporter: "reporter.js",
+    sPathTransform: "transform.js",
+    sPathEnvironment: "environment.js"
+  });
+  expect( aConfig.transform[ "\\.fixture$" ][ 1 ].sPathInner )
+    .toBe( path.resolve( sDir, "missing-transformer" ));
+});
+
+// @proves s-m3tqg6@8e17ef1
+test( "a suite transformer can return a source map", async () => {
+  const sTransformer = "test/transformer-with-map.js";
+  fWrite( sTransformer, [
+    "module.exports = { process( sSource ){",
+    "  return { code: sSource, map: {",
+    "    version: 3, sources: [ 'fixture.js' ], names: [], mappings: ''",
+    "  }};",
+    "}};",
+    ""
+  ].join( "\n" ));
+  const transformer = await createTransformer({
+    sPathInner: fsPathAbs( sTransformer ), xConfigInner: {}
+  });
+  const aResult = transformer.process( "const value = 1;", "fixture.js", {
+    instrument: true,
+    config: { rootDir: sDir },
+    configString: "fixture",
+    supportsDynamicImport: true,
+    supportsExportNamespaceFrom: true,
+    supportsStaticESM: true,
+    supportsTopLevelAwait: true
+  });
+  expect( aResult.map ).toEqual(expect.objectContaining({ version: 3 }));
+});
+
+// @proves s-m3tqg6@8e17ef1
+test( "a suite transform makes otherwise unparseable source instrumentable", async () => {
+  const sTransformer = "test/transformer-typescript.js";
+  const sSource = "src/fixture.ts";
+  fWrite( sSource, "const value: number = 1;\n" );
+  fWrite( sTransformer, [
+    "module.exports = { process( sSource ){",
+    "  return { code: sSource.replace( /: number/g, '' ) };",
+    "}};",
+    ""
+  ].join( "\n" ));
+  const transformer = await createTransformer({
+    sPathInner: fsPathAbs( sTransformer ), xConfigInner: {}
+  });
+  const aResult = transformer.process(
+    "const value: number = 1;", fsPathAbs( sSource ), {
+    instrument: true,
+    config: { rootDir: sDir },
+    configString: "fixture",
+    supportsDynamicImport: true,
+    supportsExportNamespaceFrom: true,
+    supportsStaticESM: true,
+    supportsTopLevelAwait: true
+    }
+  );
+  expect( aResult.code ).toContain( "coverage" );
+});
 
 const fvsTree = ( sDirTop ) => fs.readdirSync( sDirTop, { recursive: true })
   .map(( sPath ) => sPath.split( path.sep ).join( "/" ))

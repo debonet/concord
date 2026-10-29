@@ -1,5 +1,7 @@
 # concord-hook: installing the pre-commit gate
 
+Statement ids: complete
+
 ## Purpose
 
 `concord-hook` installs in an adopting project, and checks, the git
@@ -89,6 +91,6 @@ pre-commit hook kept under version control that runs the Concord gate.
 
 ## Error Handling
 
-Errors reach the caller as the exit codes and stderr lines above: 2 for a
+* {#s-l366c3 <arch} Errors reach the caller as the exit codes and stderr lines above: 2 for a
 usage error, a refused install or a missing work tree, 1 for a gate that
 refuses or a hook that is not installed.

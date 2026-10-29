@@ -1,3 +1,8 @@
+// @implements s-qpkoc3@5bb9377
+// @implements s-bi8reu@bf16aef
+// @implements s-dokd3g@edd7c92
+// @tested-by test/spec-coverage-jest.test.js
+// @tested-by test/spec-coverage.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -18,12 +23,10 @@ const fxStateCircus = () => {
 };
 
 class TestWindows {
-  constructor( sDirRun ){
-    this.sDirRun = sDirRun;
-    this.avzBefore = {};
-    this.vaTest = [];
-    this.sPathTest = null;
-  }
+  sDirRun;
+  avzBefore = {};
+  vaTest = [];
+  sPathTest = null;
 
   fOpen(){
     this.sPathTest = expect.getState().testPath;
@@ -55,8 +58,11 @@ class TestWindows {
 }
 
 if( process.env[ sEnvRun ]){
-  const windows = new TestWindows( process.env[ sEnvRun ]);
+  const windows = new TestWindows();
+  windows.sDirRun = process.env[ sEnvRun ];
   beforeEach(() => windows.fOpen());
   afterEach(() => windows.fClose());
   afterAll(() => windows.fWrite());
 }
+
+module.exports = { TestWindows };

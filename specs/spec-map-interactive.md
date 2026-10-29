@@ -1,4 +1,6 @@
-# STC Concord: interactive checks
+# ConcordSTC: interactive checks
+
+Statement ids: complete
 
 ## Purpose
 
@@ -37,25 +39,22 @@ unchecked ones in front of him.
   {#s-zac0m4 <arch} An `i` line lacking either label, holding them in the other
   order, or with no text after either is malformed, reported in (6).
   {#s-vhci8f <m-k55xs4@88cd8e4} It is never a jest test: no test link resolves to it.
-* {#s-m544u1 <m-xjun0a@9dd245b} **What a check covers.** An `i` line's marker carries a
-  target list, in the form and with the resolution of a pointer's
-  (`specs/spec-map-line-types.md`, Pointers), naming the statements and
-  the files or directories
-  whose change may change what the check shows, as in
-  `{#i-xxxxxx <arch >s-aaaaaa,packages/web-client/src}`; its unresolved
-  targets are reported in (22) as a pointer's are. {#s-lgrhug <m-xjun0a@9dd245b} So the
-  checks a change touches are the checks whose targets name a changed
-  file, a directory holding one, a function whose definition changed, or
-  a statement whose hash changed.
+* {#s-m544u1 <m-xjun0a@9dd245b} **What a check covers.** An `i` line carries no
+  target list. An implementation file names a check it supports with
+  `// @checks i-xxxxxx@hhhhhhh`; the check's related implementation files
+  are exactly the files with resolving references to its id. {#s-lgrhug <m-xjun0a@9dd245b}
+  So the checks a change touches are those named by `@checks` references in
+  changed implementation files, and checks whose text or linked statement
+  changed.
 * {#s-khw3hm <arch} **Recording a verdict.** `--pass <id>` and `--fail <id>`,
   each optionally followed by `--note <text>`, append one line to
   `test/interactive-passes.jsonl`, creating it when absent: a JSON object
   whose fields are `sId`, the id; `sHash`, the check's current hash;
   `sVerdict`, `pass` or `fail`; `sDate`, the run's UTC date as
   `YYYY-MM-DD`; `sNote`, the note or an empty string; and
-  `asHashForTarget`, an object holding, for each target in the check's
-  target list as written, that target's current content hash (Target
-  content hashes, below). {#s-ggobif <arch} `--unable <id>`, optionally followed
+  `asHashForTarget`, an object holding, for each implementation file with a
+  resolving `@checks` reference to the check, its current content hash
+  (Target content hashes, below). {#s-ggobif <arch} `--unable <id>`, optionally followed
   by `--note <text>`, and `--reopen <id>` append one line in the same form
   whose `sVerdict` is `unable` or `reopen`, under the same refusals.
   {#s-j0u6oi <arch} They
@@ -65,8 +64,8 @@ unchecked ones in front of him.
 * {#s-oy6kxo <m-58bbc0@97f6bed,m-p5u7hb@920f72c} **Status.** A check's status is read from the last line of
   that file naming its id: `passed` when it records a pass whose `sHash`
   is the check's current hash and whose `asHashForTarget` holds, for every
-  target in the check's current target list, that target's current
-  content hash; `stale` when it records any other pass; `failed` when it
+  implementation file with a resolving `@checks` reference to the id, that
+  file's current content hash; `stale` when it records any other pass; `failed` when it
   records a fail; and `unchecked` when it records `unable`, `reopen` or
   `reset`, or when no line names the id. {#s-tclcd8 <m-p5u7hb@920f72c} A target that does
   not resolve has no current content hash, so a pass recorded while it
@@ -75,18 +74,10 @@ unchecked ones in front of him.
 * {#s-32o5r7 <m-58bbc0@97f6bed} **Rewording resets a check.** Rewording an `i` line
   changes its hash, so a pass recorded before any rewording leaves the
   check `stale` and puts it back on the worklist (The worklist, below).
-* {#s-g8r0ur <m-p5u7hb@920f72c} **Target content hashes.** Each target of an `i` line has
+* {#s-g8r0ur <m-p5u7hb@920f72c} **Implementation content hashes.** Each implementation file linked to an `i` line has
   a content hash, the first seven lowercase hexadecimal characters of the
-  SHA-1 of the UTF-8 bytes of its normalised content: for a line id, the
-  line's hash; for a spec path and heading slug, the text from that
-  heading to the next heading of the same or a higher level, normalised
-  as a statement's text is; for a file, its normalised text; for a
-  function, the normalised source text of its definition; and for a
-  directory, the text formed by one line per file under it at any depth
-  outside `node_modules`, in order of relative path, each the file's
-  relative path, one space and its content hash.
-* {#s-zcb6gq <arch} **Code normalisation.** The normalised text of a `.js`,
-  `.mjs`, `.cjs` or `.css` file, or of a function, is its source with
+  SHA-1 of the UTF-8 bytes of its normalised file content.
+* {#s-zcb6gq <arch} **Code normalisation.** The normalised text of an implementation file is its source with
   every comment removed (`//` line comments and `/* */` block comments in
   JavaScript, `/* */` comments in CSS), outside string, template and
   regular-expression literals, then every run of whitespace outside those
@@ -98,12 +89,12 @@ unchecked ones in front of him.
   comments, or only changes whitespace outside literals, keeps its content
   hash and leaves every check covering it as it was; any other change to
   its text changes the hash and makes a passed check covering it `stale`.
-* {#s-m5inu7 <arch} **Code targets.** A code target is a target naming a file
-  outside `specs/`, a directory that is neither `specs/` nor under it, or
-  a function; so a check with no code target goes `stale` only when its
-  own text, or a line or spec section it targets, changes.
-  {#s-ocpfpw <arch} Beside the other lists Concord reports (28) each `i` line with
-  no code target, naming the spec, the line and the id. {#s-bxs0rr <arch} With no
+* {#s-m5inu7 <arch} **Implementation links.** A check's related implementation
+  files come from their `@checks` references; it has no outgoing file or
+  function target. {#s-ocpfpw <arch} Beside the other lists Concord reports (28)
+  each `i` line that has a target list or no resolving `@checks` reference,
+  naming the spec, line and id, under the heading `interactive checks with
+  no implementation link`. {#s-bxs0rr <arch} With no
   argument it reports (28) over the whole tree and exits 0; with a spec
   path it reports (28) for that spec's checks and exits non-zero when it
   holds an entry.
@@ -138,9 +129,8 @@ unchecked ones in front of him.
 * {#s-yu6zet <m-p5u7hb@920f72c} **Order.** A check's reset date is the date of its last
   record whose `sVerdict` is `reset`, `reopen` or `unable`.
   {#s-z7gbzu <m-p5u7hb@920f72c} `--worklist <path> --work <file>`, the file listing paths
-  relative to the repo root one per line, puts first every check with a
-  code target that is a listed path, lies under a listed directory, is a
-  directory holding a listed path, or is a function in a listed file;
+  relative to the repo root one per line, puts first every check named by a
+  resolving `@checks` reference in a listed implementation file;
   {#s-97jgxt <m-p5u7hb@920f72c} within that group and the rest, checks run by reset date,
   oldest first, then by spec path and line. {#s-5406e5 <arch} Every check on the
   worklist has its own card, however many checks one change reset.

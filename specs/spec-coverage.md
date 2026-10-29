@@ -70,6 +70,11 @@ shows exactly which lines its tests touch."
   every process started with an environment that does not carry the
   measurement's own settings onward, and every Node.js process that exited
   without its execution having been collected.
+* {#s-kmo08a <arch} If neither source instrumenter can parse a source file, the measurement records no executable statement positions for that file.
+* {#s-ifdflw <arch} If the measurement cannot rewrite a spawned process's arguments to carry its collection settings, it starts the process with the original arguments; if it collects no execution, the process appears under Unmeasured execution.
+* {#s-bfp0se <arch} When the wrapped Jest environment defines `handleTestEvent`, the measurement forwards each event to it as well as to its own event handler.
+* {#s-1lktaq <arch} A test environment name that resolves neither as `jest-environment-<name>` nor as `<name>` is passed to Jest unchanged.
+* {#s-3afft9 <arch} A V8 coverage entry with a malformed file URL is skipped; it contributes no source execution to the measurement.
 * {#s-ficxlp <arch} The measurement records its granularity, `file` or `test`,
   and every output of the command states it, so a reader knows that at
   `file` granularity a line is attributed to every test in each file that

@@ -1,3 +1,40 @@
+// @implements s-c744tt@59ec83a
+// @implements s-4jegoj@05acd9f
+// @implements s-zrgt7e@a066ef0
+// @implements s-pa182t@8008053
+// @implements s-4pq89a@d19cad5
+// @implements s-y7klju@f22102b
+// @implements s-gaewu5@b5462f6
+// @implements s-048ffy@dc732cc
+// @implements s-n7q049@016939a
+// @implements s-yf8wyo@0128e34
+// @implements s-xszaj3@4653a38
+// @implements s-dvkjf9@2c46b39
+// @implements s-z7h1uz@6f81274
+// @implements s-npmw3x@2ff75c0
+// @implements s-pite2d@c490345
+// @implements s-jlo94e@7c8068c
+// @implements s-ab1xqm@af290be
+// @implements s-7ul58j@7eae97c
+// @implements s-jmhct4@e503ded
+// @implements s-sjq95s@3031d2d
+// @implements s-i062i7@696127c
+// @implements s-4gru26@be7ee15
+// @implements s-8e60a5@97bd2af
+// @implements s-cmdkv2@24d9372
+// @implements s-d9mhcc@b3f38ff
+// @implements s-i1uuvg@f52fbd1
+// @implements s-aqxbjg@5b401f4
+// @implements s-tgbh92@04130f6
+// @implements s-utqlgq@59ec117
+// @implements s-ct9wos@02f9aaf
+// @implements s-j4tine@a618915
+// @implements s-kn4es1@360bbdd
+// @implements s-h1qxdb@0e70fa9
+// @implements s-gim8db@1c2e9d7
+// @implements s-0woned@b3f5245
+// @implements s-lx979r@8ac38af
+// @tested-by test/agents-sync.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -7,7 +44,8 @@ const crypto = require( "crypto" );
 
 const sDirRolesOwn = path.join( __dirname, "..", "roles" );
 const sExtText = ".md";
-const sExtFront = ".claude-frontmatter";
+const sExtClaude = ".claude-frontmatter";
+const sExtCodex = ".codex-frontmatter";
 const sFileRecord = ".concord-agents-sync.json";
 const reHash = /^[0-9a-f]{64}$/;
 const acArgForFlag = { "--dir": 1, "--roles": 1, "--force": 0 };
@@ -50,9 +88,12 @@ const faRolesFor = ( sDirRoles ) => {
   }
   const vsName = fs.readdirSync( sDirRoles );
   const vsText = fvsStemForExt( vsName, sExtText );
-  const vsFront = fvsStemForExt( vsName, sExtFront );
-  const vsUnpaired = fvsUnpaired( vsText, vsFront, sExtText, sExtFront )
-    .concat( fvsUnpaired( vsFront, vsText, sExtFront, sExtText ));
+  const vsClaude = fvsStemForExt( vsName, sExtClaude );
+  const vsCodex = fvsStemForExt( vsName, sExtCodex );
+  const vsUnpaired = fvsUnpaired( vsText, vsClaude, sExtText, sExtClaude )
+    .concat( fvsUnpaired( vsClaude, vsText, sExtClaude, sExtText ))
+    .concat( fvsUnpaired( vsText, vsCodex, sExtText, sExtCodex ))
+    .concat( fvsUnpaired( vsCodex, vsText, sExtCodex, sExtText ));
   if( vsUnpaired.length > 0 ){
     return {
       sProblem: "roles directory " + sDirRoles + ": " + vsUnpaired.join( "; " )
@@ -116,13 +157,28 @@ class AgentDir {
   }
 }
 
-const faPlanForRole = ( sDirRoles, agentDir, sRole ) => {
-  const yAgent = Buffer.concat([
-    fs.readFileSync( path.join( sDirRoles, sRole + sExtFront )),
-    fs.readFileSync( path.join( sDirRoles, sRole + sExtText ))
+const faPlansForRole = ( sDirRoles, sRole, agentDirClaude, agentDirCodex ) => {
+  const yText = fs.readFileSync( path.join( sDirRoles, sRole + sExtText ));
+  const yClaude = Buffer.concat([
+    fs.readFileSync( path.join( sDirRoles, sRole + sExtClaude )), yText
   ]);
-  const sName = sRole + sExtText;
-  return { sName, yAgent, yOld: agentDir.fyRead( sName )};
+  const yCodexMeta = fs.readFileSync(
+    path.join( sDirRoles, sRole + sExtCodex ), "utf8"
+  );
+  const yCodex = Buffer.from(
+    yCodexMeta + "developer_instructions = " + JSON.stringify( yText.toString( "utf8" )) + "\n",
+    "utf8"
+  );
+  return [
+    {
+      sRole, sFormat: "claude", sName: sRole + ".md", yAgent: yClaude,
+      yOld: agentDirClaude.fyRead( sRole + ".md" ), agentDir: agentDirClaude
+    },
+    {
+      sRole, sFormat: "codex", sName: sRole + ".toml", yAgent: yCodex,
+      yOld: agentDirCodex.fyRead( sRole + ".toml" ), agentDir: agentDirCodex
+    }
+  ];
 };
 
 const fbHandEdited = ( aPlan, aRecord ) => (
@@ -141,9 +197,9 @@ const fsRecordText = ( aRecord ) => JSON.stringify(
   Object.fromEntries( Object.entries( aRecord ).sort( fzByKey )), null, 2
 ) + "\n";
 
-const fsLine = ( agentDir, aPlan ) => (
+const fsLine = ( aPlan ) => (
   ( fbUnchanged( aPlan ) ? "unchanged " : "wrote " )
-  + agentDir.fsShown( aPlan.sName )
+  + aPlan.agentDir.fsShown( aPlan.sName )
 );
 
 const fvaWrite = ( vaPlan, aRecordBase, yRecordOld ) => {
@@ -167,13 +223,6 @@ const fsFailedWrite = ( agentDir, sName ) => (
   + " not be made; run agents-sync where the target directory is writable\n"
 );
 
-const fsProblemForSync = ( aRoles, agentDir ) => {
-  if( aRoles.sProblem !== null ){ return aRoles.sProblem;}
-  return fbDirectory( agentDir.sDir )
-    ? null
-    : "target directory " + agentDir.sDirShown + " does not exist";
-};
-
 const fvsRefusal = ( vaPlan, aRecordRead, agentDir ) => {
   if( !aRecordRead.bWell ){
     return [
@@ -184,7 +233,7 @@ const fvsRefusal = ( vaPlan, aRecordRead, agentDir ) => {
   return vaPlan
     .filter(( aPlan ) => fbHandEdited( aPlan, aRecordRead.aRecord ))
     .map(( aPlan ) => (
-      agentDir.fsShown( aPlan.sName ) + " was edited since it was generated;"
+      aPlan.agentDir.fsShown( aPlan.sName ) + " was edited since it was generated;"
       + " --force overwrites it"
     ));
 };
@@ -198,38 +247,72 @@ const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
   const sDirRoles = path.resolve(
     sDirWork, aOption[ "--roles" ] || sDirRolesOwn
   );
-  const agentDir = new AgentDir(
-    aOption[ "--dir" ]
-      || path.join(( aEnv && aEnv.HOME ) || os.homedir(), ".claude", "agents" ),
-    sDirWork
+  const sHome = ( aEnv && aEnv.HOME ) || os.homedir();
+  const agentDirClaude = new AgentDir(
+    aOption[ "--dir" ] || path.join( sHome, ".claude", "agents" ), sDirWork
   );
+  const sCodexHome = ( aEnv && aEnv.CODEX_HOME )
+    || path.join( sHome, ".codex" );
+  const agentDirCodex = new AgentDir(
+    aOption[ "--dir" ] || path.join( sCodexHome, "agents" ), sDirWork
+  );
+  const vaAgentDir = [ agentDirClaude ];
+  if( agentDirCodex.sDir !== agentDirClaude.sDir ){
+    vaAgentDir.push( agentDirCodex );
+  }
   const aRoles = faRolesFor( sDirRoles );
-  const sProblem = fsProblemForSync( aRoles, agentDir );
-  if( sProblem !== null ){
-    fWriteErr( "agents-sync: " + sProblem + "\n" );
+  if( aRoles.sProblem !== null ){
+    fWriteErr( "agents-sync: " + aRoles.sProblem + "\n" );
     return 2;
   }
-  const vaPlan = aRoles.vsRole.map(( sRole ) => (
-    faPlanForRole( sDirRoles, agentDir, sRole )
+  const vaPlan = aRoles.vsRole.flatMap(( sRole ) => (
+    faPlansForRole( sDirRoles, sRole, agentDirClaude, agentDirCodex )
   ));
-  const aRecordRead = agentDir.faRecord();
-  const vsRefusal = aOption[ "--force" ]
-    ? []
-    : fvsRefusal( vaPlan, aRecordRead, agentDir );
+  const vaRecord = vaAgentDir.map(( agentDir ) => ({
+    agentDir, aRead: agentDir.faRecord(), yOld: agentDir.fyRead( sFileRecord ),
+    vaPlan: vaPlan.filter(( aPlan ) => aPlan.agentDir.sDir === agentDir.sDir)
+  }));
+  const vsRefusal = aOption[ "--force" ] ? [] : vaRecord.flatMap(( a ) => (
+    fvsRefusal( a.vaPlan, a.aRead, a.agentDir )
+  ));
   if( vsRefusal.length > 0 ){
     fWriteErr( vsRefusal.map(( s ) => "agents-sync: " + s + "\n" ).join( "" ));
     return 2;
   }
-  const sNameFailed = agentDir.fsNameFailed( fvaWrite(
-    vaPlan, aRecordRead.aRecord, agentDir.fyRead( sFileRecord )
-  ));
-  if( sNameFailed !== null ){
-    fWriteErr( fsFailedWrite( agentDir, sNameFailed ));
-    return 3;
+  for( const { agentDir } of vaRecord ){
+    try{
+      if( !fs.existsSync( agentDir.sDir )){
+        fs.mkdirSync( agentDir.sDir, { recursive: true });
+      }
+    }
+    catch( xErr ){
+      fWriteErr( fsFailedWrite( agentDir, "." ));
+      return 3;
+    }
   }
-  fWrite( vaPlan.map(( aPlan ) => (
-    fsLine( agentDir, aPlan ) + "\n"
-  )).join( "" ));
+  const vaWriteByDir = vaRecord.map(( a ) => ({
+    agentDir: a.agentDir,
+    vaWrite: fvaWrite( a.vaPlan, a.aRead.aRecord, a.yOld )
+  }));
+  for( const a of vaWriteByDir ){
+    const sNameFailed = a.agentDir.fsNameFailed(
+      a.vaWrite.filter(( aWrite ) => aWrite.sName !== sFileRecord )
+    );
+    if( sNameFailed !== null ){
+      fWriteErr( fsFailedWrite( a.agentDir, sNameFailed ));
+      return 3;
+    }
+  }
+  for( const a of vaWriteByDir ){
+    const sNameFailed = a.agentDir.fsNameFailed(
+      a.vaWrite.filter(( aWrite ) => aWrite.sName === sFileRecord )
+    );
+    if( sNameFailed !== null ){
+      fWriteErr( fsFailedWrite( a.agentDir, sNameFailed ));
+      return 3;
+    }
+  }
+  fWrite( vaPlan.map(( aPlan ) => fsLine( aPlan ) + "\n" ).join( "" ));
   return 0;
 };
 

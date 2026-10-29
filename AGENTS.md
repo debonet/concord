@@ -1,17 +1,17 @@
-# AGENTS.md — STC Concord (for every coding agent, every project)
+# AGENTS.md — ConcordSTC (for every coding agent, every project)
 
-This file is the shared instruction set for any coding agent (Claude Code, Codex, Gemini CLI, Cursor, Aider or another) working in a project that adopts STC Concord. A project's own `AGENTS.md` points here and adds only that project's facts. Tool-specific files (`CLAUDE.md`, `~/.codex/AGENTS.md`, `GEMINI.md`) point here too and add only what is particular to their tool.
+This file is the shared instruction set for any coding agent (Claude Code, Codex, Gemini CLI, Cursor, Aider or another) working in a project that adopts ConcordSTC. A project's own `AGENTS.md` points here and adds that project's own facts and working rules. The rules for running architect and fixer agents are in `~/@concord/orchestration.md`. Tool-specific files (`CLAUDE.md`, `~/.codex/AGENTS.md`, `GEMINI.md`) point here too and add only what is particular to their tool.
 
 ## What Concord is
 
-STC Concord keeps a project's specs and tests in step. Its specs are the authority on everything below; read the one a question turns on:
+ConcordSTC keeps a project's specs and tests in step. Its specs are the authority on everything below; read the one a question turns on:
 
 * `~/@concord/specs/concord-process.md` — the process, what a project declares, what stops a commit
 * `~/@concord/specs/spec-map.md` and `~/@concord/specs/spec-map-line-types.md` — markers, line types, links, the checker's lists and queries
 * `~/@concord/specs/spec-map-interactive.md` — hand checks
 * `~/@concord/specs/spec-coverage.md` — coverage
 * `~/@concord/specs/concord-hook.md` — installing the commit gate
-* `~/@concord/specs/agents-sync.md` — generating Claude Code agent files from the roles
+* `~/@concord/specs/agents-sync.md` — generating agent-tool files from the roles
 
 ## The rules every agent follows
 
@@ -25,8 +25,8 @@ STC Concord keeps a project's specs and tests in step. Its specs are the authori
 
 ## Adopting Concord in a project
 
-A project adopts Concord when its build spec declares the `spec-map` and `spec-coverage` targets as calls to `~/@concord/bin/…`, its root holds a `concord.json` (`~/@concord/specs/concord-process.md`, What a project declares), its root `AGENTS.md` points here and holds only that project's facts, and its committed pre-commit hook runs the gate (`~/@concord/bin/concord-hook install`, run once per clone, refuses while the gate does not pass). A project that carries its own checker retires it.
+A project adopts Concord when its build spec declares the `spec-map` and `spec-coverage` targets as calls to `~/@concord/bin/…`, its root holds a `concord.json` (`~/@concord/specs/concord-process.md`, What a project declares), its root `AGENTS.md` points here and holds that project's facts and working rules, and its committed pre-commit hook runs the gate (`~/@concord/bin/concord-hook install`, run once per clone, refuses while the gate does not pass). A project that carries its own checker retires it.
 
-Claude Code's agent files (`~/.claude/agents/<role>.md`) are generated from `~/@concord/roles/` by `~/@concord/bin/agents-sync`. Change a role in `~/@concord/roles/<role>.md`, then run `agents-sync`; never edit a generated agent file.
+Claude Code's agent files (`~/.claude/agents/<role>.md`) and Codex's custom agents (`$CODEX_HOME/agents/<role>.toml`, or `~/.codex/agents/<role>.toml`) are generated from `~/@concord/roles/` by `~/@concord/bin/agents-sync`. Change a role in `~/@concord/roles/<role>.md` or its tool metadata file, then run `agents-sync`; never edit a generated agent file.
 
 Each agent tool's own instruction file named here tells its agent to run `~/@concord/bin/agents-sync`, with no argument, at the start of each session, before any other work: Claude Code's `~/.claude/CLAUDE.md` and Codex's `~/.codex/AGENTS.md`. A run with nothing changed does no work and needs no write access (`~/@concord/specs/agents-sync.md`, When nothing changed).

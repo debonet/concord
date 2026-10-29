@@ -1,3 +1,29 @@
+// @implements s-khifjg@c398f54
+// @implements s-5r1y67@f5cc739
+// @implements s-j6etdh@aba052d
+// @implements s-6d5erl@850ece1
+// @implements s-auxyb0@7cb2648
+// @implements s-c744tt@59ec83a
+// @implements s-4jegoj@05acd9f
+// @implements s-zrgt7e@a066ef0
+// @implements s-pa182t@8008053
+// @implements s-4pq89a@d19cad5
+// @implements s-y7klju@f22102b
+// @implements s-l366c3@ab4230b
+// @implements s-w7hypm@963555b
+// @implements s-f15bz3@ccb7236
+// @implements s-xu5wfs@6233752
+// @implements s-64wie3@7be9bbd
+// @implements s-m50rhg@3816675
+// @implements s-wor0b2@f496608
+// @implements s-f79qxz@9d93d73
+// @implements s-nqgv3l@f11b0c4
+// @implements s-gfxphd@17a5f25
+// @implements s-7fg356@bad1518
+// @implements s-wkkgpn@5fa3420
+// @implements s-6665sv@2322dac
+// @implements s-wgkldv@ab7a9d7
+// @tested-by test/concord-hook.test.js
 "use strict";
 
 const fs = require( "fs" );

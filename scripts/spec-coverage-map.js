@@ -1,3 +1,24 @@
+// @implements s-1ysu8b@22d704d
+// @implements s-e31j3s@8308811
+// @implements s-2ievqg@7a7a4e9
+// @implements s-4ppmq1@37f49d5
+// @implements s-5d2c66@ad124de
+// @implements s-g34sjl@00728c3
+// @implements s-a15jla@46efff6
+// @implements s-0295lu@4b88f3f
+// @implements s-lhwdqe@03f70a8
+// @implements s-kp5fav@f34662e
+// @implements s-8ixmxa@32915a9
+// @implements s-m0ujxb@03a5d5b
+// @implements s-vqckkr@0e48f69
+// @implements s-4ne8xs@f3e543e
+// @implements s-vwvdtj@26b11d4
+// @implements s-ba6b5c@a60801b
+// @implements s-jr9fxe@06e6843
+// @implements s-2ggdsa@c4eed56
+// @implements s-xk9tq1@fa0d181
+// @implements s-bbd75g@9d2bf8c
+// @tested-by test/spec-coverage.test.js
 "use strict";
 
 const fs = require( "fs" );

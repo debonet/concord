@@ -1,3 +1,12 @@
+// @implements s-qpkoc3@5bb9377
+// @implements s-xoq4ak@39497ea
+// @implements s-itmj4d@a1e8c28
+// @implements s-vhve0l@16601c0
+// @implements s-mrpnyc@03b594d
+// @implements s-9prjr2@99200b9
+// @implements s-1lktaq@64cbd78
+// @implements s-dokd3g@edd7c92
+// @tested-by test/spec-coverage.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -257,9 +266,10 @@ const faMeasurementForRecords = ({
 };
 
 class SuiteRunner {
-  constructor( sDirRoot, fWriteErr ){
+  constructor( sDirRoot, fWriteErr, fxSpawnSync = spawnSync ){
     this.sDirRoot = sDirRoot;
     this.fWriteErr = fWriteErr;
+    this.fxSpawnSync = fxSpawnSync;
   }
 
   fbCommand( sCommand ){
@@ -318,7 +328,7 @@ class SuiteRunner {
   }
 
   ftGit(){
-    const fsGit = ( vsArg ) => spawnSync( "git", vsArg, {
+    const fsGit = ( vsArg ) => this.fxSpawnSync( "git", vsArg, {
       cwd: this.sDirRoot, encoding: "utf8"
     }).stdout || "";
     return {
@@ -406,6 +416,8 @@ const fzMeasure = ({ sDirRoot, aCoverage, runner, fWriteErr, fsTime }) => {
 };
 
 module.exports = {
+  fsEnvironmentResolved,
+  fsPathModuleResolved,
   fvaSuiteForCoverage,
   fsDirOut,
   fsPathMeasurement,
