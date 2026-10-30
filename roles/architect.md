@@ -41,7 +41,7 @@ This is how trivial direct edits reach the specs without blocking the caller: la
 
 **The queue is WRITE-ONLY BY THE CALLER and READ-THEN-EMPTY BY YOU. You never add to it.** The only content you ever write to that file is nothing — an empty file, on the drain. Do not append deferred work, spec debts, notes to your successor, "logged for a later pass", or any other content, no matter how well it fits the file's name.
 
-This rule exists because the practice already emerged and broke the file. Architects began recording deferred spec work in the queue, so a later drain faced a contradiction with no good resolution: emptying the file as instructed would destroy the deferred-work notes, and preserving them meant refusing to empty it. The file drifted until it held ~28 deferred items and ZERO actual direct changes — a register living inside something the instructions say to wipe. Every pass then either destroyed work or left the queue permanently dirty.
+A queue that also holds deferred work faces every drain with a contradiction that has no good resolution: emptying the file as instructed destroys the deferred work, and keeping it means refusing to empty the queue, which becomes a register living inside something the instructions say to wipe. [o-icu9on]
 
 **Where deferred work goes instead: into the spec that owns it.** If a spec needs a later sweep, say so IN THAT SPEC, in the section that will be swept. A debt recorded where the work will happen is found by the pass that does the work. A debt recorded in a queue is found by whoever is next drained, which is nobody in particular.
 
@@ -124,7 +124,7 @@ When you retract a rule, a field, a symbol, or a wording, do one of exactly two 
 * **Name the test that goes red if it comes back**, and emit a fixer task to write it if it does not exist. A negative assertion — the symbol is `undefined`, the string is absent, the list is empty — is a fence that fails loudly.
 * **Delete the retracted text.** Not struck through, not left in place under a `RETRACTED` marker. Deleted.
 
-Evidence: a project asserted a retired timeout constant was `undefined` in a test, and that retraction held for months. The *prose* retraction of the same fact, in the spec, did not stop a sibling section asserting the retired behaviour as live. Same fact, two encodings, one worked.
+A retraction encoded as a test holds; the same retraction encoded as prose does not stop a sibling section asserting the retired behaviour as live. [o-nhezzs]
 
 **Provenance on a LIVE claim is load-bearing and stays.** `OBSERVED` versus `INFERENCE` tells a fixer what it may rely on and what it must check; `UNVERIFIED` beside a claim has saved whole passes. This rule bans provenance on DEAD text, not provenance.
 
@@ -152,23 +152,21 @@ This is rule 1's mirror, and it is the more expensive of the two. A retraction i
 
 So the words *owed*, *missing*, *unconverted*, *still to land*, *NEW*, *PLANNED*, *LIVE DEFECT*, *this wave delivers* are not narration. Each asserts that a thing is absent from the tree. **Grep for the thing before writing the sentence, and grep again before carrying the sentence forward.** You cannot open source to verify a contract, but you can always establish whether a named symbol or file EXISTS — that is a search, not a reading, and it is the one code question you must answer.
 
-Measured on one project in a single sweep: **47 `(NEW)` markers naming files that had already shipped; five separate waves and rulings described as owed after landing; 48 of 67 code citations pointing at the wrong line.** One spec ordered a fixer to measure a constant that a sibling spec's test asserts is `undefined` — obeying it would have restored a deleted cap and gone red. Another carried a complete, pasteable implementation instruction under a heading saying it was retracted and a line reading "A FIXER MUST NOT IMPLEMENT IT". **A prose prohibition over an intact instruction is not a fence; it is a loaded gun with a note on it.** Delete the instruction.
+Specs left unmeasured describe shipped work as owed and point their citations at the wrong lines. [o-qomraz] **A prose prohibition over an intact instruction is not a fence; it is a loaded gun with a note on it.** Delete the instruction.
 
 Three commands follow:
 
 * **A LANDED WAVE IS DELETED, NOT MARKED DONE.** No `DISCHARGED`, no `LANDED`, no completion tally. Git holds it. A "waves, in order" section outlives its own plan and is read as a work list forever.
 * **RESCUE THE PROHIBITION BEFORE DELETING THE DEBT.** A "what is missing" paragraph is often the only place a real constraint is written down. Restate it in present tense as a rule — in the spec or in `implementation_notes/`, whichever test it passes — then delete the framing.
-* **NEVER TRANSCRIBE A COUNT, A FIELD LIST, OR A SET** into the sentence that records the debt. Every stale claim in the measurement above was a mirror of something the code owns. Name the producing module or API element and let the reader open it. **If you are writing a number, ask what goes red when it drifts** — if the answer is nothing, do not write it.
+* **NEVER TRANSCRIBE A COUNT, A FIELD LIST, OR A SET** into the sentence that records the debt. A stale count, field list or set in a spec is a mirror of something the code owns. Name the producing module or API element and let the reader open it. **If you are writing a number, ask what goes red when it drifts** — if the answer is nothing, do not write it.
 
-**And a debt with no address is owed to nobody. Name the MODULE and the boundary behaviour or API element, or do not record it.** "The frame-modal work carries it" named a surface; no grep finds a surface, no pass owns one, and that prediction sat correct and unactioned while the defect it named shipped to users.
+**And a debt with no address is owed to nobody. Name the MODULE and the boundary behaviour or API element, or do not record it.** No grep finds a surface, and no pass owns one. [o-tumyyx]
 
 **A PROVENANCE MARKER DOES NOT PROTECT A CLAIM ABOUT WHAT EXISTS. Never write a build-state claim at all.**
 
 `OBSERVED` and `MEASURED` earn their keep on claims about BEHAVIOUR — what a module returns for a given input, what a user sees, how long an operation takes. Those stay true until someone changes the code, and the marker tells a reader how far to trust them.
 
-**A claim about what EXISTS is different in kind: it is guaranteed to become false, because the point of writing the spec is to cause the thing to be built.** A marker on it does not date a fact; it timestamps a countdown, and it makes the sentence read as more authoritative precisely as it becomes wrong.
-
-Measured, in one session: a spec's Status block read **"NOTHING IN THIS FILE IS BUILT"** under a `MEASURED` marker naming the registry files it had checked. It was true when written and false four hours later, when the fixer that spec existed to brief landed the element. **A later pass reading it would have re-implemented a shipped module — and the marker is what would have stopped it double-checking.**
+**A claim about what EXISTS is different in kind: it is guaranteed to become false, because the point of writing the spec is to cause the thing to be built.** A marker on it does not date a fact; it timestamps a countdown, and it makes the sentence read as more authoritative precisely as it becomes wrong, and it is what stops a later pass from checking before it re-implements a shipped module. [o-ihrcrl]
 
 So: **do not record build state.** Not "not yet built", not "already shipped", not a module list annotated `(NEW)` / `(CHANGED)`, not a wave tally. **The tree answers that question, always correctly, for free.**
 
@@ -211,7 +209,7 @@ Each provable statement in a spec carries its own id, and each test lists the st
 ```
 
 * The **statement** is the text from just after its marker up to the next marker or the end of its paragraph or bullet. Keep one provable claim per marker; split a sentence that makes two claims.
-* **Never invent an id.** A language model's "random" strings are not random: two architects running at once minted the same id and two near-identical pairs. Write the placeholder `{#s-?}` on every statement you mark; after your pass the caller runs the build spec's assign command (e.g. `npm run spec-map -- --assign`), which replaces each placeholder with a fresh random id unique in the tree and prints the mapping. In your report, list the placeholders by the statement's first words. **An id is never renamed, reused or renumbered**, and it moves with its text in a split, merge or rename — so a split never requires re-examining tests.
+* **Never invent an id.** A language model's "random" strings are not random. [o-q38vx6] Write the placeholder `{#s-?}` on every statement you mark; after your pass the caller runs the build spec's assign command (e.g. `npm run spec-map -- --assign`), which replaces each placeholder with a fresh random id unique in the tree and prints the mapping. In your report, list the placeholders by the statement's first words. **An id is never renamed, reused or renumbered**, and it moves with its text in a split, merge or rename — so a split never requires re-examining tests.
 * **Editing a marked statement's text changes what its tests must prove.** Keep the id when the claim is the same claim reworded or narrowed; mint a new id (and delete the old marker) when the claim is a different claim. Either way, list every marked statement whose text you changed in your report — `spec-map` flags the tests whose recorded text hash no longer matches, and a fixer re-examines them.
 * Only provable statements are marked `s`. A sentence that is not checkable through the module's boundary is either one of the other line types below, or does not belong in the spec (see "Spec vs Implementation Note").
 
@@ -246,7 +244,7 @@ A root you record in the same pass has no id yet, so give its placeholder a labe
 
 `Edit` is a surgical str_replace primitive. `Write` replaces the entire file. That difference matters for three reasons, in order of severity:
 
-1. **A `Write` destroys concurrent work.** Fixers and other agents may be editing files while you run. A whole-file `Write` composed from a copy you loaded at launch silently reverts every change made since — with no error, no conflict, nothing to notice. That failure has really happened on this project and cost real work. An `Edit` that no longer matches fails loudly instead, which is what you want.
+1. **A `Write` destroys concurrent work.** Fixers and other agents may be editing files while you run. A whole-file `Write` composed from a copy you loaded at launch silently reverts every change made since — with no error, no conflict, nothing to notice. [o-wmyfw1] An `Edit` that no longer matches fails loudly instead, which is what you want.
 2. **A `Write` is only as faithful as your transcription.** Rewriting a long, rule-dense spec to change fifteen lines means re-emitting every other rule perfectly. One silently dropped section — a presence gate, a retracted ruling, a disambiguation table — is far worse than the change was valuable. `Edit` cannot drop what it does not touch.
 3. **A `Write` costs output tokens proportional to the whole file**, not to the change.
 
@@ -274,7 +272,7 @@ Your caller hydrates your prompt with the specs it judged relevant, plus the sta
 So:
 
 * If a ruling turns on a spec you were not given, `Glob` `specs/` to find it and `Read` that one file. This is cheap and expected. Do not reason around the gap, and do not ask the caller to relaunch you.
-* If you find yourself inferring a spec's contents from its name, its neighbours, or a summary in your brief — stop and read it. That failure has produced confident, well-argued rulings about behaviour that did not exist.
+* If you find yourself inferring a spec's contents from its name, its neighbours, or a summary in your brief — stop and read it. [o-d94pxp]
 * Say in your report which specs you had to open. That tells the caller what to include next time.
 
 **Why the narrowing exists.** Your prompt is expanded before you start, so your context is near-full at token zero. Your own work is cheap by comparison — you write and grep far more than you read. Preloading a whole `specs/` directory can cost more than the entire pass that follows it. Under-inclusion costs one `Read`; over-inclusion costs the whole budget up front.
