@@ -31,10 +31,12 @@ outside these.
                              (specs/concord-hook.md)
   concord.json               Concord's own declared values: Concord is
                              linked by itself (specs/concord-process.md)
+  observations.md            Concord's observations
+                             (specs/observations.md)
   spec-coverage-review.md    classified uncovered code of Concord's own
                              (specs/spec-coverage.md)
   bin/                       the commands: spec-map, spec-coverage,
-                             agents-sync, concord-hook
+                             agents-sync, concord-hook, link-propose
   scripts/                   the modules behind the commands, and the
                              worklist page template
   specs/                     Concord's specs
@@ -47,7 +49,8 @@ outside these.
 ## The commands
 
 * {#s-c744tt <arch} Each file under `bin/` is one Concord command, named as
-  `specs/concord-process.md` (Where Concord lives) names it, with no file
+  `specs/concord-process.md` (Where Concord lives) names it or, for
+  `link-propose`, as `specs/link-propose.md` names it, with no file
   extension, executable, and opening with the line `#!/usr/bin/env node`,
   so it runs by its path from any working directory.
 * {#s-4jegoj <arch} A command acts on its working directory's project and never
@@ -61,14 +64,14 @@ outside these.
 
 ## Concord's own settings
 
-* {#g-hmmu3p <arch for=main,architect,fixer via=prompt} Declare Concord's own name, suite, language readings, read and ignored directories, record file, coverage run and review file in `concord.json`; keep those values aligned with this spec.
+* {#g-hmmu3p <arch for=main,architect,fixer via=prompt} Declare Concord's own name, suite, language readings, read and ignored directories, record file, observations file (`observations.md`), rules files (`AGENTS.md`, `orchestration.md`, `roles/architect.md`, `roles/fixer.md`), coverage run and review file in `concord.json`; keep those values aligned with this spec.
 
 ## Packages and Dependencies
 
 `package.json`:
 
 * {#g-673253 <arch for=main,architect,fixer via=prompt} Keep the package private and named `@debonet/concord`.
-* {#g-4p0u7n <arch for=main,architect,fixer via=prompt} Expose `spec-map`, `spec-coverage`, `agents-sync` and `concord-hook` from their files under `bin/`.
+* {#g-4p0u7n <arch for=main,architect,fixer via=prompt} Expose `spec-map`, `spec-coverage`, `agents-sync`, `concord-hook` and `link-propose` from their files under `bin/`.
 * {#g-0cjx6u <arch for=main,architect,fixer via=prompt} Keep every module loaded by `bin/` or `scripts/` in `dependencies`, at the version resolved when the commands moved from AIOS.
 * {#g-m4xokh <arch for=main,architect,fixer via=prompt} Keep Jest `^29` and test-only modules in `devDependencies`.
 * scripts:
@@ -77,6 +80,7 @@ outside these.
   * {#g-m1hkj5 <arch for=main,architect,fixer via=prompt} Set `"spec-coverage"` to `"bin/spec-coverage"`.
   * {#g-1nmzd1 <arch for=main,architect,fixer via=prompt} Set `"agents-sync"` to `"bin/agents-sync"`.
   * {#g-oczcgk <arch for=main,architect,fixer via=prompt} Set `"hook-install"` to `"bin/concord-hook install"`.
+  * {#g-w411h3 <arch for=main,architect,fixer via=prompt} Set `"link-propose"` to `"bin/link-propose"`.
 * {#g-uetbxu <arch for=main,architect,fixer via=prompt} Set Jest's root to `<rootDir>/test`.
 
 ## Build and Test

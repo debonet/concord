@@ -1,4 +1,3 @@
-// @spec specs/spec-map.md
 "use strict";
 
 const fs = require( "fs" );
@@ -222,7 +221,6 @@ describe( "tree entries and worklist paths", () => {
     expect( faModel({ vaSpec: [], vaTest: [] }).vaCodeRef ).toEqual([]);
   });
 
-  // @spec specs/spec-map-interactive.md
   // @proves s-z7gbzu@ab3b738
   test( "a missing implementation work file is reported without writing a page", () => {
     const aRun = faRun([
@@ -232,7 +230,6 @@ describe( "tree entries and worklist paths", () => {
     expect( aRun.sOut ).toContain( "no file at missing-implementation.txt" );
   });
 
-  // @spec specs/spec-map-interactive.md
   // @proves s-khw3hm@18fc4f5
   test( "recording a check also validates its spec pointer targets", () => {
     fWriteFixture( "specs/pointers.md", [
@@ -1660,7 +1657,7 @@ describe( "spec-map-placeholder-reported-not-failing — a placeholder", () => {
 // @proves s-pe5j7a@8fee8c2
 // @proves s-taoc14@2518951
 describe( "spec-map-assign-replaces-placeholders — --assign", () => {
-  // @proves s-yurmkw@16faf1e
+  // @proves s-yurmkw@8d224c4
   test( "gives each placeholder a fresh id and changes nothing else, PAIRED "
     + "with a second run, which does nothing", () => {
     const sPathSpecSub = path.join( "specs", "sub", "b.md" );
@@ -2977,6 +2974,215 @@ describe( "spec-map-guard-queries — the queries", () => {
     fWrite( fsLink( "s-qy0002", vsHash[ 1 ]));
     expect( faRun( [ "--cross-suite" ]).sStdout ).toMatch(
       /^specs\/a\.md:6  s-qy0002\n/
+    );
+  });
+});
+
+const asTextTir = {
+  "s-tir001": "A held form makes one continuation.",
+  "s-tir002": "A moved block makes none.",
+  "s-tir003": "A grouped case holds.",
+  "s-tir004": "A rule with two arms holds."
+};
+const fsRefTir = ( sId ) => sId + "@" + fsHash( asTextTir[ sId ]);
+const fsImplTir = ( sId ) => "// @implements " + fsRefTir( sId );
+const fsSpecTir = ( bComplete ) => fsSpecStmt( "A", [
+  "* {#s-tir001} " + asTextTir[ "s-tir001" ],
+  "* {#s-tir002} " + asTextTir[ "s-tir002" ],
+  "* {#s-tir003} " + asTextTir[ "s-tir003" ],
+  "* {#s-tir004 parts=one,two} " + asTextTir[ "s-tir004" ]
+], bComplete );
+const sTitleNoImplementation = "statements with no implementation link";
+const sTitleNoTestedBy = "implementation files with no test link";
+const sTitleCodeRefBad = "malformed, unresolved or stale code references";
+const fvsIdNoImplementation = ( sOut ) => fvsLineInSection(
+  sOut, sTitleNoImplementation
+).map(( sLine ) => sLine.split( "  " )[ 1 ]);
+
+describe( "test-implementation references", () => {
+  // @proves s-fiabr2@b77174a
+  // @proves s-obz7rg@010c79a
+  // @proves s-ljxzt6@b06ab69
+  // @proves s-0n3sm5@d016ebd
+  // @proves s-nlzsly@8cfc10b
+  // @proves s-9ho983@b227496
+  test( "an @implements at a test that proves the statement counts in (31), "
+    + "at a describe and through a part, PAIRED with statements no test "
+    + "implements", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecTir( false ),
+      "test/a.test.js": [
+        "// @spec specs/a.md",
+        "",
+        fsLink( "s-tir001", fsHash( asTextTir[ "s-tir001" ])),
+        fsImplTir( "s-tir001" ),
+        "test( \"one continuation\", () => {} );",
+        "// @spec specs/a.md",
+        fsImplTir( "s-tir003" ),
+        "describe( \"grouped\", () => {",
+        "  " + fsLink( "s-tir003", fsHash( asTextTir[ "s-tir003" ])),
+        "  test( \"grouped case\", () => {} );",
+        "} );",
+        fsLink( "s-tir004", fsHash( asTextTir[ "s-tir004" ])) + " part=one",
+        fsImplTir( "s-tir004" ),
+        "test( \"one arm\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    const sOut = faRun( [] ).sOut;
+    expect( fvsIdNoImplementation( sOut )).toEqual([ "s-tir002" ]);
+    expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual( [] );
+    expect( fvsLineInSection( sOut, sTitleNoTestedBy )).toEqual( [] );
+    expect( fvsLineInSection( sOut, "link lines that do not resolve" ))
+      .toEqual( [] );
+    expect( fvsLineInSection( sOut, sTitleUnresolved )).toEqual( [] );
+    expect( fvsIdInSection( sOut, "statements no test proves" )).toEqual(
+      [ "s-tir002", "s-tir004" ]
+    );
+  });
+
+  // @proves s-nlzsly@8cfc10b
+  // @proves s-w4wun2@5ac8202
+  // @proves s-dssqhc@404c3ff
+  // @proves s-obz7rg@010c79a
+  test( "a misplaced, malformed, unresolved, stale or unproved test "
+    + "@implements is an entry of (33) naming the file, line, call and id, "
+    + "and the spec's run fails on it", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecTir( false ),
+      "test/a.test.js": [
+        "// @spec specs/a.md",
+        fsImplTir( "s-tir001" ),
+        "",
+        fsImplTir( "s-tir002" ),
+        "test( \"proves nothing\", () => {} );",
+        "// @implements s-tir001",
+        "// @implements s-nosuch@0000000",
+        "// @implements s-tir003@0000000",
+        fsLink( "s-tir003", fsHash( asTextTir[ "s-tir003" ])),
+        "test( \"grouped case\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    const aRun = faRun( [] );
+    expect( aRun.cExit ).toBe( 0 );
+    expect( fvsLineInSection( aRun.sOut, sTitleCodeRefBad )).toEqual([
+      "test/a.test.js:2  " + fsImplTir( "s-tir001" ) + " (misplaced)",
+      "test/a.test.js:4  proves nothing  " + fsImplTir( "s-tir002" )
+        + " (no test it covers proves the statement)",
+      "test/a.test.js:6  grouped case  // @implements s-tir001 (malformed)",
+      "test/a.test.js:7  grouped case  // @implements s-nosuch@0000000 "
+        + "(no such statement)",
+      "test/a.test.js:8  grouped case  // @implements s-tir003@0000000 "
+        + "(stale hash)"
+    ]);
+    expect( fvsIdNoImplementation( aRun.sOut )).toEqual(
+      [ "s-tir001", "s-tir002", "s-tir003", "s-tir004" ]
+    );
+    expect( faRun([ "specs/a.md" ]).cExit ).not.toBe( 0 );
+    const aGate = faRun([ "--gate" ]);
+    expect( aGate.cExit ).toBe( 1 );
+    expect( aGate.sStdout ).toContain(
+      "(33) test/a.test.js:8  grouped case  // @implements s-tir003@0000000"
+    );
+  });
+
+  // @proves s-9wbr29@0f680c4
+  test( "an @implements proves nothing: a test carrying only one is "
+    + "unlinked and a complete spec's failure, PAIRED with its proving "
+    + "neighbour", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecTir( true ),
+      "test/a.test.js": [
+        "// @spec specs/a.md",
+        "",
+        fsLink( "s-tir001", fsHash( asTextTir[ "s-tir001" ])),
+        fsImplTir( "s-tir001" ),
+        "test( \"one continuation\", () => {} );",
+        fsImplTir( "s-tir002" ),
+        "test( \"implements only\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    const sOut = faRun( [] ).sOut;
+    expect( sOut ).toMatch( /^Unlinked tests: 1 of 2$/m );
+    expect( fvsLineInSection( sOut, sTitleRemovable )).toEqual( [] );
+    expect( fvsIdInSection( sOut, "statements no test proves" ))
+      .toContain( "s-tir002" );
+    expect( fvsLineInSection( sOut, "completeness failures" )).toContain(
+      "test/a.test.js:7  proves nothing: implements only"
+    );
+  });
+
+  // @proves s-k3nucf@c0c7bf2
+  test( "test-implementation references are read in a suite directory the "
+    + "project does not declare for reading", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecTir( false ),
+      "test/a.test.js": [
+        "// @spec specs/a.md",
+        "",
+        fsLink( "s-tir001", fsHash( asTextTir[ "s-tir001" ])),
+        fsImplTir( "s-tir001" ),
+        "test( \"one continuation\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    fWriteConcord( sDirFixture, { vsDirRead: [ "src" ]});
+    const sOut = faRun( [] ).sOut;
+    expect( fvsIdNoImplementation( sOut )).not.toContain( "s-tir001" );
+    expect( fvsIdNoImplementation( sOut )).toContain( "s-tir002" );
+  });
+
+  // @proves s-sg7zoy@216a1b0
+  // @proves s-sy7274@b9a1e14
+  test( "a test file is never in (32), and a @tested-by or @checks in it is "
+    + "a misplaced entry of (33)", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecTir( false ),
+      "test/a.test.js": [
+        "// @spec specs/a.md",
+        "// @tested-by test/a.test.js",
+        "",
+        fsLink( "s-tir001", fsHash( asTextTir[ "s-tir001" ])),
+        fsImplTir( "s-tir001" ),
+        "test( \"one continuation\", () => {} );",
+        "// @checks i-nosuch@0000000",
+        ""
+      ].join( "\n" ),
+      "src/a.js": "// @tested-by test/a.test.js\nconst a = 1;\n"
+    });
+    const sOut = faRun( [] ).sOut;
+    expect( fvsLineInSection( sOut, sTitleNoTestedBy )).toEqual(
+      [ "src/a.js" ]
+    );
+    expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
+      "src/a.js:1  // @tested-by test/a.test.js "
+        + "(test proves no statement implemented here)",
+      "test/a.test.js:2  // @tested-by test/a.test.js (misplaced)",
+      "test/a.test.js:7  // @checks i-nosuch@0000000 (misplaced)"
+    ]);
+    expect( fvsIdNoImplementation( sOut )).not.toContain( "s-tir001" );
+  });
+
+  // @proves s-e6bz23@e35e7ac
+  test( "--sid lists a test-implementation reference with its call, hash, "
+    + "state and the word test", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecTir( false ),
+      "test/a.test.js": [
+        "// @spec specs/a.md",
+        "",
+        fsLink( "s-tir001", fsHash( asTextTir[ "s-tir001" ])),
+        fsImplTir( "s-tir001" ),
+        "test( \"one continuation\", () => {} );",
+        ""
+      ].join( "\n" )
+    });
+    const vsSid = faRun( [ "--sid", "s-tir001" ]).sStdout.trim().split( "\n" );
+    expect( vsSid ).toContain(
+      "test/a.test.js:4  one continuation  "
+      + fsHash( asTextTir[ "s-tir001" ]) + "  current  test"
     );
   });
 });

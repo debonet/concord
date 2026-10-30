@@ -257,6 +257,63 @@ describe( "concord-settings — a bad settings file", () => {
   });
 });
 
+const vtBadObservations = [
+  [ "an observations path of another form", { sPathObservations: 3 },
+    "sPathObservations" ],
+  [ "an empty observations path", { sPathObservations: "" },
+    "sPathObservations" ],
+  [ "an observations path under specs/",
+    { sPathObservations: "specs/observations.md" }, "sPathObservations" ],
+  [ "a rules list of another form", { vsPathRules: "AGENTS.md" },
+    "vsPathRules" ],
+  [ "a rules list holding an empty path", { vsPathRules: [ "" ]},
+    "vsPathRules" ],
+  [ "a rules list naming the observations file", {
+    sPathObservations: "observations.md",
+    vsPathRules: [ "AGENTS.md", "observations.md" ]
+  }, "vsPathRules" ]
+];
+
+// @proves s-pwo03p@d531b9d
+// @proves s-bqv6fu@98c93c9
+describe( "concord-settings — the observations file and the rules files",
+() => {
+  test.each( vtBadObservations )( "%s is a bad settings file: one line "
+    + "naming the member, exit 2, nothing written", (
+    sWhat, aOverride, sMember
+  ) => {
+    fWriteTree({
+      "concord.json": fsConcordJson( aOverride ),
+      "specs/a.md": fsSpec( "A", [ "* {#s-?} A placeholder rule." ])
+    });
+    const vsBefore = vsTreeFile();
+    const aRun = faRun([ "--assign" ]);
+    expect( aRun.cExit ).toBe( 2 );
+    expect( aRun.sStdout ).toBe( "" );
+    const vsLine = aRun.sStderr.split( "\n" ).filter( Boolean );
+    expect( vsLine ).toHaveLength( 1 );
+    expect( vsLine[ 0 ]).toContain( "concord.json" );
+    expect( vsLine[ 0 ]).toContain( sMember );
+    expect( vsTreeFile()).toEqual( vsBefore );
+  });
+
+  test.each([
+    [ "both members, the rules list empty",
+      { sPathObservations: "observations.md", vsPathRules: []}],
+    [ "both members, the rules list naming files",
+      { sPathObservations: "notes/obs.md",
+        vsPathRules: [ "AGENTS.md", "CLAUDE.md" ]}],
+    [ "neither member", {}]
+  ])( "PAIRED: a file declaring %s is well formed", ( sWhat, aOverride ) => {
+    fWriteTree({
+      "concord.json": fsConcordJson( aOverride ),
+      "specs/a.md": fsSpec( "A", [ "* {#s-?} A placeholder rule." ])
+    });
+    expect( faRun([ "--assign" ]).cExit ).toBe( 0 );
+    expect( fsRead( "specs/a.md" )).toMatch( /\{#s-[a-z0-9]{6}\} A/ );
+  });
+});
+
 // @proves s-4j8qm7@1fe7250
 test( "concord-settings — spec-coverage in a project declaring no coverage "
   + "prints one stderr line saying so and exits 2", () => {
@@ -485,6 +542,10 @@ test( "concord-settings — Concord's own settings file declares Concord's "
     vsDirRead: [ "bin", "scripts", "test" ],
     vsDirIgnored: [ "node_modules" ],
     sPathRecord: "test/interactive-passes.jsonl",
+    sPathObservations: "observations.md",
+    vsPathRules: [
+      "AGENTS.md", "orchestration.md", "roles/architect.md", "roles/fixer.md"
+    ],
     aCoverage: {
       vaRun: [{ sName: "root", sDirRun: "." }],
       vsCommandBefore: [],
@@ -509,7 +570,8 @@ test( "concord-settings — Concord's own build targets call the commands "
     "spec-map": "bin/spec-map",
     "spec-coverage": "bin/spec-coverage",
     "agents-sync": "bin/agents-sync",
-    "hook-install": "bin/concord-hook install"
+    "hook-install": "bin/concord-hook install",
+    "link-propose": "bin/link-propose"
   });
   fAssertProjectGate();
 });
@@ -531,14 +593,14 @@ test( "concord-settings — Concord has one root containing its specs, build "
 
 const sDirBin = path.join( sDirRepo, "bin" );
 
-// @proves s-c744tt@59ec83a
+// @proves s-c744tt@f8b2070
 // @proves s-4pq89a@d19cad5
 // @proves s-y7klju@f22102b
 test( "concord-settings — each command under bin is an executable file "
   + "with no extension opening with the node shebang", () => {
   const vsName = fs.readdirSync( sDirBin ).sort();
   expect( vsName ).toEqual([
-    "agents-sync", "concord-hook", "spec-coverage", "spec-map"
+    "agents-sync", "concord-hook", "link-propose", "spec-coverage", "spec-map"
   ]);
   vsName.forEach(( sName ) => {
     const sPath = path.join( sDirBin, sName );

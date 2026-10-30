@@ -7,6 +7,10 @@
   "vsDirRead": [ "bin", "scripts", "test" ],
   "vsDirIgnored": [ "node_modules" ],
   "sPathRecord": "test/interactive-passes.jsonl",
+  "sPathObservations": "observations.md",
+  "vsPathRules": [
+    "AGENTS.md", "orchestration.md", "roles/architect.md", "roles/fixer.md"
+  ],
   "aCoverage": {
     "vaRun": [
       { "sName": "root", "sDirRun": "." }

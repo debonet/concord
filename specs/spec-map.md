@@ -57,7 +57,8 @@ file, which spec owns each test, and how every other type of spec line
   the worklist page (`specs/spec-map-interactive.md`); {#s-6zo013 <arch} given a spec
   path beside any of these four, a run maps nothing, prints its usage line
   to stderr and exits 2.
-* {#s-yurmkw <arch} It reads `specs/`, and writes it only under `--assign`, writes the
+* {#s-yurmkw <arch} It reads `specs/`, and writes it and the project's
+  observations file (`specs/observations.md`) only under `--assign`, writes the
   project's record file (`specs/concord-process.md`, The settings file)
   only under `--pass`, `--fail`, `--unable`, `--reopen`, `--answers` and
   `--worklist`, and writes the worklist page only under `--worklist`, at
@@ -636,6 +637,64 @@ tests prove one.
 * {#s-4hsltb <arch,m-6pxcni@29fc8b1} The command reports each implementation file with no resolving `@tested-by` reference, and each `@tested-by` reference whose test file proves none of the statements that file implements.
 * {#p-y0pvqs >specs/spec-coverage.md} These reports check the declared link graph; measured execution and source-line attribution are specified in `specs/spec-coverage.md`.
 * {#p-m2fyo9 >specs/spec-coverage.md} `spec-coverage` reports which tests execute each source line, with uncovered regions visible for review.
+
+## Statements that describe a test
+
+> {#m-e58y5d} RULING (CEO) 2026-10-29, on spec statements that describe a
+> test case, which no implementation file implements (AIOS questions page,
+> q149): "If the spec is spec'ing a test (strange, why are we doing this?)
+> then it is the test code that needs an @implements in addition to a
+> @proves"
+
+* {#d-5oba7n <m-e58y5d@459984e} **Test statement** — a statement that describes a test
+  case rather than what the code does, as "a held form whose turn an
+  interrupt ended, then a restart, makes one continuation; paired, the same
+  block moved past makes none": the test that is that case carries it out,
+  and no implementation file does.
+* {#s-fiabr2 <m-e58y5d@459984e} **Implementation by a test.** A test file may carry
+  `@implements s-xxxxxx@hhhhhhh`, written as an implementation reference is
+  (`specs/spec-map-line-types.md`, Code references), naming a test
+  statement that a test in it carries out; such a line is a
+  test-implementation reference. {#s-k3nucf <arch,m-e58y5d@459984e} Test-implementation
+  references are read in every test file, whether or not its directory is
+  one the project declares for reading code.
+* {#s-obz7rg <arch,m-e58y5d@459984e} **At the test, not the header.** A test-implementation
+  reference sits, is misplaced and covers tests as a link line does (Where
+  a link sits, What a link covers), and applies to the tests it covers, not
+  to the whole file. {#s-9ho983 <arch,m-e58y5d@459984e} Wherever a rule reads a run of owner
+  and link lines, in any language, test-implementation references may stand
+  in it.
+* {#s-nlzsly <m-e58y5d@459984e} **With a proof.** A test-implementation reference resolves
+  when it would resolve as an implementation reference in an implementation
+  file and at least one test it covers proves its statement, or a part of
+  it, through a resolving link.
+* {#s-ljxzt6 <m-e58y5d@459984e} **One test, both links.** A test may both prove and
+  implement one statement, by a link line and a test-implementation
+  reference naming the same id in the run above the same call, as
+  `// @proves s-xxxxxx@hhhhhhh` then `// @implements s-xxxxxx@hhhhhhh`
+  directly above a `test` call; both resolve.
+* {#s-0n3sm5 <arch,m-e58y5d@459984e} **Counted as an implementation.** A resolving
+  test-implementation reference counts for its statement in (31) as a
+  resolving `@implements` reference in an implementation file does, so a
+  statement a test both proves and implements is named in neither (7) nor
+  (31).
+* {#s-9wbr29 <arch,m-e58y5d@459984e} **Never a proof.** A test-implementation reference
+  proves nothing and links no test: it counts for no derived owner, no
+  unlinked test (21) and no completeness failure.
+* {#s-w4wun2 <arch,m-e58y5d@459984e} **Reported in (33).** A malformed, misplaced,
+  unresolved or stale test-implementation reference is an entry of (33),
+  naming the test file, the line, the test or `describe` it sits above and
+  the id; {#s-dssqhc <arch,m-e58y5d@459984e} one that would resolve but that no test it
+  covers proves its statement says so.
+* {#s-sg7zoy <arch,m-e58y5d@459984e} **No `@tested-by` from a test file.** A test file is
+  never an implementation file, whatever references it carries, so (32)
+  never names it and no `@tested-by` reference is required of it.
+* {#s-sy7274 <arch} A `@tested-by` or `@checks` directive in a test file is
+  misplaced, an entry of (33) naming the file and the line.
+* {#s-e6bz23 <arch} `--sid <id>` lists each test-implementation reference naming
+  the id among the implementation references, giving the file, the line,
+  the name of the call it sits above, the recorded hash, whether it is
+  stale, and the word `test`.
 
 ## Dependencies
 

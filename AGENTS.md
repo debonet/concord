@@ -12,6 +12,8 @@ ConcordSTC keeps a project's specs and tests in step. Its specs are the authorit
 * `~/@concord/specs/spec-coverage.md` — coverage
 * `~/@concord/specs/concord-hook.md` — installing the commit gate
 * `~/@concord/specs/agents-sync.md` — generating agent-tool files from the roles
+* `~/@concord/specs/observations.md` — the observations file, observation ids, citations and retirement
+* `~/@concord/docs/` — one migration note per Concord change that adopting projects must follow
 
 ## The rules every agent follows
 
@@ -22,6 +24,7 @@ ConcordSTC keeps a project's specs and tests in step. Its specs are the authorit
 5. **After every spec change:** run the assign command (`spec-map --assign`), then the checker. Stale links, link lines that do not resolve, dangling targets, re-derive, unstamped, underived and malformed must all be 0.
 6. **The human's words are recorded verbatim** as motive (`m`) lines before anything is derived from them, and a decision the human did not make is rooted `<arch` so the checker lists it for the human to ratify or overrule.
 7. **Commits are gated.** A project's pre-commit hook runs `spec-map --gate`; a commit it refuses is fixed, never bypassed.
+8. **Observations go in the observations file, never in a rules file.** A mistake, a correction or an unexplained red is recorded as an entry with an id in the project's observations file, stated as what was observed, with no date or story unless germane. A standing rule holds only itself, its check and the ids of the observations it rests on. An observation is retired, its entry and every citation deleted, only when the checker lists it retirable (`~/@concord/specs/observations.md`).
 
 ## Adopting Concord in a project
 

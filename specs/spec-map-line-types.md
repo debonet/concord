@@ -107,6 +107,9 @@ is marked, and how Concord checks that each is satisfied.
 * {#s-7tlfzo <arch,m-r3llz8@7fee9b6} An implementation, test-file or hand-check reference is a directive comment of the implementation file's language reading, sits in its header, and applies to that whole file.
 * {#s-rv4wbq <arch,m-r3llz8@7fee9b6} JavaScript, TypeScript, Rust, CSS and HTML implementation files use the comment syntax of their declared language reading; no directive inside a string, literal or block comment is read unless that language's reading expressly accepts it.
 * {#s-tghouh <arch,m-r3llz8@7fee9b6} Malformed, unresolved and stale implementation, test-file and hand-check references are reported with the implementation path, line and target.
+* {#p-38eqyz >specs/spec-map.md#statements-that-describe-a-test} A test file may
+  carry an implementation reference for a statement that describes a test,
+  at the test rather than in its header.
 * {#s-gueyj8 <m-k55xs4@88cd8e4} **Dangling pointers.** Beside the other lists Concord
   reports (22) each target that does not resolve, naming the spec, the
   line, the pointer's id, the target and why. {#s-6ls2oh <arch} With no argument

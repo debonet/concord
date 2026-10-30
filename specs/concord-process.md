@@ -90,7 +90,7 @@ Concord where it stands.
   verdicts, their status and the worklist page.
 * {#p-cjkg4m >s-k4mfcb,s-w2zn7d,s-aw5cvb,g-8luxyf} Guidance: audiences, delivery
   by prompt, guidance references, and which spec holds a guidance line.
-* {#p-wmy83x >specs/spec-map.md#the-three-way-map,specs/spec-map-line-types.md#code-references} The reverse links from tests and implementation files, and the map that checks coverage.
+* {#p-wmy83x >specs/spec-map.md#the-three-way-map,specs/spec-map-line-types.md#code-references,specs/spec-map.md#statements-that-describe-a-test} The reverse links from tests and implementation files, the implementation references a test file carries for a statement that describes a test, and the map that checks coverage.
 * {#p-ph98jc >s-e287lm,s-3pkw1n,s-b8vvpd,s-xuw25u} What a run with no argument
   reports and what a run with one spec's path, that spec's fence, fails on.
 ## Where Concord lives
@@ -128,6 +128,21 @@ Concord where it stands.
   Concord's own lives in Concord's specs.
 * {#g-h1uulv <arch,m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Concord's tests are Concord's.** Keep tests for Concord's specs in this project; adopting projects test only their own specs.
 * {#g-c5u386 <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **A carried checker retires.** When adopting Concord, retire the local checker and the scripts and tests that duplicate its work as build targets move to `~/@concord/bin`.
+
+## Changing Concord
+
+> {#m-glaqic} RULING (CEO) 2026-10-30: "If you're changing @concord then
+> you also need to leave a migration note in its doc/ folder so that other
+> concord projects can move into compliance"
+
+* {#g-w4tk82 <m-glaqic@87d08c8 for=architect,main via=prompt} **A migration note with
+  every breaking change.** A change to Concord that requires an adopting
+  project to change anything, its `concord.json`, its specs, its tests, its
+  code or its rules files, leaves in the same change a migration note,
+  `docs/<subject>-migration.md` in the Concord project: a step-by-step
+  guide that brings an existing adopting project into compliance, opening
+  with the checker reports to save before any step and ending with the
+  runs that compare them after.
 
 ## Agent instructions
 
@@ -215,6 +230,27 @@ Concord where it stands.
   architect writes no statement for it; a statement is written only for
   the rule of a test reported under `Untagged behaviour`.
 
+## Linking an absence
+
+* {#g-i4w44d <arch,m-6pxcni@29fc8b1 for=fixer,architect via=prompt} **The code that
+  could break it implements it.** A statement that something never happens
+  or is absent, as "a draft is never journaled", is implemented by every
+  implementation file whose change could make it false: the journal writer
+  for "never journaled", each producer for "no producer infers Y", the file
+  holding the loop for "there is no bound on reroutes". Each such file
+  carries `@implements` for it, as for any other statement; no absence is
+  left unlinked because no line of code "does" it.
+* {#g-5h9255 <arch,m-6pxcni@29fc8b1 for=fixer via=prompt} **No such file is a
+  spec gap.** When a linking agent finds no implementation file whose change
+  could make an absence false, it leaves the statement unlinked and reports
+  it to the architect as a statement no module's behaviour bounds; it never
+  links an unrelated file to clear (31).
+* {#g-ckhixs <arch,m-6pxcni@29fc8b1 for=architect via=prompt} **Name the module in
+  the absence.** An architect writing an absence states it about the
+  behaviour of the module it constrains, as "the journal writer never
+  records a draft" rather than "a draft is never journaled", so the file
+  that implements it is plain from the sentence.
+
 ## What stops a commit
 
 * {#s-nw4u9n <m-b2shvm@ff5b09c} **A stale citation anywhere.** A commit of an adopting
@@ -244,7 +280,8 @@ Concord where it stands.
   reference that is stale or names an id no marker holds; every entry of (8)
   for a link line naming an id no marker holds; every entry of (13) for a
   root list holding a reference that names an id no marker holds; every
-  entry of (22); every entry of (33); every entry of (28); every (31) entry in a complete spec;
+  entry of (22); every entry of (33); every entry of (28); every entry of
+  (34) and of (35) (`specs/observations.md`); every (31) entry in a complete spec;
   every (32) entry for an implementation file naming a statement in a
   complete spec; and, for each complete spec, every entry on which a run with that spec's path
   exits non-zero.
@@ -345,8 +382,9 @@ Concord where it stands.
   code are written in, each read by a language reading this spec or a
   sibling defines; the directories read for guidance references and code
   targets, and the directories never read (generated and vendored ones such
-  as `node_modules` and `target`); and the record file for hand-check
-  verdicts. Its build spec declares its Concord targets and its pre-commit
+  as `node_modules` and `target`); the record file for hand-check
+  verdicts; and the path of its observations file and the paths of its
+  rules files (`specs/observations.md`). Its build spec declares its Concord targets and its pre-commit
   hook (Where Concord lives, What stops a commit).
 * {#g-ljcs3l <m-2794qp@4644928 for=architect via=prompt} An adopting project's build spec
   declares a target that runs `~/@concord/bin/concord-hook install`
@@ -387,6 +425,18 @@ Concord where it stands.
   under `packages`.
 * {#s-wu6tv6 <s-jhtp93@4c4ca3c} **Record file.** `sPathRecord` is the path of the record
   file for hand-check verdicts, relative to the project root.
+* {#s-pwo03p <arch,s-jhtp93@4c4ca3c} **Observations file.** `sPathObservations` is
+  optional. When present it is the path, relative to the project root and
+  outside `specs/`, of the project's observations file
+  (`specs/observations.md`), as in `"sPathObservations": "observations.md"`.
+  {#s-bf7qnq <arch} A project whose `concord.json` declares no
+  `sPathObservations` holds no observations, so every observation citation
+  in it is dangling.
+* {#s-bqv6fu <arch,s-jhtp93@4c4ca3c} **Rules files.** `vsPathRules` is optional.
+  When present it is an array, possibly empty, of the paths, relative to
+  the project root, of the project's rules files, none of them the
+  observations file, as in `"vsPathRules": [ "AGENTS.md", "CLAUDE.md" ]`;
+  {#s-0w4rbg <arch} a project that declares none has no rules files.
 * {#s-xqx0r5 <s-jhtp93@4c4ca3c} **Coverage.** `aCoverage` is optional. When present it is
   an object of `vaRun`, a non-empty array of the jest runs a measurement
   makes, each an object of `sName` and `sDirRun`, the directory relative to
@@ -406,13 +456,15 @@ Concord where it stands.
 
 ## Language readings
 
-* {#p-jczx2d >specs/spec-map.md#test-files-and-owner-lines,s-pjx54j,s-2l6ys1}
+* {#p-jczx2d >specs/spec-map.md#test-files-and-owner-lines,s-pjx54j,s-2l6ys1,specs/spec-map.md#statements-that-describe-a-test}
   The JavaScript reading is the one `specs/spec-map.md` and its siblings write
   out: `//` directives, `describe` groups and `test` and `it` units with their
   `.each`, `.only` and `.skip` forms, names read from string literals, the
   jest docblock pinned above the header, declared test wrappers and code
   normalisation. Implementation files also read `@implements`, `@tested-by`
-  and `@checks` directives in their file headers. CSS has the comment,
+  and `@checks` directives in their file headers, and test files read
+  `@implements` at their tests (`specs/spec-map.md`, Statements that
+  describe a test). CSS has the comment,
   literal, implementation-directive and
   normalisation parts only, as Code normalisation gives them.
 

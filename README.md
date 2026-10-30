@@ -18,7 +18,7 @@ More than one project uses it. Keeping one shared checker means a change to how 
 
 ## Solution (what?)
 
-Concord is a set of command-line tools and the specs that define them. `spec-map` reads a project's specs, test files and code and reports which statement each test proves, which spec owns each test, and how every other kind of spec line is satisfied; it also mints ids, answers queries about one id, records verdicts on hand checks and writes the worklist page for them. `spec-coverage` runs a project's jest suites with coverage on and maps every source line to the statements whose tests execute it, so code that no statement depends on is surfaced for a person to classify. `concord-hook` installs, in a project, the pre-commit hook that runs `spec-map --gate`, and `agents-sync` writes Claude Code and Codex agent files from Concord's role texts.
+Concord is a set of command-line tools and the specs that define them. `spec-map` reads a project's specs, test files and code and reports which statement each test proves, which spec owns each test, and how every other kind of spec line is satisfied; it also mints ids, answers queries about one id, records verdicts on hand checks and writes the worklist page for them. `spec-coverage` runs a project's jest suites with coverage on and maps every source line to the statements whose tests execute it, so code that no statement depends on is surfaced for a person to classify. `concord-hook` installs, in a project, the pre-commit hook that runs `spec-map --gate`, and `agents-sync` writes Claude Code and Codex agent files from Concord's role texts. `link-propose` helps a project that has many statements no code file names yet: for each such statement it ranks the code files most likely to implement it, from the tests that prove the statement, the files those tests load or execute, and the statement's own terms, and once an agent has confirmed a proposal it writes the link into that file's header ([specs/link-propose.md](specs/link-propose.md)).
 
 Concord also holds the instructions agents follow. `AGENTS.md` at Concord's root is read by any coding agent, from any vendor, working in an adopting project; each project's own `AGENTS.md` points at it and adds that project's own facts and working rules; `orchestration.md` holds the rules for running architect and fixer agents in any tool. The two roles, an architect who owns specs and a fixer who owns code and tests, are written once in `roles/`, in tool-neutral terms, so the same process runs whichever model plays them.
 
@@ -28,6 +28,24 @@ The rules those commands enforce, and how a project adopts them, are in [specs/c
 
 A spec line is marked with an id such as `{#s-k3p9qa}`, whose letter gives the line's type: a statement a test proves, a pointer, a definition, a motive (the human's own words, which other lines derive from), an interactive check a person makes by hand, or guidance for whoever writes the code. A test names what it proves with a link line, `// @proves s-k3p9qa@<hash>`, where the hash is taken from the statement's text. When the text changes, the hash changes, and every test still citing the old hash is reported stale until someone checks that it still proves the new wording.
 
+The links have a deliberate direction:
+
+| From | Reference | Points to | Purpose |
+| --- | --- | --- | --- |
+| Spec | `p` pointer | Another spec, heading, or marked line in a spec | Connects specification material |
+| Spec | Root reference | A motive or statement in a spec | Records where a statement derives from |
+| Test file | `@spec` | One or more spec files | Declares which spec owns the tests |
+| Test | `@proves` | A statement in a spec | Says what the test proves |
+| Test | `@guards` | A statement in a spec | Guards a proof without counting as proof |
+| Implementation file | `@implements` | A statement in a spec | Says what the file implements |
+| Implementation file | `@tested-by` | A test file | Declares which tests verify code in that file |
+| Implementation file | `@checks` | An interactive check (`i`) in a spec | Connects code to a hand check it supports |
+| Test or implementation file | `@follows` | Guidance (`g`) in a spec | Points to guidance the file follows |
+
+So the core links are **test → spec**, **code → spec**, and **code → test**. Specs never point to code or tests; their `p` pointers stay within the spec set, and implementation files name interactive checks with `@checks`.
+
 Ids are never invented by hand: a spec is written with placeholders and the assign command replaces each with a fresh random id. Statements can name the rulings they stem from, so a change to a ruling lists every conclusion that must be derived again.
+
+What was observed going wrong (an agent's mistake, a correction, a test red once and green alone) is kept out of a project's rules files. Each such observation is an entry with an id, such as `o-k3p9qa`, in one observations file; a rule cites the ids of the observations it rests on. An entry names the statements whose proof makes the mistake impossible, and once tests prove them the entry and every citation of it are deleted. The checker refuses a commit while any citation names an entry that no longer exists ([specs/observations.md](specs/observations.md)). A Concord change that adopting projects must follow comes with a step-by-step note under `docs/`.
 
 Each command acts on the project in its working directory and reads that project's `concord.json` for everything that differs between projects. How a language's files are read (its comments, its test units, where its directives sit) is a language reading; JavaScript (JSX included), TypeScript, CSS, HTML and Rust are defined, so a project written in several of them, a web client with a page and a stylesheet among them, is linked file by file.

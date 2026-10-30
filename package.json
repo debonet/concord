@@ -6,14 +6,16 @@
     "spec-map": "bin/spec-map",
     "spec-coverage": "bin/spec-coverage",
     "agents-sync": "bin/agents-sync",
-    "concord-hook": "bin/concord-hook"
+    "concord-hook": "bin/concord-hook",
+    "link-propose": "bin/link-propose"
   },
   "scripts": {
     "test": "jest",
     "spec-map": "bin/spec-map",
     "spec-coverage": "bin/spec-coverage",
     "agents-sync": "bin/agents-sync",
-    "hook-install": "bin/concord-hook install"
+    "hook-install": "bin/concord-hook install",
+    "link-propose": "bin/link-propose"
   },
   "engines": {
     "node": ">=20"

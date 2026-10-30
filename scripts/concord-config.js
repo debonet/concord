@@ -11,7 +11,11 @@
 // @implements s-xqx0r5@13898cb
 // @implements s-w8ivpb@ffb0e3a
 // @implements s-4j8qm7@1fe7250
+// @implements s-pwo03p@d531b9d
+// @implements s-bqv6fu@98c93c9
+// @implements s-jpfy1o@4623436
 // @tested-by test/concord-settings.test.js
+// @tested-by test/observations.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -19,6 +23,7 @@ const path = require( "path" );
 
 const sFileConfig = "concord.json";
 const sSegmentAny = "*";
+const sDirSpecs = "specs";
 const vsLanguageKnown = [ "javascript", "typescript", "css", "html", "rust" ];
 
 const fbObject = ( x ) => (
@@ -39,6 +44,21 @@ const ffsProblemStrings = ( bFull ) => ( x ) => (
     : "is not a " + ( bFull ? "non-empty " : "" )
       + "array of non-empty strings"
 );
+
+const fsPathPosix = ( sPath ) => path.posix.normalize(
+  sPath.split( path.sep ).join( "/" )
+);
+
+const fbPathUnderSpecs = ( sPath ) => {
+  const sPathPosix = fsPathPosix( sPath );
+  return sPathPosix === sDirSpecs || sPathPosix.startsWith( sDirSpecs + "/" );
+};
+
+const fsProblemObservations = ( x ) => {
+  const sProblem = fsProblemString( x );
+  if( sProblem !== null ){ return sProblem;}
+  return fbPathUnderSpecs( x ) ? "lies under " + sDirSpecs + "/" : null;
+};
 
 const fsProblemLanguage = ( x ) => {
   const sProblem = ffsProblemStrings( true )( x );
@@ -96,6 +116,8 @@ const aSchemaConfig = {
   vsDirRead: { bRequired: true, fsProblem: ffsProblemStrings( false )},
   vsDirIgnored: { bRequired: true, fsProblem: ffsProblemStrings( false )},
   sPathRecord: { bRequired: true, fsProblem: fsProblemString },
+  sPathObservations: { bRequired: false, fsProblem: fsProblemObservations },
+  vsPathRules: { bRequired: false, fsProblem: ffsProblemStrings( false )},
   aCoverage: {
     bRequired: false,
     faProblem: ( x, sMember ) => faProblemForObject(
@@ -149,6 +171,16 @@ const fsLineForProblem = ( aProblem ) => (
     : sFileConfig + ": " + aProblem.sMember + " " + aProblem.sProblem
 );
 
+const faProblemRulesObservations = ( aConfig ) => {
+  if( aConfig.sPathObservations === undefined ){ return null;}
+  const sPathObs = fsPathPosix( aConfig.sPathObservations );
+  return ( aConfig.vsPathRules || []).some(( sPath ) => (
+    fsPathPosix( sPath ) === sPathObs
+  ))
+    ? { sMember: "vsPathRules", sProblem: "names the observations file" }
+    : null;
+};
+
 const fxJsonParsed = ( sText ) => {
   try{ return { x: JSON.parse( sText )};}
   catch( xErr ){ return null;}
@@ -161,7 +193,8 @@ const faConfigForText = ( sText ) => {
       aConfig: null, sProblem: sFileConfig + " is not one JSON object"
     };
   }
-  const aProblem = faProblemForObject( aSchemaConfig, aParsed.x, "" );
+  const aProblem = faProblemForObject( aSchemaConfig, aParsed.x, "" )
+    || faProblemRulesObservations( aParsed.x );
   return aProblem === null
     ? { aConfig: aParsed.x, sProblem: null }
     : { aConfig: null, sProblem: fsLineForProblem( aProblem )};

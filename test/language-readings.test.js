@@ -669,3 +669,37 @@ describe( "language-readings — HTML normalisation", () => {
     expect( fsStatus( "i-lng008" )).toBe( sStatus );
   });
 });
+
+// @proves s-9ho983@b227496
+// @proves s-obz7rg@010c79a
+test( "language-readings — a Rust test's @implements stands in the run "
+  + "above its test attribute and counts for its statement, PAIRED with one "
+  + "after a blank line", () => {
+  fWriteTree([ "rust" ], {
+    "test/rust.test.rs": [
+      "// @spec specs/a.md",
+      "",
+      "// @spec specs/a.md",
+      fsLink( "s-lng001" ),
+      "// @implements " + fsRef( "s-lng001" ),
+      "#[test]",
+      "fn implements_and_proves() {}",
+      "// @implements " + fsRef( "s-lng003" ),
+      "",
+      fsLink( "s-lng003" ),
+      "#[test]",
+      "fn proves_only() {}",
+      ""
+    ].join( "\n" )
+  });
+  const sOut = fsReport();
+  const vsNoImplementation = fvsLineInSection( sOut, sTitleNoImplementation )
+    .map(( s ) => s.split( "  " )[ 1 ]);
+  expect( vsNoImplementation ).not.toContain( "s-lng001" );
+  expect( vsNoImplementation ).toContain( "s-lng003" );
+  expect( fvsLineInSection( sOut, sTitleOwnerBad )).toEqual( [] );
+  expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
+    "test/rust.test.rs:8  // @implements " + fsRef( "s-lng003" )
+      + " (misplaced)"
+  ]);
+});
