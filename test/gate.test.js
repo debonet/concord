@@ -57,7 +57,6 @@ const sSpecReporting = [
   "* {#s-gat004 <arch,arch} A rule whose root list writes arch twice.",
   "* {#g-gat005 for=fixer} Write it this way.",
   "* {#d-gat006} **Term.** A definition no line uses.",
-  "* {#p-gat007 >specs/none.md} A pointer whose target is absent.",
   "* {#s-?} A placeholder rule.",
   "* {#s-gat008} A rule no test proves.",
   "* {#s-gat01} A malformed id.",
@@ -68,6 +67,7 @@ const sSpecRefusing = [
   "* {#s-gat001} A rule a test cites stale.",
   "* {#s-gat002 <s-gat001@0000000} A rule derived from a reworded root.",
   "* {#s-gat003 <s-zzz998} A rule rooted in an id no marker holds.",
+  "* {#p-gat007 >specs/none.md} An incomplete spec's pointer to nothing.",
   ""
 ];
 
@@ -155,6 +155,7 @@ const vtRefusing = [
   [ 9, "stale links", "s-gat001" ],
   [ 13, "malformed root lists", "s-zzz998" ],
   [ 16, "re-derive: stale root references", "s-gat002" ],
+  [ 22, "dangling targets", "p-gat007" ],
   [ 22, "dangling targets", "p-gat0c2" ],
   [ 26, "guidance references that do not resolve or are stale",
     "scripts/x.js:1" ],
@@ -170,7 +171,6 @@ const vtReporting = [
   [ 8, "link lines that do not resolve", "d-gat006" ],
   [ 12, "placeholders", "placeholder rule" ],
   [ 13, "malformed root lists", "arch written twice" ],
-  [ 22, "dangling targets", "p-gat007" ],
   [ 23, "unused definitions", "d-gat006" ],
   [ 26, "guidance references that do not resolve or are stale",
     "(malformed)" ]
@@ -258,7 +258,7 @@ describe( "gate — what it reads", () => {
     const aRunAfter = faRun([ "--gate" ]);
     expect( aRunAfter.sStdout ).not.toContain( "(9) " );
     expect( aRunAfter.sStdout ).not.toContain( "s-zzz999" );
-    expect( aRunAfter.sStdout ).toContain( "Gate: refused, 7 entries\n" );
+    expect( aRunAfter.sStdout ).toContain( "Gate: refused, 8 entries\n" );
   });
 });
 

@@ -156,6 +156,7 @@ const sAgentsFull = [
   "* RULING (CEO) 2026-10-30: \"again\"",
   "* A `RULING (architect)` note: unexplained.",
   "* Not a date: 12026-10-301 nor flakes nor refixed.",
+  "* Run it again; the boundary is fixed; this is an unexplained red.",
   "",
   "```sh",
   "echo 2026-10-30 again [o-zzz004]",
@@ -292,8 +293,8 @@ describe( "observations — citations and dangling citations (35)", () => {
       "## {#o-opn001} An open observation\n", ""
     ));
     expect( fvsLineInSection( faRun([]).sStdout, sTitleDangling )).toEqual([
-      "AGENTS.md:10  o-zzz004",
-      "AGENTS.md:11  o-zzz005",
+      "AGENTS.md:11  o-zzz004",
+      "AGENTS.md:12  o-zzz005",
       "observations.md:3  o-pre001",
       "scripts/x.js:3  o-zzz002",
       "test/a.test.js:4  o-opn001"
@@ -371,7 +372,7 @@ describe( "observations — malformed entries (34)", () => {
   });
 });
 
-// @proves s-q5c85w@ad551d0
+// @proves s-q5c85w@e45f7a9
 // @proves s-k7m8d0@3483032
 // @proves s-b6pwed@2075d0b
 describe( "observations — observation-like text in rules files (37)", () => {
@@ -381,7 +382,7 @@ describe( "observations — observation-like text in rules files (37)", () => {
     fWriteFull();
     fWriteFile( "specs/b.md", "# B\n\nSeen again on 2026-10-30.\n" );
     expect( fvsLineInSection( faRun([]).sStdout, sTitleLike )).toEqual([
-      "AGENTS.md:5  Again, 2026-10-30, flaky, red once, fixed",
+      "AGENTS.md:5  2026-10-30, flaky, red once",
       "CLAUDE.md  (missing)"
     ]);
   });

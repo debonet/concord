@@ -133,12 +133,13 @@ shows it fixed.
   back and why: `unstamped`, `stale`, `unproved`, `not passed` or `hand
   check cited from a rules file`. {#s-1vfjup <arch} (36) ends with one line,
   `Observations: <n>, <r> retirable`.
-* {#s-q5c85w <m-h8iu7n@c6f6e79,m-zr1tsi@bd2ae2e} **Observation-like text (37).** It reports
+* {#s-q5c85w <arch,m-h8iu7n@c6f6e79,m-zr1tsi@bd2ae2e} **Observation-like text (37).** It reports
   (37), in each declared rules file and outside its fenced code blocks,
   each line holding a date written as four digits, `-`, two digits, `-`
   and two digits with no digit directly before or after, or, ignoring
-  case and as whole words, `again`, `unexplained`, `flake`, `flaky`,
-  `fixed` or `red once`, naming the file, the line and the matched texts.
+  case and as whole words, `flake`, `flaky` or `red once`, naming the
+  file, the line and the matched texts; a line holding none of these, as
+  "run the suites again" or "until the boundary is fixed", is not named.
   {#s-k7m8d0 <arch} A line holding the text `RULING (CEO)` or
   `RULING (architect)`, in a code span or not, is not named in (37).
   {#s-b6pwed <arch} A declared rules file that does not exist is named in (37)
@@ -190,6 +191,15 @@ shows it fixed.
 * {#g-q4cgmg <m-oe3cd1@17502fb for=main via=prompt} **A rule cites its evidence.** A
   standing rule in a rules file holds only the rule, its check (a command
   to run) and the citations of the observations it rests on.
+* {#g-uxc2vo <arch,s-j8ahje@b487af3 for=main,architect,fixer via=prompt} **Citations read from
+  other projects.** A rules file that agents working in other projects
+  read, as Concord's `AGENTS.md`, its orchestration file and its role
+  texts, from which every tool's agent files are generated, states in its
+  opening lines that each `[o-xxxxxx]` citation in it names an entry of its
+  own project's observations file, by a path that resolves from any
+  working directory, as `~/@concord/observations.md`. Its citations keep
+  the `[o-xxxxxx]` form, so they resolve in its own project and are
+  deleted with their entry when it retires.
 * {#g-ye6w7x <m-h8iu7n@c6f6e79,m-oe3cd1@17502fb for=main,architect via=prompt} **Targets come from
   the specs.** When work is planned to fix an observation, the architect's
   brief cites its id, and the architect names in its report the

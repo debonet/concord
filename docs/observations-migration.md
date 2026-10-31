@@ -42,8 +42,10 @@ observations file with a one-line title and nothing else:
 ```
 
 Run `npm run spec-map` once. List (37) now names every line in the rules
-files that reads like an observation (a date, `again`, `unexplained`,
-`flake`, `flaky`, `fixed`, `red once`). Save it as your work list; lines
+files that reads like an observation (a date, `flake`, `flaky`,
+`red once`). It does not find an undated incident told in other words
+("seen again", "still unexplained"), so read each rules file once for
+those too. Save it as your work list; lines
 holding a ruling label (`RULING (CEO)`) are not in it, since a quoted
 ruling is not an observation.
 

@@ -4092,6 +4092,7 @@ const vtListRefusing = [
   [ aListRederive, fbAlways ],
   [ aListFollowsBad, ( aEntry ) => aEntry.bStale || aEntry.bIdAbsent ]
   , [ aListNoCode, fbAlways ], [ aListCodeRefBad, fbAlways ],
+  [ aListDangling, fbAlways ],
   [ aListObsBad, fbAlways ], [ aListCitationDangling, fbAlways ]
 ];
 

@@ -24,7 +24,7 @@
 // @implements s-m4ejnc@74e55a0
 // @implements s-cz0mnp@08a3a79
 // @implements s-1vfjup@ed50b2f
-// @implements s-q5c85w@ad551d0
+// @implements s-q5c85w@e45f7a9
 // @implements s-k7m8d0@3483032
 // @implements s-b6pwed@2075d0b
 // @implements s-h5caok@17c696d
@@ -45,7 +45,7 @@ const reTarget = /^(([a-z])-[a-z0-9]{6})(?:@([0-9a-f]{7}))?$/;
 const reCitation = /\[(o-[a-z0-9]{6})\]/g;
 const reLike = new RegExp(
   "(?<!\\d)\\d{4}-\\d{2}-\\d{2}(?!\\d)"
-  + "|\\b(?:again|unexplained|flake|flaky|fixed|red once)\\b",
+  + "|\\b(?:flake|flaky|red once)\\b",
   "gi"
 );
 const reRuling = /RULING \((?:CEO|architect)\)/;
