@@ -54,8 +54,9 @@ is marked, and how Concord checks that each is satisfied.
   reading, covering, hashing, placing and malforming a marker, and Case
   ids' reading of a marker that opens a bullet, holds for a marker of
   every type alike. {#s-7llevg <arch} A marker whose letter is none of `s`,
-  `p`, `d`, `m`, `i` and `g` is malformed, and so is a part list or probe
-  flag on a marker of any type but `s`, each reported in (6).
+  `p`, `d`, `m`, `i` and `g` is malformed, and so is a part list, probe
+  flag or `not-yet-implemented` flag on a marker of any type but `s`, each
+  reported in (6).
 * {#s-n10cb0 <arch} **One body, one line.** An id's body is its six characters
   after the type letter and `-`. Two markers whose ids share a body,
   whatever their type letters, are duplicates as Duplicate ids says, and
@@ -82,8 +83,10 @@ is marked, and how Concord checks that each is satisfied.
 
 ### Pointers
 
-* {#s-7h4j0s <m-k55xs4@88cd8e4} **Target lists.** A `p` line points only within the spec set through
-  the target list its marker carries after its id
+> {#m-tpuy30} USER 2026-11-02: "support for packages/modules where a spec says look in folder/*/spec/ for more specs (note the glob pattern because the master spec should NOT NEED TO KNOW what packages exist)"
+
+* {#s-7h4j0s <m-k55xs4@88cd8e4,m-tpuy30@018a42c} **Target lists.** A `p` line points within the spec set, or
+  declares a project-collection target, through the target list its marker carries after its id
   part: one space, `>`, then one or more targets separated by commas with
   no spaces, before the closing `}`, as in
   `{#p-xxxxxx >specs/build.md#build-and-test,s-aaaaaa}`. {#s-en1xk7 <arch} A
@@ -93,9 +96,24 @@ is marked, and how Concord checks that each is satisfied.
   letters and digits replaced by one `-` and a leading or trailing `-`
   removed. {#s-m176ue <arch} The target list is part of the marker, not of the
   line's text, so it never changes the line's hash.
-* {#s-dhs2hx <arch} A target resolves when its id is held by exactly one
-  marker in a spec, or when its path names a `.md` file under `specs/` or
-  its spec holds a heading of any level whose slug is its slug. {#s-w75973 <arch} A `p`
+* {#s-dhs2hx <arch,m-tpuy30@018a42c} A target resolves when its id is held by exactly one
+  marker in a spec, when its path names a `.md` file under any of the project's
+  declared spec directories, or when its spec holds a heading of any level
+  whose slug is its slug. A project-collection target has the form
+  `folder/*/spec/` or `folder/*/specs/`: it names each child project's spec
+  directory beneath one matched directory, without naming packages individually.
+  {#s-9zllrl <arch,m-tpuy30@018a42c} The parent-relative target has exactly one `*`
+  path segment, and that segment is the only wildcard; its final two path
+  segments are `*` and `spec` or `specs`. Every path segment before `*` is
+  non-empty. Each match is the child project's named spec directory. It has
+  its own root `concord.json` whose `dirs_specs` selects that directory (or
+  omits `dirs_specs` when it is the default `specs/` root), and at least one `.md`
+  spec file. A match without that project settings file or without a spec
+  file is reported as a dangling target in (22). A collection with no
+  matches is valid. {#s-x1kbkj <arch,m-tpuy30@018a42c} The collection discovers child
+  spec paths but does not add their statements to the parent project's map
+  or resolve any child link; each child project runs and gates its own map.
+  {#s-w75973 <arch} A `p`
   line with no target list, a target list on a marker of any type other
   than `p`, an empty target, and a target in none of the forms above are
   malformed, each reported in (6). An `i` marker carries no target list.
@@ -317,9 +335,10 @@ its type. Follow these lines when doing the batch.
 ### Queries and exits across types
 
 * {#s-kz8d46 <arch} `--hash <id>` answers for a line of any type.
-  {#s-1igmuk <arch} `--sid <id>` on a line that is not a statement prints its
+  {#s-1igmuk <arch,m-tpuy30@018a42c} `--sid <id>` on a line that is not a statement prints its
   spec, line and type, then: for a pointer each target and whether it
-  resolves; for a definition its term and the spec and line of each block
+  resolves, and for a project-collection target each discovered child spec
+  path; for a definition its term and the spec and line of each block
   using it; for a motive what `--root` prints for it; for an interactive
   check its status and every record naming it; and for guidance every
   guidance reference naming it and whether it is stale; it exits 0.

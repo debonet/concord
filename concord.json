@@ -1,22 +1,22 @@
 {
-  "sName": "Concord",
-  "vaSuite": [
-    { "sName": "root", "vsDir": [ "test" ] }
+  "name": "Concord",
+  "suites": [
+    { "name": "root", "directories": [ "test" ] }
   ],
-  "vsLanguage": [ "javascript" ],
-  "vsDirRead": [ "bin", "scripts", "test" ],
-  "vsDirIgnored": [ "node_modules" ],
-  "sPathRecord": "test/interactive-passes.jsonl",
-  "sPathObservations": "observations.md",
-  "vsPathRules": [
+  "languages": [ "javascript" ],
+  "read_directories": [ "bin", "scripts", "test" ],
+  "ignored_directories": [ "node_modules" ],
+  "record_file": "test/interactive-passes.jsonl",
+  "observations_file": "observations.md",
+  "rules_files": [
     "AGENTS.md", "orchestration.md", "roles/architect.md", "roles/fixer.md"
   ],
-  "aCoverage": {
-    "vaRun": [
-      { "sName": "root", "sDirRun": "." }
+  "coverage": {
+    "runs": [
+      { "name": "root", "directory": "." }
     ],
-    "vsCommandBefore": [],
-    "vsDirSource": [ "bin", "scripts" ],
-    "sPathReview": "spec-coverage-review.md"
+    "commands_before": [],
+    "source_directories": [ "bin", "scripts" ],
+    "review_file": "spec-coverage-review.md"
   }
 }

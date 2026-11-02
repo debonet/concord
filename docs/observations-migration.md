@@ -29,12 +29,12 @@ Add two members to `concord.json`
 (`~/@concord/specs/concord-process.md`, The settings file):
 
 ```json
-"sPathObservations": "observations.md",
-"vsPathRules": [ "AGENTS.md", "CLAUDE.md" ]
+"observations_file": "observations.md",
+"rules_files": [ "AGENTS.md", "CLAUDE.md" ]
 ```
 
 The observations file must lie outside `specs/`. List every file of
-standing instructions your agents read in `vsPathRules`. Create the
+standing instructions your agents read in `rules_files`. Create the
 observations file with a one-line title and nothing else:
 
 ```markdown

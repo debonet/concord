@@ -58,7 +58,43 @@ describe( "source text used for target hashes", () => {
     expect( faProgramForPath( "const value = 1;", "src/a.js" ) ).toBeNull();
   });
 
-  // @proves s-vjgnay@400021d
+  // @proves s-6dpng1@390bc64
+  // @proves s-7llevg@0874ed6
+  test( "pending status is hash-neutral and is rejected on a placeholder", () => {
+    const aModel = faModel({
+      vaSpec: [{
+        sPath: "specs/a.md",
+        sText: "# A\n\n## API\n\n"
+          + "* {#s-abc123} Planned behavior.\n"
+          + "* {#s-def456 not-yet-implemented} Planned behavior.\n"
+          + "* {#s-? not-yet-implemented} Placeholder.\n"
+          + "* {#p-ghi789 >specs/a.md not-yet-implemented} Invalid pointer flag.\n"
+      }],
+      vaTest: []
+    });
+    const aPlain = aModel.vaMarker.find(( aMarker ) => aMarker.sId === "s-abc123");
+    const aPending = aModel.vaMarker.find(( aMarker ) => aMarker.sId === "s-def456");
+    const aBadPlaceholder = aModel.vaMarker.find(( aMarker ) => aMarker.bPlaceholder);
+    expect( aPending.bNotImplemented ).toBe( true );
+    expect( aPending.sHash ).toBe( aPlain.sHash );
+    expect( aBadPlaceholder.vsReasonAttr ).toContain(
+      "not-yet-implemented flag on a placeholder"
+    );
+    expect( aModel.vaMarker.find(( aMarker ) => aMarker.sId === "p-ghi789")
+      .vsReasonAttr ).toContain( "not-yet-implemented flag on a line of type pointer (p)" );
+  });
+
+// @proves s-dhs2hx@db209fb
+  // @proves s-7h4j0s@512c0f5
+  test( "recognizes only the supported child spec collection form", () => {
+    expect( fsReasonForTargetForm( "packages/*/specs/" )).toBeNull();
+    expect( fsReasonForTargetForm( "packages/name/specs/" )).toBeNull();
+    expect( fsReasonForTargetForm( "packages/*/spec/" )).toBeNull();
+    expect( fsReasonForTargetForm( "packages/*/src/" )).not.toBeNull();
+    expect( fsReasonForTargetForm( "packages/*/other/*/spec/" )).not.toBeNull();
+  });
+
+  // @proves s-vjgnay@5c0f583
   test( "accepts a spec path and a heading target, and hashes the heading", () => {
     const aModel = faModel({
       vaSpec: [{
@@ -99,7 +135,7 @@ describe( "source text used for target hashes", () => {
     expect( fnRustBlockEnd( "fn a() { { }", 7 )).toBe( 12 );
   });
 
-  // @proves s-vjgnay@400021d
+  // @proves s-vjgnay@5c0f583
   test( "a missing target list is empty and a target list splits on commas", () => {
     expect( fvsTargetForMarker({ sTargets: null })).toEqual([]);
     expect( fvsTargetForMarker({ sTargets: "specs/a.md,s-id1234" }))

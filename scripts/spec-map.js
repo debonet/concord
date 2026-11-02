@@ -4,7 +4,7 @@
 // @implements s-zrgt7e@a066ef0
 // @implements s-pa182t@8008053
 // @implements s-4pq89a@d19cad5
-// @implements s-yurmkw@8d224c4
+// @implements s-yurmkw@c1a4abf
 // @implements s-a40yzg@5e808cd
 // @implements s-l0wfl7@c6ad1b2
 // @implements s-h5caok@17c696d
@@ -15,17 +15,17 @@
 // @implements s-f8jiyg@08812ac
 // @implements s-gk0bmt@68c8bf5
 // @implements s-u1vl7x@393921b
-// @implements s-j8ahje@b487af3
-// @implements s-y86kt5@2f48faa
+// @implements s-j8ahje@91cc810
+// @implements s-y86kt5@2649010
 // @implements s-ol2dmr@37d4979
-// @implements s-t8un02@c986a9a
+// @implements s-t8un02@9839058
 // @implements s-1u8bef@fa85be2
 // @implements s-nlm91d@4f76fd6
 // @implements s-nw4u9n@3b57e9b
 // @implements s-kkql92@90bba2d
-// @implements s-i2ip58@705d3ec
+// @implements s-i2ip58@b70be7c
 // @implements s-s4l32i@b41f304
-// @implements s-ug5kvq@2c8ff5e
+// @implements s-ug5kvq@7a53ca2
 // @implements s-qvdtqg@16f3fb4
 // @implements s-tlkzzq@39b39e7
 // @implements s-eltyao@a23e292
@@ -35,7 +35,7 @@
 // @implements s-mrxt8t@4a0c235
 // @implements s-62b8ec@c221937
 // @implements s-rapf8f@dd2cbd3
-// @implements s-n7ky2n@33d998e
+// @implements s-n7ky2n@8ffbda2
 // @implements s-m4jorm@da16eb4
 // @implements s-jmslkk@be3cc50
 // @implements s-k6leed@80135a4
@@ -103,7 +103,7 @@
 // @implements s-fc5ccj@7849554
 // @implements s-8yzzoh@8f6ed41
 // @implements s-eab7vh@300a074
-// @implements s-7llevg@0d81695
+// @implements s-7llevg@0874ed6
 // @implements s-n10cb0@01b16a4
 // @implements s-41v1mp@51d6eb2
 // @implements s-rmpj20@c3531c2
@@ -112,10 +112,10 @@
 // @implements s-wakfil@7deeb77
 // @implements s-xt2qjj@ce601a5
 // @implements s-1jdhhf@941303a
-// @implements s-7h4j0s@8fc0d18
+// @implements s-7h4j0s@512c0f5
 // @implements s-en1xk7@b19ecef
 // @implements s-m176ue@c40015e
-// @implements s-dhs2hx@eb1b478
+// @implements s-dhs2hx@db209fb
 // @implements s-w75973@e58d191
 // @implements s-50dzy6@2129482
 // @implements s-bqioq5@e78161a
@@ -164,7 +164,7 @@
 // @implements s-zx5mcq@5669484
 // @implements s-aphyp7@1f4c6b6
 // @implements s-kz8d46@36aef0d
-// @implements s-1igmuk@d5a7a54
+// @implements s-1igmuk@d454589
 // @implements s-xuw25u@ed827df
 // @implements s-mp16u6@a924b32
 // @implements s-rkzefi@94d4b4a
@@ -181,15 +181,15 @@
 // @implements s-0nmcwv@fcc34b4
 // @implements s-te9wza@59881f7
 // @implements s-0abyvp@9e5dd00
-// @implements s-98jxk4@9f80ece
-// @implements s-i6rjuw@9b207b9
-// @implements s-tdw4gj@a46db7b
+// @implements s-98jxk4@17039ec
+// @implements s-i6rjuw@e83d07a
+// @implements s-tdw4gj@8d6d23d
 // @implements s-bnkk62@d702f3b
 // @implements s-pslzjw@bb3ff6d
-// @implements s-3pkw1n@fddd73e
+// @implements s-3pkw1n@3da0ef1
 // @implements s-cwbb50@b1fa155
 // @implements s-k9c32y@39fbb4e
-// @implements s-gry2es@f927a10
+// @implements s-gry2es@c153c72
 // @implements s-ar1i87@b6009f5
 // @implements s-ilmml1@de70889
 // @implements s-w2msh4@29d36fe
@@ -209,26 +209,41 @@
 // @implements s-n7deu7@edc83ae
 // @implements s-tv24sx@df2c2d6
 // @implements s-u2lhta@c6845db
-// @implements s-emmdvh@9cf3fb4
+// @implements s-emmdvh@4dffcdc
 // @implements s-e287lm@a1b403a
-// @implements s-b8vvpd@decbc6c
+// @implements s-b8vvpd@9e72e40
 // @implements s-5vv5ht@bdd521d
 // @implements s-nudxy0@3495135
-// @implements s-i6rjuw@9b207b9
-// @implements s-tdw4gj@a46db7b
+// @implements s-i6rjuw@e83d07a
+// @implements s-tdw4gj@8d6d23d
 // @implements s-yyl1i0@2a9826b
 // @implements s-tvuwev@e251ade
 // @implements s-ggaonb@b8526d7
 // @implements s-zvzlp8@2e63bdc
 // @implements s-eel840@1bbc17a
-// @implements s-6gfnun@f6e1b42
+// @implements s-6gfnun@f467b05
 // @implements s-wrdbhk@01b46ef
 // @implements s-kzyb2a@f30bbf3
 // @implements s-kyro7r@3064fa5
 // @implements s-95ao2f@9b59968
-// @implements s-i63o6a@7f6cc9b
+// @implements s-i63o6a@79c24e2
 // @implements s-2deigh@58b055c
 // @implements s-taoc14@2518951
+// @implements s-6dpng1@390bc64
+// @implements s-yurmkw@c1a4abf
+// @implements s-j8ahje@91cc810
+// @implements s-t8un02@9839058
+// @implements s-7h4j0s@512c0f5
+// @implements s-n7ky2n@8ffbda2
+// @implements s-n1ztut@75bf716
+// @implements s-8g5yno@c3ea2a8
+// @implements s-mn5and@058eb96
+// @implements s-2vgnq6@8323fcb
+// @implements s-dhs2hx@db209fb
+// @implements s-9zllrl@4421fe6
+// @implements s-x1kbkj@fff57a4
+// @implements s-1igmuk@d454589
+// @implements s-vjgnay@5c0f583
 // @implements s-pe5j7a@8fee8c2
 // @implements s-l2muht@44dd0fb
 // @implements s-s0vyhy@802fc2f
@@ -270,8 +285,8 @@
 // @implements s-v8gy0d@16e4568
 // @implements s-qjt3c3@4ade3ec
 // @implements s-2j8jma@d3bb8a8
-// @implements s-zybg31@84ebe18
-// @implements s-b21zr4@69cc33d
+// @implements s-zybg31@316483b
+// @implements s-b21zr4@c4562be
 // @implements s-9eix2j@3b46d7e
 // @implements s-4o88k8@e467b6b
 // @implements s-cs9i6p@5d38c13
@@ -295,7 +310,7 @@
 // @implements s-vwf1wr@af28dcd
 // @implements s-0ovkpr@0316722
 // @implements s-nksahd@2aa742c
-// @implements s-vjgnay@400021d
+// @implements s-vjgnay@5c0f583
 // @implements s-2l6ys1@d966d32
 // @implements s-01nsp8@60401fe
 // @implements s-23wmhe@fec8ae0
@@ -352,13 +367,16 @@
 // @tested-by test/language-readings.test.js
 // @tested-by test/spec-map-source.test.js
 // @tested-by test/observations.test.js
+// @tested-by test/gate.test.js
 "use strict";
 
 const fs = require( "fs" );
 const path = require( "path" );
 const crypto = require( "crypto" );
 const babelParser = require( "@babel/parser" );
-const { ConfigReader, fnPrefixMatched } = require( "./concord-config.js" );
+const {
+  sFileConfig, ConfigReader, fnPrefixMatched
+} = require( "./concord-config.js" );
 const {
   faObservations, faSidObservation, faAssignObservations
 } = require( "./spec-map-observations.js" );
@@ -370,7 +388,7 @@ const reCallTest = new RegExp(
   "g"
 );
 const reOwnerText = /^\s*@spec/;
-const reOwnerLine = /^\s*\/\/ @spec +(specs\/\S+\.md)\s*$/;
+const reOwnerLine = /^\s*\/\/ @spec +(\S+\.md)\s*$/;
 const reLinkText = /^\s*@proves/;
 const reLinkLine = new RegExp(
   "^\\s*// @proves +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})"
@@ -447,13 +465,14 @@ const reSpace = /\s*/y;
 const reMarkerOpen = /\{#[a-z]-/g;
 const reMarkerToken = new RegExp(
   "\\{#([a-z]-[^}\\s{]*)"
-  + "(?: <((?:(?! >| parts=| via=| for=| probe\\})[^}{\\n])*))?"
-  + "(?: >((?:(?! parts=| via=| for=| probe\\})[^}{\\n])*))?"
-  + "(?: parts=((?:(?! via=| for=| probe\\})[^}{\\n])*))?"
-  + "(?: via=((?:(?! via=| for=| probe\\})[^}{\\n])*))?"
-  + "(?: for=((?:(?! via=| probe\\})[^}{\\n])*))?"
-  + "(?: via=((?:(?! via=| probe\\})[^}{\\n])*))?"
-  + "( probe(?=\\}))?(\\})?",
+  + "(?: <((?:(?! >| parts=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: >((?:(?! parts=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: parts=((?:(?! via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: via=((?:(?! via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: for=((?:(?! via=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: via=((?:(?! via=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "( probe(?= not-yet-implemented\\}|\\}))?"
+  + "( not-yet-implemented(?=\\}))?(\\})?",
   "y"
 );
 const rePartLabel = /^[a-z0-9-]+$/;
@@ -476,8 +495,9 @@ const asNameForType = {
 };
 const reTargetId = /^[a-z]-[a-z0-9]{6}$/;
 const reTargetSlug = new RegExp(
-  "^(specs/[\\w.@/-]+\\.md)#([\\p{L}\\p{N}]+(?:-[\\p{L}\\p{N}]+)*)$", "u"
+  "^([\\w.@/-]+\\.md)#([\\p{L}\\p{N}]+(?:-[\\p{L}\\p{N}]+)*)$", "u"
 );
+const reTargetCollection = /^(?:[\w.@-]+\/)*\*\/specs?\/$/;
 const reTargetPath = new RegExp(
   "^(?!/)(?!(?:.*/)?\\.\\.(?:/|$))[\\w.@-]+(?:/[\\w.@-]+)*/?$"
 );
@@ -708,7 +728,8 @@ const faTokenAt = ( sText, nPos ) => {
       : fsGroup( vsGroup, 5 ),
     bViaEarly: vsGroup[ 5 ] !== undefined,
     bProbe: vsGroup[ 8 ] !== undefined,
-    bClosed: vsGroup[ 9 ] !== undefined,
+    bNotImplemented: vsGroup[ 9 ] !== undefined,
+    bClosed: vsGroup[ 10 ] !== undefined,
     bWell: vsWell !== null && sTypeLine.includes( vsGroup[ 1 ][ 0 ]),
     sBody: vsWell === null ? null : fsGroup( vsWell, 2 ),
     sLabel: vsWell === null ? null : fsGroup( vsWell, 3 )
@@ -726,6 +747,7 @@ const fsOnType = ( sWhat, sType ) => (
 const fsKindForTarget = ( sTarget ) => {
   if( reTargetId.test( sTarget )){ return "id";}
   if( reTargetSlug.test( sTarget )){ return "slug";}
+  if( reTargetCollection.test( sTarget )){ return "collection";}
   return reTargetPath.test( sTarget ) ? "path" : null;
 };
 
@@ -733,11 +755,11 @@ const fsPathClean = ( sPath ) => (
   fsPosix( path.normalize( sPath )).replace( reSlashEnd, "" )
 );
 
-const fbCodeTarget = ( sTarget ) => {
+const fbCodeTarget = ( sTarget, sPathSpecs = sDirSpecs ) => {
   const sKind = fsKindForTarget( sTarget );
   if( sKind !== "path" ){ return false;}
   const sPath = fsPathClean( sTarget );
-  return sPath !== sDirSpecs && !sPath.startsWith( sDirSpecs + "/" );
+  return sPath !== sPathSpecs && !sPath.startsWith( sPathSpecs + "/" );
 };
 
 const fvsTargetForMarker = ( aMarker ) => (
@@ -807,6 +829,12 @@ const fvsReasonForAttr = ( aToken, sReasonParts ) => [
     : sReasonParts,
   aToken.sType !== "s" && aToken.bProbe
     ? fsOnType( "probe flag", aToken.sType )
+    : null,
+  aToken.sType !== "s" && aToken.bNotImplemented
+    ? fsOnType( "not-yet-implemented flag", aToken.sType )
+    : null,
+  aToken.bNotImplemented && /^s-\?/.test( aToken.sIdPart )
+    ? "not-yet-implemented flag on a placeholder"
     : null,
   fsReasonForVia( aToken )
 ].filter( Boolean ).concat(
@@ -2184,7 +2212,10 @@ const faOwnership = ( vaTestParsed, asPathSpec ) => ({
 const aFilesNone = {
   fsKind: () => null,
   fsTextAt: () => null,
-  fvsPathFile: () => []
+  fvsPathFile: () => [],
+  fbPathInSpec: ( sPath ) => sPath === sDirSpecs
+    || sPath.startsWith( sDirSpecs + "/" ),
+  fvaSpecCollection: () => ({ vsPath: [], sReason: "no collection reader" })
 };
 
 const aObsInputNone = {
@@ -2192,7 +2223,7 @@ const aObsInputNone = {
 };
 
 const faModel = ({
-  vaSpec, vaTest, vaCiter, vaGuided, vaRecord, fbExists, aFiles, aObsInput
+  vaSpec, vaTest, vaCiter, vaGuided, vaRecord, fbExists, aFiles, aObsInput,
 }) => {
   const vaSpecParsed = vaSpec.map(( aSpec ) => faParseSpec({
     sPath: fsPosix( aSpec.sPath ), sText: aSpec.sText
@@ -2401,7 +2432,10 @@ class TargetHasher {
 
   fsHashFresh( sTarget ){
     const sKind = fsKindForTarget( sTarget );
-    if( sKind === "path" && fbCodeTarget( sTarget )){
+    const bInSpec = this.aEnv.aFiles.fbPathInSpec === undefined
+      ? !fbCodeTarget( sTarget )
+      : this.aEnv.aFiles.fbPathInSpec( sTarget );
+    if( sKind === "path" && !bInSpec ){
       return this.aEnv.aFiles.fsKind( sTarget ) === "file"
         ? this.fsHashForFile( fsPathClean( sTarget ))
         : this.aEnv.aFiles.fsKind( sTarget ) === "dir"
@@ -2449,15 +2483,28 @@ const fsReasonForTargetFound = ( aModel, aEnv, sTarget ) => {
       "held by more than one marker"
     );
   }
+  if( sKind === "collection" ){
+    return aEnv.aFiles.fvaSpecCollection( sTarget ).sReason;
+  }
   if( sKind === "path" ){
     const sPath = fsPathClean( sTarget );
-    if( sPath !== sDirSpecs && !sPath.startsWith( sDirSpecs + "/" ) ){
+    const bInSpec = aEnv.aFiles.fbPathInSpec === undefined
+      ? sPath === sDirSpecs || sPath.startsWith( sDirSpecs + "/" )
+      : aEnv.aFiles.fbPathInSpec( sPath );
+    if( !bInSpec ){
       return "pointer target is outside specs";
     }
     if( !sPath.endsWith( ".md" )){ return "target is not a spec file";}
     return aEnv.fbExists( sTarget ) ? null : "no such file or directory";
   }
   const vsGroup = sTarget.match( reTargetSlug );
+  const bInSpec = aEnv.aFiles.fbPathInSpec === undefined
+    ? vsGroup[ 1 ] === sDirSpecs
+      || vsGroup[ 1 ].startsWith( sDirSpecs + "/" )
+    : aEnv.aFiles.fbPathInSpec( vsGroup[ 1 ] );
+  if( !bInSpec ){
+    return "pointer target is outside specs";
+  }
   const aSpec = aModel.vaSpecParsed.find(( aSpecParsed ) => (
     aSpecParsed.sPath === vsGroup[ 1 ]
   ));
@@ -2467,6 +2514,10 @@ const fsReasonForTargetFound = ( aModel, aEnv, sTarget ) => {
 
 const faTargetResolved = ( aModel, aEnv, aMarker, sTarget ) => {
   const bForm = fsReasonForTargetForm( sTarget ) === null;
+  const sKind = fsKindForTarget( sTarget );
+  const aCollection = bForm && sKind === "collection"
+    ? aEnv.aFiles.fvaSpecCollection( sTarget )
+    : { vsPath: [] };
   const sIdRetyped = bForm && fsKindForTarget( sTarget ) === "id"
     ? faLineForId( aModel, sTarget ).sIdRetyped
     : null;
@@ -2475,6 +2526,7 @@ const faTargetResolved = ( aModel, aEnv, aMarker, sTarget ) => {
     sPath: aMarker.sPath,
     nLine: aMarker.nLine,
     sTarget,
+    vsChildSpec: aCollection.vsPath,
     bForm,
     sIdRetyped,
     sReason: bForm ? fsReasonForTargetFound( aModel, aEnv, sTarget ) : null
@@ -3028,6 +3080,15 @@ const faLines = ( aModel, aEnv ) => {
   aLines.vaNoImplementation = fvaLineOfType( aModel, "s" ).filter(( aStmt ) => (
     !aLines.vaImplements.some(( aRef ) => aRef.sId === aStmt.sId )
   ));
+  aLines.vaStatusConflict = fvaLineOfType( aModel, "s" )
+    .filter(( aStmt ) => aStmt.bNotImplemented)
+    .map(( aStmt ) => ({
+      aMarker: aStmt,
+      vaRef: aLines.vaImplements.filter(( aRef ) => (
+      aRef.sId === aStmt.sId
+      ))
+    }))
+    .filter(( aEntry ) => aEntry.vaRef.length > 0);
   aLines.vaNoTestedBy = aModel.vaCode.filter(( aFile ) => (
     !aLines.vaTestedBy.some(( aRef ) => aRef.sPath === fsPosix( aFile.sPath ))
   ));
@@ -3496,6 +3557,7 @@ const faTypeLists = ( aModel, aRoots ) => {
     )),
     vaNoCode: fvaNoCodeForChecks( aLines.vaCheck, aLines.vaChecks ),
     vaNoImplementation: aLines.vaNoImplementation,
+    vaStatusConflict: aLines.vaStatusConflict,
     vaNoTestedBy: aLines.vaNoTestedBy,
     vaCodeRefBad: aLines.vaCodeRefBad,
     vaImplements: aLines.vaImplements,
@@ -3607,6 +3669,7 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
     vaUncited: aStmtList.vaUncited.filter( fbSpec ),
     vaNoCode: aStmtList.vaNoCode.filter( fbSpec ),
     vaNoImplementation: aStmtList.vaNoImplementation.filter( fbSpec ),
+    vaStatusConflict: aStmtList.vaStatusConflict.filter( fbSpecMarker ),
     vaNoTestedBy: aStmtList.vaNoTestedBy.filter(( aFile ) => (
       aStmtList.vaImplements.some(( aRef ) => (
         aRef.sPath === fsPosix( aFile.sPath )
@@ -3794,7 +3857,8 @@ const fsLineForUnbacked = ( aGuard ) => (
 );
 
 const fsLineForUnproved = ( aStmt ) => (
-  aStmt.sId + "  " + fsPlace( aStmt ) + aStmt.sProof
+  aStmt.sId + ( aStmt.bNotImplemented ? "  not-yet-implemented" : "" )
+  + "  " + fsPlace( aStmt ) + aStmt.sProof
 );
 
 const fsLineForIncomplete = ( aEntry ) => aEntry.sLine;
@@ -3942,6 +4006,7 @@ const fsLineForFollows = ( aFollows ) => (
 
 const fsLineForMarker = ( aMarker ) => (
   fsPlace( aMarker ) + "  " + fsIdShown( aMarker )
+  + ( aMarker.bNotImplemented ? "  not-yet-implemented" : "" )
 );
 
 const fsLineForDangling = ( aTarget ) => (
@@ -3977,6 +4042,10 @@ const fvsSectionLines = ( aMap ) => [
   ),
   fsSection( sTitleNoCode, aMap.vaNoCode.map( fsLineForNoCode )),
   fsSection( "statements with no implementation link", aMap.vaNoImplementation.map( fsLineForMarker )),
+  fsSection( "not-yet-implemented status conflicts", aMap.vaStatusConflict.map(( aEntry ) => (
+    fsLineForMarker( aEntry.aMarker ) + "  implemented by "
+    + Array.from( new Set( aEntry.vaRef.map(( aRef ) => aRef.sPath ))).join( ", " )
+  ))),
   fsSection( "implementation files with no test link", aMap.vaNoTestedBy.map(( aFile ) => aFile.sPath )),
   fsSection( "malformed, unresolved or stale code references", aMap.vaCodeRefBad.map( fsLineForCodeRef )),
   fsSectionProblem( aMap.vaProblem )
@@ -4061,6 +4130,13 @@ const aListNoImplementation = {
   nList: 31, sKey: "vaNoImplementation", fsLine: fsLineForMarker,
   bComplete: true, faPlace: faMarkerOf
 };
+const aListStatusConflict = {
+  nList: 36, sKey: "vaStatusConflict", fsLine: ( aEntry ) => (
+    fsLineForMarker( aEntry.aMarker ) + "  implemented by "
+    + Array.from( new Set( aEntry.vaRef.map(( aRef ) => aRef.sPath ))).join( ", " )
+  ),
+  faPlace: ( aEntry ) => aEntry.aMarker
+};
 const aListNoTestedBy = {
   nList: 32, sKey: "vaNoTestedBy", fsLine: ( aFile ) => aFile.sPath,
   bComplete: true, faPlace: ( aFile ) => ({ sPath: aFile.sPath, nLine: 1 })
@@ -4078,7 +4154,8 @@ const aListCitationDangling = {
 const vaListFence = [
   aListUnresolved, aListMarkerBad, aListUnproved, aListLinkBad, aListStale,
   aListIncomplete, aListRootBad, aListFence, aListDangling, aListFollowsBad,
-  aListNoCode, aListNoImplementation, aListNoTestedBy, aListCodeRefBad
+  aListNoCode, aListNoImplementation, aListNoTestedBy, aListCodeRefBad,
+  aListStatusConflict
 ];
 
 const fbAlways = () => true;
@@ -4093,7 +4170,8 @@ const vtListRefusing = [
   [ aListFollowsBad, ( aEntry ) => aEntry.bStale || aEntry.bIdAbsent ]
   , [ aListNoCode, fbAlways ], [ aListCodeRefBad, fbAlways ],
   [ aListDangling, fbAlways ],
-  [ aListObsBad, fbAlways ], [ aListCitationDangling, fbAlways ]
+  [ aListObsBad, fbAlways ], [ aListCitationDangling, fbAlways ],
+  [ aListStatusConflict, fbAlways ]
 ];
 
 const fbListCounts = ( aMap, aList ) => !aList.bComplete || aMap.bComplete;
@@ -4103,6 +4181,10 @@ const fbClean = ( aMap ) => vaListFence.every(( aList ) => (
 ));
 
 const fvaGateForList = ( aMap, aList, fbRefuses ) => aMap[ aList.sKey ]
+  .filter(( aEntry ) => !(
+    ( aList === aListUnproved || aList === aListNoImplementation )
+    && aEntry.bNotImplemented
+  ))
   .filter( fbRefuses )
   .map(( aEntry ) => ({
     nList: aList.nList,
@@ -4155,7 +4237,10 @@ const fsSid = ( aModel, aStmt ) => {
     )
   ));
   return [
-    fsPlace( aStmt ) + "  " + aStmt.sId + "  " + fsWords( aStmt.sText )
+    fsPlace( aStmt ) + "  " + aStmt.sId + "  "
+    + ( aStmt.bProbe ? "probe " : "" )
+    + ( aStmt.bNotImplemented ? "not-yet-implemented " : "" )
+    + fsWords( aStmt.sText )
   ].concat( vsLink, vsGuard, vsImplements, vsPart ).join( "\n" ) + "\n";
 };
 
@@ -4284,9 +4369,11 @@ const fsLineForRecord = ( aRecord ) => (
 const afvsSidForType = {
   p: ( aModel, aMarker ) => aModel.aLines.vaTarget
     .filter(( aTarget ) => aTarget.aMarker === aMarker )
-    .map(( aTarget ) => aTarget.sTarget + "  " + (
-      aTarget.bForm ? aTarget.sReason || "resolves" : "malformed"
-    )),
+    .flatMap(( aTarget ) => [
+      aTarget.sTarget + "  " + (
+        aTarget.bForm ? aTarget.sReason || "resolves" : "malformed"
+      )
+    ].concat( aTarget.vsChildSpec.map(( sPath ) => "  child spec: " + sPath ))),
   d: ( aModel, aMarker ) => aModel.aLines.vaDefinition
     .filter(( aEntry ) => aEntry.aMarker === aMarker )
     .flatMap(( aEntry ) => [ "term: " + ( aEntry.sTerm || "" )]
@@ -4389,7 +4476,8 @@ const fsTokenAssigned = ( aMarker, sId, sList, sTargets ) => (
   + ( aMarker.bViaEarly ? fsViaToken( aMarker ) : "" )
   + ( aMarker.sFor === null ? "" : " for=" + aMarker.sFor )
   + ( aMarker.bViaEarly ? "" : fsViaToken( aMarker ))
-  + ( aMarker.bProbe ? " probe" : "" ) + "}"
+  + ( aMarker.bProbe ? " probe" : "" )
+  + ( aMarker.bNotImplemented ? " not-yet-implemented" : "" ) + "}"
 );
 
 const fsListWithArch = ( aList, vsRef ) => (
@@ -4492,9 +4580,86 @@ class TreeReader {
   }
 
   fvaSpec(){
-    return this.fvaFile(
-      this.fvsPathUnder( "specs", ( sPath ) => sPath.endsWith( ".md" ))
+    const vsDirSpecs = this.fvsDirExpanded( this.aConfig.dirs_specs || [
+      sDirSpecs
+    ]);
+    const vsPath = Array.from( new Set( vsDirSpecs.flatMap(( sDir ) => (
+      this.fvsPathUnder( sDir, ( sPath ) => sPath.endsWith( ".md" ))
+    )).filter(( sPath ) => !this.fbUnderChildProject( sPath )).values()));
+    return this.fvaFile( vsPath );
+  }
+
+  fbPathInSpec( sPath ){
+    const sPathClean = fsPathClean( sPath );
+    return !this.fbUnderChildProject( sPathClean )
+      && this.fvsDirExpanded( this.aConfig.dirs_specs || [ sDirSpecs ])
+      .some(( sDir ) => {
+        const sDirClean = fsPathClean( sDir );
+        return sPathClean === sDirClean
+          || sPathClean.startsWith( sDirClean + "/" );
+      });
+  }
+
+  fbUnderChildProject( sPath ){
+    const vsSegment = fsPathClean( sPath ).split( "/" );
+    return vsSegment.slice( 1 ).some(( _, n ) => {
+      const sDir = vsSegment.slice( 0, n + 1 ).join( "/" );
+      const sPathConfig = path.join( this.sDirRoot, sDir, sFileConfig );
+      return fs.existsSync( sPathConfig )
+        && fs.statSync( sPathConfig ).isFile();
+    });
+  }
+
+  fvaSpecCollection( sTarget ){
+    const vsTarget = sTarget.split( "/" ).filter( Boolean );
+    const sDirSpecsChild = vsTarget.at( -1 );
+    const sPrefix = vsTarget.slice( 0, -2 ).join( "/" );
+    const vsRoot = this.configReader.fvsDirChild(
+      sPrefix.replace( /\/$/, "" ), this.aConfig.vsDirIgnored
     );
+    const vsPath = [];
+    for( const sRoot of vsRoot ){
+      const configReaderChild = new ConfigReader(
+        path.join( this.sDirRoot, sRoot )
+      );
+      const aChild = configReaderChild.faConfig();
+      if( aChild.sProblem !== null ){
+        return {
+          vsPath: [],
+          sReason: "matched directory is not a child project with a specs directory"
+        };
+      }
+      const vsChildSpecRoots = aChild.aConfig.dirs_specs.flatMap((
+        sPattern
+      ) => configReaderChild.fvsDirExpanded(
+        sPattern, aChild.aConfig.vsDirIgnored
+      )).map( fsPosix );
+      if( !vsChildSpecRoots.includes( sDirSpecsChild )){
+        return {
+          vsPath: [],
+          sReason: "child project does not declare the collection spec directory"
+        };
+      }
+      const sDirSpec = path.join( sRoot, sDirSpecsChild );
+      const sDirSpecAbs = path.join( this.sDirRoot, sDirSpec );
+      if( !fs.existsSync( sDirSpecAbs )
+        || !fs.statSync( sDirSpecAbs ).isDirectory()
+      ){
+        return { vsPath: [], sReason: "matched child project has no specs directory" };
+      }
+      const vsFile = fs.readdirSync(
+        sDirSpecAbs, { recursive: true }
+      ).map(( sFile ) => path.join( sDirSpec, sFile ))
+        .filter(( sPathFile ) => sPathFile.endsWith( ".md" ))
+        .filter(( sPathFile ) => fs.statSync(
+          path.join( this.sDirRoot, sPathFile )
+        ).isFile());
+      if( vsFile.length === 0 ){
+        return { vsPath: [], sReason: "matched child project has no .md spec file" };
+      }
+      vsPath.push( ...vsFile.map( fsPosix ));
+    }
+    return { vsPath: vsPath.sort(), sReason: null };
   }
 
   fvsDirExpanded( vsPattern ){

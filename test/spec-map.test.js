@@ -491,8 +491,8 @@ const sPathTestOne = path.join( "test", "one.test.js" );
 const sPathTestTwo = path.join( "test", "two.test.js" );
 const sTestAlphaOne = "test( \"alpha-one-case — holds\", () => {} );\n";
 
-// @proves s-98jxk4@9f80ece
-// @proves s-3pkw1n@fddd73e
+// @proves s-98jxk4@17039ec
+// @proves s-3pkw1n@3da0ef1
 describe( "spec-map-owner-file-missing — a file with no owner line", () => {
   test( "is named and an owned file is not, PAIRED with an @spec inside a "
     + "block comment, which owns nothing", () => {
@@ -557,7 +557,7 @@ describe( "spec-map-helper-file-ignored — a file not named *.test.js", () => {
 });
 
 // @proves s-bnkk62@d702f3b
-// @proves s-3pkw1n@fddd73e
+// @proves s-3pkw1n@3da0ef1
 describe( "spec-map-owner-header-placement — a header owner line", () => {
   test( "after a jest docblock and above 'use strict' owns the file, "
     + "PAIRED with one after a require and a blank line, misplaced", () => {
@@ -596,7 +596,7 @@ describe( "spec-map-owner-header-placement — a header owner line", () => {
 });
 
 // @proves s-pslzjw@bb3ff6d
-// @proves s-3pkw1n@fddd73e
+// @proves s-3pkw1n@3da0ef1
 describe( "spec-map-owner-block-replaces — a block owner line", () => {
   test( "replaces the file's owners inside its describe, PAIRED with the "
     + "file owner's test moved inside, which b then owns and a does not",
@@ -637,7 +637,7 @@ describe( "spec-map-owner-block-replaces — a block owner line", () => {
   });
 });
 
-// @proves s-3pkw1n@fddd73e
+// @proves s-3pkw1n@3da0ef1
 describe( "spec-map-owner-stale-path-fails — an owner line naming no spec",
   () => {
     test( "fails the path run and is named by the full run, PAIRED with it "
@@ -672,7 +672,7 @@ describe( "spec-map-owner-stale-path-fails — an owner line naming no spec",
   }
 );
 
-// @proves s-3pkw1n@fddd73e
+// @proves s-3pkw1n@3da0ef1
 describe( "spec-map-owner-scope-other-file — the path run's files", () => {
   test( "leave out a file naming neither the spec nor its ids, PAIRED with "
     + "the full run naming that file's stale line", () => {
@@ -752,9 +752,9 @@ describe( "spec-map-stmt-hash-normalised — the text hash", () => {
   });
 });
 
-// @proves s-gry2es@f927a10
-// @proves s-emmdvh@9cf3fb4
-// @proves s-b8vvpd@decbc6c
+// @proves s-gry2es@c153c72
+// @proves s-emmdvh@4dffcdc
+// @proves s-b8vvpd@9e72e40
 describe( "spec-map-stmt-marker-forms — a marker", () => {
   test( "is malformed in each bad form, PAIRED with ids in a code span and "
     + "a fenced block, which are no markers", () => {
@@ -960,7 +960,7 @@ describe( "spec-map-unclosed-fence-fails — an unclosed fence", () => {
 
 // @proves s-mijuu3@eb255fe
 // @proves s-kzyb2a@f30bbf3
-// @proves s-b8vvpd@decbc6c
+// @proves s-b8vvpd@9e72e40
 describe( "spec-map-stmt-duplicate-id — an id marked twice", () => {
   test( "is reported at both places and resolves nowhere, PAIRED with an "
     + "id no spec marks", () => {
@@ -1163,8 +1163,8 @@ describe( "spec-map-declared-wrapper-counts — a declared wrapper", () => {
 });
 
 // @proves s-e287lm@a1b403a
-// @proves s-b8vvpd@decbc6c
-// @proves s-emmdvh@9cf3fb4
+// @proves s-b8vvpd@9e72e40
+// @proves s-emmdvh@4dffcdc
 // @proves s-eawgvu@395098a
 // @proves s-jcgn2k@e1b8cf8
 describe( "spec-map-link-malformed-fails — an unresolved link", () => {
@@ -1202,8 +1202,8 @@ describe( "spec-map-link-malformed-fails — an unresolved link", () => {
   });
 });
 
-// @proves s-b8vvpd@decbc6c
-// @proves s-emmdvh@9cf3fb4
+// @proves s-b8vvpd@9e72e40
+// @proves s-emmdvh@4dffcdc
 describe( "spec-map-link-stale-fails — a stale link", () => {
   test( "in another spec's file fails the path run, PAIRED with the hash "
     + "replaced by the current one", () => {
@@ -1277,8 +1277,8 @@ describe( "spec-map-link-stale-sibling-listed — a stale link to another "
   });
 });
 
-// @proves s-emmdvh@9cf3fb4
-// @proves s-b8vvpd@decbc6c
+// @proves s-emmdvh@4dffcdc
+// @proves s-b8vvpd@9e72e40
 // @proves s-tv24sx@df2c2d6
 describe( "spec-map-unproved-statement-reported — a statement", () => {
   test( "is named and passes, PAIRED with the spec made complete, which "
@@ -1493,7 +1493,7 @@ describe( "spec-map-unlinked-tests-counted — the unlinked tests", () => {
 
 // @proves s-s7wgz7@eae0eef
 // @proves s-n7deu7@edc83ae
-// @proves s-emmdvh@9cf3fb4
+// @proves s-emmdvh@4dffcdc
 describe( "spec-map-derived-owner-removable — a fully linked file", () => {
   test( "takes its owners from its links alone, PAIRED with one link "
     + "removed, after which the owner line decides", () => {
@@ -1533,7 +1533,7 @@ describe( "spec-map-derived-owner-removable — a fully linked file", () => {
   });
 });
 
-// @proves s-3pkw1n@fddd73e
+// @proves s-3pkw1n@3da0ef1
 describe( "spec-map-scope-includes-linked-file — the path run's files", () => {
   test( "include a file linking the spec's statement, PAIRED with the link "
     + "removed", () => {
@@ -1570,7 +1570,7 @@ describe( "spec-map-scope-includes-linked-file — the path run's files", () => 
   });
 });
 
-// @proves s-6gfnun@f6e1b42
+// @proves s-6gfnun@f467b05
 describe( "spec-map-sid-lists-links — the --sid query", () => {
   test( "prints the marker and every link, the stale one marked, PAIRED "
     + "with a statement no test links", () => {
@@ -1610,8 +1610,8 @@ describe( "spec-map-sid-lists-links — the --sid query", () => {
 
 // @proves s-ar1i87@b6009f5
 // @proves s-u2lhta@c6845db
-// @proves s-b8vvpd@decbc6c
-// @proves s-emmdvh@9cf3fb4
+// @proves s-b8vvpd@9e72e40
+// @proves s-emmdvh@4dffcdc
 describe( "spec-map-placeholder-reported-not-failing — a placeholder", () => {
   test( "is named and passes, PAIRED with the spec made complete, which "
     + "fails on it", () => {
@@ -1653,11 +1653,11 @@ describe( "spec-map-placeholder-reported-not-failing — a placeholder", () => {
   });
 });
 
-// @proves s-i63o6a@7f6cc9b
+// @proves s-i63o6a@79c24e2
 // @proves s-pe5j7a@8fee8c2
 // @proves s-taoc14@2518951
 describe( "spec-map-assign-replaces-placeholders — --assign", () => {
-  // @proves s-yurmkw@8d224c4
+  // @proves s-yurmkw@c1a4abf
   test( "gives each placeholder a fresh id and changes nothing else, PAIRED "
     + "with a second run, which does nothing", () => {
     const sPathSpecSub = path.join( "specs", "sub", "b.md" );
@@ -1720,8 +1720,8 @@ describe( "spec-map-assign-replaces-placeholders — --assign", () => {
   });
 });
 
-// @proves s-i6rjuw@9b207b9
-// @proves s-tdw4gj@a46db7b
+// @proves s-i6rjuw@e83d07a
+// @proves s-tdw4gj@8d6d23d
 // @proves s-gpqy5p@7ed12de
 // @proves s-4hsltb@35856a9
 test( "the three-way report names missing statement links, unlinked code "
@@ -2541,8 +2541,8 @@ describe( "spec-map-part-proposed-listed — proposed parts", () => {
 });
 
 // @proves s-2j8jma@d3bb8a8
-// @proves s-zybg31@84ebe18
-// @proves s-b21zr4@69cc33d
+// @proves s-zybg31@316483b
+// @proves s-b21zr4@c4562be
 // @proves s-rkzefi@94d4b4a
 describe( "spec-map-part-sid-cross-suite — the part queries", () => {
   test( "--sid gives each link's label and each part's state, PAIRED "
@@ -2597,7 +2597,7 @@ describe( "spec-map-part-sid-cross-suite — the part queries", () => {
   });
 });
 
-// @proves s-gry2es@f927a10
+// @proves s-gry2es@c153c72
 // @proves s-ptc52y@be60f27
 describe( "spec-map-probe-flag-query — the probe flag", () => {
   // @proves s-mp16u6@a924b32

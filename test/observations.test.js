@@ -19,8 +19,8 @@ const sTitleLike = "observation-like text in rules files";
 const vsTitleObs = [ sTitleBad, sTitleDangling, sTitleObs, sTitleLike ];
 
 const aSettingsObs = {
-  sPathObservations: "observations.md",
-  vsPathRules: [ "AGENTS.md", "CLAUDE.md" ]
+  observations_file: "observations.md",
+  rules_files: [ "AGENTS.md", "CLAUDE.md" ]
 };
 
 const fsHash = ( sText ) => (
@@ -426,7 +426,7 @@ const sObsGated = [
   ""
 ].join( "\n" );
 
-// @proves s-ug5kvq@2c8ff5e
+// @proves s-ug5kvq@7a53ca2
 describe( "observations — the gate", () => {
   test( "refuses on each malformed entry (34) and dangling citation (35)",
   () => {
@@ -519,7 +519,7 @@ const sObsAssign = [
 // @proves s-nt6vob@a2a69ea
 // @proves s-q1vbs8@5ebd909
 // @proves s-q0hqdv@b9d77ff
-// @proves s-yurmkw@8d224c4
+// @proves s-yurmkw@c1a4abf
 describe( "observations — --assign", () => {
   test( "mints each placeholder's id, stamps each unstamped target, "
     + "changes nothing else, and prints a line for each, PAIRED with a "
@@ -570,7 +570,7 @@ describe( "observations — --assign", () => {
 });
 
 // @proves s-u1vl7x@393921b
-// @proves s-yurmkw@8d224c4
+// @proves s-yurmkw@c1a4abf
 describe( "observations — no command retires", () => {
   test( "the report, the gate, the queries and an --assign with nothing to "
     + "assign leave the observations file and every citing file as they "
@@ -634,14 +634,14 @@ describe( "observations — a declared file that does not exist", () => {
 });
 
 // @proves s-jt2a2g@567f271
-// @proves s-bf7qnq@8426c1a
+// @proves s-bf7qnq@a4202a9
 describe( "observations — which file holds them", () => {
   test( "only the declared file is read for entries", () => {
     fWriteTree({
       "specs/a.md": fsSpecA([ "* Cites [o-dec001] and [o-oth001]." ]),
       "notes/obs.md": "# O\n\n## {#o-dec001} A declared entry\n",
       "observations.md": "# O\n\n## {#o-oth001} An undeclared entry\n"
-    }, { sPathObservations: "notes/obs.md" });
+    }, { observations_file: "notes/obs.md" });
     expect( fvsLineInSection( faRun([]).sStdout, sTitleDangling )).toEqual([
       "specs/a.md:11  o-oth001"
     ]);
@@ -669,7 +669,7 @@ describe( "observations — a project that declares no rules files", () => {
     fWriteTree({
       "specs/a.md": fsSpecA(),
       "AGENTS.md": "# Rules\n\n* Seen again on 2026-10-30. [o-zzz011]\n"
-    }, { sPathObservations: "observations.md" });
+    }, { observations_file: "observations.md" });
     const sOut = faRun([]).sStdout;
     expect( fvsLineInSection( sOut, sTitleLike )).toEqual([]);
     expect( fvsLineInSection( sOut, sTitleDangling )).toEqual([]);
@@ -694,10 +694,10 @@ describe( "observations — the file is not a spec", () => {
     fWriteTree({
       "specs/a.md": fsSpecA(),
       "specs/obs.md": "# O\n"
-    }, { sPathObservations: "specs/obs.md" });
+    }, { observations_file: "specs/obs.md" });
     const aRun = faRun([]);
     expect( aRun.cExit ).toBe( 2 );
     expect( aRun.sStdout ).toBe( "" );
-    expect( aRun.sStderr ).toContain( "sPathObservations" );
+    expect( aRun.sStderr ).toContain( "observations_file" );
   });
 });

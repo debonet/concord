@@ -42,10 +42,24 @@ The links have a deliberate direction:
 | Implementation file | `@checks` | An interactive check (`i`) in a spec | Connects code to a hand check it supports |
 | Test or implementation file | `@follows` | Guidance (`g`) in a spec | Points to guidance the file follows |
 
-So the core links are **test → spec**, **code → spec**, and **code → test**. Specs never point to code or tests; their `p` pointers stay within the spec set, and implementation files name interactive checks with `@checks`.
+So the core links are **test → spec**, **code → spec**, and **code → test**. Specs never point to code or tests; ordinary `p` pointers stay within the spec set, while a project-collection pointer only discovers independent child spec paths. Implementation files name interactive checks with `@checks`.
+
+A statement that is specified but not built yet can carry the `not-yet-implemented` marker flag. The checker reports the missing test or implementation while allowing that planned statement through the commit gate; remove the flag when the implementation is linked.
+
+Each project's root `concord.json` may declare several local spec roots with `dirs_specs`, an array of project-relative directory patterns:
+
+```json
+{
+  "dirs_specs": ["specs/*", "docs/requirements"]
+}
+```
+
+Here `*` matches one directory name, so `specs/*` includes specs under immediate subdirectories of `specs/`. If packages are independent Concord projects, keep their spec trees out of the parent's `dirs_specs`; use a `p` collection target such as `packages/*/specs/` to discover them. Each package keeps its own root `concord.json`, spec map and commit gate. See the [migration guide](docs/not-yet-implemented-and-package-specs-migration.md) for adoption steps.
 
 Ids are never invented by hand: a spec is written with placeholders and the assign command replaces each with a fresh random id. Statements can name the rulings they stem from, so a change to a ruling lists every conclusion that must be derived again.
 
 What was observed going wrong (an agent's mistake, a correction, a test red once and green alone) is kept out of a project's rules files. Each such observation is an entry with an id, such as `o-k3p9qa`, in one observations file; a rule cites the ids of the observations it rests on. An entry names the statements whose proof makes the mistake impossible, and once tests prove them the entry and every citation of it are deleted. The checker refuses a commit while any citation names an entry that no longer exists ([specs/observations.md](specs/observations.md)). A Concord change that adopting projects must follow comes with a step-by-step note under `docs/`.
 
 Each command acts on the project in its working directory and reads that project's `concord.json` for everything that differs between projects. How a language's files are read (its comments, its test units, where its directives sit) is a language reading; JavaScript (JSX included), TypeScript, CSS, HTML and Rust are defined, so a project written in several of them, a web client with a page and a stylesheet among them, is linked file by file.
+
+`concord.json` uses human-readable keys such as `name`, `suites`, `languages` and `coverage`. Former Semantic Hungarian keys remain accepted with deprecation warnings; projects should migrate them using the [config key migration guide](docs/concord-json-key-migration.md).

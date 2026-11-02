@@ -25,7 +25,7 @@ const fsWait = ( sArgLimit ) => [
 ].join( "\n" );
 
 const aTree = {
-  "concord.json": fsConcordJson({ aCoverage: aCoverageFixture }),
+  "concord.json": fsConcordJson({ coverage: aCoverageFixture }),
   "jsx-transform.js": [
     "\"use strict\";",
     "const esbuild = require( \"esbuild\" );",

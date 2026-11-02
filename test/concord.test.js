@@ -231,7 +231,7 @@ describe( "concord-markers-every-type — markers of all six types", () => {
   // @proves s-fc5ccj@7849554
   // @proves s-8yzzoh@8f6ed41
   // @proves s-eab7vh@300a074
-  // @proves s-7llevg@0d81695
+  // @proves s-7llevg@0874ed6
   // @proves s-n10cb0@01b16a4
   // @proves s-l9g0ah@33e01a9
   test( "are read well formed with their placeholders, PAIRED with an "
@@ -267,7 +267,7 @@ describe( "concord-markers-every-type — markers of all six types", () => {
     expect( aRunBad.sOut ).not.toMatch( /alpha-beta-gamma/ );
   });
 
-  // @proves s-i63o6a@7f6cc9b
+  // @proves s-i63o6a@79c24e2
   // @proves s-2deigh@58b055c
   test( "--assign gives every placeholder an id of its own type whose "
     + "body no other marker holds", () => {
@@ -359,10 +359,10 @@ describe( "concord-retype-reaims-references — a statement retyped m", () => {
 });
 
 describe( "concord-pointer-dangling-fails — a pointer's targets", () => {
-  // @proves s-7h4j0s@8fc0d18
+  // @proves s-7h4j0s@512c0f5
   // @proves s-en1xk7@b19ecef
   // @proves s-m176ue@c40015e
-  // @proves s-dhs2hx@eb1b478
+  // @proves s-dhs2hx@db209fb
   // @proves s-gueyj8@dcbe6bc
   // @proves s-6ls2oh@b278617
   // @proves s-kz8d46@36aef0d
@@ -898,7 +898,7 @@ describe( "concord-guidance-via-prompt — guidance delivered by prompt", () => 
     expect( fsHashRun( "g-via001" )).toBe( fsHash( sTextBrief ));
   });
 
-  // @proves s-i63o6a@7f6cc9b
+  // @proves s-i63o6a@79c24e2
   test( "--assign keeps the flag on a minted g line and arch's place in a "
     + "root list whose label it stamps", () => {
     fWriteTree({
@@ -957,7 +957,7 @@ describe( "spec-map — line type edge rules", () => {
 
   // @proves s-w75973@e58d191
   // @proves s-en1xk7@b19ecef
-  // @proves s-j8ahje@b487af3
+  // @proves s-j8ahje@91cc810
   test( "a target in no known form or empty is malformed, PAIRED with "
     + "targets of each form, which are not", () => {
     fWriteTree({
@@ -1119,7 +1119,7 @@ describe( "spec-map — line type edge rules", () => {
     expect( fsRead( sPathRecord )).toBe( sRecord );
   });
 
-  // @proves s-1igmuk@d5a7a54
+  // @proves s-1igmuk@d454589
   // @proves s-kz8d46@36aef0d
   test( "--sid and --hash answer for a definition, a motive, an "
     + "interactive check and guidance", () => {
@@ -1415,7 +1415,7 @@ describe( "concord-function-target-resolution — pointers stay in specs", () =>
     ])
   });
 
-  // @proves s-vjgnay@400021d
+  // @proves s-vjgnay@5c0f583
   test( "code function targets are invalid, PAIRED with other code "
     + "function names that are also invalid", () => {
     fWritePointer([ "fnDecl", "fnArrow", "fnMethod", "fnProp" ]);

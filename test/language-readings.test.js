@@ -54,7 +54,7 @@ const fWriteFile = ( sPathRel, sBody ) => {
 
 const fWriteTree = ( vsLanguage, asBodyForPath ) => {
   fs.rmSync( sDirFixture, { recursive: true, force: true });
-  fWriteFile( "concord.json", fsConcordJson({ vsLanguage }));
+  fWriteFile( "concord.json", fsConcordJson({ languages: vsLanguage }));
   fWriteFile( "specs/a.md", sSpec );
   Object.entries( asBodyForPath ).forEach(([ sPathRel, sBody ]) => (
     fWriteFile( sPathRel, sBody )

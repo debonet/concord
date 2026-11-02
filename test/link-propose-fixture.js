@@ -15,9 +15,9 @@ const reStampWanted = /@@([a-z]-[a-z0-9]{6})/g;
 let cFixture = 0;
 
 const aConfigLinkFixture = {
-  vaSuite: [{ sName: "root", vsDir: [ "test" ]}],
-  vsLanguage: [ "javascript", "css", "html" ],
-  vsDirRead: [ "src", "test" ]
+  suites: [{ name: "root", directories: [ "test" ]}],
+  languages: [ "javascript", "css", "html" ],
+  read_directories: [ "src", "test" ]
 };
 
 const fasHashForSpecs = ( aasFile ) => {

@@ -84,5 +84,9 @@ saved reports. Investigate any reduction in test units or proof links before
 calling the migration complete. Review the remaining `p` links and `i`
 markers to confirm specs no longer point outside the spec set.
 
+Keep ordinary `p` pointers within the local spec set; a project-collection
+pointer is the exception and remains a discovery target for independently
+gated child projects.
+
 Commit the guide and migrated links with the project's ordinary commit gate
 enabled.

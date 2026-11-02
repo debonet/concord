@@ -42,6 +42,16 @@ Concord where it stands.
 
 > {#m-jz8p3b} USER 2026-10-23: "make concord also support typescript"
 
+> {#m-ith31r} USER 2026-11-02: "Importantly, the packages/modules are themselves self-contained concordstc projects, likely under their own, separate, git control"
+
+> {#m-fi6q34} USER 2026-11-02: "What are the other keys in concord.js? They should all be made huamn-reabable, not semantic Hungarian.
+>
+> To keep things backward compatible, allow the old keys, but issue a warning when a tool reads the file with a pointer to the new spec.  Two keys (the human readable, and SH versions) that point to the same datum should be a hard error."
+
+> {#m-smey68} USER 2026-11-02: "That is weird. Concord.json should not use semantic hungarian tags. SH is really limited to code. Also, there should be more than one place it can look for specs, e.g.:
+>
+> \"dirs_specs\" : [\"specs/*\",\"packages/*/specs\"]"
+
 ## Terms
 
 * {#d-xhw3y4 <arch,m-yy30zw@60906a5} **Adopting project** — a project whose specs, tests
@@ -78,7 +88,7 @@ Concord where it stands.
 * {#g-6ev45j <m-c9ebz3@6ad3d71 for=main,architect,fixer via=prompt} **One rule book.** Follow Concord's own specs in every adopting project; do not follow another draft, including `~/@seed/docs/concord-spec.md`.
 * {#p-uovly3 >specs/spec-map-line-types.md#line-types} The six line types, their
   markers, placeholders, retyping and the satisfaction of each type.
-* {#p-gdbw3z >specs/spec-map.md#statement-ids,specs/spec-map.md#statement-roots,specs/spec-map.md#statement-parts}
+* {#p-gdbw3z >specs/spec-map.md#statement-ids,specs/spec-map.md#statement-roots,specs/spec-map.md#derived-statements}
   Statement ids, the text hash, test links, implementation links, what each link covers, derived
   owners, completeness, roots and conclusions, and statements proved by
   parts.
@@ -120,10 +130,13 @@ Concord where it stands.
   and exits 2.
 * {#g-q91vxm <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Targets call the commands.** In an adopting project's build spec, declare each Concord target as a call to the command of that name under `~/@concord/bin`, passing arguments through unchanged and in order.
 * {#g-isak36 <arch,m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Concord's specs live in Concord.** Keep these specs in `~/@concord/specs`; adopting projects do not keep copies.
-* {#s-j8ahje <arch,m-u4pusr@2be69ad} **Nothing resolves across projects.** A pointer target, a
+* {#s-j8ahje <arch,m-u4pusr@2be69ad,m-ith31r@c21f155} **Nothing resolves across projects.** A pointer target, a
   root, a test link, an implementation reference, a test-file reference,
   a hand-check reference and a guidance reference resolve only within the
-  project whose files hold them; an adopting project cites a rule of Concord's in prose, by its path
+  project whose files hold them. A project-collection target only discovers
+  child spec paths; it does not resolve their markers or merge their maps,
+  and each child project is checked from its own root. An adopting project
+  cites a rule of Concord's in prose, by its path
   under `~/@concord/specs`, and a line of an adopting project whose rule is
   Concord's own lives in Concord's specs.
 * {#g-h1uulv <arch,m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Concord's tests are Concord's.** Keep tests for Concord's specs in this project; adopting projects test only their own specs.
@@ -262,10 +275,12 @@ Concord where it stands.
   project holds, refuse the commit as a stale link line does.
 * {#s-i2ip58 <m-b2shvm@ff5b09c} **Untested sentences only where complete.** A statement no
   test proves refuses the commit only when its spec declares `Statement ids:
-  complete`, as do the other entries that spec's fence fails on.
-* {#s-y86kt5 <arch,m-6pxcni@29fc8b1} A malformed, unresolved or stale `@implements`, `@tested-by` or `@checks` reference refuses the commit; a statement with no implementation link refuses when its spec is complete; an implementation file with no test link refuses when it implements a statement of a complete spec.
+  complete`, except when the statement carries the `not-yet-implemented`
+  flag (`specs/spec-map.md`, Not-yet-implemented statements). The other
+  completeness entries for that spec still refuse as usual.
+* {#s-y86kt5 <arch,m-6pxcni@29fc8b1} A malformed, unresolved or stale `@implements`, `@tested-by` or `@checks` reference refuses the commit; a statement with no implementation link refuses when its spec is complete unless it carries the `not-yet-implemented` flag; an implementation file with no test link refuses when it implements a statement of a complete spec.
 * {#s-ol2dmr <arch,m-r3llz8@7fee9b6} An interactive check with no resolving `@checks` reference refuses the commit.
-* {#s-t8un02 <arch,m-ulzcp5@41ae8af} A pointer target outside the spec set, or a malformed pointer target, refuses the commit.
+* {#s-t8un02 <arch,m-ulzcp5@41ae8af,m-tpuy30@018a42c} A pointer target outside the spec set refuses the commit unless it is a valid project-collection target (`specs/spec-map-line-types.md`, Pointers); a malformed collection target refuses the commit as any malformed pointer target does.
 * {#s-1u8bef <m-b2shvm@ff5b09c} **Everything else reports.** Every other entry of the
   checker's whole-tree report leaves a commit allowed.
 * {#s-nlm91d <arch,m-b2shvm@ff5b09c} **The gate.** `spec-map --gate` exits 0 when no entry of
@@ -281,7 +296,7 @@ Concord where it stands.
   for a link line naming an id no marker holds; every entry of (13) for a
   root list holding a reference that names an id no marker holds; every
   entry of (22); every entry of (33); every entry of (28); every entry of
-  (34) and of (35) (`specs/observations.md`); every (31) entry in a complete spec;
+  (34), (35) (`specs/observations.md`) and (36); every (31) entry in a complete spec unless the statement carries the `not-yet-implemented` flag;
   every (32) entry for an implementation file naming a statement in a
   complete spec; and, for each complete spec, every entry on which a run with that spec's path
   exits non-zero.
@@ -329,10 +344,14 @@ Concord where it stands.
   line's hash as The text hash gives it and mints ids as Assigning ids gives
   it, so a hash recorded in one adopting project means what it means in
   every other, and one set of fixture cases checks every checker.
-* {#s-n7ky2n <arch,m-yy30zw@60906a5} **Specs live in `specs/`.** In every adopting project
-  the specs are the `.md` files at any depth under `specs/` at the project
-  root, so owner lines, pointer targets and owner paths read the same in
-  every project.
+* {#s-n7ky2n <arch,m-yy30zw@60906a5,m-ith31r@c21f155,m-smey68@37cbb93} **A project's spec directories.** In every
+  adopting project, its own specs are the `.md` files at any depth under the
+  project-root directories matched by its `dirs_specs` setting, which
+  defaults to `["specs"]`, excluding files beneath a descendant project root
+  that has its own `concord.json`. A project may declare several local spec
+  roots; its owner paths, pointer targets and spec paths stay relative to that
+  project's root. Independently configured child projects remain separate and
+  are discovered only by project-collection pointers.
 * {#s-3oxidy <arch,m-yy30zw@60906a5} **Test files by suite.** In an adopting project a test
   file is a file that the reading of its language counts as one, under a
   directory of one of the project's declared suites; this replaces the
@@ -351,7 +370,7 @@ Concord where it stands.
   that language's directive comment, grouping unit and test unit.
 * {#s-nrp172 <arch,m-yy30zw@60906a5} **Where code references are read.** Guidance,
   implementation, test-file and hand-check references are read in every
-  implementation file under `vsDirRead`, outside ignored directories; comment
+  implementation file under `read_directories`, outside ignored directories; comment
   recognition and content hashes follow the file's language reading.
 * {#s-iz8176 <arch,m-58bbc0@97f6bed,m-p5u7hb@920f72c} **The record file and the page.** Verdicts
   on hand checks are recorded, in the form Recording a verdict gives, in the
@@ -408,50 +427,85 @@ Concord where it stands.
 * {#s-zstgty <s-jhtp93@4c4ca3c} **One JSON object.** `concord.json` holds one JSON object
   whose members are the declared values this section names, each required
   unless this section says it is optional.
-* {#s-am7qu4 <s-jhtp93@4c4ca3c} **Name.** `sName` is a non-empty string, the project's
-  name, as in `"sName": "AIOS"`.
-* {#s-i0n88z <s-jhtp93@4c4ca3c} **Suites.** `vaSuite` is a non-empty array of suites,
-  each an object with `sName`, a non-empty string no other suite of the
-  file holds, and `vsDir`, a non-empty array of directories relative to the
-  project root, as in `{ "sName": "web", "vsDir": [ "packages/web-client/test" ] }`.
-* {#s-j38rej <arch,s-jhtp93@4c4ca3c,m-jz8p3b@ccdaa82} **Languages.** `vsLanguage` is a non-empty array of
+* {#s-liocgl <arch,m-ith31r@c21f155,m-smey68@37cbb93} **Spec directories.** `dirs_specs` is an optional member of the
+  project's root `concord.json`; when present it is a non-empty array of
+  non-empty project-relative directory patterns. For example,
+  `{ "dirs_specs": ["specs/*", "packages/*/specs"] }` tells this project
+  to read Markdown specs under every immediate directory inside `specs/` and
+  each immediate package's `specs/` directory when those files belong to this
+  project. A descendant project with its own `concord.json` remains separate
+  and is skipped by the parent scan. A pattern has no absolute
+  path, `..` segment or backslash; `*` is allowed only as a complete path
+  segment and matches one directory name. A pattern without `*` names an
+  existing directory; a pattern with `*` may match no directory. When absent,
+  `dirs_specs` defaults to `["specs"]`. The checker reads `.md` files at any
+  depth under each matched directory, once each.
+* {#s-am7qu4 <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Name.** `name` is a non-empty string, the project's
+  name, as in `"name": "AIOS"`.
+* {#s-i0n88z <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Suites.** `suites` is a non-empty array of suites,
+  each an object with `name`, a non-empty string no other suite of the
+  file holds, and `directories`, a non-empty array of directories relative to
+  the project root, as in `{ "name": "web", "directories": [ "packages/web-client/test" ] }`.
+* {#s-j38rej <arch,s-jhtp93@4c4ca3c,m-jz8p3b@ccdaa82,m-fi6q34@6b5ef4d} **Languages.** `languages` is a non-empty array of
   language names, each `javascript`, `typescript`, `css`, `html` or `rust`, naming the readings
   Language readings defines.
-* {#s-sx6vdb <s-jhtp93@4c4ca3c} **Read and ignored directories.** `vsDirRead` is an array
+* {#s-sx6vdb <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Read and ignored directories.** `read_directories` is an array
   of the directories read for code and guidance references, and
-  `vsDirIgnored` an array of directory names never read at any depth.
-  {#s-zupjie <s-jhtp93@4c4ca3c} A path segment `*` in `vsDirRead` stands for every
+  `ignored_directories` an array of directory names never read at any depth.
+  {#s-zupjie <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} A path segment `*` in `read_directories` stands for every
   directory at that place, so `packages/*` names each directory directly
   under `packages`.
-* {#s-wu6tv6 <s-jhtp93@4c4ca3c} **Record file.** `sPathRecord` is the path of the record
+* {#s-wu6tv6 <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Record file.** `record_file` is the path of the record
   file for hand-check verdicts, relative to the project root.
-* {#s-pwo03p <arch,s-jhtp93@4c4ca3c} **Observations file.** `sPathObservations` is
+* {#s-pwo03p <arch,s-jhtp93@4c4ca3c,m-smey68@37cbb93,m-fi6q34@6b5ef4d} **Observations file.** `observations_file` is
   optional. When present it is the path, relative to the project root and
-  outside `specs/`, of the project's observations file
-  (`specs/observations.md`), as in `"sPathObservations": "observations.md"`.
-  {#s-bf7qnq <arch} A project whose `concord.json` declares no
-  `sPathObservations` holds no observations, so every observation citation
+  outside every matched spec directory, of the project's observations file
+  (`specs/observations.md`), as in `"observations_file": "observations.md"`.
+  {#s-bf7qnq <arch,m-fi6q34@6b5ef4d} A project whose `concord.json` declares no
+  `observations_file` holds no observations, so every observation citation
   in it is dangling.
-* {#s-bqv6fu <arch,s-jhtp93@4c4ca3c} **Rules files.** `vsPathRules` is optional.
+* {#s-bqv6fu <arch,s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Rules files.** `rules_files` is optional.
   When present it is an array, possibly empty, of the paths, relative to
   the project root, of the project's rules files, none of them the
-  observations file, as in `"vsPathRules": [ "AGENTS.md", "CLAUDE.md" ]`;
+  observations file, as in `"rules_files": [ "AGENTS.md", "CLAUDE.md" ]`;
   {#s-0w4rbg <arch} a project that declares none has no rules files.
-* {#s-xqx0r5 <s-jhtp93@4c4ca3c} **Coverage.** `aCoverage` is optional. When present it is
-  an object of `vaRun`, a non-empty array of the jest runs a measurement
-  makes, each an object of `sName` and `sDirRun`, the directory relative to
-  the root the run's jest starts in; `vsCommandBefore`, an array of shell
-  commands run in order at the root before the runs; `vsDirSource`, the
-  source in scope, with `*` read as in `vsDirRead`; and `sPathReview`, the
+* {#s-xqx0r5 <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Coverage.** `coverage` is optional. When present it is
+  an object of `runs`, a non-empty array of the jest runs a measurement
+  makes, each an object of `name` and `directory`, the directory relative to
+  the root the run's jest starts in; `commands_before`, an array of shell
+  commands run in order at the root before the runs; `source_directories`, the
+  source in scope, with `*` read as in `read_directories`; and `review_file`, the
   review file's path relative to the root.
+* {#s-tps44b <m-fi6q34@6b5ef4d} **Legacy key names.** At the project root,
+  `sName`, `vaSuite`, `vsLanguage`, `vsDirRead`, `vsDirIgnored`,
+  `sPathRecord`, `sPathObservations`, `vsPathRules` and `aCoverage` are
+  accepted as aliases for `name`, `suites`, `languages`, `read_directories`,
+  `ignored_directories`, `record_file`, `observations_file`, `rules_files` and
+  `coverage`, respectively. Within a suite, `sName` and `vsDir` are accepted
+  as aliases for `name` and `directories`. Within `coverage`, `vaRun`,
+  `vsCommandBefore`, `vsDirSource` and `sPathReview` are accepted as aliases
+  for `runs`, `commands_before`, `source_directories` and `review_file`; within
+  each run, `sName` and `sDirRun` are accepted as aliases for `name` and
+  `directory`. `dirs_specs` has no legacy alias.
+* {#s-ulp42m <m-fi6q34@6b5ef4d} **Legacy key warning.** Every occurrence of a legacy
+  key prints one warning line to stderr in the form
+  `concord.json: <legacy-path> is deprecated; use <canonical-path> (see specs/concord-process.md#the-settings-file)`.
+  The warning does not make the settings invalid or change the command's
+  result.
+* {#s-np5ty8 <m-fi6q34@6b5ef4d} **Conflicting key aliases.** A JSON object that holds
+  both a canonical key and its legacy alias for the same value is invalid,
+  even when their values are equal. This rule applies at the project root,
+  within suite objects, within `coverage` and within run objects. The command
+  prints `concord.json: <canonical-path> conflicts with legacy key <legacy-path>`
+  to stderr, exits 2 and acts on nothing.
 * {#s-w8ivpb <s-jhtp93@4c4ca3c} **A bad settings file.** A `concord.json` that is not
   one JSON object, that lacks a required member, or that holds a member of
   another form than this section gives or a member this section does not
   name, makes every Concord command that acts on a project print to stderr
   one line naming the
   file and the member, and exit 2, acting on nothing.
-* {#s-4j8qm7 <s-jhtp93@4c4ca3c} **No coverage declared.** `spec-coverage` run in a
-  project whose `concord.json` holds no `aCoverage` prints to stderr one
+* {#s-4j8qm7 <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **No coverage declared.** `spec-coverage` run in a
+  project whose `concord.json` holds no `coverage` prints to stderr one
   line saying the project declares no coverage, and exits 2.
 
 ## Language readings

@@ -5,7 +5,9 @@ const path = require( "path" );
 const crypto = require( "crypto" );
 const { spawnSync } = require( "child_process" );
 
-const { sPathSpecMap, fWriteConcord } = require( "./concord-fixture.js" );
+const {
+  sPathSpecMap, fWriteConcord, fsConcordJson
+} = require( "./concord-fixture.js" );
 
 const sDirRepo = path.join( __dirname, ".." );
 const sDirFixture = path.join( sDirRepo, "tmp", "gate-" + process.pid );
@@ -83,7 +85,111 @@ const sSpecComplete = [
   ""
 ].join( "\n" );
 
-// @proves s-y86kt5@2f48faa
+// @proves s-8g5yno@c3ea2a8
+// @proves s-n1ztut@75bf716
+test( "not-yet-implemented statements report both missing links and pass "
+  + "the gate in a complete spec", () => {
+  const sText = "A planned requirement.";
+  const sHash = fsHash( sText );
+  fWriteTree({
+    "specs/a.md": [
+      "# A", "", "Statement ids: complete", "", "## API", "",
+      "* {#s-gatp01 not-yet-implemented} " + sText, ""
+    ].join( "\n" )
+  });
+  const aReport = faRun([]);
+  expect( aReport.cExit ).toBe( 0 );
+  expect( aReport.sStdout ).toContain( "s-gatp01  not-yet-implemented" );
+  expect( aReport.sStdout ).toContain( "statements no test proves (1)" );
+  expect( aReport.sStdout ).toContain( "statements with no implementation link (1)" );
+  expect( faRun([ "--sid", "s-gatp01" ]).sStdout )
+    .toContain( "not-yet-implemented A planned requirement." );
+  expect( faRun([ "--gate" ])).toMatchObject({ cExit: 0 });
+  expect( sHash ).toMatch( /^[0-9a-f]{7}$/ );
+});
+
+// @proves s-mn5and@058eb96
+// @proves s-2vgnq6@8323fcb
+test( "a pending statement with a test-implementation reference is a gate "
+  + "conflict", () => {
+  const sText = "A test-backed planned requirement.";
+  const sHash = fsHash( sText );
+  fWriteTree({
+    "specs/a.md": [
+      "# A", "", "Statement ids: complete", "", "## API", "",
+      "* {#s-gatp02 not-yet-implemented} " + sText, ""
+    ].join( "\n" ),
+    "test/a.test.js": [
+      "// @spec specs/a.md",
+      "// @proves s-gatp02@" + sHash,
+      "// @implements s-gatp02@" + sHash,
+      "test( \"proves and implements the planned requirement\", () => {} );",
+      ""
+    ].join( "\n" )
+  });
+  const aGate = faRun([ "--gate" ]);
+  expect( aGate.cExit ).toBe( 1 );
+  expect( aGate.sStdout ).toContain( "(36) specs/a.md:7  s-gatp02" );
+  expect( aGate.sStdout ).toContain( "Gate: refused" );
+});
+
+// @proves s-9zllrl@4421fe6
+// @proves s-x1kbkj@fff57a4
+// @proves s-1igmuk@d454589
+// @proves s-7h4j0s@512c0f5
+// @proves s-vjgnay@5c0f583
+// @proves s-j8ahje@91cc810
+// @proves s-n7ky2n@8ffbda2
+test( "a package collection discovers child specs and accepts no matches", () => {
+  fWriteTree({
+    "specs/a.md": [
+      "# A", "", "## API", "",
+      "* {#p-gatc01 >packages/*/specs/} Package specs.",
+      "* {#p-gatc02 >empty/*/specs/} Optional package specs.", ""
+    ].join( "\n" ),
+    "packages/alpha/concord.json": fsConcordJson(),
+    "packages/alpha/specs/alpha.md": "# Alpha\n\n## API\n\n* {#s-child1} A child-only rule.\n",
+    "packages/beta/concord.json": fsConcordJson(),
+    "packages/beta/specs/beta.md": "# Beta\n\n## API\n"
+  });
+  const aPackages = faRun([ "--sid", "p-gatc01" ]);
+  expect( aPackages.cExit ).toBe( 0 );
+  expect( aPackages.sStdout ).toContain( "child spec: packages/alpha/specs/alpha.md" );
+  expect( aPackages.sStdout ).toContain( "child spec: packages/beta/specs/beta.md" );
+  expect( faRun([ "--sid", "s-child1" ]).cExit ).toBe( 1 );
+  const aEmpty = faRun([ "--sid", "p-gatc02" ]);
+  expect( aEmpty.cExit ).toBe( 0 );
+  expect( aEmpty.sStdout ).toContain( "empty/*/specs/  resolves" );
+  fWriteTree({
+    "specs/a.md": [
+      "# A", "", "## API", "",
+      "* {#p-gatc04 >packages/*/spec/} Legacy package specs.", ""
+    ].join( "\n" ),
+    "packages/legacy/concord.json": fsConcordJson({
+      dirs_specs: [ "spec" ]
+    }),
+    "packages/legacy/spec/legacy.md": "# Legacy\n\n## API\n"
+  });
+  const aLegacy = faRun([ "--sid", "p-gatc04" ]);
+  expect( aLegacy.cExit ).toBe( 0 );
+  expect( aLegacy.sStdout ).toContain(
+    "child spec: packages/legacy/spec/legacy.md"
+  );
+  fWriteTree({
+    "specs/a.md": [
+      "# A", "", "## API", "",
+      "* {#p-gatc03 >packages/*/specs/} Invalid child.", ""
+    ].join( "\n" ),
+    "packages/not-a-project/spec/a.md": "# Not a project\n"
+  });
+  const aInvalid = faRun([ "--sid", "p-gatc03" ]);
+  expect( aInvalid.cExit ).toBe( 0 );
+  expect( aInvalid.sStdout ).toContain(
+    "matched directory is not a child project with a specs directory"
+  );
+});
+
+// @proves s-y86kt5@2649010
 test( "the report lists a complete statement without an implementation "
   + "reference and an implementation file without links", () => {
   const sText = "The complete rule holds.";
@@ -189,13 +295,13 @@ afterAll(() => {
 });
 
 // @proves s-nlm91d@4f76fd6
-// @proves s-ug5kvq@2c8ff5e
+// @proves s-ug5kvq@7a53ca2
 // @proves s-rkd937@6d33bc3
 // @proves s-u88ict@b5a6934
 // @proves s-nw4u9n@3b57e9b
 // @proves s-kkql92@90bba2d
-// @proves s-i2ip58@705d3ec
-// @proves s-t8un02@c986a9a
+// @proves s-i2ip58@b70be7c
+// @proves s-t8un02@9839058
 describe( "gate — a tree with refusing entries", () => {
   test( "prints each refusing entry once as its list names it, by list "
     + "number, path and line, then the refused count, and exits 1", () => {

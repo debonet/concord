@@ -8,26 +8,26 @@ const sPathSpecMap = path.join( sDirRepo, "bin", "spec-map" );
 const sPathSpecCoverage = path.join( sDirRepo, "bin", "spec-coverage" );
 
 const aCoverageFixture = {
-  vaRun: [
-    { sName: "root", sDirRun: "." },
-    { sName: "web", sDirRun: "packages/web-client" }
+  runs: [
+    { name: "root", directory: "." },
+    { name: "web", directory: "packages/web-client" }
   ],
-  vsCommandBefore: [],
-  vsDirSource: [ "src", "packages/*/src", "scripts", "eval" ],
-  sPathReview: "spec-coverage-review.md"
+  commands_before: [],
+  source_directories: [ "src", "packages/*/src", "scripts", "eval" ],
+  review_file: "spec-coverage-review.md"
 };
 
 const aConfigFixture = {
-  sName: "Fixture",
-  vaSuite: [
-    { sName: "root", vsDir: [ "test" ] },
-    { sName: "web", vsDir: [ "packages/web-client/test" ] },
-    { sName: "remote-pacts", vsDir: [ "packages/remote-pacts/test" ] }
+  name: "Fixture",
+  suites: [
+    { name: "root", directories: [ "test" ] },
+    { name: "web", directories: [ "packages/web-client/test" ] },
+    { name: "remote-pacts", directories: [ "packages/remote-pacts/test" ] }
   ],
-  vsLanguage: [ "javascript", "css" ],
-  vsDirRead: [ "src", "scripts", "test", "packages/*", "lib", "web" ],
-  vsDirIgnored: [ "node_modules" ],
-  sPathRecord: "test/interactive-passes.jsonl"
+  languages: [ "javascript", "css" ],
+  read_directories: [ "src", "scripts", "test", "packages/*", "lib", "web" ],
+  ignored_directories: [ "node_modules" ],
+  record_file: "test/interactive-passes.jsonl"
 };
 
 const fsConcordJson = ( aOverride ) => JSON.stringify(

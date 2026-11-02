@@ -24,6 +24,8 @@ file, which spec owns each test, and how every other type of spec line
 > * every spec is covered by code
 > * every code is covered by tests"
 
+> {#m-cujcht} USER 2026-11-02: "support for \"not-yet-implemented\" --> things which are spec'd but have not yet been built, but which should be allowed to be committed"
+
 ## API
 
 * {#d-hdecyv <arch} **Spec map** — the Concord command that maps marked statements
@@ -57,13 +59,14 @@ file, which spec owns each test, and how every other type of spec line
   the worklist page (`specs/spec-map-interactive.md`); {#s-6zo013 <arch} given a spec
   path beside any of these four, a run maps nothing, prints its usage line
   to stderr and exits 2.
-* {#s-yurmkw <arch} It reads `specs/`, and writes it and the project's
+* {#s-yurmkw <arch} It reads the project's declared spec directories
+  (`specs/concord-process.md`, The settings file), and writes it and the project's
   observations file (`specs/observations.md`) only under `--assign`, writes the
   project's record file (`specs/concord-process.md`, The settings file)
   only under `--pass`, `--fail`, `--unable`, `--reopen`, `--answers` and
   `--worklist`, and writes the worklist page only under `--worklist`, at
   the path it is given; it is a command, not a suite, so a project's rule
-  that no suite reads `specs/` does not reach it.
+  that no suite reads the spec directory does not reach it.
 
 ## Test names
 
@@ -112,10 +115,11 @@ file, which spec owns each test, and how every other type of spec line
   module it makes sure works. Ownership is written in the test file, never
   in a spec. Every test file in the repo is JavaScript, so an owner line
   is a `//` line comment whose whole text, after optional leading
-  whitespace, is `// @spec specs/<path>.md`, with one or more spaces
+  whitespace, is `// @spec <project-relative-spec-path>.md`, with one or more spaces
   between `@spec` and the path and nothing after the path but trailing
   whitespace. The path is relative to the repo root wherever the test file
-  sits, begins `specs/`, and may hold subdirectories
+  sits, names an existing Markdown spec under one of the project's declared
+  spec directories, and may hold subdirectories
   (`// @spec specs/web/web-client-build.md`). Any `//` line comment whose
   text begins `@spec` is read as an owner line, well formed or not. An
   `@spec` inside a `/* */` or `/** */` comment is not an owner line and is
@@ -141,8 +145,9 @@ file, which spec owns each test, and how every other type of spec line
 * {#s-3pkw1n <arch} **The ownership lists.** The command reports (3) each
   test file with no file-level owner line, naming the file; and (4) each
   owner line that does not resolve, naming the file, the line number and
-  the text: one naming a path that is not an existing file under
-  `specs/`, one not in the `// @spec specs/<path>.md` form, or one
+  the text: one naming a path that is not an existing file under any of the
+  project's spec directories, one not in the `// @spec <project-relative-spec-path>.md`
+  form, or one
   misplaced. With no argument it reports both over the whole tree and
   exits 0. With a spec path it reports (3) and (4) over the test files
   that name that spec in an owner line, file-level or block-level, or
@@ -163,7 +168,9 @@ file, which spec owns each test, and how every other type of spec line
   spec outside a backtick code span and a fenced code block is read as a
   marker, well formed or not. A marker is `{#`, an id part, an optional
   root list (Statement roots, below), an optional part list (Statement
-  parts, below), an optional probe flag (Probe flags, below) and `}`. A marker is malformed when
+  parts, below), an optional probe flag (Probe flags, below), an optional
+  `not-yet-implemented` flag (Not-yet-implemented statements, below) and
+  `}`. A placeholder cannot carry the `not-yet-implemented` flag. A marker is malformed when
   its id part is neither `s-` followed by six lowercase letters or
   digits nor a placeholder's; when it has no closing `}`; when it sits
   in a heading; or when the statement it covers is empty. A
@@ -277,14 +284,17 @@ file, which spec owns each test, and how every other type of spec line
   `describe` it sits above, the id and both hashes; (10) the
   completeness failures of each complete spec; (11) each removable
   owner line, naming the file and the line; and (12) each placeholder,
-  naming the spec, the line and its statement's opening words. {#s-e287lm}
+  naming the spec, the line and its statement's opening words. Missing
+  test and implementation entries for a `not-yet-implemented` statement
+  are identified as such in (7) and (31). {#s-e287lm}
   With no argument it reports all lists over the whole tree and exits 0.
   {#s-b8vvpd} With a spec path it reports (6), (7), (10) and (12) for that
   spec, (8) and (11) over that spec's test files, and (9) for links
   naming that spec's statements wherever they sit. It exits non-zero
   when (6) holds an entry for that spec, (8) an entry in one of its test
   files, or (9) any entry, and, for a complete spec only, when (7) or
-  (10) holds any entry; (11), (12), and (7) of a spec that is not
+  (10) holds any entry, except that a (7) entry for a statement marked
+  `not-yet-implemented` does not change the exit code; (11), (12), and (7) of a spec that is not
   complete, never change the exit code. So a placeholder is reported
   and fails a run only through a complete spec's completeness failures.
   {#s-5vv5ht <arch} With a spec path it also reports, under its own heading,
@@ -293,8 +303,8 @@ file, which spec owns each test, and how every other type of spec line
   `describe` it sits above, the id, the spec marking it and both hashes.
   {#s-nudxy0 <arch} (19) never changes the exit code, so a stale link fails
   only the run with the path of the spec whose statement it names.
-* {#s-i6rjuw <arch,m-6pxcni@29fc8b1} The command reports (31) each statement with no resolving `@implements` reference, (32) each implementation file with no resolving `@implements` reference or no resolving `@tested-by` reference, and (33) each malformed, unresolved or stale code reference, naming its implementation file, line and target.
-* {#s-tdw4gj <arch,m-6pxcni@29fc8b1} With no argument it reports (31), (32) and (33) over the whole tree and exits 0; with a spec path it reports (31) for that spec's statements, (32) over implementation files naming those statements and (33) for references naming that spec's statements, exiting non-zero on (33), on (31) when the spec is complete, and on (32) when the implementation file names a statement in a complete spec.
+* {#s-i6rjuw <arch,m-6pxcni@29fc8b1} The command reports (31) each statement with no resolving `@implements` reference, (32) each implementation file with no resolving `@implements` reference or no resolving `@tested-by` reference, and (33) each malformed, unresolved or stale code reference, naming its implementation file, line and target. A (31) entry for a `not-yet-implemented` statement is identified as intentional.
+* {#s-tdw4gj <arch,m-6pxcni@29fc8b1} With no argument it reports (31), (32), (33) and (36) over the whole tree and exits 0; with a spec path it reports (31) and (36) for that spec's statements, (32) over implementation files naming those statements and (33) for references naming that spec's statements, exiting non-zero on (33) or (36), on (31) when the spec is complete and the statement is not marked `not-yet-implemented`, and on (32) when the implementation file names a statement in a complete spec.
 * {#s-yyl1i0 <arch,m-6pxcni@29fc8b1} A `@tested-by` reference resolves only when its test file has at least one test that proves a statement implemented by the referring file.
 * {#s-tvuwev <arch} **Unlinked tests.** Beside the other lists the command
   reports (21) the unlinked tests: each `test` or `it` that proves no
@@ -309,7 +319,8 @@ file, which spec owns each test, and how every other type of spec line
   owner, and is not unlinked.
 * {#s-eel840} **Query forms.** `--hash <id>` prints the statement's
   current hash alone on one line and exits 0. {#s-6gfnun} `--sid <id>`
-  prints the spec and line where the id is marked, then one line per
+  prints the spec and line where the id is marked, including its marker
+  flags, then one line per
   test link and implementation reference naming the id, giving the file,
   the line and the recorded hash and whether it is stale; for test links it
   also gives the name of the call they cover; when
@@ -332,7 +343,8 @@ file, which spec owns each test, and how every other type of spec line
   path and then by line, and exits 0. {#s-95ao2f <arch} It writes nothing, and
   it prints no line for a placeholder or a duplicate id.
 * {#s-i63o6a <arch} **Assigning ids.** `npm run spec-map -- --assign` replaces
-  every placeholder of every line type in the specs under `specs/` with a
+  every placeholder of every line type in the specs under the project's
+  declared spec directories with a
   fresh id of its type, rewriting in place each spec that held one and
   changing no other character of it beside the root references it stamps
   (Statement roots, below) and the retyped references it re-aims
@@ -472,69 +484,122 @@ in part names `arch` beside the references to them.
   is the conclusion's marker's and the conclusion id is the one it has
   after the run.
 
-## Statement parts
+## Derived statements
 
-{#d-9mmtw8 <arch} **Statement parts** — several tests may prove a statement together, none of which
-proves the whole: a rule stated once for every surface, proved by a
-terminal test and a web test in different suites, or a rule with two arms
-tested in two places. Such a statement names its arms as parts, each test
-links the part it proves, and the statement is proved when every part is.
+> {#m-5err3p} RULING (CEO) 2026-10-31, answering q183 (whether a code file
+> can name which half it builds of a rule written once for the terminal
+> and the browser) with none of its options: "Seems like there should be
+> a spec tree:
+> s-1: everything should do X
+> s-2: {s-1} applied to the browser
+> s-3: {s-1} applied to the terminal"
 
-* {#s-fsguh5 <arch} **Part lists.** A marker may carry a part list after its id
-  part and its root list, if it has one: one space, `parts=`, then two or
-  more labels separated by commas with no spaces, before the marker's
-  closing `}`, as in `{#s-xxxxxx parts=terminal,web}` and
-  `{#s-? <arch parts=terminal,web}`. A label is one or more lowercase
-  letters, digits or `-`.
-* {#s-6mvnjc <arch} The part list is part of the marker, not of its statement's
-  text, so adding, changing or removing a part list never changes its
-  statement's hash.
-* {#s-wiqxdx <arch} A part list is malformed when it holds fewer than two labels,
-  the same label twice, or a label in any other form. {#s-ttqu59 <arch} A
-  malformed part list does not make its marker malformed; it is reported
-  in (6), naming the spec, the line, the marker and what is wrong, and no
-  link of either kind resolves to its statement while it is malformed.
-* {#s-mpvxr2 <arch} **Part links.** A link line carrying `part=<label>` is a part
-  link; one without it is a whole link. {#s-r8oroe <arch} A part link resolves
-  when it would resolve as a whole link and its label is in its
-  statement's part list. {#s-tigqtu <arch} A whole link naming a statement that
-  has a part list does not resolve, and neither does a part link whose
-  label is not in its statement's part list; each is reported in (8)
-  saying which.
-* {#s-0x0s1q <arch} A stale part link is a stale link, reported in (9) and (19)
-  as any is, with its label beside the id.
-* {#s-xgaa11 <arch} **Proposed parts.** A part link naming a statement with no
-  part list is a proposed part: it does not resolve and is not reported
-  in (8). {#s-khpw01 <arch} Beside the other lists the command reports (20)
-  each statement with proposed parts, naming its spec, line and id, then
-  each proposed label with the file, line and test or `describe` of each
-  part link carrying it. {#s-prz9tg <arch} With no argument it reports (20) over
-  the whole tree; with a spec path, for that spec's statements; (20) never
-  changes the exit code.
-* {#s-kx3xgb <arch} **Proof by parts.** A test proves a part when a resolving
-  part link covers it (What a link covers). {#s-kxfivt <arch} A statement with a
-  part list is proved when every label in its list has a test proving
-  that part, those tests in any files and any suites, and is unproved
-  until then wherever an unproved statement is reported or counted, a
-  complete spec's completeness failures and a root's satisfaction
-  included. {#s-v8gy0d <arch} (7) names such an unproved statement with the
-  labels proved, each with one file and line proving it, and the labels
-  missing.
-* {#s-qjt3c3 <arch} A test that proves a part of a statement, or carries a
-  proposed part of it, links that statement: it counts as proving the
-  statement for derived owners, for a complete spec's tests that prove
-  none of its statements, and for the tests `--candidates` omits as
-  already covering it.
-* {#s-2j8jma <arch} **Queries.** `--sid <id>` gives each link's label, or the
-  word `whole`, and for a statement with a part list it prints after the
-  links one line per label saying `proved` or `missing`.
+{#d-h7ovzy <m-5err3p@9ccd8ca} **Derived statement** — a statement whose text includes another line, its
+parent, by an inclusion, and states the parent's rule for one surface or
+one arm, as `{s-xxxxxx} applied to the browser`: the parent states the
+rule once, and each derived statement is proved and implemented whole.
+
+* {#s-ixasv4 <m-5err3p@9ccd8ca} **Inclusions.** A statement's text may include another line
+  by an inclusion: `{`, that line's id, and `}`, written anywhere in the
+  text, as in `{s-xxxxxx} applied to the browser`. {#s-3vhy40 <arch,m-5err3p@9ccd8ca} The
+  id is an `s` or `m` id, or a label reference to a labelled placeholder
+  of either type in the same spec, as in `{s-?rule1}`, and carries no
+  stamp.
+* {#s-8ej89k <arch} **Read in statements only.** In a statement's text, outside a
+  backtick code span and a fenced code block, any `{` directly followed by
+  a lowercase letter and `-` is read as an inclusion, well formed or not.
+  {#s-yallh6 <arch} The same characters in a line of any other type, or in text
+  no marker covers, are plain text.
+* {#s-13qcjo <m-5err3p@9ccd8ca} **The parent is a root.** An inclusion is a root reference:
+  the line it names is a root of the statement holding it, its parent,
+  and that statement is one of the parent's conclusions, so the parent is
+  satisfied and covered as Roots and conclusions gives.
+* {#s-bbaxpr <arch} **Malformed inclusions.** An inclusion is malformed when it is
+  not in the form above; when it names a line of a type other than `s`
+  and `m`, an id no marker holds or one held at more than one place, or a
+  label no placeholder of its type in its spec carries; when it names its
+  own statement or a line its statement's root list also names; or when
+  it lies on a cycle of root references (Malformed root lists).
+  {#s-ickx1f <arch} A malformed inclusion does not resolve, does not make its
+  marker malformed, and is reported in (13), naming the spec, the line,
+  the inclusion as written and what is wrong with it.
+* {#s-fc4ubx <arch,m-5err3p@9ccd8ca} **The hash follows the parent.** A statement's hash is
+  taken (The text hash) over its text with each resolving inclusion
+  replaced by the normalised text of the line it names, an included
+  statement's own resolving inclusions replaced first; an inclusion that
+  does not resolve stays as written. {#s-83mryk <arch,m-5err3p@9ccd8ca} So every edit to a
+  parent's text changes the hash of each statement derived from it, and
+  each link and implementation reference naming one of them goes stale.
+  {#s-dglucu <arch} Replacing a label reference in an inclusion with the id it
+  names changes no hash.
+* {#s-lqyq1i <arch} **No stamp, no re-derive.** An inclusion is never stamped and
+  is never named in (16) or (17). {#s-53ztk4 <arch} `--assign` replaces a label
+  reference in an inclusion with the id it gives that placeholder, and
+  changes no other character of the inclusion.
+* {#s-ihqgan <arch} `--candidates <id>` reads a statement's distinctive terms from
+  its text with its inclusions replaced as for its hash.
+* {#s-df84cf <m-5err3p@9ccd8ca} **Each derived statement is implemented whole.** An
+  `@implements` reference naming a parent implements the parent only: it
+  counts for no statement derived from it, in (31) or anywhere else.
+* {#s-2vyccd <arch,m-5err3p@9ccd8ca} **A root is implemented through its conclusions.** (31)
+  names no root, as (7) names none; each of a root's conclusions is named
+  in (31) as any statement is.
+* {#s-4qpk97 <m-5err3p@9ccd8ca} **No part lists.** A part list is one space, `parts=` and
+  any text after it inside a marker, as in `{#s-xxxxxx parts=terminal,web}`;
+  a marker carrying one is malformed
+  (`specs/spec-map-line-types.md`, Markers of every type), and its (6)
+  entry says that `--split-parts` splits it into derived statements.
+  {#s-lf00bp <m-5err3p@9ccd8ca} A link line carrying one or more spaces and `part=` after
+  its hash is malformed and does not resolve, and its (8) entry says the
+  same.
 * {#s-zybg31 <arch} `--cross-suite` is a query form. It prints each statement
-  with no part list whose resolving whole links cover tests in two or
-  more of the three suites (the root `test/`, `packages/web-client/test/`
-  and `packages/remote-pacts/test/`), naming its spec, line and id, then
-  each such link's file and line, and exits 0. {#s-b21zr4 <arch} It writes
-  nothing, and it lists no statement whose whole links all sit in one
-  suite, however many files they span.
+  whose resolving links cover tests in two or more of the three suites
+  (the root `test/`, `packages/web-client/test/` and
+  `packages/remote-pacts/test/`), a statement to split into derived
+  statements, naming its spec, line and id, then each such link's file
+  and line, and exits 0. {#s-b21zr4 <arch} It writes nothing, and it lists no
+  statement whose links all sit in one suite, however many files they
+  span.
+
+### Splitting part lists
+
+* {#s-ol3soy <arch,m-5err3p@9ccd8ca} **The split form.** `--split-parts` is a form of the
+  command that takes no other argument; {#s-gjk5r1 <arch} a run given it with any
+  other argument maps nothing, prints its usage line to stderr and exits
+  2.
+* {#s-5fldjm <arch,m-5err3p@9ccd8ca} **Specs.** For each statement whose marker carries a
+  part list of two or more labels, each one or more lowercase letters,
+  digits or `-`, separated by commas with no spaces and none written
+  twice, it removes the part list from the marker, leaving the marker's
+  id, root list and probe flag and the statement's text as they were, and
+  writes directly after the block holding that statement one bullet per
+  label, in the list's order, at that block's indentation, each
+  `{#s-<new id>} {s-<parent id>} applied to the <label>.`, with the
+  parent's probe flag, when it carries one, before the new marker's `}`.
+  {#s-m69cme <arch} Each new id is minted as Assigning ids mints one.
+* {#s-6ujq8d <arch,m-5err3p@9ccd8ca} **Test links.** In every test file it rewrites each
+  link line naming a split statement with a label of its part list into a
+  link line naming that label's derived statement with no label, stamped
+  with the derived statement's current hash when the recorded hash was
+  current, and with the recorded hash unchanged when it was stale, so a
+  stale link stays stale. {#s-rn2itq <arch} It replaces each test-implementation
+  reference naming a split statement with one reference per label whose
+  link lines cover a test it covers, naming that label's derived
+  statement, stamped by the same rule. {#s-3rhim7 <arch} It changes no other
+  character of a test file.
+* {#s-4y7ukm <arch} **Left by hand.** It leaves as written every implementation
+  reference in an implementation file, every guard line and every part
+  link naming a statement with no part list, and prints one line for each
+  that names a split statement or carries a part label,
+  `<file path>:<line>  <id>  by hand`.
+* {#s-y5buk6 <arch} **Output.** It prints one line per derived statement it writes,
+  `<spec path>:<line>  <new id>  <parent id>  <label>`, and one per line
+  it rewrites, `<file path>:<line>  <old id> -> <new id>`, and exits 0.
+  {#s-iwko4c <arch} A part list in any other form than the one above, or on a
+  placeholder, it leaves as written and names on stderr with the spec and
+  the line, and then it exits 1 after doing the rest.
+* {#s-gy5mqc <arch} With no part list in the specs and no part label in the test
+  files it prints nothing, writes nothing and exits 0.
 
 ## Guard lines
 
@@ -626,15 +691,44 @@ tests prove one.
   included, giving the test's file, the line of its call and its name, and
   exits 0. {#s-nksahd <arch} It writes nothing.
 
+## Not-yet-implemented statements
+
+* {#s-6dpng1 <arch,m-cujcht@53617af} **The flag.** An assigned statement marker may end with one space and
+  `not-yet-implemented`, after its root list, part list and `probe` flag when
+  present, as `{#s-xxxxxx not-yet-implemented}` or
+  `{#s-xxxxxx <m-yyyyyy parts=case-a,case-b probe not-yet-implemented}`.
+  The flag is marker metadata and does not change the statement's text hash;
+  it cannot appear on a placeholder.
+* {#s-n1ztut <arch,m-cujcht@53617af} **What it means.** A marked statement describes required
+  behavior that has not been implemented yet. It remains a statement in its
+  spec and may have test links while pending, but it has no resolving
+  implementation reference.
+* {#s-8g5yno <arch,m-cujcht@53617af} **What remains required.** The checker still reports a
+  flagged statement with no proving test or no resolving `@implements`
+  reference, identifying its `not-yet-implemented` status. Those two missing
+  links do not fail complete-spec coverage or refuse a commit.
+  Every other completeness failure and every malformed, unresolved or stale
+  link is checked as usual.
+* {#s-mn5and <arch,m-cujcht@53617af} **Implemented status is removed.** A flagged statement that
+  has a resolving implementation reference, including a test-implementation
+  reference, is reported as a status conflict, which refuses a commit.
+  Remove the flag when the behavior is implemented; the ordinary test and
+  implementation requirements then apply.
+
 ## The three-way map
 
-* {#s-vjgnay <arch,m-ulzcp5@41ae8af} A spec's `p` pointers resolve only to spec files, spec headings or marked lines in specs; a pointer to a test or implementation file is reported as an invalid target. An `i` line has no target list; implementation files name it with `@checks` references.
+* {#s-vjgnay <arch,m-ulzcp5@41ae8af,m-tpuy30@018a42c} A spec's `p` pointers resolve to spec files, spec headings or marked lines in the same project, or declare a project-collection target (`specs/spec-map-line-types.md`, Pointers); a pointer to a test or implementation file is reported as an invalid target. A project-collection target discovers child project spec paths only: it does not merge child statements or resolve their links in the parent. An `i` line has no target list; implementation files name it with `@checks` references.
 * {#s-2l6ys1 <arch,m-r3llz8@7fee9b6} An implementation file is a non-test code file in a directory and language the project declares for reading (`specs/concord-process.md`, The settings file).
 * {#s-01nsp8 <arch,m-r3llz8@7fee9b6} Each `@implements` reference in an implementation file names one statement that the file implements.
 * {#s-23wmhe <arch,m-r3llz8@7fee9b6} Each `@tested-by` reference in an implementation file names a test file that verifies code in that implementation file.
 * {#s-3m6dwj <arch,m-r3llz8@7fee9b6} Each `@checks` reference in an implementation file names an interactive check that the implementation file supports.
 * {#s-gpqy5p <arch,m-6pxcni@29fc8b1} The command reports each statement with no resolving test link and each statement with no resolving `@implements` reference.
 * {#s-4hsltb <arch,m-6pxcni@29fc8b1} The command reports each implementation file with no resolving `@tested-by` reference, and each `@tested-by` reference whose test file proves none of the statements that file implements.
+* {#s-2vgnq6 <arch,m-cujcht@53617af} **Status conflicts.** List (36) reports each statement marked
+  `not-yet-implemented` that has a resolving implementation reference, naming
+  the spec, statement id and implementing file. With no argument it reports
+  (36) over the whole tree; with a spec path it reports (36) for that spec's
+  statements. It exits non-zero when (36) holds an entry.
 * {#p-y0pvqs >specs/spec-coverage.md} These reports check the declared link graph; measured execution and source-line attribution are specified in `specs/spec-coverage.md`.
 * {#p-m2fyo9 >specs/spec-coverage.md} `spec-coverage` reports which tests execute each source line, with uncovered regions visible for review.
 

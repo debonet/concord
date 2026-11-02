@@ -554,7 +554,9 @@ beforeEach(() => {
   sDir = path.join( sDirBase, String( cFixture ));
   fs.rmSync( sDir, { recursive: true, force: true });
   fWriteConcord( sDir, {
-    aCoverage: { ...aCoverageFixture, vsCommandBefore: [ sCommandBuild ]}
+    aCoverage: {
+      ...aCoverageFixture, commands_before: [ sCommandBuild ]
+    }
   });
   fWrite( "specs/alpha.md", sSpecAlpha );
   fWrite( "src/alpha.js", sSourceAlpha );
@@ -1218,7 +1220,9 @@ describe( "spec-coverage-declared-source — the source in scope is the "
   test( "a measurement holds the files under the declared source only, and "
     + "--file outside it names the declared directories", () => {
     fWriteConcord( sDir, {
-      aCoverage: { ...aCoverageFixture, vsDirSource: [ "lib/*" ]}
+      aCoverage: {
+        ...aCoverageFixture, source_directories: [ "lib/*" ]
+      }
     });
     fWrite( "lib/one/l.js", sSourceSmall );
     fWrite( "lib/top.js", sSourceSmall );
