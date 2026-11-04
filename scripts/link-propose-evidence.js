@@ -260,9 +260,7 @@ const faExecution = ( aMeasurement, aModel, fsText, asPathImpl ) => {
 const favaCallForId = ( aModel ) => {
   const avaCall = new Map();
   aModel.vaCallTest.forEach(( aCall ) => {
-    new Set( aCall.vaStmt.map(( aStmt ) => aStmt.sId ).concat(
-      aCall.vaPart.map(( aPart ) => aPart.aStmt.sId )
-    )).forEach(( sId ) => {
+    new Set( aCall.vaStmt.map(( aStmt ) => aStmt.sId )).forEach(( sId ) => {
       if( !avaCall.has( sId )){ avaCall.set( sId, []);}
       avaCall.get( sId ).push( aCall );
     });

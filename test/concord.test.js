@@ -231,7 +231,7 @@ describe( "concord-markers-every-type — markers of all six types", () => {
   // @proves s-fc5ccj@7849554
   // @proves s-8yzzoh@8f6ed41
   // @proves s-eab7vh@300a074
-  // @proves s-7llevg@0874ed6
+  // @proves s-7llevg@6c2799e
   // @proves s-n10cb0@01b16a4
   // @proves s-l9g0ah@33e01a9
   test( "are read well formed with their placeholders, PAIRED with an "
@@ -267,7 +267,7 @@ describe( "concord-markers-every-type — markers of all six types", () => {
     expect( aRunBad.sOut ).not.toMatch( /alpha-beta-gamma/ );
   });
 
-  // @proves s-i63o6a@79c24e2
+  // @proves s-i63o6a@6dbc87e
   // @proves s-2deigh@58b055c
   test( "--assign gives every placeholder an id of its own type whose "
     + "body no other marker holds", () => {
@@ -898,7 +898,7 @@ describe( "concord-guidance-via-prompt — guidance delivered by prompt", () => 
     expect( fsHashRun( "g-via001" )).toBe( fsHash( sTextBrief ));
   });
 
-  // @proves s-i63o6a@79c24e2
+  // @proves s-i63o6a@6dbc87e
   test( "--assign keeps the flag on a minted g line and arch's place in a "
     + "root list whose label it stamps", () => {
     fWriteTree({

@@ -125,3 +125,7 @@ A spec recorded a defect as carried by "the frame-modal work", a surface no grep
 ## {#o-d94pxp} Architects ruled on specs they had not read
 
 Architects that inferred a spec's contents from its name, its neighbours or a summary in their brief produced confident, well-argued rulings about behaviour that did not exist.
+
+## {#o-r3dfst} Fixers wrote tests and code in one pass with no red run
+
+Three of six fixer reports in one session said the tests and the code were written in one pass and the suite run once, green; none showed its new tests failing against the code before the change, so nothing showed those tests could fail.

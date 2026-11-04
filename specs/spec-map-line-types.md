@@ -54,9 +54,10 @@ is marked, and how Concord checks that each is satisfied.
   reading, covering, hashing, placing and malforming a marker, and Case
   ids' reading of a marker that opens a bullet, holds for a marker of
   every type alike. {#s-7llevg <arch} A marker whose letter is none of `s`,
-  `p`, `d`, `m`, `i` and `g` is malformed, and so is a part list, probe
-  flag or `not-yet-implemented` flag on a marker of any type but `s`, each
-  reported in (6).
+  `p`, `d`, `m`, `i` and `g` is malformed, and so is a probe flag or
+  `not-yet-implemented` flag on a marker of any type but `s`, and a part
+  list (`specs/spec-map.md`, Derived statements) on a marker of any type,
+  each reported in (6).
 * {#s-n10cb0 <arch} **One body, one line.** An id's body is its six characters
   after the type letter and `-`. Two markers whose ids share a body,
   whatever their type letters, are duplicates as Duplicate ids says, and
@@ -106,8 +107,8 @@ is marked, and how Concord checks that each is satisfied.
   path segment, and that segment is the only wildcard; its final two path
   segments are `*` and `spec` or `specs`. Every path segment before `*` is
   non-empty. Each match is the child project's named spec directory. It has
-  its own root `concord.json` whose `dirs_specs` selects that directory (or
-  omits `dirs_specs` when it is the default `specs/` root), and at least one `.md`
+  its own root `concord.json` whose `spec_directories` selects that directory (or
+  omits `spec_directories` when it is the default `specs/` root), and at least one `.md`
   spec file. A match without that project settings file or without a spec
   file is reported as a dangling target in (22). A collection with no
   matches is valid. {#s-x1kbkj <arch,m-tpuy30@018a42c} The collection discovers child

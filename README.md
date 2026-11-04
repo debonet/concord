@@ -46,15 +46,15 @@ So the core links are **test → spec**, **code → spec**, and **code → test*
 
 A statement that is specified but not built yet can carry the `not-yet-implemented` marker flag. The checker reports the missing test or implementation while allowing that planned statement through the commit gate; remove the flag when the implementation is linked.
 
-Each project's root `concord.json` may declare several local spec roots with `dirs_specs`, an array of project-relative directory patterns:
+Each project's root `concord.json` may declare several local spec roots with `spec_directories`, an array of project-relative directory patterns:
 
 ```json
 {
-  "dirs_specs": ["specs/*", "docs/requirements"]
+  "spec_directories": ["specs/*", "docs/requirements"]
 }
 ```
 
-Here `*` matches one directory name, so `specs/*` includes specs under immediate subdirectories of `specs/`. If packages are independent Concord projects, keep their spec trees out of the parent's `dirs_specs`; use a `p` collection target such as `packages/*/specs/` to discover them. Each package keeps its own root `concord.json`, spec map and commit gate. See the [migration guide](docs/not-yet-implemented-and-package-specs-migration.md) for adoption steps.
+Here `*` matches one directory name, so `specs/*` includes specs under immediate subdirectories of `specs/`. If packages are independent Concord projects, keep their spec trees out of the parent's `spec_directories`; use a `p` collection target such as `packages/*/specs/` to discover them. Each package keeps its own root `concord.json`, spec map and commit gate. See the [migration guide](docs/not-yet-implemented-and-package-specs-migration.md) for adoption steps.
 
 Ids are never invented by hand: a spec is written with placeholders and the assign command replaces each with a fresh random id. Statements can name the rulings they stem from, so a change to a ruling lists every conclusion that must be derived again.
 

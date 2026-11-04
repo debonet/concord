@@ -47,14 +47,15 @@ shows it fixed.
 
 * {#s-jt2a2g <m-h8iu7n@c6f6e79} **One per project.** An adopting project's observations
   are held in one markdown file, at the path its `concord.json` declares as
-  `sPathObservations` (`specs/concord-process.md`, The settings file), and
+  `observations_file` (`specs/concord-process.md`, The settings file), and
   in no other file.
 * {#s-89dowx <arch} **Absent is empty.** When no file exists at that path, the
   project holds no observations, and no Concord command fails for it.
 * {#s-jpfy1o <arch} **Not a spec.** The observations file is never read as a
   spec: no list of `specs/spec-map.md` or its siblings names a line of it,
-  and a `concord.json` whose `sPathObservations` lies under `specs/` is a
-  bad settings file.
+  and a `concord.json` whose `observations_file`, or its legacy alias,
+  lies under a directory its spec directories setting matches is a bad
+  settings file.
 * {#s-414i8o <m-h8iu7n@c6f6e79} **Entries.** An observation is an entry: a level-2
   heading line whose text opens with an observation marker followed by the
   entry's title, then every line after it up to the next level-2 heading
@@ -191,7 +192,7 @@ shows it fixed.
 * {#g-q4cgmg <m-oe3cd1@17502fb for=main via=prompt} **A rule cites its evidence.** A
   standing rule in a rules file holds only the rule, its check (a command
   to run) and the citations of the observations it rests on.
-* {#g-uxc2vo <arch,s-j8ahje@b487af3 for=main,architect,fixer via=prompt} **Citations read from
+* {#g-uxc2vo <arch,s-j8ahje@91cc810 for=main,architect,fixer via=prompt} **Citations read from
   other projects.** A rules file that agents working in other projects
   read, as Concord's `AGENTS.md`, its orchestration file and its role
   texts, from which every tool's agent files are generated, states in its

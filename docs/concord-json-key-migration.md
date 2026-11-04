@@ -7,6 +7,15 @@ spec. Migrate each setting and remove its old key. Do not include both names
 for the same setting; Concord treats that as an error even when their values
 match.
 
+Before changing the project, save its current checker reports from the project
+root:
+
+```sh
+mkdir -p tmp/concord-key-migration
+npm run spec-map > tmp/concord-key-migration/spec-map-before.txt 2> tmp/concord-key-migration/warnings-before.txt
+npm run spec-coverage > tmp/concord-key-migration/spec-coverage-before.txt
+```
+
 | Old key | New key | Location |
 | --- | --- | --- |
 | `sName` | `name` | Project root, suite, coverage run |
@@ -24,6 +33,7 @@ match.
 | `vsCommandBefore` | `commands_before` | Coverage |
 | `vsDirSource` | `source_directories` | Coverage |
 | `sPathReview` | `review_file` | Coverage |
+| `dirs_specs` | `spec_directories` | Project root |
 
 For example, change:
 
@@ -63,8 +73,23 @@ to:
 }
 ```
 
-`dirs_specs` already uses a human-readable key and has no old alias. Its
-package/module collection behavior is described in the
-[package spec migration guide](not-yet-implemented-and-package-specs-migration.md).
+A project that declares `dirs_specs` renames it to `spec_directories`, keeping
+its value unchanged, as in `"spec_directories": ["specs/*", "packages/*/specs"]`.
+A project that declares neither reads `specs/`; it need not have a `specs/`
+directory. How spec directories and package collections work is described in
+the [package spec migration guide](not-yet-implemented-and-package-specs-migration.md).
 The full setting definitions and exact warning/error behavior are in
 [`specs/concord-process.md`](../specs/concord-process.md#the-settings-file).
+
+After the migration, save the reports again and compare them with the saved
+baseline. The only expected differences are the deprecation warnings, which
+should now be gone:
+
+```sh
+npm run spec-map > tmp/concord-key-migration/spec-map-after.txt 2> tmp/concord-key-migration/warnings-after.txt
+npm run spec-coverage > tmp/concord-key-migration/spec-coverage-after.txt
+diff -u tmp/concord-key-migration/spec-map-before.txt tmp/concord-key-migration/spec-map-after.txt
+diff -u tmp/concord-key-migration/spec-coverage-before.txt tmp/concord-key-migration/spec-coverage-after.txt
+grep -c "is deprecated" tmp/concord-key-migration/warnings-after.txt
+npm run spec-map -- --gate
+```

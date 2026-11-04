@@ -1,4 +1,3 @@
-// @spec specs/build.md
 "use strict";
 
 const path = require( "path" );

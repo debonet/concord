@@ -519,7 +519,7 @@ const sObsAssign = [
 // @proves s-nt6vob@a2a69ea
 // @proves s-q1vbs8@5ebd909
 // @proves s-q0hqdv@b9d77ff
-// @proves s-yurmkw@c1a4abf
+// @proves s-yurmkw@ee703cc
 describe( "observations — --assign", () => {
   test( "mints each placeholder's id, stamps each unstamped target, "
     + "changes nothing else, and prints a line for each, PAIRED with a "
@@ -570,7 +570,7 @@ describe( "observations — --assign", () => {
 });
 
 // @proves s-u1vl7x@393921b
-// @proves s-yurmkw@c1a4abf
+// @proves s-yurmkw@ee703cc
 describe( "observations — no command retires", () => {
   test( "the report, the gate, the queries and an --assign with nothing to "
     + "assign leave the observations file and every citing file as they "
@@ -633,7 +633,7 @@ describe( "observations — a declared file that does not exist", () => {
   });
 });
 
-// @proves s-jt2a2g@567f271
+// @proves s-jt2a2g@6926fb1
 // @proves s-bf7qnq@a4202a9
 describe( "observations — which file holds them", () => {
   test( "only the declared file is read for entries", () => {
@@ -676,7 +676,7 @@ describe( "observations — a project that declares no rules files", () => {
   });
 });
 
-// @proves s-jpfy1o@4623436
+// @proves s-jpfy1o@af3aa2b
 describe( "observations — the file is not a spec", () => {
   test( "no list names a line of it, and no query answers for a marker in "
     + "it", () => {
@@ -695,6 +695,18 @@ describe( "observations — the file is not a spec", () => {
       "specs/a.md": fsSpecA(),
       "specs/obs.md": "# O\n"
     }, { observations_file: "specs/obs.md" });
+    const aRun = faRun([]);
+    expect( aRun.cExit ).toBe( 2 );
+    expect( aRun.sStdout ).toBe( "" );
+    expect( aRun.sStderr ).toContain( "observations_file" );
+  });
+
+  test( "PAIRED: the legacy alias of the observations file under specs/ "
+    + "is a bad settings file too", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecA(),
+      "specs/obs.md": "# O\n"
+    }, { sPathObservations: "specs/obs.md" });
     const aRun = faRun([]);
     expect( aRun.cExit ).toBe( 2 );
     expect( aRun.sStdout ).toBe( "" );

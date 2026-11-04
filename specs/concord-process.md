@@ -54,9 +54,11 @@ Concord where it stands.
 
 ## Terms
 
-* {#d-xhw3y4 <arch,m-yy30zw@60906a5} **Adopting project** — a project whose specs, tests
-  and code Concord links, whatever languages its tests and code are written
-  in.
+* {#d-xhw3y4 <arch,m-yy30zw@60906a5,m-c2gwx4@a84e9f9} **Adopting project** — a project whose root
+  `AGENTS.md` holds the Concord line, and whose specs, tests and code Concord
+  links, whatever languages its tests and code are written in.
+* {#d-1q16kc <m-c2gwx4@a84e9f9} **Concord line** — the one line in a project's root `AGENTS.md`
+  that says the project uses ConcordSTC.
 * {#d-nlb9g1 <arch,m-yy30zw@60906a5} **Checker** — the program that reads an adopting
   project's specs, tests and code and reports how Concord's rules are met:
   the `spec-map` command of the Concord project (Where Concord lives).
@@ -90,12 +92,12 @@ Concord where it stands.
   markers, placeholders, retyping and the satisfaction of each type.
 * {#p-gdbw3z >specs/spec-map.md#statement-ids,specs/spec-map.md#statement-roots,specs/spec-map.md#derived-statements}
   Statement ids, the text hash, test links, implementation links, what each link covers, derived
-  owners, completeness, roots and conclusions, and statements proved by
-  parts.
+  owners, completeness, roots and conclusions, and derived statements.
 * {#p-34ub8h >specs/spec-map.md#test-files-and-owner-lines} Owner lines, where
   they sit, and which specs own a test.
-* {#p-pdst5e >s-i63o6a,s-2deigh,s-jhjrqa} The assign command, the only writer of
-  ids and stamps, and how it mints a fresh id.
+* {#p-pdst5e >s-i63o6a,s-2deigh,s-jhjrqa,s-m69cme} The assign command, which
+  with the split form (`--split-parts`) is the only writer of ids and
+  stamps, and how it mints a fresh id.
 * {#p-kqfd49 >specs/spec-map-interactive.md#interactive-checks} Hand checks, their
   verdicts, their status and the worklist page.
 * {#p-cjkg4m >s-k4mfcb,s-w2zn7d,s-aw5cvb,g-8luxyf} Guidance: audiences, delivery
@@ -103,6 +105,60 @@ Concord where it stands.
 * {#p-wmy83x >specs/spec-map.md#the-three-way-map,specs/spec-map-line-types.md#code-references,specs/spec-map.md#statements-that-describe-a-test} The reverse links from tests and implementation files, the implementation references a test file carries for a statement that describes a test, and the map that checks coverage.
 * {#p-ph98jc >s-e287lm,s-3pkw1n,s-b8vvpd,s-xuw25u} What a run with no argument
   reports and what a run with one spec's path, that spec's fence, fails on.
+
+## Which projects use Concord
+
+> {#m-c2gwx4} RULING (CEO) 2026-11-04, q202. The question: "Is ConcordSTC used
+> by every project, or only by projects that say so? Your global Claude Code
+> instructions (~/.claude/CLAUDE.md, section "Every project uses ConcordSTC")
+> say every project uses ConcordSTC: in a project with no concord.json, the
+> next architect pass adds one, plus the spec-map and spec-coverage build
+> targets. For the questions page you have now chosen that each project says
+> for itself whether it uses it, "just like Concord"; today Concord does not
+> work that way.
+>
+> Example: you open a session in a small scripts folder that has no
+> concord.json. Today the first architect pass there writes concord.json and
+> adds spec-map targets to its build.
+> A) Only projects that say so: a project uses ConcordSTC when its AGENTS.md
+> says it does (one line, as for the questions page). The global section
+> shrinks to that rule, and nothing is added to a project that has not opted
+> in.
+> B) Only projects that already have a concord.json use it; no AGENTS.md
+> line, and nothing is added to the others.
+> C) Every project, as today." His answer: A, with the note: "The global
+> claude should be set to ask if the user has not specified."
+
+* {#g-b1t89o <m-c2gwx4@a84e9f9 for=main,architect via=prompt} **One line in AGENTS.md.** A
+  project uses ConcordSTC when its root `AGENTS.md` holds, on a line of its
+  own, exactly:
+  `Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.`
+  The `@` path is written outside backticks, so a tool that imports `@`
+  paths loads the file and any other tool reads the sentence as an
+  instruction.
+* {#g-rxspq4 <m-c2gwx4@a84e9f9 for=main,architect,fixer via=prompt} **Nothing added unasked.** In a
+  project whose root `AGENTS.md` does not hold the Concord line, no agent
+  writes a `concord.json`, a Concord build target, a pre-commit gate, a
+  statement marker or a link line, and no agent follows Concord's rules
+  there.
+* {#g-gljrho <arch,m-c2gwx4@a84e9f9 for=main via=prompt} **The opt-out line.** A project that
+  does not use ConcordSTC records it with a line of its own in its root
+  `AGENTS.md`, exactly: `This project does not use ConcordSTC.`
+* {#g-ulqj8h <m-c2gwx4@a84e9f9 for=main via=prompt} **Ask when unsaid.** When a session works
+  in a project whose root `AGENTS.md` holds neither the Concord line nor the
+  opt-out line, or that has no `AGENTS.md`, the main thread asks the human
+  whether the project uses ConcordSTC before any architect or fixer is
+  launched there, and writes the line his answer chooses into that
+  `AGENTS.md`, creating the file if it is absent.
+* {#g-n9fysz <arch,m-c2gwx4@a84e9f9 for=architect via=prompt} **An architect that finds no line
+  asks.** An architect launched in a project whose root `AGENTS.md` holds
+  neither line writes no Concord file or marker and returns the question to
+  its caller in its report.
+* {#g-afghbn <m-c2gwx4@a84e9f9 for=main,architect via=prompt} **Never for every project at once.**
+  No instruction file that sessions in every project read, as a user's
+  global `~/.claude/CLAUDE.md`, says that every project uses ConcordSTC;
+  such a file holds at most the rule of this section and a pointer to it.
+
 ## Where Concord lives
 
 * {#g-5z4iuo <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **One project.** Keep Concord's specs, build spec, tests and `README.md` in `~/@concord`; adopting projects run its tools from there and carry no duplicate checker or Concord utility.
@@ -288,7 +344,7 @@ Concord where it stands.
   exits 1; {#s-s4l32i <arch,m-b2shvm@ff5b09c} every adopting project runs it from a git
   pre-commit hook kept under version control in the project, which its build
   spec declares, so every commit, by a person or an agent, is gated.
-* {#s-ug5kvq <s-nw4u9n@3b57e9b,s-kkql92@90bba2d,s-i2ip58@705d3ec,m-2794qp@4644928} **The refusing entries.** In the
+* {#s-ug5kvq <s-nw4u9n@3b57e9b,s-kkql92@90bba2d,s-i2ip58@b70be7c,m-2794qp@4644928} **The refusing entries.** In the
   numbered lists of `specs/spec-map.md`, `specs/spec-map-line-types.md` and
   `specs/spec-map-interactive.md`, the entries that refuse a commit are:
   every entry of (9); every entry of (16); every entry of (26) for a
@@ -305,6 +361,10 @@ Concord where it stands.
   holds refuses a commit as the same entry for a link line does, and a
   stale guard line, an entry of (9), refuses as every entry of (9) does;
   an entry of (30) never refuses.
+* {#s-880seq <arch} **Inclusions refuse as root references do.** An entry of
+  (13) for an inclusion (`specs/spec-map.md`, Derived statements) naming
+  an id no marker holds refuses a commit as the same entry for a root
+  list's reference does.
 * {#s-tlkzzq <s-1u8bef@fa85be2,m-2794qp@4644928} **Only those.** An entry not named in The
   refusing entries, of any list, never changes the gate's exit code and is
   not printed by it.
@@ -344,9 +404,9 @@ Concord where it stands.
   line's hash as The text hash gives it and mints ids as Assigning ids gives
   it, so a hash recorded in one adopting project means what it means in
   every other, and one set of fixture cases checks every checker.
-* {#s-n7ky2n <arch,m-yy30zw@60906a5,m-ith31r@c21f155,m-smey68@37cbb93} **A project's spec directories.** In every
+* {#s-n7ky2n <arch,m-yy30zw@60906a5,m-ith31r@c21f155,m-smey68@37cbb93,m-fi6q34@6b5ef4d} **A project's spec directories.** In every
   adopting project, its own specs are the `.md` files at any depth under the
-  project-root directories matched by its `dirs_specs` setting, which
+  project-root directories matched by its `spec_directories` setting, which
   defaults to `["specs"]`, excluding files beneath a descendant project root
   that has its own `concord.json`. A project may declare several local spec
   roots; its owner paths, pointer targets and spec paths stay relative to that
@@ -410,10 +470,10 @@ Concord where it stands.
   (`specs/concord-hook.md`), run once in every clone, since the git setting
   that makes git run a committed hook belongs to a clone and no commit
   carries it.
-* {#g-zsom4k <m-asoxa8@8f03701,m-2794qp@4644928 for=architect,main via=prompt} **A project's
+* {#g-zsom4k <m-asoxa8@8f03701,m-2794qp@4644928,m-c2gwx4@a84e9f9 for=architect,main via=prompt} **A project's
   AGENTS.md.** An adopting project holds at its root an `AGENTS.md` that
-  opens by pointing at `~/@concord/AGENTS.md` and holds only facts of that
-  project: its build and test commands, its layout, its suites and its own
+  opens with the Concord line (Which projects use Concord) and holds only
+  facts of that project: its build and test commands, its layout, its suites and its own
   rules. The shared file is the authority: where the two disagree the shared
   file governs, and a rule that binds every adopting project is written in
   the shared file, never in a project's.
@@ -427,19 +487,23 @@ Concord where it stands.
 * {#s-zstgty <s-jhtp93@4c4ca3c} **One JSON object.** `concord.json` holds one JSON object
   whose members are the declared values this section names, each required
   unless this section says it is optional.
-* {#s-liocgl <arch,m-ith31r@c21f155,m-smey68@37cbb93} **Spec directories.** `dirs_specs` is an optional member of the
+* {#s-liocgl <arch,m-ith31r@c21f155,m-smey68@37cbb93,m-fi6q34@6b5ef4d} **Spec directories.** `spec_directories` is an optional member of the
   project's root `concord.json`; when present it is a non-empty array of
   non-empty project-relative directory patterns. For example,
-  `{ "dirs_specs": ["specs/*", "packages/*/specs"] }` tells this project
+  `{ "spec_directories": ["specs/*", "packages/*/specs"] }` tells this project
   to read Markdown specs under every immediate directory inside `specs/` and
   each immediate package's `specs/` directory when those files belong to this
   project. A descendant project with its own `concord.json` remains separate
   and is skipped by the parent scan. A pattern has no absolute
   path, `..` segment or backslash; `*` is allowed only as a complete path
-  segment and matches one directory name. A pattern without `*` names an
-  existing directory; a pattern with `*` may match no directory. When absent,
-  `dirs_specs` defaults to `["specs"]`. The checker reads `.md` files at any
-  depth under each matched directory, once each.
+  segment and matches one directory name. A declared pattern without `*`
+  names an existing directory; a pattern with `*` may match no directory.
+  The checker reads `.md` files at any depth under each matched directory,
+  once each.
+  {#s-6rfqdf <arch} When `spec_directories` is absent the project's spec
+  directory is `specs`, and that default need not exist: a project with no
+  `spec_directories` and no `specs` directory at its root has no specs, and
+  no Concord command fails or reports a bad settings file for it.
 * {#s-am7qu4 <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Name.** `name` is a non-empty string, the project's
   name, as in `"name": "AIOS"`.
 * {#s-i0n88z <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Suites.** `suites` is a non-empty array of suites,
@@ -478,15 +542,16 @@ Concord where it stands.
   review file's path relative to the root.
 * {#s-tps44b <m-fi6q34@6b5ef4d} **Legacy key names.** At the project root,
   `sName`, `vaSuite`, `vsLanguage`, `vsDirRead`, `vsDirIgnored`,
-  `sPathRecord`, `sPathObservations`, `vsPathRules` and `aCoverage` are
-  accepted as aliases for `name`, `suites`, `languages`, `read_directories`,
-  `ignored_directories`, `record_file`, `observations_file`, `rules_files` and
-  `coverage`, respectively. Within a suite, `sName` and `vsDir` are accepted
+  `sPathRecord`, `sPathObservations`, `vsPathRules`, `aCoverage` and
+  `dirs_specs` are accepted as aliases for `name`, `suites`, `languages`,
+  `read_directories`, `ignored_directories`, `record_file`,
+  `observations_file`, `rules_files`, `coverage` and `spec_directories`,
+  respectively. Within a suite, `sName` and `vsDir` are accepted
   as aliases for `name` and `directories`. Within `coverage`, `vaRun`,
   `vsCommandBefore`, `vsDirSource` and `sPathReview` are accepted as aliases
   for `runs`, `commands_before`, `source_directories` and `review_file`; within
   each run, `sName` and `sDirRun` are accepted as aliases for `name` and
-  `directory`. `dirs_specs` has no legacy alias.
+  `directory`.
 * {#s-ulp42m <m-fi6q34@6b5ef4d} **Legacy key warning.** Every occurrence of a legacy
   key prints one warning line to stderr in the form
   `concord.json: <legacy-path> is deprecated; use <canonical-path> (see specs/concord-process.md#the-settings-file)`.

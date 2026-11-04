@@ -133,13 +133,13 @@ test( "a pending statement with a test-implementation reference is a gate "
   expect( aGate.sStdout ).toContain( "Gate: refused" );
 });
 
-// @proves s-9zllrl@4421fe6
+// @proves s-9zllrl@4304abd
 // @proves s-x1kbkj@fff57a4
 // @proves s-1igmuk@d454589
 // @proves s-7h4j0s@512c0f5
 // @proves s-vjgnay@5c0f583
 // @proves s-j8ahje@91cc810
-// @proves s-n7ky2n@8ffbda2
+// @proves s-n7ky2n@7cec1a6
 test( "a package collection discovers child specs and accepts no matches", () => {
   fWriteTree({
     "specs/a.md": [
@@ -166,7 +166,7 @@ test( "a package collection discovers child specs and accepts no matches", () =>
       "* {#p-gatc04 >packages/*/spec/} Legacy package specs.", ""
     ].join( "\n" ),
     "packages/legacy/concord.json": fsConcordJson({
-      dirs_specs: [ "spec" ]
+      spec_directories: [ "spec" ]
     }),
     "packages/legacy/spec/legacy.md": "# Legacy\n\n## API\n"
   });

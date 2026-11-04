@@ -184,12 +184,13 @@ test( "a project accepts the human-readable concord.json keys", () => {
   expect( aRun.sStderr ).toBe( "" );
 });
 
-// @proves s-tps44b@d11f5f0
+// @proves s-tps44b@015cdec
 // @proves s-ulp42m@25ec2c6
 test( "each legacy concord.json key warns with its canonical key and spec link", () => {
   fWriteTree({
     "concord.json": JSON.stringify({
       sName: "Fixture",
+      dirs_specs: [ "specs" ],
       vaSuite: [ { sName: "root", vsDir: [ "test" ]} ],
       vsLanguage: [ "javascript", "css" ],
       vsDirRead: [ "src", "scripts", "test" ],
@@ -211,7 +212,11 @@ test( "each legacy concord.json key warns with its canonical key and spec link",
     sLine.includes( " is deprecated; use " )
   ));
   expect( aRun.cExit ).toBe( 0 );
-  expect( vsWarning ).toHaveLength( 17 );
+  expect( vsWarning ).toHaveLength( 18 );
+  expect( aRun.sStderr ).toContain(
+    "dirs_specs is deprecated; use spec_directories "
+      + "(see specs/concord-process.md#the-settings-file)"
+  );
   expect( aRun.sStderr ).toContain(
     "sName is deprecated; use name (see specs/concord-process.md#the-settings-file)"
   );
@@ -225,6 +230,9 @@ test( "each legacy concord.json key warns with its canonical key and spec link",
 
 const vaKeyAliasConflict = [
   [ "name", "sName", ( a ) => ( a.sName = a.name, a ) ],
+  [ "spec_directories", "dirs_specs", ( a ) => (
+    a.spec_directories = [ "specs" ], a.dirs_specs = a.spec_directories, a
+  ) ],
   [ "suites", "vaSuite", ( a ) => ( a.vaSuite = a.suites, a ) ],
   [ "languages", "vsLanguage", ( a ) => (
     a.vsLanguage = a.languages, a
@@ -298,15 +306,18 @@ const vtBad = [
   [ "an empty name", fsConcordJson({ name: "" }), "name" ],
   [ "an unknown member", fsConcordJson({ xOther: 1 }), "xOther" ],
   [ "a spec directory with a parent segment",
-    fsConcordJson({ dirs_specs: [ "../spec" ] }), "dirs_specs" ],
+    fsConcordJson({ spec_directories: [ "../spec" ] }), "spec_directories" ],
   [ "a spec directory with a wildcard",
-    fsConcordJson({ dirs_specs: [ "packages/p*" ] }), "dirs_specs" ],
+    fsConcordJson({ spec_directories: [ "packages/p*" ] }),
+    "spec_directories" ],
   [ "a Windows absolute spec directory",
-    fsConcordJson({ dirs_specs: [ "C:\\spec" ] }), "dirs_specs" ],
+    fsConcordJson({ spec_directories: [ "C:\\spec" ] }), "spec_directories" ],
   [ "an empty spec directory list",
-    fsConcordJson({ dirs_specs: [] }), "dirs_specs" ],
+    fsConcordJson({ spec_directories: [] }), "spec_directories" ],
   [ "a non-array spec directory list",
-    fsConcordJson({ dirs_specs: "specs" }), "dirs_specs" ],
+    fsConcordJson({ spec_directories: "specs" }), "spec_directories" ],
+  [ "a declared spec directory naming no existing directory",
+    fsConcordJson({ spec_directories: [ "nowhere" ] }), "spec_directories" ],
   [ "no suites", fsConcordJson({ suites: []}), "suites" ],
   [
     "a suite with no directory",
@@ -343,11 +354,11 @@ const vtBad = [
   ]
 ];
 
-// @proves s-liocgl@d7f5233
+// @proves s-liocgl@6c02b38
 test( "a project can set its spec directories in concord.json", () => {
   const sText = "A child project's rule.";
   fWriteTree({
-    "concord.json": fsConcordJson({ dirs_specs: [ "spec" ] }),
+    "concord.json": fsConcordJson({ spec_directories: [ "spec" ] }),
     "spec/a.md": fsSpec( "A", [ "* {#s-cfgs01} " + sText ]),
     "test/a.test.js": [
       "// @spec spec/a.md",
@@ -362,13 +373,13 @@ test( "a project can set its spec directories in concord.json", () => {
   expect( aRun.sStdout ).toContain( "spec/a.md:5  s-cfgs01" );
 });
 
-// @proves s-liocgl@d7f5233
+// @proves s-liocgl@6c02b38
 // @proves s-dhs2hx@db209fb
 test( "a project reads specs from each configured directory pattern", () => {
   const sCore = "A core rule.";
   const sPackage = "A package rule.";
   fWriteTree({
-    "concord.json": fsConcordJson({ dirs_specs: [
+    "concord.json": fsConcordJson({ spec_directories: [
       "specs/*", "packages/*/specs"
     ]}),
     "specs/core/core.md": fsSpec( "Core", [
@@ -400,21 +411,73 @@ test( "a project reads specs from each configured directory pattern", () => {
   expect( aPointer.sStdout ).toContain( "packages/alpha/specs/alpha.md  resolves" );
 });
 
-// @proves s-liocgl@d7f5233
+// @proves s-liocgl@6c02b38
 test( "a spec directory pattern may have no matches yet", () => {
   fWriteTree({
     "concord.json": fsConcordJson({
-      dirs_specs: [ "packages/*/specs" ]
+      spec_directories: [ "packages/*/specs" ]
     })
   });
   expect( faRun([ "--assign" ]).cExit ).toBe( 0 );
 });
 
-// @proves s-n7ky2n@8ffbda2
+// @proves s-liocgl@6c02b38
+test( "the legacy dirs_specs key is accepted as spec_directories", () => {
+  const sText = "A legacy rule.";
+  fWriteTree({
+    "concord.json": fsConcordJson({ dirs_specs: [ "spec" ] }),
+    "spec/a.md": fsSpec( "A", [ "* {#s-cfgs05} " + sText ])
+  });
+  const aRun = faRun([ "--sid", "s-cfgs05" ]);
+  expect( aRun.cExit ).toBe( 0 );
+  expect( aRun.sStdout ).toContain( "spec/a.md:5  s-cfgs05" );
+  expect( aRun.sStderr ).toBe(
+    "concord.json: dirs_specs is deprecated; use spec_directories "
+      + "(see specs/concord-process.md#the-settings-file)\n"
+  );
+});
+
+// @proves s-tps44b@015cdec
+test( "a bad legacy dirs_specs value is reported under its canonical name",
+() => {
+  fWriteTree({
+    "concord.json": fsConcordJson({ dirs_specs: "specs" }),
+    "specs/a.md": fsSpec( "A", [ "* {#s-cfgs07} A rule." ])
+  });
+  const aRun = faRun([ "--assign" ]);
+  expect( aRun.cExit ).toBe( 2 );
+  expect( aRun.sStderr ).toContain(
+    "concord.json: spec_directories is not a non-empty array"
+  );
+});
+
+// @proves s-6rfqdf@00eba76
+describe( "concord-settings — the default spec directory may be missing", () => {
+  test( "a project with no spec_directories and no specs directory has no "
+    + "specs and no command fails for it", () => {
+    fWriteTree({ "concord.json": fsConcordJson() });
+    [ [ "--assign" ], [], [ "--hashes" ], [ "--gate" ]].forEach(( vsArg ) => {
+      const aRun = faRun( vsArg );
+      expect( aRun.sStderr ).toBe( "" );
+      expect( aRun.cExit ).toBe( 0 );
+    });
+  });
+
+  test( "PAIRED: a project with no spec_directories reads the specs "
+    + "directory when it exists", () => {
+    fWriteTree({
+      "concord.json": fsConcordJson(),
+      "specs/a.md": fsSpec( "A", [ "* {#s-cfgs06} A default rule." ])
+    });
+    expect( faRun([ "--hashes" ]).sStdout ).toContain( "s-cfgs06" );
+  });
+});
+
+// @proves s-n7ky2n@7cec1a6
 test( "a matched nested Concord project keeps its own spec map", () => {
   fWriteTree({
     "concord.json": fsConcordJson({
-      dirs_specs: [ "specs/*", "packages/*/specs" ]
+      spec_directories: [ "specs/*", "packages/*/specs" ]
     }),
     "specs/core/core.md": fsSpec( "Core", [
       "* {#s-prnt01} Parent rule."
@@ -543,7 +606,7 @@ describe( "concord-settings — the observations file and the rules files",
   test( "the observations file cannot be under a secondary spec root", () => {
     fWriteTree({
       "concord.json": fsConcordJson({
-        dirs_specs: [ "specs", "docs/requirements" ],
+        spec_directories: [ "specs", "docs/requirements" ],
         observations_file: "docs/requirements/observations.md"
       }),
       "specs/a.md": "# Specs\n",
@@ -656,9 +719,9 @@ describe( "concord-settings — test files lie under the declared suites",
     expect( faRun([ "--sid", "s-cfg002" ]).sStdout ).toBe([
       "specs/a.md:5  s-cfg002  " + sTextRule,
       "checks/unit/u.test.js:1  checks the rule  "
-        + fsHash( sTextRule ) + "  whole  current",
+        + fsHash( sTextRule ) + "  current",
       "more/flow/f.test.js:1  checks the rule  "
-        + fsHash( sTextRule ) + "  whole  current",
+        + fsHash( sTextRule ) + "  current",
       ""
     ].join( "\n" ));
     expect( faRun([ "--cross-suite" ]).sStdout ).toBe([
@@ -733,7 +796,7 @@ const sSpecHashes = [
 // @proves s-kyro7r@3064fa5
 // @proves s-95ao2f@9b59968
 // @proves s-rapf8f@dd2cbd3
-// @proves s-n7ky2n@8ffbda2
+// @proves s-n7ky2n@7cec1a6
 describe( "concord-settings — the hash table", () => {
   test( "--hashes prints each singly-marked id of every type with the hash "
     + "--hash prints and its spec, by spec and line, writing nothing", () => {

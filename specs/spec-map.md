@@ -36,8 +36,10 @@ file, which spec owns each test, and how every other type of spec line
   `npm run spec-map -- --hash <id>`, `-- --sid <id>` and
   `-- --candidates <id>` answer one statement id each (Query forms, below),
   `-- --root <id>` lists the conclusions under a root (Statement roots,
-  below), `-- --cross-suite` lists statements whole-linked from more than
-  one suite (Statement parts, below), and `-- --assign` gives every
+  below), `-- --cross-suite` lists statements linked from more than
+  one suite (Derived statements, below), `-- --split-parts` splits each
+  statement carrying a part list into derived statements (Splitting part
+  lists, below), and `-- --assign` gives every
   placeholder an id (Assigning ids, below). `-- --hashes` prints every
   id's current hash (Query forms, below). `-- --gate` decides whether a
   commit may proceed (`specs/concord-process.md`, What stops a commit).
@@ -61,7 +63,8 @@ file, which spec owns each test, and how every other type of spec line
   to stderr and exits 2.
 * {#s-yurmkw <arch} It reads the project's declared spec directories
   (`specs/concord-process.md`, The settings file), and writes it and the project's
-  observations file (`specs/observations.md`) only under `--assign`, writes the
+  observations file (`specs/observations.md`) only under `--assign`, writes
+  specs and test files under `--split-parts` and no other form, writes the
   project's record file (`specs/concord-process.md`, The settings file)
   only under `--pass`, `--fail`, `--unable`, `--reopen`, `--answers` and
   `--worklist`, and writes the worklist page only under `--worklist`, at
@@ -167,8 +170,9 @@ file, which spec owns each test, and how every other type of spec line
   `* {#s-xxxxxx} A closing dialog closes only itself.` Any `{#s-` in a
   spec outside a backtick code span and a fenced code block is read as a
   marker, well formed or not. A marker is `{#`, an id part, an optional
-  root list (Statement roots, below), an optional part list (Statement
-  parts, below), an optional probe flag (Probe flags, below), an optional
+  root list (Statement roots, below), an optional surface flag (Derived
+  statements, below), an optional probe flag (Probe flags, below), an
+  optional
   `not-yet-implemented` flag (Not-yet-implemented statements, below) and
   `}`. A placeholder cannot carry the `not-yet-implemented` flag. A marker is malformed when
   its id part is neither `s-` followed by six lowercase letters or
@@ -219,7 +223,8 @@ file, which spec owns each test, and how every other type of spec line
   collapsing every run of whitespace, line breaks included, to one space
   and trimming both ends; nothing else changes, so backticks, bold and
   punctuation count. Its hash is the first seven characters of the
-  lowercase hexadecimal SHA-1 of the normalised text's UTF-8 bytes. So
+  lowercase hexadecimal SHA-1 of the normalised text's UTF-8 bytes, a
+  statement's inclusions replaced first (Derived statements, below). So
   rewrapping or reindenting a statement keeps its hash, and any other
   edit to its text changes it.
 * {#s-mijuu3} **Duplicate ids.** An id marked at two or more places, in
@@ -230,9 +235,7 @@ file, which spec owns each test, and how every other type of spec line
   whitespace, is `// @proves s-xxxxxx@hhhhhhh`, with one or more spaces
   after `@proves`, then the statement id, `@`, and the seven lowercase
   hexadecimal characters of the statement's hash as the link's author
-  recorded it, then optionally one or more spaces and `part=` followed by
-  a label (Statement parts, below), and nothing after but trailing
-  whitespace. One line links
+  recorded it, and nothing after but trailing whitespace. One line links
   one statement. Any `//` line comment whose text begins `@proves` is
   read as a link line, well formed or not; `@proves` inside a `/* */`
   comment or a string or template literal is not.
@@ -246,9 +249,8 @@ file, which spec owns each test, and how every other type of spec line
   covers that test; a link above a `describe` covers every test nested
   inside it, at any depth. A test proves the union of the statements
   named by its own links and by the links of every `describe` enclosing
-  it. A link resolves when it is well formed, well placed, names an
-  id marked at exactly one place, and its kind, whole or part, agrees
-  with that statement's part list (Statement parts, below).
+  it. A link resolves when it is well formed, well placed, and names an
+  id marked at exactly one place.
 * {#s-s7wgz7} **Derived owners.** A test file is fully linked when it
   holds at least one `test` or `it` and every one proves at least one
   statement through a link that resolves. In a fully linked file a
@@ -386,8 +388,7 @@ in part names `arch` beside the references to them.
 
 * {#s-l2muht <m-2bla2f@3d7894c,m-qqzdr9@0d0a742} **Root lists.** A marker may carry a root list
   naming what its statement stems from: after the marker's id part, one
-  space, `<`, the list, then the marker's part list when it carries one
-  (Statement parts, below), and the marker's closing `}`, as in
+  space, `<`, the list, and the marker's closing `}`, as in
   `{#s-xxxxxx <s-aaaaaa}`, `{#s-xxxxxx <s-aaaaaa,s-bbbbbb}` and
   `{#s-? <arch}`. The list is one or more entries separated by commas
   with no spaces, each a root reference or the word `arch`, with `arch`
@@ -458,12 +459,12 @@ in part names `arch` beside the references to them.
   id and both hashes; and (17) each unstamped reference, naming the spec,
   the line, the conclusion's id and the root's id. {#s-sfuntg <arch} With no
   argument it reports all five over the whole tree and exits 0.
-  {#s-hgk19s <arch} With a spec path it reports (13), (15) and (17) for that
-  spec's markers, (14) for that spec's roots and for the roots of its
+  {#s-hgk19s <arch} With a spec path it reports (13) for that spec's
+  root lists and inclusions, (15) and (17) for that spec's markers, (14) for that spec's roots and for the roots of its
   conclusions wherever they sit, and (16) for the references in that
   spec's markers and the references naming that spec's statements
   wherever they sit. {#s-n8uc4k <arch} It exits non-zero when (13) holds an
-  entry for a root list in that spec; (14), (15), (16) and (17) never
+  entry for that spec, a malformed root list or a malformed inclusion in it; (14), (15), (16) and (17) never
   change the exit code.
 * {#s-1f2z8r <arch} **The root query.** `--root <id>` prints the root's spec
   and line, then one line per conclusion as (14) gives it, then `covered`
@@ -494,11 +495,53 @@ in part names `arch` beside the references to them.
 > s-2: {s-1} applied to the browser
 > s-3: {s-1} applied to the terminal"
 
+> {#m-4til6h} RULING (CEO) 2026-11-04, q195, asked: "Should Concord notice a
+> surface whose rule was never written? A ConcordSTC question, following
+> your spec-tree answer (q183). A rule for both clients becomes s-1, with
+> s-2 '{s-1} applied to the browser' and s-3 '{s-1} applied to the
+> terminal'. If nobody ever writes s-3, nothing records that a terminal
+> version was meant, so the checker cannot tell a browser-only rule from
+> one whose terminal version was forgotten. Example: 'a permission question
+> is drawn as plain text, never as markup' gets its browser statement, and
+> its terminal statement is never written.
+> A) s-1 lists its surfaces (terminal, browser) and each derived statement
+> names its surface; the checker reports a listed surface with no derived
+> statement, and a derived statement for a surface s-1 doesn't list.
+> B) Nothing is listed; the surface is only in the wording ('applied to the
+> browser'). A forgotten one is caught only by a reader.
+> C) Each derived statement names its surface, s-1 lists nothing; the
+> checker shows which surfaces each rule has but reports no missing one."
+> He answered: "C", with the note: "How is that different from any other
+> spec that goes missing?"
+
 {#d-h7ovzy <m-5err3p@9ccd8ca} **Derived statement** — a statement whose text includes another line, its
 parent, by an inclusion, and states the parent's rule for one surface or
 one arm, as `{s-xxxxxx} applied to the browser`: the parent states the
 rule once, and each derived statement is proved and implemented whole.
 
+* {#s-s0x8ie <m-4til6h@ded9713} **Surface flags.** A derived statement names the surface
+  it states its parent's rule for with a surface flag in its marker: one
+  space, `surface=` and one label of one or more lowercase letters, digits
+  or `-`, after the marker's root list and before its probe flag, as in
+  `{#s-xxxxxx <s-aaaaaa surface=browser}`. {#s-m3nvmc <arch} The surface flag is
+  part of the marker, not of its statement's text, so adding, changing or
+  removing it never changes its statement's hash.
+* {#s-ni7ark <m-4til6h@ded9713} **The parent lists nothing.** A surface flag on a
+  statement whose text holds no inclusion is malformed, and so is a surface
+  flag on a marker of any type but `s`, each reported in (6).
+  {#s-xo5d9n <arch} A surface flag with an empty label, a label in any other
+  form, or more than one label is malformed, reported in (6).
+* {#s-qmf2lg <m-4til6h@ded9713} **Surfaces are shown.** (14) and `--root` give, beside
+  each conclusion whose marker carries a surface flag, that flag's label,
+  so each root shows the surfaces its derived statements state it for.
+  {#s-efoflb <arch} The label is printed as `surface=<label>`, as in
+  `surface=browser`.
+* {#s-nktt4y <m-4til6h@ded9713} **No missing surface is reported.** No list, no exit code
+  and no gate entry names a parent for a surface that no statement derived
+  from it carries, or names a derived statement for its surface.
+* {#g-blha4b <m-4til6h@ded9713 for=architect via=prompt} **Name the surface.** A derived
+  statement that states its parent's rule for one surface carries that
+  surface in a surface flag.
 * {#s-ixasv4 <m-5err3p@9ccd8ca} **Inclusions.** A statement's text may include another line
   by an inclusion: `{`, that line's id, and `}`, written anywhere in the
   text, as in `{s-xxxxxx} applied to the browser`. {#s-3vhy40 <arch,m-5err3p@9ccd8ca} The
@@ -574,8 +617,9 @@ rule once, and each derived statement is proved and implemented whole.
   id, root list and probe flag and the statement's text as they were, and
   writes directly after the block holding that statement one bullet per
   label, in the list's order, at that block's indentation, each
-  `{#s-<new id>} {s-<parent id>} applied to the <label>.`, with the
-  parent's probe flag, when it carries one, before the new marker's `}`.
+  `{#s-<new id> surface=<label>} {s-<parent id>} applied to the <label>.`,
+  with the parent's probe flag, when it carries one, after the surface
+  flag.
   {#s-m69cme <arch} Each new id is minted as Assigning ids mints one.
 * {#s-6ujq8d <arch,m-5err3p@9ccd8ca} **Test links.** In every test file it rewrites each
   link line naming a split statement with a label of its part list into a
@@ -585,19 +629,23 @@ rule once, and each derived statement is proved and implemented whole.
   stale link stays stale. {#s-rn2itq <arch} It replaces each test-implementation
   reference naming a split statement with one reference per label whose
   link lines cover a test it covers, naming that label's derived
-  statement, stamped by the same rule. {#s-3rhim7 <arch} It changes no other
+  statement, stamped by the same rule. {#s-9bzl8i <arch} A test-implementation
+  reference naming a split statement where no label's link lines cover a
+  test it covers it leaves as written, and prints as Left by hand gives.
+  {#s-3rhim7 <arch} It changes no other
   character of a test file.
 * {#s-4y7ukm <arch} **Left by hand.** It leaves as written every implementation
   reference in an implementation file, every guard line and every part
   link naming a statement with no part list, and prints one line for each
-  that names a split statement or carries a part label,
+  that names a statement this run splits or carries a part label,
   `<file path>:<line>  <id>  by hand`.
 * {#s-y5buk6 <arch} **Output.** It prints one line per derived statement it writes,
   `<spec path>:<line>  <new id>  <parent id>  <label>`, and one per line
   it rewrites, `<file path>:<line>  <old id> -> <new id>`, and exits 0.
   {#s-iwko4c <arch} A part list in any other form than the one above, or on a
   placeholder, it leaves as written and names on stderr with the spec and
-  the line, and then it exits 1 after doing the rest.
+  the number its line had before the run wrote anything, and then it exits
+  1 after doing the rest.
 * {#s-gy5mqc <arch} With no part list in the specs and no part label in the test
   files it prints nothing, writes nothing and exits 0.
 
@@ -615,7 +663,7 @@ Such a test names the statement whose proof it guards.
   after `@guards`, then the statement id, `@`, and the seven lowercase
   hexadecimal characters of the statement's hash as the line's author
   recorded it, and nothing after but trailing whitespace. One line guards
-  one statement, and a guard line carries no part label.
+  one statement.
   {#s-4o88k8 <arch} Any `//` line comment whose text begins `@guards` is read as
   a guard line, well formed or not; `@guards` inside a `/* */` comment or
   a string or template literal is not.
@@ -626,21 +674,20 @@ Such a test names the statement whose proof it guards.
   guards the union of the statements named by its own guard lines and by
   the guard lines of every `describe` enclosing it.
 * {#s-i6cch2 <arch} **When a guard resolves.** A guard line resolves when it is
-  well formed, well placed and names an id marked at exactly one place,
-  whether or not that statement has a part list. {#s-3klfsj <arch} A guard line
+  well formed, well placed and names an id marked at exactly one place.
+  {#s-3klfsj <arch} A guard line
   is a test link wherever `specs/spec-map-line-types.md` reads one
   (Retyped references).
 * {#s-uny6ly <arch} **A guard proves nothing.** Every rule of this spec that
   names a link line, a link or a test's links means `@proves` lines only,
   except where this section counts a guard line. {#s-1yuomz <arch} A test that
-  guards a statement never proves it or any part of it, so a statement
+  guards a statement never proves it, so a statement
   whose only resolving lines are guard lines is unproved wherever an
   unproved statement is reported or counted: (7), a complete spec's
   completeness failures, a root's satisfaction, `--probes` and
   `--cross-suite` included.
 * {#s-svtfjm <arch} **Backed guards.** A resolving guard line is backed when at
-  least one test proves its statement, or a part of it, through a resolving
-  link.
+  least one test proves its statement through a resolving link.
 * {#s-8usccv <arch} **Where a guard counts.** A test covered by a backed guard
   line counts as proving that line's statement for derived owners, for the
   unlinked tests (21), and for a complete spec's tests that prove none of
@@ -676,27 +723,25 @@ probe statement, and the project's timeout fence asks this command which
 tests prove one.
 
 * {#s-ptc52y <arch} **The flag.** A marker may end with one space and the word
-  `probe` directly before its closing `}`, after its root list and its part
-  list when it carries them, as in `{#s-xxxxxx probe}`,
-  `{#s-xxxxxx <arch probe}` and `{#s-? <arch parts=a,b probe}`. Wherever a
-  rule above places the closing `}` directly after a root list or a part
-  list, the flag may stand between them.
+  `probe` directly before its closing `}`, after its root list when it
+  carries one, as in `{#s-xxxxxx probe}` and `{#s-xxxxxx <arch probe}`.
+  Wherever a rule above places the closing `}` directly after a root list,
+  the flag may stand between them.
 * {#s-r1opde <arch} The probe flag is part of the marker, not of its statement's
   text, so adding or removing it never changes its statement's hash.
 * {#s-vwf1wr <arch} A statement whose marker carries the flag is a probe
   statement.
 * {#s-0ovkpr <arch} **The probe query.** `--probes` is a query form. It prints each
   probe statement, naming its spec, line and id, then one line per test the
-  statement's resolving links cover (What a link covers), part links
-  included, giving the test's file, the line of its call and its name, and
+  statement's resolving links cover (What a link covers), giving the test's file, the line of its call and its name, and
   exits 0. {#s-nksahd <arch} It writes nothing.
 
 ## Not-yet-implemented statements
 
 * {#s-6dpng1 <arch,m-cujcht@53617af} **The flag.** An assigned statement marker may end with one space and
-  `not-yet-implemented`, after its root list, part list and `probe` flag when
+  `not-yet-implemented`, after its root list and `probe` flag when
   present, as `{#s-xxxxxx not-yet-implemented}` or
-  `{#s-xxxxxx <m-yyyyyy parts=case-a,case-b probe not-yet-implemented}`.
+  `{#s-xxxxxx <m-yyyyyy probe not-yet-implemented}`.
   The flag is marker metadata and does not change the statement's text hash;
   it cannot appear on a placeholder.
 * {#s-n1ztut <arch,m-cujcht@53617af} **What it means.** A marked statement describes required
@@ -760,8 +805,8 @@ tests prove one.
   in it.
 * {#s-nlzsly <m-e58y5d@459984e} **With a proof.** A test-implementation reference resolves
   when it would resolve as an implementation reference in an implementation
-  file and at least one test it covers proves its statement, or a part of
-  it, through a resolving link.
+  file and at least one test it covers proves its statement through a
+  resolving link.
 * {#s-ljxzt6 <m-e58y5d@459984e} **One test, both links.** A test may both prove and
   implement one statement, by a link line and a test-implementation
   reference naming the same id in the run above the same call, as

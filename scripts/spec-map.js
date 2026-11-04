@@ -4,12 +4,12 @@
 // @implements s-zrgt7e@a066ef0
 // @implements s-pa182t@8008053
 // @implements s-4pq89a@d19cad5
-// @implements s-yurmkw@c1a4abf
+// @implements s-yurmkw@ee703cc
 // @implements s-a40yzg@5e808cd
 // @implements s-l0wfl7@c6ad1b2
 // @implements s-h5caok@17c696d
 // @implements s-p79bim@05302e1
-// @implements s-jt2a2g@567f271
+// @implements s-jt2a2g@6926fb1
 // @implements s-89dowx@1de93c2
 // @implements s-0w4rbg@75d948e
 // @implements s-f8jiyg@08812ac
@@ -35,12 +35,13 @@
 // @implements s-mrxt8t@4a0c235
 // @implements s-62b8ec@c221937
 // @implements s-rapf8f@dd2cbd3
-// @implements s-n7ky2n@8ffbda2
+// @implements s-n7ky2n@7cec1a6
+// @implements s-6rfqdf@00eba76
 // @implements s-m4jorm@da16eb4
 // @implements s-jmslkk@be3cc50
 // @implements s-k6leed@80135a4
 // @implements s-3oxidy@1ccac2e
-// @implements s-nrp172@f93d24a
+// @implements s-nrp172@4c9ed53
 // @implements s-iz8176@bb80e0d
 // @implements s-wthfms@d2c5ecd
 // @implements s-dnog08@dde78ed
@@ -103,7 +104,7 @@
 // @implements s-fc5ccj@7849554
 // @implements s-8yzzoh@8f6ed41
 // @implements s-eab7vh@300a074
-// @implements s-7llevg@0874ed6
+// @implements s-7llevg@6c2799e
 // @implements s-n10cb0@01b16a4
 // @implements s-41v1mp@51d6eb2
 // @implements s-rmpj20@c3531c2
@@ -181,15 +182,15 @@
 // @implements s-0nmcwv@fcc34b4
 // @implements s-te9wza@59881f7
 // @implements s-0abyvp@9e5dd00
-// @implements s-98jxk4@17039ec
+// @implements s-98jxk4@d886f7c
 // @implements s-i6rjuw@e83d07a
 // @implements s-tdw4gj@8d6d23d
 // @implements s-bnkk62@d702f3b
 // @implements s-pslzjw@bb3ff6d
-// @implements s-3pkw1n@3da0ef1
+// @implements s-3pkw1n@e23773f
 // @implements s-cwbb50@b1fa155
 // @implements s-k9c32y@39fbb4e
-// @implements s-gry2es@c153c72
+// @implements s-gry2es@de73667
 // @implements s-ar1i87@b6009f5
 // @implements s-ilmml1@de70889
 // @implements s-w2msh4@29d36fe
@@ -200,11 +201,11 @@
 // @implements s-du4nns@bbb6351
 // @implements s-cov7pg@e6a079b
 // @implements s-vcpu9h@6d6ac07
-// @implements s-qln1ta@5cda1f6
+// @implements s-qln1ta@564522c
 // @implements s-mijuu3@eb255fe
-// @implements s-eawgvu@395098a
+// @implements s-eawgvu@e029ecf
 // @implements s-tw3l62@fa30747
-// @implements s-jcgn2k@e1b8cf8
+// @implements s-jcgn2k@220009d
 // @implements s-s7wgz7@eae0eef
 // @implements s-n7deu7@edc83ae
 // @implements s-tv24sx@df2c2d6
@@ -226,26 +227,26 @@
 // @implements s-kzyb2a@f30bbf3
 // @implements s-kyro7r@3064fa5
 // @implements s-95ao2f@9b59968
-// @implements s-i63o6a@79c24e2
+// @implements s-i63o6a@6dbc87e
 // @implements s-2deigh@58b055c
 // @implements s-taoc14@2518951
-// @implements s-6dpng1@390bc64
-// @implements s-yurmkw@c1a4abf
+// @implements s-6dpng1@58d403a
+// @implements s-yurmkw@ee703cc
 // @implements s-j8ahje@91cc810
 // @implements s-t8un02@9839058
 // @implements s-7h4j0s@512c0f5
-// @implements s-n7ky2n@8ffbda2
+// @implements s-n7ky2n@7cec1a6
 // @implements s-n1ztut@75bf716
 // @implements s-8g5yno@c3ea2a8
 // @implements s-mn5and@058eb96
 // @implements s-2vgnq6@8323fcb
 // @implements s-dhs2hx@db209fb
-// @implements s-9zllrl@4421fe6
+// @implements s-9zllrl@4304abd
 // @implements s-x1kbkj@fff57a4
 // @implements s-1igmuk@d454589
 // @implements s-vjgnay@5c0f583
 // @implements s-pe5j7a@8fee8c2
-// @implements s-l2muht@44dd0fb
+// @implements s-l2muht@e9fb34f
 // @implements s-s0vyhy@802fc2f
 // @implements s-v20yz5@b63123d
 // @implements s-y462l3@3b6cea9
@@ -261,41 +262,62 @@
 // @implements s-jie6z5@09cd30a
 // @implements s-fm2sqk@135c61a
 // @implements s-sfuntg@4b5ec33
-// @implements s-hgk19s@c3ec943
-// @implements s-n8uc4k@80b6109
+// @implements s-hgk19s@2c0c557
+// @implements s-n8uc4k@a405885
 // @implements s-1f2z8r@e38b9ea
 // @implements s-8wn2ou@c5e7984
 // @implements s-jhjrqa@2306326
 // @implements s-n7yhjf@0cf1206
 // @implements s-wqdxix@ceec0e2
 // @implements s-tzxhy9@09c0d8a
-// @implements s-fsguh5@f040017
-// @implements s-6mvnjc@5b04323
-// @implements s-wiqxdx@e73adf5
-// @implements s-ttqu59@2d43781
-// @implements s-mpvxr2@47329b9
-// @implements s-r8oroe@88ce6f3
-// @implements s-tigqtu@9c4179b
-// @implements s-0x0s1q@10948bc
-// @implements s-xgaa11@29ab487
-// @implements s-khpw01@7abcf6e
-// @implements s-prz9tg@140065e
-// @implements s-kx3xgb@3351043
-// @implements s-kxfivt@d7f9173
-// @implements s-v8gy0d@16e4568
-// @implements s-qjt3c3@4ade3ec
-// @implements s-2j8jma@d3bb8a8
+// @implements s-s0x8ie@f630543
+// @implements s-m3nvmc@4ea2a37
+// @implements s-ni7ark@e934261
+// @implements s-xo5d9n@08c26fd
+// @implements s-qmf2lg@5795cc1
+// @implements s-nktt4y@2747a61
+// @implements s-ixasv4@f731c6a
+// @implements s-3vhy40@92707b8
+// @implements s-8ej89k@ad53a57
+// @implements s-yallh6@309b54b
+// @implements s-13qcjo@38e295c
+// @implements s-bbaxpr@4e51c3f
+// @implements s-ickx1f@508799a
+// @implements s-fc4ubx@3f16155
+// @implements s-83mryk@52401d8
+// @implements s-dglucu@bd4c60b
+// @implements s-lqyq1i@946e8b2
+// @implements s-53ztk4@703b57d
+// @implements s-ihqgan@de8037f
+// @implements s-df84cf@66e21c8
+// @implements s-2vyccd@d9ef2de
+// @implements s-4qpk97@7e4bb82
+// @implements s-lf00bp@0ec752e
+// @implements s-ol3soy@d2da0a6
+// @implements s-gjk5r1@9d6e18f
+// @implements s-5fldjm@514a40a
+// @implements s-m69cme@f4c0170
+// @implements s-6ujq8d@696a8e1
+// @implements s-rn2itq@10cc3ef
+// @implements s-3rhim7@92937b7
+// @implements s-4y7ukm@b763556
+// @implements s-9bzl8i@64430ba
+// @implements s-efoflb@3670587
+// @implements s-y5buk6@917c800
+// @implements s-iwko4c@581c6c6
+// @implements s-gy5mqc@76d7988
+// @implements s-880seq@40723b9
 // @implements s-zybg31@316483b
 // @implements s-b21zr4@c4562be
-// @implements s-9eix2j@3b46d7e
+// @implements s-9eix2j@0585aaf
 // @implements s-4o88k8@e467b6b
 // @implements s-cs9i6p@5d38c13
 // @implements s-p6dv3k@447ea6b
-// @implements s-i6cch2@35337df
+// @implements s-i6cch2@70c8796
 // @implements s-3klfsj@d4d9f32
 // @implements s-uny6ly@83363ca
-// @implements s-1yuomz@f2897f0
-// @implements s-svtfjm@2e4759d
+// @implements s-1yuomz@b828506
+// @implements s-svtfjm@7ad3935
 // @implements s-8usccv@c0cc953
 // @implements s-0e75fk@780e493
 // @implements s-0yoabr@be8d70d
@@ -305,10 +327,10 @@
 // @implements s-aku8n2@4ffc4f1
 // @implements s-qr72mj@9691d37
 // @implements s-nc5n19@aee9454
-// @implements s-ptc52y@be60f27
+// @implements s-ptc52y@20ab416
 // @implements s-r1opde@e6a3bd1
 // @implements s-vwf1wr@af28dcd
-// @implements s-0ovkpr@0316722
+// @implements s-0ovkpr@5b8beb1
 // @implements s-nksahd@2aa742c
 // @implements s-vjgnay@5c0f583
 // @implements s-2l6ys1@d966d32
@@ -351,7 +373,7 @@
 // @implements s-k3nucf@c0c7bf2
 // @implements s-obz7rg@010c79a
 // @implements s-9ho983@b227496
-// @implements s-nlzsly@8cfc10b
+// @implements s-nlzsly@d954de6
 // @implements s-ljxzt6@b06ab69
 // @implements s-0n3sm5@d016ebd
 // @implements s-9wbr29@0f680c4
@@ -391,10 +413,16 @@ const reOwnerText = /^\s*@spec/;
 const reOwnerLine = /^\s*\/\/ @spec +(\S+\.md)\s*$/;
 const reLinkText = /^\s*@proves/;
 const reLinkLine = new RegExp(
-  "^\\s*// @proves +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})"
-  + "(?: +part=([a-z0-9-]+))?\\s*$"
+  "^\\s*// @proves +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\\s*$"
 );
 const reLinkLoose = /@proves\s+([a-z]-[a-z0-9]*)@?(\S*)/;
+const reLinkPart = /^(\s*\/\/ @(?:proves|guards) +)(\S+?)\s+part=(\S*)/;
+const sReasonPartLink = (
+  "part link: --split-parts splits it into derived statements"
+);
+const sReasonPartList = (
+  "part list: --split-parts splits it into derived statements"
+);
 const reGuardText = /^\s*@guards/;
 const reGuardLine = new RegExp(
   "^\\s*// @guards +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\\s*$"
@@ -465,9 +493,10 @@ const reSpace = /\s*/y;
 const reMarkerOpen = /\{#[a-z]-/g;
 const reMarkerToken = new RegExp(
   "\\{#([a-z]-[^}\\s{]*)"
-  + "(?: <((?:(?! >| parts=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
-  + "(?: >((?:(?! parts=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
-  + "(?: parts=((?:(?! via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: <((?:(?! >| parts=| surface=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: >((?:(?! parts=| surface=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: parts=((?:(?! surface=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
+  + "(?: surface=((?:(?! via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
   + "(?: via=((?:(?! via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
   + "(?: for=((?:(?! via=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
   + "(?: via=((?:(?! via=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
@@ -477,6 +506,9 @@ const reMarkerToken = new RegExp(
 );
 const rePartLabel = /^[a-z0-9-]+$/;
 const cPartMin = 2;
+const reInclusionOpen = /\{[a-z]-/g;
+const reInclusionToken = /\{([a-z]-[^}\s{]*)(\})?/y;
+const reInclusionId = /^[a-z]-(?:[a-z0-9]{6}|\?[a-z0-9]+)$/;
 const reIdPartWell = /^([a-z])-(?:([a-z0-9]{6})|\?([a-z0-9]*))$/;
 const reRefId = /^([a-z]-[a-z0-9]{6})(?:@([0-9a-f]{7}))?$/;
 const reRefLabel = /^([a-z])-\?([a-z0-9]+)$/;
@@ -722,14 +754,15 @@ const faTokenAt = ( sText, nPos ) => {
     sList: fsGroup( vsGroup, 2 ),
     sTargets: fsGroup( vsGroup, 3 ),
     sParts: fsGroup( vsGroup, 4 ),
-    sFor: fsGroup( vsGroup, 6 ),
-    sVia: fsGroup( vsGroup, 5 ) === null
-      ? fsGroup( vsGroup, 7 )
-      : fsGroup( vsGroup, 5 ),
-    bViaEarly: vsGroup[ 5 ] !== undefined,
-    bProbe: vsGroup[ 8 ] !== undefined,
-    bNotImplemented: vsGroup[ 9 ] !== undefined,
-    bClosed: vsGroup[ 10 ] !== undefined,
+    sSurface: fsGroup( vsGroup, 5 ),
+    sFor: fsGroup( vsGroup, 7 ),
+    sVia: fsGroup( vsGroup, 6 ) === null
+      ? fsGroup( vsGroup, 8 )
+      : fsGroup( vsGroup, 6 ),
+    bViaEarly: vsGroup[ 6 ] !== undefined,
+    bProbe: vsGroup[ 9 ] !== undefined,
+    bNotImplemented: vsGroup[ 10 ] !== undefined,
+    bClosed: vsGroup[ 11 ] !== undefined,
     bWell: vsWell !== null && sTypeLine.includes( vsGroup[ 1 ][ 0 ]),
     sBody: vsWell === null ? null : fsGroup( vsWell, 2 ),
     sLabel: vsWell === null ? null : fsGroup( vsWell, 3 )
@@ -823,10 +856,24 @@ const fbViaPrompt = ( aToken ) => (
   aToken.sVia !== null && fsReasonForVia( aToken ) === null
 );
 
-const fvsReasonForAttr = ( aToken, sReasonParts ) => [
-  aToken.sType !== "s" && aToken.sParts !== null
-    ? fsOnType( "part list", aToken.sType )
-    : sReasonParts,
+const fsReasonForSurface = ( aToken, cInclusion ) => {
+  if( aToken.sSurface === null ){ return null;}
+  if( aToken.sType !== "s" ){ return fsOnType( "surface flag", aToken.sType );}
+  if( aToken.sSurface === "" ){ return "surface flag with an empty label";}
+  if( aToken.sSurface.includes( "," )){
+    return "surface flag with more than one label";
+  }
+  if( !rePartLabel.test( aToken.sSurface )){
+    return "surface flag with a label in another form";
+  }
+  return cInclusion === 0
+    ? "surface flag on a statement with no inclusion"
+    : null;
+};
+
+const fvsReasonForAttr = ( aToken, cInclusion ) => [
+  aToken.sParts === null ? null : sReasonPartList,
+  fsReasonForSurface( aToken, cInclusion ),
   aToken.sType !== "s" && aToken.bProbe
     ? fsOnType( "probe flag", aToken.sType )
     : null,
@@ -867,16 +914,45 @@ const fsReasonForParts = ( vsPart ) => {
     : null;
 };
 
-const faPartsForToken = ( sParts ) => {
-  if( sParts === null ){ return { vsPart: null, sReasonParts: null };}
-  const vsPart = sParts.split( "," );
-  const sReasonParts = fsReasonForParts( vsPart );
-  return { vsPart: sReasonParts === null ? vsPart : null, sReasonParts };
+const fvsPartForMarker = ( aMarker ) => {
+  if( aMarker.sParts === null || aMarker.sType !== "s" ){ return null;}
+  const vsPart = aMarker.sParts.split( "," );
+  return fsReasonForParts( vsPart ) === null ? vsPart : null;
 };
 
 const faSegAt = ( vaSeg, nPos ) => (
   vaSeg.filter(( aSeg ) => aSeg.nStart <= nPos ).pop()
 );
+
+const fnOffsetAt = ( aCtx, aBlock, nPos ) => {
+  const aSeg = faSegAt( aBlock.vaSeg, nPos );
+  return aCtx.vnLineStart[ aSeg.nLine ] + aSeg.nCol + nPos - aSeg.nStart;
+};
+
+const faInclusionAt = ( aCtx, aBlock, nPos, nStart ) => {
+  reInclusionToken.lastIndex = nPos;
+  const vsGroup = reInclusionToken.exec( aBlock.sText );
+  return {
+    sWritten: vsGroup[ 0 ],
+    aRef: vsGroup[ 2 ] !== undefined && reInclusionId.test( vsGroup[ 1 ])
+      ? faRefParsed( vsGroup[ 1 ])
+      : null,
+    sPath: aCtx.sPath,
+    nLine: faSegAt( aBlock.vaSeg, nPos ).nLine + 1,
+    nOffset: fnOffsetAt( aCtx, aBlock, nPos ),
+    nRel: nPos - nStart
+  };
+};
+
+const fvaInclusionForText = ( aCtx, aBlock, nStart, nEnd ) => {
+  const vtSpan = fvtSpanForText( aBlock.sText );
+  return Array.from(
+    aBlock.sText.slice( 0, nEnd ).matchAll( reInclusionOpen ),
+    ( vs ) => vs.index
+  )
+    .filter(( nPos ) => nPos >= nStart && !fbInSpan( vtSpan, nPos ))
+    .map(( nPos ) => faInclusionAt( aCtx, aBlock, nPos, nStart ));
+};
 
 const faMarkerAt = ( aCtx, aBlock, vnMarker, nMarker ) => {
   const nPos = vnMarker[ nMarker ];
@@ -884,21 +960,20 @@ const faMarkerAt = ( aCtx, aBlock, vnMarker, nMarker ) => {
   const nEnd = nMarker + 1 < vnMarker.length
     ? vnMarker[ nMarker + 1 ]
     : aBlock.sText.length;
-  const sText = fsNormal(
-    aBlock.sText.slice( nPos + aToken.sToken.length, nEnd )
-  );
+  const nStart = nPos + aToken.sToken.length;
+  const sTextRaw = aBlock.sText.slice( nStart, nEnd );
+  const sText = fsNormal( sTextRaw );
   const bPlaceholder = aToken.bWell && aToken.sLabel !== null;
   const aSeg = faSegAt( aBlock.vaSeg, nPos );
-  const aParts = aToken.sType === "s"
-    ? faPartsForToken( aToken.sParts )
-    : { vsPart: null, sReasonParts: null };
+  const vaInclusion = aToken.sType === "s"
+    ? fvaInclusionForText( aCtx, aBlock, nStart, nEnd )
+    : [];
   const sReasonMalformed = fsReasonMalformed( aToken, aBlock, sText );
   return {
     ...aToken,
-    ...aParts,
     sPath: aCtx.sPath,
     nLine: aSeg.nLine + 1,
-    nOffset: aCtx.vnLineStart[ aSeg.nLine ] + aSeg.nCol + nPos - aSeg.nStart,
+    nOffset: fnOffsetAt( aCtx, aBlock, nPos ),
     nBlock: aBlock.nBlock,
     nPosBlock: nPos,
     nEndBlock: nEnd,
@@ -906,9 +981,12 @@ const faMarkerAt = ( aCtx, aBlock, vnMarker, nMarker ) => {
     bPlaceholder: bPlaceholder && aToken.bClosed,
     bMalformed: sReasonMalformed !== null,
     sReasonMalformed,
-    vsReasonAttr: fvsReasonForAttr( aToken, aParts.sReasonParts ),
+    vsReasonAttr: fvsReasonForAttr( aToken, vaInclusion.length ),
     bViaPrompt: fbViaPrompt( aToken ),
+    sTextRaw,
+    vaInclusion,
     sText,
+    sTextIncluded: sText,
     sHash: fsHashForText( sText )
   };
 };
@@ -1824,6 +1902,11 @@ const faOwnerForComment = ( aSource, vaCall, aHeader, nComment ) => {
   };
 };
 
+const fsPartForLine = ( sLine ) => {
+  const vsGroup = sLine.match( reLinkPart );
+  return vsGroup === null ? null : vsGroup[ 3 ];
+};
+
 const faLinkForComment = ( aSource, vaCall, nComment, aForm ) => {
   const [ nLine, sLine, sAfter ] = ftCommentAt( aSource, nComment );
   if( !aForm.reText.test( sAfter )){ return null;}
@@ -1834,7 +1917,7 @@ const faLinkForComment = ( aSource, vaCall, nComment, aForm ) => {
     sText: sLine.trim(),
     sId: vsLoose === null ? null : vsLoose[ 1 ],
     sHash: vsLoose === null ? "" : vsLoose[ 2 ],
-    sPart: vsWell === null || vsWell[ 3 ] === undefined ? null : vsWell[ 3 ],
+    sPart: fsPartForLine( sLine ),
     bWell: vsWell !== null,
     bGuard: aForm.bGuard,
     aCall: fbLineRunWhole( aSource, nLine )
@@ -1985,7 +2068,11 @@ const fsReasonForFound = ( aFound, sNone, sTwice ) => {
 };
 
 const fsReasonForLink = ( aLink, aIndex ) => {
-  if( !aLink.bWell ){ return "malformed";}
+  if( !aLink.bWell ){
+    return aLink.sPart !== null && !aLink.bGuard
+      ? sReasonPartLink
+      : "malformed";
+  }
   if( aLink.aCall === null ){ return "misplaced";}
   const aFound = faLineForId( aIndex, aLink.sId );
   const sReason = fsReasonForFound(
@@ -1996,38 +2083,20 @@ const fsReasonForLink = ( aLink, aIndex ) => {
     return "names a line of type " + fsTypeLine( aFound.aLine.sType )
       + ", which no test proves";
   }
-  return aLink.bGuard ? null : fsReasonForPart( aLink, aFound.aLine );
-};
-
-const fsReasonForPart = ( aLink, aMarker ) => {
-  if( aMarker.sReasonParts !== null ){
-    return "the statement's part list is malformed";
-  }
-  if( aMarker.vsPart === null ){ return null;}
-  if( aLink.sPart === null ){
-    return "whole link to a statement with a part list";
-  }
-  return aMarker.vsPart.includes( aLink.sPart )
-    ? null
-    : "label " + aLink.sPart + " is not in the statement's part list";
+  return null;
 };
 
 const faLinkResolved = ( aLink, sPath, aIndex ) => {
   const sReason = fsReasonForLink( aLink, aIndex );
-  const aStmtNamed = sReason === null
+  const aStmt = sReason === null
     ? aIndex.avaMarkerForId.get( aLink.sId )[ 0 ]
     : null;
-  const bProposed = (
-    aStmtNamed !== null && aLink.sPart !== null && aStmtNamed.vsPart === null
-  );
-  const aStmt = bProposed ? null : aStmtNamed;
   return {
     ...aLink,
     sPath,
     sReason,
-    aStmtNamed,
+    aStmtNamed: aStmt,
     aStmt,
-    bProposed,
     bStale: aStmt !== null && aStmt.sHash !== aLink.sHash,
     bIdAbsent: aLink.bWell && !aIndex.avaMarkerForId.has( aLink.sId )
   };
@@ -2044,17 +2113,9 @@ const faCallProved = ( aCall, vaCallAll, vaLink ) => {
   const vaCover = vaLink.filter(( aLink ) => (
     aLink.aStmtNamed !== null && fbEncloses( aLink.aCall, aCall )
   ));
-  const vaProof = vaCover.filter(( aLink ) => aLink.aStmt !== null );
   return {
     ...aCall,
-    vaStmt: fvaStmtUnique(
-      vaProof
-        .filter(( aLink ) => aLink.sPart === null )
-        .map(( aLink ) => aLink.aStmt )
-    ),
-    vaPart: vaProof
-      .filter(( aLink ) => aLink.sPart !== null )
-      .map(( aLink ) => ({ aStmt: aLink.aStmt, sPart: aLink.sPart })),
+    vaStmt: fvaStmtUnique( vaCover.map(( aLink ) => aLink.aStmt )),
     vaStmtLinked: fvaStmtUnique(
       vaCover.map(( aLink ) => aLink.aStmtNamed )
     ),
@@ -2088,9 +2149,7 @@ const faTestLinked = ( aTest, aIndex ) => {
 const fasIdBacked = ( vaTestLinked ) => new Set(
   vaTestLinked.flatMap(( aTest ) => aTest.vaCall
     .filter(( aCall ) => aCall.sKind === "test" )
-    .flatMap(( aCall ) => aCall.vaStmt.concat(
-      aCall.vaPart.map(( aPart ) => aPart.aStmt )
-    )))
+    .flatMap(( aCall ) => aCall.vaStmt ))
     .map(( aStmt ) => aStmt.sId )
 );
 
@@ -2222,12 +2281,52 @@ const aObsInputNone = {
   sPathObs: null, sTextObs: null, vaRules: [], vaCode: []
 };
 
+const ffsTextIncluded = ( vaInclusion ) => {
+  const avaInclusionForMarker = favxGrouped(
+    vaInclusion.filter(( aIncl ) => aIncl.sReason === null ),
+    ( aIncl ) => aIncl.aMarker,
+    ( aIncl ) => aIncl
+  );
+  const asTextForMarker = new Map();
+  const fsText = ( aMarker ) => {
+    if( !asTextForMarker.has( aMarker )){
+      const sRaw = ( avaInclusionForMarker.get( aMarker ) || [])
+        .slice()
+        .sort(( aA, aB ) => aB.nRel - aA.nRel )
+        .reduce(( sAcc, aIncl ) => (
+          sAcc.slice( 0, aIncl.nRel ) + fsText( aIncl.aTarget )
+          + sAcc.slice( aIncl.nRel + aIncl.sWritten.length )
+        ), aMarker.sTextRaw );
+      asTextForMarker.set( aMarker, fsNormal( sRaw ));
+    }
+    return asTextForMarker.get( aMarker );
+  };
+  return fsText;
+};
+
+const fvaSpecIncluded = ( vaSpecRaw ) => {
+  const vaMarkerRaw = vaSpecRaw.flatMap(( aSpec ) => aSpec.vaMarker );
+  const fsText = ffsTextIncluded( faRootRefs({
+    vaMarker: vaMarkerRaw, ...faIndexForMarkers( vaMarkerRaw )
+  }).vaInclusion );
+  const faIncluded = ( aMarker ) => {
+    if( aMarker.vaInclusion.length === 0 ){ return aMarker;}
+    const sTextIncluded = fsText( aMarker );
+    return {
+      ...aMarker, sTextIncluded, sHash: fsHashForText( sTextIncluded )
+    };
+  };
+  return vaSpecRaw.map(( aSpec ) => ({
+    ...aSpec, vaMarker: aSpec.vaMarker.map( faIncluded )
+  }));
+};
+
 const faModel = ({
   vaSpec, vaTest, vaCiter, vaGuided, vaRecord, fbExists, aFiles, aObsInput,
 }) => {
-  const vaSpecParsed = vaSpec.map(( aSpec ) => faParseSpec({
+  const vaSpecParsed = fvaSpecIncluded( vaSpec.map(( aSpec ) => faParseSpec({
     sPath: fsPosix( aSpec.sPath ), sText: aSpec.sText
-  }));
+  })));
   const vaMarker = vaSpecParsed.flatMap(( aSpec ) => aSpec.vaMarker );
   const aIndex = faIndexForMarkers( vaMarker );
   const vaTestParsed = fvaTestResolved( vaTest, aIndex );
@@ -2236,6 +2335,7 @@ const faModel = ({
     vaSpecParsed,
     vaMarker,
     ...aIndex,
+    aRootRefs: faRootRefs({ vaMarker, ...aIndex }),
     vaTestParsed,
     vaCallTest: vaTestParsed.flatMap(( aTest ) => (
       aTest.vaCall.filter(( aCall ) => aCall.sKind === "test" )
@@ -3077,8 +3177,10 @@ const faLines = ( aModel, aEnv ) => {
   aLines.vaCodeRefBad = aModel.vaCodeRef.filter(( aRef ) => (
     aRef.sReason !== null
   ));
+  const asMarkerRoot = fasMarkerRoot( aModel.aRootRefs );
   aLines.vaNoImplementation = fvaLineOfType( aModel, "s" ).filter(( aStmt ) => (
-    !aLines.vaImplements.some(( aRef ) => aRef.sId === aStmt.sId )
+    !asMarkerRoot.has( aStmt )
+    && !aLines.vaImplements.some(( aRef ) => aRef.sId === aStmt.sId )
   ));
   aLines.vaStatusConflict = fvaLineOfType( aModel, "s" )
     .filter(( aStmt ) => aStmt.bNotImplemented)
@@ -3281,37 +3383,120 @@ const fbReachesSelf = ( avaNext, aStart ) => {
   return false;
 };
 
-const fvaListCycleMarked = ( vaList ) => {
-  const avaNext = new Map(
-    vaList
-      .filter(( aList ) => aList.sReason === null )
-      .map(( aList ) => [
-        aList.aMarker, aList.vaRef.map(( aRef ) => aRef.aTarget )
-      ])
+const sReasonCycleList = "leads back to itself through its roots";
+const sReasonCycleInclusion = "lies on a cycle of root references";
+const sReasonInclusionForm = "not in the form {s-xxxxxx}";
+
+const favaNextForRefs = ( vaList, vaInclusion ) => {
+  const avaNext = new Map();
+  const fAdd = ( aFrom, aTo ) => avaNext.set(
+    aFrom, ( avaNext.get( aFrom ) || []).concat([ aTo ])
   );
-  return vaList.map(( aList ) => (
-    aList.sReason === null && fbReachesSelf( avaNext, aList.aMarker )
-      ? {
-        ...aList,
-        sReason: "leads back to itself through its roots",
-        sReasonBase: "leads back to itself through its roots"
-      }
-      : aList
+  vaList
+    .filter(( aList ) => aList.sReason === null )
+    .forEach(( aList ) => aList.vaRef.forEach(( aRef ) => (
+      fAdd( aList.aMarker, aRef.aTarget )
+    )));
+  vaInclusion
+    .filter(( aIncl ) => aIncl.sReason === null )
+    .forEach(( aIncl ) => fAdd( aIncl.aMarker, aIncl.aTarget ));
+  return avaNext;
+};
+
+const fbReaches = ( avaNext, aFrom, aGoal ) => (
+  aFrom === aGoal || fbReachesSelf(
+    new Map( avaNext ).set( aGoal, [ aFrom ]), aGoal
+  )
+);
+
+const faRootRefsCycleMarked = ( vaList, vaInclusion ) => {
+  const avaNext = favaNextForRefs( vaList, vaInclusion );
+  return {
+    vaList: vaList.map(( aList ) => (
+      aList.sReason === null && fbReachesSelf( avaNext, aList.aMarker )
+        ? { ...aList, sReason: sReasonCycleList, sReasonBase: sReasonCycleList }
+        : aList
+    )),
+    vaInclusion: vaInclusion.map(( aIncl ) => (
+      aIncl.sReason === null
+        && fbReaches( avaNext, aIncl.aTarget, aIncl.aMarker )
+        ? { ...aIncl, aTarget: null, sReason: sReasonCycleInclusion }
+        : aIncl
+    ))
+  };
+};
+
+const fsReasonForInclusion = ( aFound, aMarker, asTargetList ) => {
+  if( aFound.sReason !== null ){ return aFound.sReason;}
+  if( aFound.aTarget === aMarker ){ return "names its own statement";}
+  return asTargetList.has( aFound.aTarget )
+    ? "names a line its root list also names"
+    : null;
+};
+
+const faInclusionResolved = ( aIncl, aMarker, aCtx, asTargetList ) => {
+  const aFound = aIncl.aRef === null
+    ? { aTarget: null, sReason: sReasonInclusionForm }
+    : faTargetForRef( aIncl.aRef, aMarker, aCtx );
+  const sReason = fsReasonForInclusion( aFound, aMarker, asTargetList );
+  return {
+    ...aIncl,
+    aMarker,
+    aTarget: sReason === null ? aFound.aTarget : null,
+    sReason,
+    bIdAbsent: aIncl.aRef !== null && aIncl.aRef.sId !== null
+      && !aCtx.avaMarkerForId.has( aIncl.aRef.sId )
+  };
+};
+
+const fvaInclusionForMarker = ( aMarker, aCtx, aList ) => {
+  const asTargetList = new Set(( aList === undefined ? [] : aList.vaRef )
+    .map(( aRef ) => aRef.aTarget )
+    .filter( Boolean ));
+  return aMarker.vaInclusion.map(( aIncl ) => (
+    faInclusionResolved( aIncl, aMarker, aCtx, asTargetList )
   ));
 };
 
-const fvaListForModel = ( aModel ) => {
+const faRootRefs = ( aModel ) => {
   const aCtx = {
     avaMarkerForId: aModel.avaMarkerForId,
     avaMarkerForBody: aModel.avaMarkerForBody,
     avaMarkerForLabel: favaMarkerForLabel( aModel.vaMarker )
   };
-  return fvaListCycleMarked(
-    aModel.vaMarker
-      .filter(( aMarker ) => aMarker.sList !== null && !aMarker.bMalformed )
-      .map(( aMarker ) => faListForMarker( aMarker, aCtx ))
-  );
+  const vaMarkerWell = aModel.vaMarker.filter(( aMarker ) => (
+    !aMarker.bMalformed
+  ));
+  const vaList = vaMarkerWell
+    .filter(( aMarker ) => aMarker.sList !== null )
+    .map(( aMarker ) => faListForMarker( aMarker, aCtx ));
+  const alistForMarker = new Map( vaList.map(( aList ) => [
+    aList.aMarker, aList
+  ]));
+  return faRootRefsCycleMarked( vaList, vaMarkerWell.flatMap(( aMarker ) => (
+    fvaInclusionForMarker( aMarker, aCtx, alistForMarker.get( aMarker ))
+  )));
 };
+
+const favaConclusionForRefs = ( vaRefEntry, vaInclusion ) => {
+  const avaConclusionForRoot = favxGrouped(
+    vaRefEntry
+      .map(( aEntry ) => ({
+        aTarget: aEntry.aRef.aTarget, aMarker: aEntry.aMarker
+      }))
+      .concat( vaInclusion.filter(( aIncl ) => aIncl.sReason === null )),
+    ( aEntry ) => aEntry.aTarget,
+    ( aEntry ) => aEntry.aMarker
+  );
+  return new Map( Array.from( avaConclusionForRoot, ([ aRoot, vaC ]) => [
+    aRoot, Array.from( new Set( vaC ))
+  ]));
+};
+
+const fasMarkerRoot = ( aRootRefs ) => new Set( favaConclusionForRefs(
+  fvaRefEntry( aRootRefs.vaList.filter(( aList ) => aList.sReason === null )),
+  aRootRefs.vaInclusion
+).keys());
 
 const fvaLabelTwice = ( vaMarker ) => (
   Array.from( favaMarkerForLabel( vaMarker ).values())
@@ -3326,8 +3511,8 @@ const fvaLabelTwice = ( vaMarker ) => (
     }))
 );
 
-const fvaRootBad = ( vaList, vaMarker ) => (
-  vaList
+const fvaRootBad = ( aRootRefs, vaMarker ) => (
+  aRootRefs.vaList
     .filter(( aList ) => aList.sReason !== null )
     .map(( aList ) => ({
       sPath: aList.aMarker.sPath,
@@ -3336,6 +3521,15 @@ const fvaRootBad = ( vaList, vaMarker ) => (
       sReason: aList.sReason,
       bIdAbsent: aList.bIdAbsent
     }))
+    .concat( aRootRefs.vaInclusion
+      .filter(( aIncl ) => aIncl.sReason !== null )
+      .map(( aIncl ) => ({
+        sPath: aIncl.sPath,
+        nLine: aIncl.nLine,
+        sText: aIncl.sWritten,
+        sReason: aIncl.sReason,
+        bIdAbsent: aIncl.bIdAbsent
+      })))
     .concat( fvaLabelTwice( vaMarker ))
     .sort(( aA, aB ) => (
       aA.sPath.localeCompare( aB.sPath ) || aA.nLine - aB.nLine
@@ -3379,13 +3573,12 @@ const faRootForMarker = ( aMarker, avaConclusionForRoot, fbSatisfied ) => {
 };
 
 const faRoots = ( aModel, asIdProved ) => {
-  const vaList = fvaListForModel( aModel );
+  const aRootRefs = aModel.aRootRefs || faRootRefs( aModel );
+  const vaList = aRootRefs.vaList;
   const vaListValid = vaList.filter(( aList ) => aList.sReason === null );
   const vaRefEntry = fvaRefEntry( vaListValid );
-  const avaConclusionForRoot = favxGrouped(
-    vaRefEntry,
-    ( aEntry ) => aEntry.aRef.aTarget,
-    ( aEntry ) => aEntry.aMarker
+  const avaConclusionForRoot = favaConclusionForRefs(
+    vaRefEntry, aRootRefs.vaInclusion
   );
   const fbSatisfied = fabSatisfiedForMarker(
     avaConclusionForRoot,
@@ -3401,8 +3594,9 @@ const faRoots = ( aModel, asIdProved ) => {
         .filter(( aList ) => aList.sReasonBase === null )
         .map(( aList ) => [ aList.aMarker, aList ])
     ),
+    vaInclusion: aRootRefs.vaInclusion,
     asMarkerRoot: new Set( avaConclusionForRoot.keys()),
-    vaRootBad: fvaRootBad( vaList, aModel.vaMarker ),
+    vaRootBad: fvaRootBad( aRootRefs, aModel.vaMarker ),
     vaRoot: aModel.vaMarker
       .filter(( aMarker ) => avaConclusionForRoot.has( aMarker ))
       .map(( aMarker ) => (
@@ -3423,58 +3617,10 @@ const faRoots = ( aModel, asIdProved ) => {
   };
 };
 
-const fsKeyPart = ( sId, sPart ) => sId + "\n" + sPart;
-
-const faCallForPart = ( aModel ) => {
-  const aCallForPart = new Map();
-  aModel.vaCallTest.forEach(( aCall ) => aCall.vaPart.forEach(( aPart ) => {
-    const sKey = fsKeyPart( aPart.aStmt.sId, aPart.sPart );
-    if( !aCallForPart.has( sKey )){ aCallForPart.set( sKey, aCall );}
-  }));
-  return aCallForPart;
-};
-
-const fbPartsProved = ( aStmt, aCallForPart ) => (
-  aStmt.vsPart !== null
-  && aStmt.vsPart.every(( sPart ) => (
-    aCallForPart.has( fsKeyPart( aStmt.sId, sPart ))
-  ))
+const fasIdProved = ( aModel ) => new Set(
+  aModel.vaCallTest
+    .flatMap(( aCall ) => aCall.vaStmt.map(( aStmt ) => aStmt.sId ))
 );
-
-const fasIdProved = ( aModel ) => {
-  const aCallForPart = faCallForPart( aModel );
-  return new Set(
-    aModel.vaCallTest
-      .flatMap(( aCall ) => aCall.vaStmt.map(( aStmt ) => aStmt.sId ))
-      .concat( fvaStmtForModel( aModel )
-        .filter(( aStmt ) => fbPartsProved( aStmt, aCallForPart ))
-        .map(( aStmt ) => aStmt.sId ))
-  );
-};
-
-const fsProofForStmt = ( aStmt, aCallForPart ) => {
-  if( aStmt.vsPart === null ){ return "";}
-  const fbProved = ( sPart ) => aCallForPart.has(
-    fsKeyPart( aStmt.sId, sPart )
-  );
-  const vsProved = aStmt.vsPart.filter( fbProved ).map(( sPart ) => {
-    const aCall = aCallForPart.get( fsKeyPart( aStmt.sId, sPart ));
-    return sPart + " " + aCall.sPath + ":" + ( aCall.nLine + 1 );
-  });
-  const vsMissing = aStmt.vsPart.filter(( sPart ) => !fbProved( sPart ));
-  return ( vsProved.length === 0 ? "" : "  proved: " + vsProved.join( ", " ))
-    + "  missing: " + vsMissing.join( "," );
-};
-
-const fvaProposedForModel = ( aModel, vaStmt ) => vaStmt
-  .map(( aStmt ) => ({
-    sPath: aStmt.sPath,
-    aStmt,
-    vaLink: aModel.vaLink
-      .filter(( aLink ) => aLink.bProposed && aLink.aStmtNamed === aStmt )
-      .sort(( aA, aB ) => aA.sPart.localeCompare( aB.sPart ))
-  }))
-  .filter(( aEntry ) => aEntry.vaLink.length > 0 );
 
 const fvaRulingForText = ( sText, nEnd ) => {
   const vtSpan = fvtSpanForText( sText );
@@ -3582,7 +3728,6 @@ const fvaIncompleteForTypes = ( aTypes, sPathSpec ) => (
 
 const faStatements = ( aModel ) => {
   const asIdProved = fasIdProved( aModel );
-  const aCallForPart = faCallForPart( aModel );
   const aRoots = faRoots( aModel, asIdProved );
   const vaStmt = fvaStmtForModel( aModel );
   const aTypes = faTypeLists( aModel, aRoots );
@@ -3596,14 +3741,9 @@ const faStatements = ( aModel ) => {
     vaRederive: aRoots.vaRederive,
     vaUnstamped: aRoots.vaUnstamped,
     vaMarkerBad: fvaMarkerBad( aModel ),
-    vaUnproved: vaStmt
-      .filter(( aStmt ) => (
-        !asIdProved.has( aStmt.sId ) && !aRoots.asMarkerRoot.has( aStmt )
-      ))
-      .map(( aStmt ) => ({
-        ...aStmt, sProof: fsProofForStmt( aStmt, aCallForPart )
-      })),
-    vaProposed: fvaProposedForModel( aModel, vaStmt ),
+    vaUnproved: vaStmt.filter(( aStmt ) => (
+      !asIdProved.has( aStmt.sId ) && !aRoots.asMarkerRoot.has( aStmt )
+    )),
     vaLinkBad: aModel.vaLinkAny.filter(( aLink ) => aLink.sReason !== null ),
     vaStale: aModel.vaLinkAny.filter(( aLink ) => aLink.bStale ),
     vaUnbacked: aModel.vaGuard.filter(( aGuard ) => (
@@ -3643,7 +3783,6 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
       fbSpec( aEntry ) || aScope.asIdStmt.has( aEntry.sId )
     )),
     vaUnproved: aStmtList.vaUnproved.filter( fbSpec ),
-    vaProposed: aStmtList.vaProposed.filter( fbSpec ),
     vaLinkBad: aStmtList.vaLinkBad.filter(( aEntry ) => (
       aScope.asPathTest.has( aEntry.sPath )
     )),
@@ -3684,9 +3823,7 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
 };
 
 const fbCallUnlinked = ( aCall ) => (
-  aCall.vaStmt.length === 0
-  && aCall.vaPart.length === 0
-  && aCall.vaStmtGuard.length === 0
+  aCall.vaStmt.length === 0 && aCall.vaStmtGuard.length === 0
 );
 
 const faUnlinkedForCalls = ( vaCallTest ) => {
@@ -3858,7 +3995,7 @@ const fsLineForUnbacked = ( aGuard ) => (
 
 const fsLineForUnproved = ( aStmt ) => (
   aStmt.sId + ( aStmt.bNotImplemented ? "  not-yet-implemented" : "" )
-  + "  " + fsPlace( aStmt ) + aStmt.sProof
+  + "  " + fsPlace( aStmt )
 );
 
 const fsLineForIncomplete = ( aEntry ) => aEntry.sLine;
@@ -3922,36 +4059,29 @@ const fvsSectionStmt = ( aMap ) => [
   ),
   fsSection( "unclosed fences", aMap.vaFenceUnclosed.map( fsLineForFence )),
   fsSection(
-    "statements with proposed parts",
-    aMap.vaProposed.flatMap( fvsLineForProposed ),
-    aMap.vaProposed.length
-  ),
-  fsSection(
     "unbacked guard lines", aMap.vaUnbacked.map( fsLineForUnbacked )
   )
 ];
-
-const fvsLineForProposed = ( aEntry ) => [
-  fsPlace( aEntry.aStmt ) + "  " + aEntry.aStmt.sId
-].concat( aEntry.vaLink.map(( aLink ) => (
-  "  " + aLink.sPart + "  " + fsPlace( aLink ) + "  " + fsNameForLink( aLink )
-)));
 
 const fsNameForLink = ( aLink ) => (
   aLink.aCall === null ? "(no call)" : aLink.aCall.sName
 );
 
-const fsIdForLink = ( aLink ) => (
-  aLink.sId + fsGuardWord( aLink )
-  + ( aLink.sPart === null ? "" : " part=" + aLink.sPart )
-);
+const fsIdForLink = ( aLink ) => aLink.sId + fsGuardWord( aLink );
 
 const fsIdShown = ( aMarker ) => aMarker.sId || "placeholder";
+
+const fsSurfaceShown = ( aMarker ) => (
+  aMarker.sSurface !== null && rePartLabel.test( aMarker.sSurface )
+    ? "  surface=" + aMarker.sSurface
+    : ""
+);
 
 const fvsLineForRoot = ( aRoot ) => (
   [ fsPlace( aRoot.aMarker ) + "  " + fsIdShown( aRoot.aMarker ) ]
     .concat( aRoot.vaConclusion.map(( aC ) => (
-      "  " + fsPlace( aC.aMarker ) + "  " + fsIdShown( aC.aMarker ) + "  "
+      "  " + fsPlace( aC.aMarker ) + "  " + fsIdShown( aC.aMarker )
+      + fsSurfaceShown( aC.aMarker ) + "  "
       + ( aC.bSatisfied ? "satisfied" : "unsatisfied" )
     )))
     .concat([ "  " + (
@@ -4216,8 +4346,7 @@ const fsSid = ( aModel, aStmt ) => {
     ? [ "no link names " + aStmt.sId ]
     : vaLink.map(( aLink ) => (
       fsPlace( aLink ) + "  " + fsNameForLink( aLink ) + "  "
-      + aLink.sHash + "  " + ( aLink.sPart || "whole" ) + "  "
-      + fsStateForLink( aLink )
+      + aLink.sHash + "  " + fsStateForLink( aLink )
     ));
   const vsGuard = aModel.vaGuard
     .filter(( aGuard ) => aGuard.sId === aStmt.sId )
@@ -4230,18 +4359,12 @@ const fsSid = ( aModel, aStmt ) => {
       aRef.sKind === "implements" && aRef.sTarget === aStmt.sId
     ))
     .map( fsLineSidImplements );
-  const aCallForPart = faCallForPart( aModel );
-  const vsPart = ( aStmt.vsPart || [] ).map(( sPart ) => (
-    sPart + "  " + (
-      aCallForPart.has( fsKeyPart( aStmt.sId, sPart )) ? "proved" : "missing"
-    )
-  ));
   return [
     fsPlace( aStmt ) + "  " + aStmt.sId + "  "
     + ( aStmt.bProbe ? "probe " : "" )
     + ( aStmt.bNotImplemented ? "not-yet-implemented " : "" )
     + fsWords( aStmt.sText )
-  ].concat( vsLink, vsGuard, vsImplements, vsPart ).join( "\n" ) + "\n";
+  ].concat( vsLink, vsGuard, vsImplements ).join( "\n" ) + "\n";
 };
 
 const fsStateForCodeRef = ( aRef ) => {
@@ -4258,7 +4381,6 @@ const fsLineSidImplements = ( aRef ) => (
 
 const fsStateForLink = ( aLink ) => {
   if( aLink.sReason !== null ){ return aLink.sReason;}
-  if( aLink.bProposed ){ return "proposed";}
   return aLink.bStale ? "stale" : "current";
 };
 
@@ -4275,13 +4397,10 @@ const fbLinkCoversTest = ( aModel, aLink ) => aModel.vaCallTest.some((
 ) => aCall.sPath === aLink.sPath && fbEncloses( aLink.aCall, aCall ));
 
 const fsCrossSuite = ( aModel, vsArg, aConfig ) => fvaStmtForModel( aModel )
-  .filter(( aStmt ) => aStmt.vsPart === null && aStmt.sReasonParts === null )
   .map(( aStmt ) => ({
     aStmt,
     vaLink: aModel.vaLink.filter(( aLink ) => (
-      aLink.aStmt === aStmt
-      && aLink.sPart === null
-      && fbLinkCoversTest( aModel, aLink )
+      aLink.aStmt === aStmt && fbLinkCoversTest( aModel, aLink )
     ))
   }))
   .filter(( aEntry ) => new Set(
@@ -4295,10 +4414,7 @@ const fsCrossSuite = ( aModel, vsArg, aConfig ) => fvaStmtForModel( aModel )
     .join( "\n" ) + "\n" )
   .join( "" );
 
-const fbCallCoveredBy = ( aCall, aStmt ) => (
-  aCall.vaStmt.includes( aStmt )
-  || aCall.vaPart.some(( aPart ) => aPart.aStmt === aStmt )
-);
+const fbCallCoveredBy = ( aCall, aStmt ) => aCall.vaStmt.includes( aStmt );
 
 const fsProbes = ( aModel ) => fvaStmtForModel( aModel )
   .filter(( aStmt ) => aStmt.bProbe )
@@ -4326,7 +4442,7 @@ const fzCompareScore = ( aA, aB ) => (
 );
 
 const fsCandidates = ( aModel, aStmt ) => {
-  const vsTermStmt = fvsTermForText( aStmt.sText );
+  const vsTermStmt = fvsTermForText( aStmt.sTextIncluded );
   return aModel.vaCallTest
     .filter(( aCall ) => aCall.asOwner.has( aStmt.sPath ))
     .filter(( aCall ) => !aCall.vaStmtLinked.some(( aProved ) => (
@@ -4431,14 +4547,35 @@ class IdMinter {
   }}}
 }
 
-const fsTextEdited = ( sText, vaEdit ) => (
-  vaEdit
+const fsTextReplaced = ( sText, vaReplace ) => (
+  vaReplace
     .slice()
-    .sort(( aA, aB ) => aB.aMarker.nOffset - aA.aMarker.nOffset )
-    .reduce(( sAcc, aEdit ) => (
-      sAcc.slice( 0, aEdit.aMarker.nOffset ) + aEdit.sToken
-      + sAcc.slice( aEdit.aMarker.nOffset + aEdit.aMarker.sToken.length )
+    .sort(( aA, aB ) => aB.nOffset - aA.nOffset )
+    .reduce(( sAcc, aReplace ) => (
+      sAcc.slice( 0, aReplace.nOffset ) + aReplace.sText
+      + sAcc.slice( aReplace.nOffset + aReplace.nLength )
     ), sText )
+);
+
+const faReplaceForEdit = ( aEdit ) => ({
+  nOffset: aEdit.aMarker.nOffset,
+  nLength: aEdit.aMarker.sToken.length,
+  sText: aEdit.sToken
+});
+
+const fvaReplaceForInclusions = ( vaInclusion, sPath, asIdNewForMarker ) => (
+  vaInclusion
+    .filter(( aIncl ) => (
+      aIncl.sPath === sPath
+      && aIncl.sReason === null
+      && aIncl.aRef.sLabel !== null
+      && asIdNewForMarker.has( aIncl.aTarget )
+    ))
+    .map(( aIncl ) => ({
+      nOffset: aIncl.nOffset,
+      nLength: aIncl.sWritten.length,
+      sText: "{" + asIdNewForMarker.get( aIncl.aTarget ) + "}"
+    }))
 );
 
 const fsRefStamped = ( aRef, asIdNewForMarker ) => {
@@ -4473,6 +4610,7 @@ const fsTokenAssigned = ( aMarker, sId, sList, sTargets ) => (
   + ( sList === null ? "" : " <" + sList )
   + ( sTargets === null ? "" : " >" + sTargets )
   + ( aMarker.sParts === null ? "" : " parts=" + aMarker.sParts )
+  + ( aMarker.sSurface === null ? "" : " surface=" + aMarker.sSurface )
   + ( aMarker.bViaEarly ? fsViaToken( aMarker ) : "" )
   + ( aMarker.sFor === null ? "" : " for=" + aMarker.sFor )
   + ( aMarker.bViaEarly ? "" : fsViaToken( aMarker ))
@@ -4853,16 +4991,18 @@ const fzAssign = ( reader, fWrite ) => {
       .map(( aMarker ) => [ aMarker, minter.fsId( aMarker.sType )])
   );
   const vsLine = vaSpec.flatMap(( aSpec ) => {
+    const sPath = fsPosix( aSpec.sPath );
     const vaEdit = fvaEditForSpec(
       aModel,
-      aModel.vaMarker.filter(( aMarker ) => (
-        aMarker.sPath === fsPosix( aSpec.sPath )
-      )),
+      aModel.vaMarker.filter(( aMarker ) => aMarker.sPath === sPath ),
       aRoots,
       asIdNewForMarker
     );
-    if( vaEdit.length > 0 ){
-      reader.fWriteText( aSpec.sPath, fsTextEdited( aSpec.sText, vaEdit ));
+    const vaReplace = vaEdit.map( faReplaceForEdit ).concat(
+      fvaReplaceForInclusions( aRoots.vaInclusion, sPath, asIdNewForMarker )
+    );
+    if( vaReplace.length > 0 ){
+      reader.fWriteText( aSpec.sPath, fsTextReplaced( aSpec.sText, vaReplace ));
     }
     return vaEdit
       .filter(( aEdit ) => aEdit.sIdNew !== undefined )
@@ -4877,6 +5017,239 @@ const fzAssign = ( reader, fWrite ) => {
     fvsLineAssignObservations( reader, aModel, minter )
   ).join( "" ));
   return 0;
+};
+
+const fsHashDerivedFor = ( aMarker, sLabel ) => fsHashForText( fsNormal(
+  aMarker.sTextIncluded + " applied to the " + sLabel + "."
+));
+
+const fbSplittable = ( aModel, aMarker ) => (
+  aMarker.sType === "s"
+  && !aMarker.bMalformed
+  && aMarker.sId !== null
+  && aModel.avaMarkerForId.get( aMarker.sId ).length === 1
+  && fvsPartForMarker( aMarker ) !== null
+);
+
+const faSplitForMarker = ( aMarker, minter ) => ({
+  aMarker,
+  vtLabel: fvsPartForMarker( aMarker ).map(( sLabel ) => [
+    sLabel, minter.fsId( "s" )
+  ])
+});
+
+const fsBulletForBlock = ( aBlock, sLine ) => {
+  const vsBullet = aBlock.sKind === "bullet"
+    ? sLine.match( reBlockBullet )
+    : null;
+  const sBullet = vsBullet === null ? "*" : vsBullet[ 0 ].trim();
+  return "*-+".includes( sBullet ) ? sBullet : "*";
+};
+
+const fvsLineForSplit = ( aSpec, aSplit ) => {
+  const aBlock = aSpec.vaBlock[ aSplit.aMarker.nBlock ];
+  const sFirst = aSpec.vsLine[ aBlock.vnLine[ 0 ]];
+  const sLead = sFirst.match( /^\s*/ )[ 0 ]
+    + fsBulletForBlock( aBlock, sFirst );
+  return aSplit.vtLabel.map(([ sLabel, sId ]) => (
+    sLead + " {#" + sId + " surface=" + sLabel
+    + ( aSplit.aMarker.bProbe ? " probe" : "" ) + "} {"
+    + aSplit.aMarker.sId + "} applied to the " + sLabel + "."
+  ));
+};
+
+const fvsLineSplit = ( aSpec, vaSplit ) => {
+  const vnLineStart = fvnLineStart( aSpec.vsLine );
+  const vvsLine = aSpec.vsLine.map(( sLine ) => [ sLine ]);
+  vaSplit
+    .slice()
+    .sort(( aA, aB ) => aB.aMarker.nOffset - aA.aMarker.nOffset )
+    .forEach(( aSplit ) => {
+      const aMarker = aSplit.aMarker;
+      const nLine = aMarker.nLine - 1;
+      const nCol = aMarker.nOffset - vnLineStart[ nLine ];
+      const vsHere = vvsLine[ nLine ];
+      vsHere[ 0 ] = vsHere[ 0 ].slice( 0, nCol )
+        + aMarker.sToken.replace( " parts=" + aMarker.sParts, "" )
+        + vsHere[ 0 ].slice( nCol + aMarker.sToken.length );
+      const aBlock = aSpec.vaBlock[ aMarker.nBlock ];
+      vvsLine[ aBlock.vnLine[ aBlock.vnLine.length - 1 ]].splice(
+        1, 0, ...fvsLineForSplit( aSpec, aSplit )
+      );
+    });
+  return vvsLine.flat();
+};
+
+const fvsOutForSpecSplit = ( aSpec, vaSplit, vsLine ) => vaSplit.flatMap((
+  aSplit
+) => aSplit.vtLabel.map(([ sLabel, sId ]) => (
+  aSpec.sPath + ":"
+  + ( vsLine.findIndex(( sLine ) => sLine.includes( "{#" + sId + " " )) + 1 )
+  + "  " + sId + "  " + aSplit.aMarker.sId + "  " + sLabel + "\n"
+)));
+
+const fsByHand = ( sPath, nLine, sId ) => (
+  sPath + ":" + nLine + "  " + sId + "  by hand\n"
+);
+
+const fsRewritten = ( sPath, nLine, sIdOld, sIdNew ) => (
+  sPath + ":" + nLine + "  " + sIdOld + " -> " + sIdNew + "\n"
+);
+
+const fsHashSplit = ( aSplit, sLabel, sHashRecorded ) => (
+  sHashRecorded === aSplit.aMarker.sHash
+    ? fsHashDerivedFor( aSplit.aMarker, sLabel )
+    : sHashRecorded
+);
+
+const fsIdForLabel = ( aSplit, sLabel ) => {
+  const tLabel = aSplit.vtLabel.find(( t ) => t[ 0 ] === sLabel );
+  return tLabel === undefined ? null : tLabel[ 1 ];
+};
+
+const fbCallsShared = ( vaCall, aOuterA, aOuterB ) => vaCall.some((
+  aCall
+) => (
+  aCall.sKind === "test"
+  && aOuterA !== null && aOuterB !== null
+  && fbEncloses( aOuterA, aCall ) && fbEncloses( aOuterB, aCall )
+));
+
+class TestSplitter {
+  constructor( aFile, asplitForId ){
+    this.aTest = faParseTest( aFile );
+    this.sPath = this.aTest.sPath;
+    this.vvsLine = aFile.sText.split( "\n" ).map(( sLine ) => [ sLine ]);
+    this.asplitForId = asplitForId;
+    this.vsOut = [];
+    this.vsByHand = [];
+    this.bChanged = false;
+  }
+
+  fLink( aLink ){
+    if( aLink.sPart === null ){ return;}
+    const aSplit = this.asplitForId.get( aLink.sId );
+    const sIdNew = aSplit === undefined
+      ? null
+      : fsIdForLabel( aSplit, aLink.sPart );
+    if( sIdNew === null ){
+      this.vsByHand.push( fsByHand( this.sPath, aLink.nLine, aLink.sId ));
+      return;
+    }
+    const vsHere = this.vvsLine[ aLink.nLine - 1 ];
+    vsHere[ 0 ] = vsHere[ 0 ].replace( reLinkPart, ( s, sPrefix ) => (
+      sPrefix + sIdNew + "@" + fsHashSplit( aSplit, aLink.sPart, aLink.sHash )
+    ));
+    this.bChanged = true;
+    this.vsOut.push( fsRewritten( this.sPath, aLink.nLine, aLink.sId, sIdNew ));
+  }
+
+  fGuard( aGuard ){
+    if( this.asplitForId.has( aGuard.sId ) || aGuard.sPart !== null ){
+      this.vsByHand.push( fsByHand( this.sPath, aGuard.nLine, aGuard.sId ));
+    }
+  }
+
+  fImplements( aImpl ){
+    const aSplit = this.asplitForId.get( aImpl.sId );
+    if( aSplit === undefined ){ return;}
+    const vsLabel = aSplit.vtLabel.map(( t ) => t[ 0 ]).filter(( sLabel ) => (
+      this.aTest.vaLink.some(( aLink ) => (
+        aLink.sId === aImpl.sId && aLink.sPart === sLabel
+        && fbCallsShared( this.aTest.vaCall, aLink.aCall, aImpl.aCall )
+      ))
+    ));
+    if( !aImpl.bWell || vsLabel.length === 0 ){
+      this.vsByHand.push( fsByHand( this.sPath, aImpl.nLine, aImpl.sId ));
+      return;
+    }
+    const sLine = this.vvsLine[ aImpl.nLine - 1 ][ 0 ];
+    this.vvsLine[ aImpl.nLine - 1 ] = vsLabel.map(( sLabel ) => {
+      const sIdNew = fsIdForLabel( aSplit, sLabel );
+      this.vsOut.push(
+        fsRewritten( this.sPath, aImpl.nLine, aImpl.sId, sIdNew )
+      );
+      return sLine.replace( /@implements +\S+/, "@implements " + sIdNew + "@"
+        + fsHashSplit( aSplit, sLabel, aImpl.sHash ));
+    });
+    this.bChanged = true;
+  }
+
+  faSplit(){
+    [
+      [ this.aTest.vaImplements, ( a ) => this.fImplements( a ) ],
+      [ this.aTest.vaLink, ( a ) => this.fLink( a ) ],
+      [ this.aTest.vaGuard, ( a ) => this.fGuard( a ) ]
+    ]
+      .flatMap(([ vaRef, fRef ]) => vaRef.map(( aRef ) => [ aRef, fRef ]))
+      .sort(( tA, tB ) => tA[ 0 ].nLine - tB[ 0 ].nLine )
+      .forEach(([ aRef, fRef ]) => fRef( aRef ));
+    return {
+      sText: this.bChanged ? this.vvsLine.flat().join( "\n" ) : null,
+      vsOut: this.vsOut,
+      vsByHand: this.vsByHand
+    };
+  }
+}
+
+const fsErrForPartList = ( aMarker ) => (
+  "spec-map: " + fsPlace( aMarker ) + "  " + aMarker.sToken
+  + "  part list left as written: "
+  + ( aMarker.bPlaceholder || aMarker.sId === null
+    ? "on a placeholder"
+    : "not two or more distinct labels of lowercase letters, digits or -" )
+  + "\n"
+);
+
+const fzSplitParts = ( reader, fWrite, fWriteErr ) => {
+  const vaSpec = reader.fvaSpec();
+  const aInput = faInputForReader( reader, vaSpec );
+  const vaTest = aInput.vaTest;
+  const aModel = faModel( aInput );
+  const aFileObs = reader.faObservationFile();
+  const minter = new IdMinter( fasBodyTaken(
+    aFileObs === null ? vaSpec : vaSpec.concat( aFileObs ), aModel
+  ));
+  const vaMarkerParts = aModel.vaMarker.filter(( aMarker ) => (
+    aMarker.sParts !== null
+  ));
+  const vaSplit = vaMarkerParts
+    .filter(( aMarker ) => fbSplittable( aModel, aMarker ))
+    .map(( aMarker ) => faSplitForMarker( aMarker, minter ));
+  const asplitForId = new Map( vaSplit.map(( aSplit ) => [
+    aSplit.aMarker.sId, aSplit
+  ]));
+  const vsOutSpec = aModel.vaSpecParsed.flatMap(( aSpec ) => {
+    const vaSplitHere = vaSplit.filter(( aSplit ) => (
+      aSplit.aMarker.sPath === aSpec.sPath
+    ));
+    if( vaSplitHere.length === 0 ){ return [];}
+    const vsLine = fvsLineSplit( aSpec, vaSplitHere );
+    reader.fWriteText( aSpec.sPath, vsLine.join( "\n" ));
+    return fvsOutForSpecSplit( aSpec, vaSplitHere, vsLine );
+  });
+  const vaTestSplit = vaTest.map(( aFile ) => ({
+    sPath: aFile.sPath, ...new TestSplitter( aFile, asplitForId ).faSplit()
+  }));
+  vaTestSplit
+    .filter(( aEntry ) => aEntry.sText !== null )
+    .forEach(( aEntry ) => reader.fWriteText( aEntry.sPath, aEntry.sText ));
+  const vsByHandCode = aModel.aLines.vaCodeRef
+    .filter(( aRef ) => (
+      aRef.sKind === "implements" && !aRef.bTest
+      && asplitForId.has( aRef.sTarget )
+    ))
+    .map(( aRef ) => fsByHand( aRef.sPath, aRef.nLine, aRef.sTarget ));
+  fWrite( vsOutSpec.concat(
+    vaTestSplit.flatMap(( aEntry ) => aEntry.vsOut ),
+    vsByHandCode,
+    vaTestSplit.flatMap(( aEntry ) => aEntry.vsByHand )
+  ).join( "" ));
+  const vaMarkerLeft = vaMarkerParts.filter(( aMarker ) => (
+    !vaSplit.some(( aSplit ) => aSplit.aMarker === aMarker )
+  ));
+  fWriteErr( vaMarkerLeft.map( fsErrForPartList ).join( "" ));
+  return vaMarkerLeft.length === 0 ? 0 : 1;
 };
 
 const fsProblemForType = ( sId, sType ) => (
@@ -5358,7 +5731,7 @@ const sUsage = (
   + "| --interactive | --guidance [--for <label>] | --pass <id> [--note <text>] "
   + "| --fail <id> [--note <text>] | --unable <id> [--note <text>] "
   + "| --reopen <id> | --answers <file> | --worklist <path> [--work <file>] "
-  + "| --hashes | --assign\n"
+  + "| --hashes | --assign | --split-parts\n"
 );
 
 const fbArgsValid = ( vsArg ) => {
@@ -5395,6 +5768,9 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   }
   const reader = new TreeReader( sDirRoot, aRead.aConfig );
   if( vsArg[ 0 ] === "--assign" ){ return fzAssign( reader, fWrite );}
+  if( vsArg[ 0 ] === "--split-parts" ){
+    return fzSplitParts( reader, fWrite, fWriteErr || fWrite );
+  }
   if( vsArg[ 0 ] === "--hashes" ){ return fzHashes( reader, fWrite );}
   if( vsArg[ 0 ] === "--gate" ){ return fzGate( reader, fWrite );}
   if( Object.hasOwn( asVerdictForFlag, vsArg[ 0 ])){

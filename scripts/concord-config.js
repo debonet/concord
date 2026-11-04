@@ -12,10 +12,11 @@
 // @implements s-w8ivpb@ffb0e3a
 // @implements s-4j8qm7@89b7c16
 // @implements s-pwo03p@679e44b
-// @implements s-liocgl@d7f5233
+// @implements s-liocgl@6c02b38
+// @implements s-6rfqdf@00eba76
 // @implements s-bqv6fu@d463477
-// @implements s-jpfy1o@4623436
-// @implements s-tps44b@d11f5f0
+// @implements s-jpfy1o@af3aa2b
+// @implements s-tps44b@015cdec
 // @implements s-ulp42m@25ec2c6
 // @implements s-np5ty8@bb18bff
 // @tested-by test/concord-settings.test.js
@@ -141,6 +142,7 @@ const fsMemberJoined = ( sOuter, sMember ) => (
 
 const asCanonicalKey = {
   sName: "name",
+  dirs_specs: "spec_directories",
   vaSuite: "suites",
   vsDir: "directories",
   vsLanguage: "languages",
@@ -158,12 +160,13 @@ const asCanonicalKey = {
 };
 
 const fsCanonicalMember = ( sMember ) => sMember.replace(
-  /\b[a-zA-Z][a-zA-Z0-9]*\b/g,
+  /\b[a-zA-Z][a-zA-Z0-9_]*\b/g,
   ( sKey ) => asCanonicalKey[ sKey ] || sKey
 );
 
 const vaAliasConfigRoot = [
   [ "sName", "name" ],
+  [ "dirs_specs", "spec_directories" ],
   [ "vaSuite", "suites" ],
   [ "vsLanguage", "languages" ],
   [ "vsDirRead", "read_directories" ],
@@ -406,6 +409,7 @@ class ConfigReader {
       });
       if( aRead.sProblem !== null ){ return aRead;}
       const aConfig = aRead.aConfig;
+      const bDeclared = aConfig.dirs_specs !== undefined;
       aConfig.dirs_specs = aConfig.dirs_specs || [ sDirSpecs ];
       const vsDirSpecs = Array.from( new Set(
         aConfig.dirs_specs.flatMap(( sPattern ) => this.fvsDirExpanded(
@@ -417,7 +421,9 @@ class ConfigReader {
               && fs.statSync( sDirAbs ).isDirectory();
           })
       ));
-      const bLiteralMissing = aConfig.dirs_specs.some(( sPattern ) => (
+      const bLiteralMissing = bDeclared && aConfig.dirs_specs.some((
+        sPattern
+      ) => (
         !sPattern.split( "/" ).includes( sSegmentAny )
         && !vsDirSpecs.includes( sPattern )
       ));
@@ -425,7 +431,8 @@ class ConfigReader {
         return {
           aConfig: null,
           sProblem: sFileConfig
-            + ": dirs_specs literal pattern does not name an existing directory"
+            + ": spec_directories literal pattern does not name an existing "
+            + "directory"
         };
       }
       if( aConfig.sPathObservations !== undefined ){

@@ -85,6 +85,13 @@ Rules for the agent that launches and coordinates architects and fixers in a Con
   A name grep can't find a rule written in another vocabulary (see THE
   MEASUREMENT PRINCIPLE). Before accepting a reported deletion, grep specs for
   the case's SUBJECT. [o-ikj457]
+* **Every fixer brief states: "before writing code, run the new tests against
+  the unchanged code and quote that run's `Tests:` line (the red) in the
+  report."** A test never seen failing has shown nothing. Check every fixer
+  report for the quoted red line: `grep -c "Tests:.*failed"` over the report
+  text is at least 1; a report without one goes back to the fixer to show the
+  new tests failing against the code before its change (comment out the change
+  in a scratch copy under `tmp/`, never `git stash`). [o-r3dfst]
 * **Only ONE agent drains `DIRECT_CHANGES.md`; in a parallel wave that is YOU.**
   The queue is append-only for writers, single-reader for drainers; two architects
   draining concurrently silently lose an entry appended between one's read and

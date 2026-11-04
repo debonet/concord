@@ -1,4 +1,3 @@
-// @spec specs/spec-map.md
 "use strict";
 
 const {
@@ -20,7 +19,9 @@ const {
   aListCodeRefBad
 } = require( "../scripts/spec-map.js" );
 
-// @proves s-qln1ta@5cda1f6
+// @proves s-zcb6gq@2302e9b
+// @proves s-1a9ecj@2117295
+// @proves s-me9dys@227966a
 describe( "source text used for target hashes", () => {
   test( "normalises JavaScript, CSS, HTML, Rust and TypeScript source", () => {
     const sJs = "const value = 1; // ignore me\nvalue++";
@@ -37,6 +38,8 @@ describe( "source text used for target hashes", () => {
     expect( fsNormalForFile( "src/a.ts", sTs )).toContain( "const width=1" );
   });
 
+  // @proves s-z6r8qu@bc64f8c
+  // @proves s-p069rs@d53d867
   test( "classifies Rust comments, nested comments, raw strings and byte strings", () => {
     const sSource = "// line\n/* outer /* nested */ end */\n"
       + "let raw = br##\"text // stays literal\"##;\nlet byte = b\"x\";\n"
@@ -58,8 +61,8 @@ describe( "source text used for target hashes", () => {
     expect( faProgramForPath( "const value = 1;", "src/a.js" ) ).toBeNull();
   });
 
-  // @proves s-6dpng1@390bc64
-  // @proves s-7llevg@0874ed6
+  // @proves s-6dpng1@58d403a
+  // @proves s-7llevg@6c2799e
   test( "pending status is hash-neutral and is rejected on a placeholder", () => {
     const aModel = faModel({
       vaSpec: [{
@@ -142,7 +145,6 @@ describe( "source text used for target hashes", () => {
       .toEqual([ "specs/a.md", "s-id1234" ]);
   });
 
-  // @spec specs/spec-map-interactive.md
   // @proves s-i5r6dl@fd54b50
   test( "the worklist serialiser escapes JavaScript line separators", () => {
     const sScript = fsJsonForScript( "before\u2028after\u2029end" );
