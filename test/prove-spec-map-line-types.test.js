@@ -139,3 +139,135 @@ describe( "spec-map-line-types the guidance query for one audience", () => {
     expect( faRun( [ "--guidance", "--for", "fixer" ]).cExit ).toBe( 0 );
   });
 });
+
+const fsHashText = ( sText ) => require( "crypto" ).createHash( "sha1" )
+  .update( sText, "utf8" ).digest( "hex" ).slice( 0, 7 );
+
+const sTextMisplaced = "A rule an implementation file carries out.";
+const sHashMisplaced = fsHashText( sTextMisplaced );
+
+const fWriteMisplaced = ( asBody, vsLineExtra = []) => fWriteTree({
+  "specs/a.md": fsSpec( "A", [
+    "* {#s-mpl001} " + sTextMisplaced
+  ].concat( vsLineExtra )).replace( "\n\n", "\n\nStatement ids: complete\n\n" ),
+  "test/a.test.js": [
+    "// @spec specs/a.md",
+    "// @proves s-mpl001@" + sHashMisplaced,
+    "test( \"proves it\", () => {});",
+    ""
+  ].join( "\n" ),
+  ...asBody
+});
+
+const fvsMisplaced = ( aRun ) => (
+  fvsLineInSection(
+    aRun.sStdout, "malformed, unresolved or stale code references"
+  ) || []
+);
+
+const sNoImplementation = /with no implementation link \(1\):\n\s+specs\/a\.md:\d+ {2}s-mpl001/;
+
+// @proves s-fbqdbv@367a944
+// @proves s-lm68rf@abb02d5
+// @proves s-bw4530@bd1f9d9
+describe( "spec-map-line-types: a code reference outside the header", () => {
+  test( "a mid-file @implements is an entry of (33) naming file, line, "
+    + "reference and misplaced, and its statement stays in (31); PAIRED "
+    + "with the same reference in the header, which resolves", () => {
+    const sRef = "// @implements s-mpl001@" + sHashMisplaced;
+    fWriteMisplaced({
+      "src/a.js": [
+        "// @tested-by test/a.test.js", "const a = 1;", sRef, ""
+      ].join( "\n" )
+    });
+    const aRun = faRun([]);
+    expect( fvsMisplaced( aRun )).toContain(
+      "src/a.js:3  " + sRef + " (misplaced)"
+    );
+    expect( aRun.sStdout ).toMatch( sNoImplementation );
+    fWriteMisplaced({
+      "src/a.js": [
+        "// @tested-by test/a.test.js", sRef, "const a = 1;", ""
+      ].join( "\n" )
+    });
+    const aControl = faRun([]);
+    expect( fvsMisplaced( aControl )).toEqual([]);
+    expect( aControl.sStdout ).not.toMatch( sNoImplementation );
+  });
+
+  test( "a mid-file @tested-by names no test file, so the file stays in "
+    + "(32); a mid-file @checks supports no check; each is in (33)", () => {
+    fWriteMisplaced({
+      "src/a.js": [
+        "const a = 1;",
+        "// @tested-by test/a.test.js",
+        "// @checks i-mpl002@0000000",
+        ""
+      ].join( "\n" )
+    }, [ "* {#i-mpl002} Look at the page and see it drawn." ]);
+    const aRun = faRun([]);
+    expect( fvsMisplaced( aRun )).toEqual([
+      "src/a.js:2  // @tested-by test/a.test.js (misplaced)",
+      "src/a.js:3  // @checks i-mpl002@0000000 (misplaced)"
+    ]);
+    expect( fvsLineInSection(
+      aRun.sStdout, "implementation files with no test link"
+    )).toContain( "src/a.js" );
+  });
+
+  test( "a malformed mid-file reference is reported, not skipped", () => {
+    fWriteMisplaced({
+      "src/a.js": [
+        "const a = 1;", "// @implements nonsense", "/* @tested-by */", ""
+      ].join( "\n" )
+    });
+    expect( fvsMisplaced( faRun([])).length ).toBe( 2 );
+  });
+
+  test( "a reference inside a string, not a comment, is not read", () => {
+    fWriteMisplaced({
+      "src/a.js": [
+        "// @tested-by test/a.test.js",
+        "// @implements s-mpl001@" + sHashMisplaced,
+        "const a = \"// @implements s-mpl001@0000000\";", ""
+      ].join( "\n" )
+    });
+    expect( fvsMisplaced( faRun([]))).toEqual([]);
+  });
+
+  test( "--gate refuses a tree whose only defect is a misplaced "
+    + "implementation reference; PAIRED without it, which passes", () => {
+    const sRef = "// @implements s-mpl001@" + sHashMisplaced;
+    const vsHead = [ "// @tested-by test/a.test.js", sRef, "const a = 1;" ];
+    fWriteMisplaced({ "src/a.js": vsHead.concat([ "" ]).join( "\n" ) });
+    expect( faRun([ "--gate" ]).cExit ).toBe( 0 );
+    fWriteMisplaced({
+      "src/a.js": vsHead.concat([ sRef, "" ]).join( "\n" )
+    });
+    const aGate = faRun([ "--gate" ]);
+    expect( aGate.cExit ).toBe( 1 );
+    expect( aGate.sStdout ).toContain( "(33) src/a.js:4" );
+  });
+});
+
+// @proves s-0hg5qn@087947b
+test( "a #! first line of a JavaScript file is part of the header, so a "
+  + "reference on the second line resolves; PAIRED with a reference after "
+  + "code, which is misplaced", () => {
+  const sRef = "// @implements s-mpl001@" + sHashMisplaced;
+  fWriteMisplaced({
+    "src/a.js": [
+      "#!/usr/bin/env node", "// @tested-by test/a.test.js", sRef,
+      "const a = 1;", ""
+    ].join( "\n" )
+  });
+  const aRun = faRun([]);
+  expect( fvsMisplaced( aRun )).toEqual([]);
+  expect( aRun.sStdout ).not.toMatch( sNoImplementation );
+  fWriteMisplaced({
+    "src/a.js": [
+      "#!/usr/bin/env node", "const a = 1;", sRef, ""
+    ].join( "\n" )
+  });
+  expect( fvsMisplaced( faRun([])).length ).toBe( 1 );
+});

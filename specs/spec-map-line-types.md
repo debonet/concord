@@ -124,6 +124,10 @@ is marked, and how Concord checks that each is satisfied.
 * {#s-50dzy6 <arch,m-r3llz8@7fee9b6} **Test-file reference.** `@tested-by <path>` in an implementation file names a project-relative test file; it resolves when the path names exactly one test file the project declares.
 * {#s-bqioq5 <arch,m-r3llz8@7fee9b6} **Hand-check reference.** `@checks i-xxxxxx@hhhhhhh` in an implementation file names an interactive check that the file supports; it resolves when the id names exactly one `i` line and its recorded hash matches.
 * {#s-7tlfzo <arch,m-r3llz8@7fee9b6} An implementation, test-file or hand-check reference is a directive comment of the implementation file's language reading, sits in its header, and applies to that whole file.
+* {#s-fbqdbv <arch} **Outside the header.** In an implementation file, any directive comment of its language reading whose text begins `@implements`, `@tested-by` or `@checks` is read as that reference wherever it sits, well formed or not; one that sits outside the file's header is misplaced.
+  {#s-lm68rf <arch} A misplaced reference does not resolve: it implements no statement in (31), names no test file in (32), and supports no interactive check.
+  {#s-bw4530 <arch} Each misplaced reference is an entry of (33), naming the implementation file, the line, the reference as written and the word `misplaced`.
+* {#s-0hg5qn <arch} In a JavaScript or TypeScript implementation file whose first line opens `#!`, that line is part of the header and does not end it.
 * {#s-rv4wbq <arch,m-r3llz8@7fee9b6} JavaScript, TypeScript, Rust, CSS and HTML implementation files use the comment syntax of their declared language reading; no directive inside a string, literal or block comment is read unless that language's reading expressly accepts it.
 * {#s-tghouh <arch,m-r3llz8@7fee9b6} Malformed, unresolved and stale implementation, test-file and hand-check references are reported with the implementation path, line and target.
 * {#p-38eqyz >specs/spec-map.md#statements-that-describe-a-test} A test file may

@@ -406,7 +406,7 @@ describe( "language-readings — HTML code references", () => {
   test( "one-line comments above or below the doctype in the header are "
     + "directives for the whole file, PAIRED with one sharing its line and "
     + "one spanning lines, which are malformed, and ones after the header, "
-    + "which are not read", () => {
+    + "which are misplaced", () => {
     fWriteTree( vsLanguageHtml, {
       "test/a.test.js": [
         fsLink( "s-lng005" ), "test( \"proves\", () => {} );", ""
@@ -428,7 +428,9 @@ describe( "language-readings — HTML code references", () => {
     const sOut = fsReport();
     expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
       expect.stringMatching( /^src\/h\.html:5 .*\(malformed\)$/ ),
-      expect.stringMatching( /^src\/h\.html:6 .*\(malformed\)$/ )
+      expect.stringMatching( /^src\/h\.html:6 .*\(malformed\)$/ ),
+      expect.stringMatching( /^src\/h\.html:8 .*\(misplaced\)$/ ),
+      expect.stringMatching( /^src\/h\.html:9 .*\(misplaced\)$/ )
     ]);
     const vsNoImplementation = fvsLineInSection( sOut, sTitleNoImplementation );
     expect( vsNoImplementation.some(( s ) => s.includes( "s-lng006" )))
@@ -521,7 +523,8 @@ test( "language-readings — implementation files of each reading use its "
 // @proves s-tghouh@f811aec
 // @proves s-bqioq5@e78161a
 test( "language-readings — Rust code references are header line comments, "
-  + "not doc comments, literals or comments after the header", () => {
+  + "not doc comments or literals, and ones after the header are "
+  + "misplaced", () => {
   const sImpl = fsRef( "s-lng005" );
   const sCheck = fsRef( "i-lng008" );
   const sSpecLink = "// @proves " + fsRef( "s-lng005" );
@@ -548,7 +551,10 @@ test( "language-readings — Rust code references are header line comments, "
     ].join( "\n" )
   });
   const sOut = fsReport();
-  expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual( [] );
+  expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
+    expect.stringMatching( /^src\/r\.rs:6 .*\(misplaced\)$/ ),
+    expect.stringMatching( /^src\/r\.rs:10 .*\(misplaced\)$/ )
+  ]);
   expect( fvsLineInSection( sOut, sTitleNoTestedBy )).toEqual( [] );
   expect( fvsLineInSection( sOut, sTitleNoCode )).toEqual( [] );
   expect( fvsLineInSection( sOut, sTitleNoImplementation )

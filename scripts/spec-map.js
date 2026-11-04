@@ -1,4 +1,8 @@
 // @implements s-5i9gec@e31c13c
+// @implements s-fbqdbv@367a944
+// @implements s-lm68rf@abb02d5
+// @implements s-bw4530@bd1f9d9
+// @implements s-0hg5qn@087947b
 // @implements s-c744tt@f8b2070
 // @implements s-4jegoj@05acd9f
 // @implements s-zrgt7e@a066ef0
@@ -478,6 +482,7 @@ const asTestSuffixForLanguage = {
 const reNever = /(?!)/;
 const reFileCss = /\.css$/;
 const reFileHtml = /\.html?$/;
+const reFileShebang = /\.(?:[cm]?js|jsx|tsx?)$/;
 const reFileJsx = /\.(?:jsx|tsx)$/;
 const reRunLine = /^\s*\/\/\s*@(?:spec|proves|guards|implements)/;
 const reWrapperText = /^\s*@test-wrapper +([A-Za-z_$][\w$]*)\s*$/;
@@ -2895,10 +2900,12 @@ const faDirectiveForHtml = ( sPath, aComment, sKind ) => {
 };
 
 const fvaCodeReferenceForHtml = ( aFile ) => fvaCommentForHtml( aFile.sText )
-  .filter(( aComment ) => aComment.bHeader )
-  .flatMap(( aComment ) => vsKindCodeReference.map(( sKind ) => (
-    faDirectiveForHtml( aFile.sPath, aComment, sKind )
-  )))
+  .flatMap(( aComment ) => vsKindCodeReference.map(( sKind ) => {
+    const aRef = faDirectiveForHtml( aFile.sPath, aComment, sKind );
+    return aRef !== null && !aComment.bHeader
+      ? { ...aRef, bWell: false, bMisplaced: true }
+      : aRef;
+  }))
   .filter( Boolean );
 
 const fvaFollowsForHtml = ( aFile ) => fvaCommentForHtml( aFile.sText )
@@ -2924,8 +2931,9 @@ const fvaCodeReferenceForScript = ( aFile ) => {
     const [ sMasked, vnLineComment ] = ftMaskRust( aFile.sText );
     const vsLine = aFile.sText.split( "\n" );
     const vnLineStart = fvnLineStart( vsLine );
-    const nLineCode = sMasked.split( "\n" )
+    const nLineCodeFound = sMasked.split( "\n" )
       .findIndex(( sLine ) => sLine.trim() !== "");
+    const nLineCode = nLineCodeFound < 0 ? Infinity : nLineCodeFound;
     return vnLineComment.flatMap(( nComment ) => {
       const nLine = fnLineAt( vnLineStart, nComment );
       if( nLine >= nLineCode ){ return [];}
@@ -2946,19 +2954,25 @@ const fvaCodeReferenceForScript = ( aFile ) => {
           sText: sLine.trim()
         }];
       });
-    });
+    }).concat( fvaMisplacedForFile( aFile, nLineCode ));
   }
   const vsLine = aFile.sText.split( "\n" );
   const vaRef = [];
   let bHeader = true;
   let bBlock = false;
+  let nLineHeaderEnd = Infinity;
   vsLine.forEach(( sLine, n ) => {
     const sTrim = sLine.trim();
     if( bHeader ){
+      const bShebang = n === 0 && reFileShebang.test( aFile.sPath )
+        && sTrim.startsWith( "#!" );
       const bComment = sTrim === "" || sTrim.startsWith( "//" )
         || sTrim.startsWith( "/*" ) || sTrim.startsWith( "*" )
-        || sTrim.startsWith( "*/" );
-      if( !bComment ){ bHeader = false;}
+        || sTrim.startsWith( "*/" ) || bShebang;
+      if( !bComment ){
+        bHeader = false;
+        nLineHeaderEnd = n;
+      }
     }
     if( !bHeader && !bBlock ){ return;}
     const asDirective = [
@@ -2983,7 +2997,46 @@ const fvaCodeReferenceForScript = ( aFile ) => {
     if( sTrim.startsWith( "/*" ) && !sTrim.includes( "*/" )){ bBlock = true;}
     if( bBlock && sTrim.includes( "*/" )){ bBlock = false;}
   });
-  return vaRef;
+  return vaRef.concat( fvaMisplacedForFile( aFile, nLineHeaderEnd ));
+};
+
+const vtKindCodeReference = [
+  [ "implements", reImplementsText, reImplementsLoose ],
+  [ "tested-by", reTestedByText, reTestedByLoose ],
+  [ "checks", reChecksText, reChecksLoose ]
+];
+
+const faRefMisplacedAt = ( aFile, vsLine, nLine, sAfter ) => (
+  vtKindCodeReference
+    .filter(([ , reText ]) => reText.test( sAfter ))
+    .map(([ sKind, , reLoose ]) => {
+      const vsLoose = sAfter.match( reLoose );
+      return {
+        sPath: fsPosix( aFile.sPath ),
+        nLine: nLine + 1,
+        sKind,
+        sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
+        sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
+        bWell: false,
+        bMisplaced: true,
+        sText: vsLine[ nLine ].trim()
+      };
+    })
+);
+
+const fvaMisplacedForFile = ( aFile, nLineHeaderEnd ) => {
+  const vsLine = aFile.sText.split( "\n" );
+  const vnLineStart = fvnLineStart( vsLine );
+  const [ vnLine, vnBlock ] = ftCommentsForCiter( aFile );
+  return Array.from( new Set( vnLine.concat( vnBlock )))
+    .flatMap(( nComment ) => {
+      const nLine = fnLineAt( vnLineStart, nComment );
+      if( nLine < nLineHeaderEnd ){ return [];}
+      const sAfter = vsLine[ nLine ]
+        .slice( nComment - vnLineStart[ nLine ] + 2 );
+      return faRefMisplacedAt( aFile, vsLine, nLine, sAfter );
+    })
+    .sort(( aA, aB ) => aA.nLine - aB.nLine );
 };
 
 const reKindBlock = ( sKind ) => new RegExp(
@@ -2999,7 +3052,8 @@ const fvaCodeReferenceResolved = ( aModel ) => {
         /^([a-z]-[a-z0-9]{6})@([0-9a-f]{7})$/
       );
       const aFound = vsId === null ? null : faLineForId( aModel, vsId[ 1 ] );
-      const sReason = !aRef.bWell || vsId === null
+      const sReason = aRef.bMisplaced ? "misplaced"
+        : !aRef.bWell || vsId === null
         ? "malformed"
         : aFound.cPlace !== 1 ? "statement id does not resolve uniquely"
           : aFound.aLine.sType !== "s" ? "names a line of type " + fsTypeLine( aFound.aLine.sType )
@@ -3014,7 +3068,8 @@ const fvaCodeReferenceResolved = ( aModel ) => {
     let sReason = null;
     let aLine = null;
     let aTest = null;
-    if( !aRef.bWell ){ sReason = "malformed";}
+    if( aRef.bMisplaced ){ sReason = "misplaced";}
+    else if( !aRef.bWell ){ sReason = "malformed";}
     else if( aRef.sKind === "tested-by" ){
       const sPath = aRef.sTarget;
       aTest = aModel.vaTestParsed.find(( aEntry ) => aEntry.sPath === sPath );
@@ -3051,14 +3106,11 @@ const fvaCodeReferenceResolved = ( aModel ) => {
 };
 
 const fvnCommentCss = ( sText ) => {
-  const vnComment = [];
-  let n = sText.indexOf( "/*" );
-  while( n >= 0 ){
-    vnComment.push( n );
-    const nClose = sText.indexOf( "*/", n + 2 );
-    n = nClose < 0 ? -1 : sText.indexOf( "/*", nClose + 2 );
-  }
-  return vnComment;
+  const vsClass = new CssClassifier( sText ).fvsClass();
+  return Array.from( sText, ( ch, n ) => n ).filter(( n ) => (
+    vsClass[ n ] === "m" && sText.startsWith( "/*", n )
+    && ( n === 0 || vsClass[ n - 1 ] !== "m" || sText.slice( n - 2, n ) === "*/" )
+  ));
 };
 
 const ftCommentsForCiter = ( aFile ) => {

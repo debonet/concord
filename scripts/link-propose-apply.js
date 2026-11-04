@@ -166,7 +166,7 @@ class LinkWriter {
 
   fvaRefForPath( sPath ){
     return this.aModel.aLines.vaCodeRef.filter(( aRef ) => (
-      fsPosix( aRef.sPath ) === sPath
+      fsPosix( aRef.sPath ) === sPath && aRef.sReason !== "misplaced"
     ));
   }
 

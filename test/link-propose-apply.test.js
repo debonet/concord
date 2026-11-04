@@ -215,21 +215,25 @@ test( "link-propose — each added line is a directive comment of the file's "
 // @proves s-mfht72@18981bb
 // @proves s-0dezvq@81ba7b7
 // @proves s-97oh4r@a333fff
-test( "link-propose — a write spec-map would not read is refused and the "
-  + "file left as found, its #! line first, and a stylesheet opening with "
+test( "link-propose — a JavaScript file's #! line stays first and the lines "
+  + "go after it; a write spec-map would not read is refused and the file "
+  + "left as found, as a stylesheet's #! line; and a stylesheet opening with "
   + "@charset has no header place", () => {
+  const sBangCss = "#!/usr/bin/env node\n.a { color: red; }\n";
   const aRun = faApply([
     "y " + fsRefFor( "s-aaaaa1" ) + " src/bang.js",
+    "y " + fsRefFor( "s-aaaaa1" ) + " src/bang.css",
     "y " + fsRefFor( "s-aaaaa1" ) + " src/charset.css"
-  ]);
+  ], { "src/bang.css": sBangCss });
   expect( aRun.z ).toBe( 1 );
   expect( fvsOut( aRun )).toEqual([
-    "confirm.txt:1  refused: would not resolve",
-    "confirm.txt:2  refused: no header place",
-    "Applied: 0 added, 0 re-stamped, 0 tested-by, 2 refused"
+    "confirm.txt:2  refused: would not resolve",
+    "src/bang.js:2  + @implements " + fsRefFor( "s-aaaaa1" ),
+    "src/bang.js:3  + @tested-by test/one.test.js  unverified",
+    "confirm.txt:3  refused: no header place",
+    "Applied: 1 added, 0 re-stamped, 1 tested-by, 2 refused"
   ]);
-  expect( fsText( aRun.sDir, "src/bang.js" ))
-    .toBe( aasFileBase[ "src/bang.js" ]);
+  expect( fsText( aRun.sDir, "src/bang.css" )).toBe( sBangCss );
   expect( fsText( aRun.sDir, "src/bang.js" ).split( "\n" )[ 0 ])
     .toBe( "#!/usr/bin/env node" );
   expect( fsText( aRun.sDir, "src/charset.css" ))
