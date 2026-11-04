@@ -129,3 +129,7 @@ Architects that inferred a spec's contents from its name, its neighbours or a su
 ## {#o-r3dfst} Fixers wrote tests and code in one pass with no red run
 
 Three of six fixer reports in one session said the tests and the code were written in one pass and the suite run once, green; none showed its new tests failing against the code before the change, so nothing showed those tests could fail.
+
+## {#o-m8tz3v} A fixer mutated shipped files in place to show its tests red
+
+Asked to show green-on-first-run tests failing against a broken copy, a fixer instead edited the shipped source files in place and restored them afterwards, while four other fixers were running suites over the same tree; any of their runs in that window measured the mutated code.

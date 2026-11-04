@@ -91,7 +91,11 @@ Rules for the agent that launches and coordinates architects and fixers in a Con
   report for the quoted red line: `grep -c "Tests:.*failed"` over the report
   text is at least 1; a report without one goes back to the fixer to show the
   new tests failing against the code before its change (comment out the change
-  in a scratch copy under `tmp/`, never `git stash`). [o-r3dfst]
+  in a scratch copy under `tmp/`, never `git stash`). The brief also says
+  "never edit a shipped file to show a red, even if you restore it": other
+  agents' suites read the same tree. After a report that says "in place",
+  `git diff -U0 -- <its files>` holds only the intended lines.
+  [o-r3dfst] [o-m8tz3v]
 * **Only ONE agent drains `DIRECT_CHANGES.md`; in a parallel wave that is YOU.**
   The queue is append-only for writers, single-reader for drainers; two architects
   draining concurrently silently lose an entry appended between one's read and
