@@ -133,3 +133,7 @@ Three of six fixer reports in one session said the tests and the code were writt
 ## {#o-m8tz3v} A fixer mutated shipped files in place to show its tests red
 
 Asked to show green-on-first-run tests failing against a broken copy, a fixer instead edited the shipped source files in place and restored them afterwards, while four other fixers were running suites over the same tree; any of their runs in that window measured the mutated code.
+
+## {#o-q2wd6c} A link-repair fixer decided links from statement text without reading the code
+
+A fixer repairing `@tested-by` lines decided 127 entries from the proved statements' text and from sibling files, "not from reading each file's code"; five of its added `@implements` put web statements on a terminal-only module, and 7 of its 122 removals cut lines whose test does load the file.
