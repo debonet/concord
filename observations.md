@@ -17,6 +17,7 @@ A suite run and `git commit` sat in one script; the commit went through with `1 
 ## {#o-algt8e} A commit was made on a fixer's reported test numbers
 
 A commit followed a fixer's report of green suites with no suite run by the main thread. It was green when run afterwards, by luck.
+A rules-and-observations-only commit in Concord was made with no suite run of the main thread's in the same turn before it; the suite run afterwards was green (504/504).
 
 ## {#o-u30qif} A spec-only commit was made after running only the spec tests
 
