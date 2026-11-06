@@ -35,6 +35,7 @@ A reconcile architect edited a spec while a cleanup batch that owned it was mid-
 
 Four fixers wrote files through Bash (a python heredoc twice, `sed -i` twice), against the fixer definition, and said so only in their reports. One did it with the brief line forbidding it present. The definition alone did not stop it; the brief line reduced it.
 In one AIOS wave of about twenty fixers, four appended tests with `cat >> <file> <<'EOF'` and one deleted a debug line with `sed -i`, each with the brief line "never through Bash (python/perl/sed heredocs)" present; the line named no append form, and each reported it.
+In the next AIOS wave of about forty fixers, with the brief line naming `cat >>`, `sed -i` and heredocs, six still wrote through Bash: a python heredoc three times on its own new test file, `sed -i` four times on its own scratch or test files, a `cp` restoring its own backup, and one `cat >>` heredoc append (a named form) of a scratch test it then removed; each reported it, and none touched a file another agent owned. Naming the forms did not stop them; every write was to the fixer's own files.
 
 ## {#o-3eyrbh} Two agents edited the same file because a new brief did not forbid it
 
@@ -87,6 +88,7 @@ Messages to three fixers of a batch were addressed by counting launch results fr
 ## {#o-woku9o} Fixers looping the hash query saturated the machine
 
 Twenty fixers each looped `--hash` (a full tree parse of about 5 s per call): about 150 spec-map processes ran at once, load reached about 300, and two fixers stopped short.
+Ten link-only fixers each told to run the whole root suite and the checker once per spec, alongside two behaviour fixers, took load to 262; a single checker run timed out at 120 s and one fixer stopped with no results. The edits were comment lines, which no suite can observe.
 
 ## {#o-1zvwn4} Deleting comment lines with Edit glued tests into comments
 
