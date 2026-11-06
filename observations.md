@@ -34,6 +34,7 @@ A reconcile architect edited a spec while a cleanup batch that owned it was mid-
 ## {#o-hgf5g6} Fixers wrote files through Bash
 
 Four fixers wrote files through Bash (a python heredoc twice, `sed -i` twice), against the fixer definition, and said so only in their reports. One did it with the brief line forbidding it present. The definition alone did not stop it; the brief line reduced it.
+In one AIOS wave of about twenty fixers, four appended tests with `cat >> <file> <<'EOF'` and one deleted a debug line with `sed -i`, each with the brief line "never through Bash (python/perl/sed heredocs)" present; the line named no append form, and each reported it.
 
 ## {#o-3eyrbh} Two agents edited the same file because a new brief did not forbid it
 

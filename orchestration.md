@@ -51,7 +51,9 @@ Rules for the agent that launches and coordinates architects and fixers in a Con
   that file.** In a batched sweep, keep the in-flight file list current
   (`tmp/inflight.txt`) and `grep -xF` each target against it. [o-knzqsz]
 * **Every fixer brief states: "edit files with `Edit`/`Write` only — never
-  through Bash (python/perl/sed heredocs)."** The definition alone does not
+  through Bash: no `cat >>` append, no `sed -i`, no python/perl heredoc, not
+  even to remove your own debug line."** Name the forms; a fixer reads an
+  unnamed append as allowed. The definition alone does not
   stop it; the brief line reduces it, not to zero: after any fixer report,
   `git diff -- <files it names>` and read the hunks. [o-hgf5g6]
 * **A brief that lets the fixer locate its files must forbid every file a
