@@ -25,6 +25,7 @@ ConcordSTC keeps a project's specs and tests in step. Its specs are the authorit
 6. **The human's words are recorded verbatim** as motive (`m`) lines before anything is derived from them, and a decision the human did not make is rooted `<arch` so the checker lists it for the human to ratify or overrule.
 7. **Commits are gated.** A project's pre-commit hook runs `concord spec-map --gate`; a commit it refuses is fixed, never bypassed.
 8. **Observations go in the observations file, never in a rules file.** A mistake, a correction or an unexplained red is recorded as an entry with an id in the project's observations file, stated as what was observed, with no date or story unless germane. A standing rule holds only itself, its check and the ids of the observations it rests on. An observation is retired, its entry and every citation deleted, only when the checker lists it retirable (`specs/observations.md`).
+9. **Run the full test suite before every fixer completion.** After the fixer's final code or test change, run the project's full declared test-suite command, fix any failures, and report completion only after it passes. This is mandatory even when no one explicitly asks for tests; targeted runs do not replace the final full-suite run.
 
 ## Adopting Concord in a project
 

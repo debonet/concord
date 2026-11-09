@@ -251,6 +251,10 @@ Concord where it stands.
 
 ## Agent instructions
 
+> {#m-9iukym} USER 2026-11-09: "The concord should add explicit instructions to add into AGENTS.md a contravening instruction"
+
+* {#g-83u1i7 <m-9iukym@0c37cb0 for=main,architect,fixer via=prompt} **Full suite at fixer completion.** A fixer runs the project's full declared test suite after its final code or test change, fixes any failures, and does not report completion until the suite passes. This run is required even if nobody explicitly asks for tests; targeted runs during implementation do not replace it.
+
 * {#g-adp8mx <m-asoxa8@8f03701,m-2794qp@4644928 for=main,architect,fixer via=prompt} **One shared instruction file.** Keep `AGENTS.md` at the Concord project root as the instructions every coding agent follows, naming the Concord specs under `~/@concord/specs` and role texts under `~/@concord/roles`.
 * {#g-13efbo <m-asoxa8@8f03701,m-2794qp@4644928,m-mzt14m@7dbb5d4 for=main,architect,fixer via=prompt} **Role texts live in Concord.** Keep each role's text in `roles/<role>.md` and its tool metadata beside it.
 * {#s-gaewu5 <m-2794qp@4644928,m-mzt14m@7dbb5d4} **Tool agent files are generated.** `agents-sync` writes each
