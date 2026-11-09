@@ -2,64 +2,192 @@
 
 ## TL;DR
 
-* Concord links a project's specs, tests and code: every provable sentence in a spec carries an id, every test names the sentences it proves, and a checker reports what is proved, what is stale and what is missing.
-* It is one project, `~/@concord`, whose commands live in `~/@concord/bin`; every project that adopts it runs those commands and keeps no checker of its own.
-* An adopting project declares its own values (its suites, languages and directories) in one file, `concord.json`, at its root.
-* The commands are JavaScript on Node, whatever language the adopting project is written in.
-* Any coding agent, whatever its tool, follows one shared instruction file, `~/@concord/AGENTS.md`, and the architect and fixer role texts in `~/@concord/roles`; Claude Code's agent files and Codex's custom agents are generated from them.
-* A committed pre-commit hook runs the checker's gate, so a commit that leaves a test citing an out-of-date spec sentence is refused.
-* AIOS was the first adopting project; the checker began inside it and moved here.
+* ConcordSTC keeps specifications, tests and implementation links aligned, and reports gaps or stale links before they become invisible.
+* Install the public `@debonet/concord` npm package globally and run its single `concord` command; utilities are subcommands such as `concord spec-map`.
+* Run `concord init` from a project root to get setup instructions tailored to its current files.
+* The link graph is `spec <- test`, `spec <- code`, and `test <- code`. Specs stand alone: they do not point to tests or implementation files.
+* Agents work in two roles: an architect updates specifications, then a fixer changes code and tests to meet them. Tools with subagents may run those roles separately; tools without them take the roles in sequence.
+* Run the project's declared `spec-map` and `spec-coverage` targets; install its version-controlled pre-commit hook so the spec-map gate protects commits.
+* The normative process is in `specs/`; change-specific adoption steps are in `docs/`.
 
 ## Purpose (why?)
 
-A spec says what a system must do, and a test checks that the code does it. Nothing ties the two together on its own: a spec sentence is reworded and the tests that checked the old wording keep passing, a test is deleted and no one notices the sentence it covered is now unchecked, and code no test reaches carries behaviour no spec states. Concord makes those gaps visible and, where a project chooses, refuses a commit until they are closed.
+A specification says what a system must do, and tests check that the implementation does it. Without links, a specification can change while tests still prove only its old meaning, a deleted test can leave a rule unverified, and implementation can exist without a test or a specification. Concord makes these gaps visible and can block a commit when the project's configured gate finds an unresolved problem.
 
-More than one project uses it. Keeping one shared checker means a change to how a rule is checked is made once, for every project, and one set of tests shows it still holds.
+Concord is a separate project so multiple adopting projects can use one checker and one shared agent process. Concord itself also uses ConcordSTC.
 
 ## Solution (what?)
 
-Concord is a set of command-line tools and the specs that define them. `spec-map` reads a project's specs, test files and code and reports which statement each test proves, which spec owns each test, and how every other kind of spec line is satisfied; it also mints ids, answers queries about one id, records verdicts on hand checks and writes the worklist page for them. `spec-coverage` runs a project's jest suites with coverage on and maps every source line to the statements whose tests execute it, so code that no statement depends on is surfaced for a person to classify. `concord-hook` installs, in a project, the pre-commit hook that runs `spec-map --gate`, and `agents-sync` writes Claude Code and Codex agent files from Concord's role texts. `link-propose` helps a project that has many statements no code file names yet: for each such statement it ranks the code files most likely to implement it, from the tests that prove the statement, the files those tests load or execute, and the statement's own terms, and once an agent has confirmed a proposal it writes the link into that file's header ([specs/link-propose.md](specs/link-propose.md)).
+Concord is a public npm package with one executable, `concord`, plus specifications and agent roles. Its subcommands include `concord spec-map` for statement ids, links and completeness; `concord spec-coverage` for test execution coverage; `concord concord-hook` for the pre-commit gate; `concord agents-sync` for generated agent-tool files; and `concord link-propose` for likely implementation links. `concord init` prints project-specific adoption instructions and does not edit files.
 
-Concord also holds the instructions agents follow. `AGENTS.md` at Concord's root is read by any coding agent, from any vendor, working in an adopting project; each project's own `AGENTS.md` points at it and adds that project's own facts and working rules; `orchestration.md` holds the rules for running architect and fixer agents in any tool. The two roles, an architect who owns specs and a fixer who owns code and tests, are written once in `roles/`, in tool-neutral terms, so the same process runs whichever model plays them.
-
-The rules those commands enforce, and how a project adopts them, are in [specs/concord-process.md](specs/concord-process.md), [specs/spec-map.md](specs/spec-map.md), [specs/spec-map-line-types.md](specs/spec-map-line-types.md), [specs/spec-map-interactive.md](specs/spec-map-interactive.md) and [specs/spec-coverage.md](specs/spec-coverage.md). How Concord itself is built and tested is in [specs/build.md](specs/build.md).
+The agent process separates specification design from implementation. The architect owns specs and returns a precise fixer plan. The fixer owns code and tests and implements that plan. The project's build spec declares the commands agents may run; the checker and coverage tools are invoked through those project targets.
 
 ## Method (how?)
 
-A spec line is marked with an id such as `{#s-k3p9qa}`, whose letter gives the line's type: a statement a test proves, a pointer, a definition, a motive (the human's own words, which other lines derive from), an interactive check a person makes by hand, or guidance for whoever writes the code. A test names what it proves with a link line, `// @proves s-k3p9qa@<hash>`, where the hash is taken from the statement's text. When the text changes, the hash changes, and every test still citing the old hash is reported stale until someone checks that it still proves the new wording.
+Install Concord with `npm install --global @debonet/concord`. Each marked specification line has an id. An `s` line is a statement that can be checked at a module boundary; other line types represent pointers, definitions, motives, interactive checks or guidance. Tests link to statements they prove. Code links to statements it implements and to test files that verify it. The checker compares links with the current statement text hash, so changed wording makes old proof links visible as stale.
 
-The links have a deliberate direction:
+The main links have these directions:
 
-| From | Reference | Points to | Purpose |
+| Source | Link | Destination | Meaning |
 | --- | --- | --- | --- |
-| Spec | `p` pointer | Another spec, heading, or marked line in a spec | Connects specification material |
-| Spec | Root reference | A motive or statement in a spec | Records where a statement derives from |
-| Test file | `@spec` | One or more spec files | Declares which spec owns the tests |
-| Test | `@proves` | A statement in a spec | Says what the test proves |
-| Test | `@guards` | A statement in a spec | Guards a proof without counting as proof |
-| Implementation file | `@implements` | A statement in a spec | Says what the file implements |
-| Implementation file | `@tested-by` | A test file | Declares which tests verify code in that file |
-| Implementation file | `@checks` | An interactive check (`i`) in a spec | Connects code to a hand check it supports |
-| Test or implementation file | `@follows` | Guidance (`g`) in a spec | Points to guidance the file follows |
+| Test | `@proves` | A statement in a spec | This test proves the statement. |
+| Test | `@guards` | A statement in a spec | This test guards the statement without counting as its proof. |
+| Test file or test block | `@spec` | A spec file | This spec owns the tests in the file or block. |
+| Implementation file | `@implements` | A statement in a spec | This file implements the statement. |
+| Implementation file | `@tested-by` | A test file | This test file verifies code in this implementation file. |
+| Implementation file | `@checks` | An interactive check in a spec | This file is part of the human's hand check. |
+| Test or implementation file | `@follows` | Guidance in a spec | This file follows the named guidance. |
+| Spec | `p` pointer | Spec path, heading, or marked spec line | Connects specification material within the spec set. |
 
-So the core links are **test → spec**, **code → spec**, and **code → test**. Specs never point to code or tests; ordinary `p` pointers stay within the spec set, while a project-collection pointer only discovers independent child spec paths. Implementation files name interactive checks with `@checks`.
+Thus, the core graph is **spec <- test**, **spec <- code**, **test <- code**. Specs do not point to code or tests. A project-collection pointer is a discovery declaration for independent child projects, not a link to their code or tests; see the [package-spec migration guide](docs/not-yet-implemented-and-package-specs-migration.md). The link model and migration details are in [specs/spec-map-line-types.md](specs/spec-map-line-types.md) and [docs/link-model-migration.md](docs/link-model-migration.md).
 
-A statement that is specified but not built yet can carry the `not-yet-implemented` marker flag. The checker reports the missing test or implementation while allowing that planned statement through the commit gate; remove the flag when the implementation is linked.
+## Using Concord as an agent
 
-Each project's root `concord.json` may declare several local spec roots with `spec_directories`, an array of project-relative directory patterns:
+Follow this sequence in an adopting project. The detailed behavior is defined by the linked normative specifications; this section is an operational index, not a replacement for them.
 
-```json
-{
-  "spec_directories": ["specs/*", "docs/requirements"]
-}
+### 1. Confirm that the project opted in
+
+Read the project's root `AGENTS.md`. Concord applies only when it contains the standalone adoption line printed by `concord init`. That line imports the `AGENTS.md` from the installed package using its absolute path. Run:
+
+```sh
+concord init
 ```
 
-Here `*` matches one directory name, so `specs/*` includes specs under immediate subdirectories of `specs/`. If packages are independent Concord projects, keep their spec trees out of the parent's `spec_directories`; use a `p` collection target such as `packages/*/specs/` to discover them. Each package keeps its own root `concord.json`, spec map and commit gate. See the [migration guide](docs/not-yet-implemented-and-package-specs-migration.md) for adoption steps.
+If the project instead says `This project does not use ConcordSTC.`, do not add Concord files or links. If it says neither, resolve adoption with the project owner before an architect or fixer begins. The full adoption contract is in [specs/concord-process.md](specs/concord-process.md#which-projects-use-concord).
 
-Ids are never invented by hand: a spec is written with placeholders and the assign command replaces each with a fresh random id. Statements can name the rulings they stem from, so a change to a ruling lists every conclusion that must be derived again.
+For an opted-in project, read the installed guide path printed by `concord init` and the project's instructions. At the beginning of a session, run:
 
-What was observed going wrong (an agent's mistake, a correction, a test red once and green alone) is kept out of a project's rules files. Each such observation is an entry with an id, such as `o-k3p9qa`, in one observations file; a rule cites the ids of the observations it rests on. An entry names the statements whose proof makes the mistake impossible, and once tests prove them the entry and every citation of it are deleted. The checker refuses a commit while any citation names an entry that no longer exists ([specs/observations.md](specs/observations.md)). A Concord change that adopting projects must follow comes with a step-by-step note under `docs/`.
+```sh
+concord agents-sync
+```
 
-Each command acts on the project in its working directory and reads that project's `concord.json` for everything that differs between projects. How a language's files are read (its comments, its test units, where its directives sit) is a language reading; JavaScript (JSX included), TypeScript, CSS, HTML and Rust are defined, so a project written in several of them, a web client with a page and a stylesheet among them, is linked file by file.
+This regenerates supported agent files from the installed package's roles; never hand-edit generated files. Exit 3 means a required write was denied and the command must be run where the target directory is writable. Exit 2 can identify a hand-edited generated file; preserve useful edits in the role text before regenerating. See [specs/agents-sync.md](specs/agents-sync.md).
 
-`concord.json` uses human-readable keys such as `name`, `suites`, `languages` and `coverage`. Former Semantic Hungarian keys remain accepted with deprecation warnings; projects should migrate them using the [config key migration guide](docs/concord-json-key-migration.md).
+### 2. Check project setup
+
+An adopted project has a root `concord.json`, a build spec with `spec-map` and `spec-coverage` targets that call `concord spec-map` and `concord spec-coverage`, and a committed pre-commit hook. Run commands from the project root. Do not create a project-local checker.
+
+`concord.json` uses readable keys such as `name`, `suites`, `languages`, `read_directories`, `ignored_directories`, `record_file`, `observations_file`, `rules_files`, `coverage` and `spec_directories`. `spec_directories` is optional; when absent, Concord reads `specs/`. Directory patterns use `*` as a complete path segment matching one directory name. The full settings schema is in [specs/concord-process.md](specs/concord-process.md#the-settings-file).
+
+Older Semantic Hungarian key names remain accepted for compatibility, and every use produces a deprecation warning that points to the canonical key. A canonical key and its old alias in the same object are an error, even when their values match. Migrate existing projects with [docs/concord-json-key-migration.md](docs/concord-json-key-migration.md).
+
+### 3. Work in architect and fixer roles
+
+For a behavior change, first identify the owning module spec and update its boundary contract. The architect changes specs and writes a fixer plan; the fixer changes code and tests from that plan. A tool with subagents may keep the roles separate. A tool without subagents completes the architect step first and then switches to fixer, without letting fixer work rewrite the contract. The role definitions are [roles/architect.md](roles/architect.md) and [roles/fixer.md](roles/fixer.md); agent coordination rules are in [orchestration.md](orchestration.md).
+
+Keep specs about externally observable behavior, module APIs and measurable limits. Do not put source or test paths, implementation steps or build-state claims into module specs. A specification should still describe the contract if its implementation is deleted and rewritten. See the [architect role](roles/architect.md) for the full spec-versus-note test and template.
+
+### 4. Mark statements and record roots
+
+Mark every provable statement with a placeholder id, for example:
+
+```md
+* {#s-?} A request with an invalid token returns an authorization error.
+```
+
+Use one provable claim per marker. Do not invent ids: the assign command creates them. New or rewritten statements also name their derivation roots as directed by the architect role. Record human decisions verbatim as `m` motives; statements derived from them reference those motives. An architectural decision not explicitly made by the human uses `<arch` and is surfaced for ratification. Do not backfill roots onto untouched historical statements unless a conversion is requested.
+
+After spec edits, run the project's assign target, commonly:
+
+```sh
+concord spec-map --assign
+```
+
+This assigns placeholders and stamps references. Then rerun the checker and resolve stale hashes and references. Statement markers, roots, completeness and assignment are specified in [specs/spec-map.md](specs/spec-map.md).
+
+### 5. Link tests and implementation in the right direction
+
+Tests name what they prove, using the implementation language's comment syntax:
+
+```js
+// @proves s-xxxxxx@hhhhhhh
+test('...', () => { /* ... */ });
+```
+
+Implementation files name the statement(s) they implement and the test file(s) that verify them:
+
+```js
+// @implements s-xxxxxx@hhhhhhh
+// @tested-by test/example.test.js
+```
+
+The checker prints current hashes; obtain one with the project's `spec-map --hash <id>` query when needed. Put implementation directives in the file header. A test file also declares its owning spec with `@spec` unless all its tests identify ownership through their statement links; a test or block serving another spec can override the file owner locally.
+
+For complete specs, the checker requires each statement to have test and implementation coverage, each relevant implementation file to have test coverage, and every test to have an owner. Tests and code point to specs; code also points to tests. Specs never name test or source file paths. See [specs/spec-map.md](specs/spec-map.md) and the [reverse-link migration guide](docs/link-model-migration.md).
+
+### 6. Handle planned behavior and independent packages
+
+A specified statement that is not implemented yet may carry the `not-yet-implemented` marker flag. Its missing test and implementation links remain visible, but those omissions do not block commits. Remove the flag when implementation begins to count as complete. Malformed, unresolved or stale links still fail the gate, and a flagged statement must not already have a resolving implementation link.
+
+For packages that are separate Concord projects, keep each package's own `concord.json`, statement map, links and commit gate. The parent can discover unknown package names with a project-collection pointer such as:
+
+```md
+* {#p-? >packages/*/specs/} Specifications maintained by package projects.
+```
+
+The collection discovers child spec paths only; it does not merge their statement graphs or run their gates. Each child runs its own checker from its own root. Use the [not-yet-implemented and package-spec migration guide](docs/not-yet-implemented-and-package-specs-migration.md) for the complete rules and rollout steps.
+
+### 7. Check maps, coverage and cache behavior
+
+Use the project's declared targets. For an npm-based project, the common forms are:
+
+```sh
+concord spec-map
+concord spec-map --gate
+concord spec-coverage
+concord spec-coverage --report
+```
+
+`spec-map` maps specs, tests and implementation references. `--gate` checks the commit-blocking conditions. `spec-coverage` runs the configured test suites and attributes source regions to the statements linked by those tests; `--report` reads the most recent completed measurement. See [specs/spec-map.md](specs/spec-map.md), [specs/spec-coverage.md](specs/spec-coverage.md) and [specs/concord-process.md](specs/concord-process.md#what-stops-a-commit).
+
+`spec-map` caches parsed input data between invocations. Its default fast check uses file size and modification time as the unchanged-file hint. Use `--cache-checksum` when you need to detect same-size changes that also preserve modification time; it reads and hashes every current input file. To discard this project's cache and force a fresh parse, run the standalone command:
+
+```sh
+concord spec-map --clear-cache
+```
+
+`--clear-cache` must be used alone. It clears only the current project's spec-map cache. The cache contract and limitation are in [specs/spec-map.md](specs/spec-map.md#persistent-cache).
+
+### 8. Keep commits gated
+
+Install the version-controlled hook once in each clone, from the adopting project's root:
+
+```sh
+concord concord-hook install
+```
+
+The project commits `.githooks/pre-commit`; installation sets the local Git `core.hooksPath` so Git runs it before each commit. The hook runs `concord spec-map --gate` and refuses commits when the gate exits nonzero. Do not bypass a refusal; resolve the reported entries. Use `concord concord-hook check` to inspect installation. Details are in [specs/concord-hook.md](specs/concord-hook.md).
+
+### 9. Record and retire observations
+
+Record an agent mistake, a human correction, or an unexplained test failure in the project's configured observations file. State what was observed, cite the statement or statements whose tests prevent it from recurring, and keep dates or narrative only when they help explain the observation. Do not turn an observation into a standing rule in `AGENTS.md` or another rules file. The checker reports when an observation is retirable; then remove its entry and every rule citation to it together. See [specs/observations.md](specs/observations.md) and [docs/observations-migration.md](docs/observations-migration.md).
+
+### 10. Migrate projects when Concord changes
+
+Concord changes that require adopting-project work have a step-by-step guide under [`docs/`](docs/). Start with the guide matching the checker report or change. Current guides include:
+
+* [Reverse links](docs/link-model-migration.md)
+* [Readable `concord.json` keys](docs/concord-json-key-migration.md)
+* [Public npm package and master command](docs/npm-package-migration.md)
+* [Not-yet-implemented statements and package spec discovery](docs/not-yet-implemented-and-package-specs-migration.md)
+* [One reader module per language](docs/migration-language-readers.md)
+* [Sidecar annotations for files without comments](docs/sidecar-files-migration.md)
+* [Derived statements](docs/derived-statements-migration.md)
+* [Opt-in line changes](docs/opt-in-line-migration.md)
+* [Dangling pointer gate changes](docs/dangling-pointers-gate-migration.md)
+* [Observations](docs/observations-migration.md)
+
+Migration guides describe the rollout; normative behavior remains in the relevant `specs/` file. Do not copy a migration-only rule into project specifications as if it were a module contract.
+
+## Authoritative references
+
+* [Project adoption, settings and commit gate](specs/concord-process.md)
+* [Statement ids, roots, test links, ownership, code links and cache](specs/spec-map.md)
+* [Line types and pointer targets](specs/spec-map-line-types.md)
+* [Human hand checks](specs/spec-map-interactive.md)
+* [Coverage map](specs/spec-coverage.md)
+* [Commit hook](specs/concord-hook.md)
+* [Generated agent files](specs/agents-sync.md)
+* [Architect role](roles/architect.md) and [fixer role](roles/fixer.md)
+* [Agent orchestration](orchestration.md)
+* [Build and declared commands](specs/build.md)

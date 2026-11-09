@@ -265,7 +265,14 @@ const fvaCitation = ( aInput, aKit ) => aInput.vaSpec
       : fvaCitationForMarkdown({
         sPath: aInput.sPathObs, sText: aInput.sTextObs
       }, false, aKit ),
-    aInput.vaCode.flatMap(( aFile ) => fvaCitationForCode( aFile, aKit ))
+    aInput.vaCode.flatMap(( aFile ) => (
+      aInput.aParseCache === undefined
+        ? fvaCitationForCode( aFile, aKit )
+        : aInput.aParseCache.fxParse(
+          "observation-citations", aFile,
+          ( aInputFile ) => fvaCitationForCode( aInputFile, aKit )
+        )
+    ))
   )
   .sort( fzComparePlace );
 

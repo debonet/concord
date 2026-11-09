@@ -9,10 +9,10 @@ pre-commit hook kept under version control that runs the Concord gate.
 
 ## API
 
-* {#s-khifjg <arch,s-s4l32i@b41f304} **Forms.** `~/@concord/bin/concord-hook install`
-  installs the hook and `~/@concord/bin/concord-hook check` reports whether
-  it is installed, each acting on the adopting project whose root is its
-  working directory (`specs/concord-process.md`, Where Concord lives).
+* {#s-khifjg <arch,s-s4l32i@b41f304} **Forms.** `concord concord-hook install`
+  installs the hook and `concord concord-hook check` reports whether it is
+  installed, each acting on the adopting project whose root is its working
+  directory (`specs/concord-process.md`, Where Concord lives).
   {#s-5r1y67 <arch} Run with no argument, with any other first argument, or with
   any argument after `install` or `check`, it acts on nothing, prints its
   usage line to stderr and exits 2.
@@ -30,14 +30,14 @@ pre-commit hook kept under version control that runs the Concord gate.
 * {#s-auxyb0 <arch,s-s4l32i@b41f304} **The hook file.** The hook is the file
   `.githooks/pre-commit` at the project root, which the project commits as
   it commits any file, so every clone carries it.
-* {#m-0wj07d <arch} The hook calls `~/@concord/bin/spec-map` itself, not the
-  project's `spec-map` target: a target passes its arguments to that command
-  unchanged (`specs/concord-process.md`, Targets call the commands), so the
-  result is the same, and one hook text serves every build tool, `make`
-  among them, which passes no `--gate` through a target unaided.
-* {#s-w7hypm <arch,s-nlm91d@4f76fd6,m-0wj07d@0342bb5} **The gate line.** A hook file's gate line is
-  a whole line exactly `"$HOME/@concord/bin/spec-map" --gate || exit 1`.
-  {#s-f15bz3 <arch,m-0wj07d@0342bb5} The hook file `install` writes is exactly two lines,
+* {#m-0wj07d <arch} The hook calls `concord spec-map` itself, not the project's
+  `spec-map` target: a target passes its arguments to that command unchanged
+  (`specs/concord-process.md`, Targets call the commands), so the result is
+  the same, and one hook text serves every build tool, `make` among them,
+  which passes no `--gate` through a target unaided.
+* {#s-w7hypm <arch,s-nlm91d@4f76fd6,m-0wj07d@0e9aaa0} **The gate line.** A hook file's gate line is
+  a whole line exactly `concord spec-map --gate || exit 1`.
+  {#s-f15bz3 <arch,m-0wj07d@0e9aaa0} The hook file `install` writes is exactly two lines,
   `#!/bin/sh` and then the gate line, each ending in a newline, with mode
   `0755`.
 * {#s-xu5wfs <arch,s-s4l32i@b41f304} **Git runs it.** `install` sets the repository's
@@ -55,9 +55,9 @@ pre-commit hook kept under version control that runs the Concord gate.
   `pre-commit`, which setting `core.hooksPath` would stop running; or
   {#s-wor0b2 <arch} when `.githooks/pre-commit` exists and holds no gate line.
   {#s-f79qxz <arch} It makes these checks before it runs the gate.
-* {#s-nqgv3l <arch,s-s4l32i@b41f304,s-nlm91d@4f76fd6} **The gate first.** `install` then runs
-  the gate over the project, through the `spec-map` command beside its own
-  file with `--gate`; when the gate exits other than 0, `install` prints
+* {#s-nqgv3l <arch,m-f9xsif@e917ff9} **The gate first.** `install` then runs
+  the gate over the project through the `concord` master command with
+  `spec-map --gate`; when the gate exits other than 0, `install` prints
   the gate's stdout, then one line saying the hook was not installed
   because the gate refuses, writes nothing, changes no git setting and
   exits 1, so no project is left with a hook that refuses its next commit

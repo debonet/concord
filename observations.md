@@ -72,6 +72,7 @@ A short architect brief omitted "purge nothing"; the architect drained 17 entrie
 ## {#o-c17pcv} Re-link fixers re-stamped statements without reading them
 
 Standard-tier re-link fixers, in two separate groups, re-stamped or linked dozens of statements "because the name matched" without reading them, with the brief saying to read first.
+In a later AIOS gate sweep (two standard-tier groups, 80 entries each), both groups re-stamped tests from their titles and header `@implements` blocks from a grep, and said so; the brief had asked them to "say plainly any you decided without reading", which read as permission. Both were sent back to read.
 
 ## {#o-c9rqyo} A re-link wave changed test titles
 
@@ -141,3 +142,7 @@ Asked to show green-on-first-run tests failing against a broken copy, a fixer in
 ## {#o-q2wd6c} A link-repair fixer decided links from statement text without reading the code
 
 A fixer repairing `@tested-by` lines decided 127 entries from the proved statements' text and from sibling files, "not from reading each file's code"; five of its added `@implements` put web statements on a terminal-only module, and 7 of its 122 removals cut lines whose test does load the file.
+
+## {#o-965whm} The uncommitted parse cache made `--assign` write ids at another version's offsets
+
+In AIOS, with `scripts/spec-map-cache.js` (uncommitted) caching parses in `.git/spec-map/cache`, an architect rewrote `specs/answer-mistakes.md` and four pointer specs; `spec-map --assign` then printed the placeholders of the file's previous version (same line numbers, the earlier pass's text) and wrote new ids at those offsets into the new text, cutting words out of 20 statements and mangling a motive id (`{#{#m-27gh4y}xmkuh7`). The five files were restored from the checkpoint repo. With the cache directory moved aside, `--assign` was clean; the very next plain checker run, with the cache rebuilt by that assign, listed 28 unstamped roots naming `m-?qa` placeholders that were no longer in the file, and listed 0 with the cache moved aside again. The bad caches are kept at `~/@aios/tmp/w9/spec-map-cache-bad` and `spec-map-cache-bad2`; the mangled files at `~/@aios/tmp/w9/assign-bad/`.

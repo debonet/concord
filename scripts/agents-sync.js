@@ -1,12 +1,12 @@
-// @implements s-c744tt@f8b2070
+// @implements s-c744tt@ebf0776
 // @implements s-4jegoj@05acd9f
 // @implements s-zrgt7e@a066ef0
 // @implements s-pa182t@8008053
-// @implements s-4pq89a@d19cad5
-// @implements s-y7klju@f22102b
+// @implements s-4pq89a@7127ba0
+// @implements s-y7klju@10305b7
 // @implements s-gaewu5@b5462f6
 // @implements s-048ffy@dc732cc
-// @implements s-n7q049@016939a
+// @implements s-n7q049@e6823a7
 // @implements s-yf8wyo@0128e34
 // @implements s-xszaj3@4653a38
 // @implements s-dvkjf9@2c46b39
@@ -50,7 +50,7 @@ const sFileRecord = ".concord-agents-sync.json";
 const reHash = /^[0-9a-f]{64}$/;
 const acArgForFlag = { "--dir": 1, "--roles": 1, "--force": 0 };
 const sUsage = (
-  "usage: agents-sync [--dir <path>] [--roles <path>] [--force]\n"
+  "usage: concord agents-sync [--dir <path>] [--roles <path>] [--force]\n"
 );
 
 const fsSha = ( y ) => (

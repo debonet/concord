@@ -141,7 +141,7 @@ const fbExists = ( sPathRel ) => fs.existsSync(
 const faRun = ( vsArg ) => {
   const aResult = spawnSync(
     process.execPath,
-    [ sPathScript ].concat( vsArg ),
+    [ sPathScript, "--cache-checksum" ].concat( vsArg ),
     { cwd: sDirFixture, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }
   );
   return {

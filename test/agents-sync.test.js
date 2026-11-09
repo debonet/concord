@@ -111,7 +111,7 @@ afterAll(() => {
   fs.rmSync( sDirScratch, { recursive: true, force: true });
 });
 
-// @proves s-n7q049@016939a
+// @proves s-n7q049@e6823a7
 // @proves s-xszaj3@4653a38
 describe( "agents-sync — its form", () => {
   test.each([
@@ -129,7 +129,7 @@ describe( "agents-sync — its form", () => {
     const aRun = faRun( vsArg );
     expect( aRun.cExit ).toBe( 2 );
     expect( aRun.sStdout ).toBe( "" );
-    expect( aRun.sStderr ).toMatch( /^usage: agents-sync / );
+    expect( aRun.sStderr ).toMatch( /^usage: concord agents-sync / );
     expect( fvsScratchFile()).toEqual( vsBefore );
   });
 
@@ -804,6 +804,6 @@ describe( "agents-sync — every tool, one run", () => {
     fSetup();
     const aRun = faRun( vsArgSync.concat( vsArg ));
     expect( aRun.cExit ).toBe( 2 );
-    expect( aRun.sStderr ).toMatch( /^usage: agents-sync / );
+    expect( aRun.sStderr ).toMatch( /^usage: concord agents-sync / );
   });
 });

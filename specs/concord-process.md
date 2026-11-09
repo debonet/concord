@@ -48,9 +48,23 @@ Concord where it stands.
 >
 > To keep things backward compatible, allow the old keys, but issue a warning when a tool reads the file with a pointer to the new spec.  Two keys (the human readable, and SH versions) that point to the same datum should be a hard error."
 
+> {#m-efrniq} USER 2026-11-09: "Refactor the code so that all of the support for a language can live in a single file. There should be one file for javascript support, then a different one for each language we add."
+
 > {#m-smey68} USER 2026-11-02: "That is weird. Concord.json should not use semantic hungarian tags. SH is really limited to code. Also, there should be more than one place it can look for specs, e.g.:
 >
 > \"dirs_specs\" : [\"specs/*\",\"packages/*/specs\"]"
+
+> {#m-f9xsif} USER 2026-11-09: "Concord should work as an npm package. So a new project should be able to do something like
+>
+> npm -g install @debonet/concord
+> concord init
+>
+> (the commands might not be right)
+>
+> and get back a series of instructions that get the project context set up for using concord
+>
+>
+> Also all the binaries should be called from a master `concord` program. So spec-map should be `concord spec-map` etc."
 
 ## Terms
 
@@ -129,13 +143,13 @@ Concord where it stands.
 > C) Every project, as today." His answer: A, with the note: "The global
 > claude should be set to ask if the user has not specified."
 
-* {#g-b1t89o <m-c2gwx4@a84e9f9 for=main,architect via=prompt} **One line in AGENTS.md.** A
+* {#g-ho8w3d <m-c2gwx4@a84e9f9,m-f9xsif@e917ff9 for=main,architect via=prompt} **One line in AGENTS.md.** A
   project uses ConcordSTC when its root `AGENTS.md` holds, on a line of its
-  own, exactly:
-  `Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.`
-  The `@` path is written outside backticks, so a tool that imports `@`
-  paths loads the file and any other tool reads the sentence as an
-  instruction.
+  own, `Read @<path>/AGENTS.md before any other work; this project uses
+  ConcordSTC.` The path is the path to the Concord package's `AGENTS.md`,
+  printed by `concord init`; the `@` path is written outside backticks, so a
+  tool that imports `@` paths loads the file and any other tool reads the
+  sentence as an instruction.
 * {#g-rxspq4 <m-c2gwx4@a84e9f9 for=main,architect,fixer via=prompt} **Nothing added unasked.** In a
   project whose root `AGENTS.md` does not hold the Concord line, no agent
   writes a `concord.json`, a Concord build target, a pre-commit gate, a
@@ -161,24 +175,46 @@ Concord where it stands.
 
 ## Where Concord lives
 
-* {#g-5z4iuo <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **One project.** Keep Concord's specs, build spec, tests and `README.md` in `~/@concord`; adopting projects run its tools from there and carry no duplicate checker or Concord utility.
-* {#s-4pq89a <m-u4pusr@2be69ad} **Commands in `bin`.** Every Concord utility is a command
-  under `~/@concord/bin`: `spec-map` takes every argument form the Concord
-  specs give after `npm run spec-map --`, the assign command, the hash,
-  guidance and probe queries and the worklist among them, and behaves as
-  they give; `spec-coverage` takes every argument form
-  `specs/spec-coverage.md` gives after `npm run spec-coverage --`; any
-  linter Concord adds is a command beside them.
-* {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} **Two more commands.** `agents-sync` and
-  `concord-hook`, which installs the pre-commit gate
-  (`specs/concord-hook.md`), are commands under `~/@concord/bin` beside
-  `spec-map` and `spec-coverage`.
+* {#g-5z4iuo <arch,m-u4pusr@2be69ad,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} **One source project.** Keep Concord's specs, build spec, tests and `README.md` in `~/@concord`; adopting projects install its public npm package and carry no duplicate checker or Concord utility.
+* {#s-4pq89a <m-u4pusr@2be69ad,m-f9xsif@e917ff9} **Utility commands.** Concord's utility implementations live under `~/@concord/bin`; agents and project build targets invoke them through the `concord` master command.
+* {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} `agents-sync` and `concord-hook` are utility commands alongside `spec-map` and `spec-coverage`.
+* {#s-t99cvq <arch,m-f9xsif@e917ff9} **npm package.** Publish Concord as the public npm package
+  `@debonet/concord`, installable globally with `npm install --global
+  @debonet/concord`.
+* {#s-ssquhw <arch,m-f9xsif@e917ff9} **Master command.** Expose one npm executable, `concord`.
+  Invoke every Concord utility through it as `concord <utility> <arguments>`;
+  for example, `concord spec-map --gate`, `concord spec-coverage --report`,
+  `concord agents-sync` and `concord concord-hook install`. The utility
+  command and its arguments retain the behavior specified for the underlying
+  command.
+* {#s-39o0xv <arch,m-f9xsif@e917ff9} **Master command usage.** With no arguments or `--help`,
+  `concord` prints its usage and exits 0. With an unknown utility, it prints
+  its usage to standard error and exits 2. For a known utility, it passes all
+  remaining arguments in order, preserves the working directory and standard
+  streams, and exits with that utility's status.
+* {#s-ualukl <arch,m-f9xsif@e917ff9} **Project setup instructions.** `concord init`, run from a
+  project root without additional arguments, prints an actionable sequence
+  for setting up that project to use Concord. It identifies whether the root
+  `AGENTS.md`, `concord.json`, master-command build targets and the
+  `.githooks/pre-commit` file are present,
+  gives the absolute path to the installed package's `AGENTS.md`, and gives
+  the exact Concord adoption line with that path and the next setup steps
+  that apply to the observed project state. It does not modify project files
+  and exits 0 after printing the instructions. Arguments to `init` print its
+  usage to standard error and exit 2.
+* {#s-n5ue8s <arch,m-f9xsif@e917ff9} Keep each utility implementation under `~/@concord/bin`;
+  the `concord` command dispatches to those utilities. `spec-map` takes every
+  argument form its spec gives after `concord spec-map`, including assignment,
+  hash, guidance, probe and worklist queries. `spec-coverage` takes every
+  argument form `specs/spec-coverage.md` gives after `concord spec-coverage`.
+  Any utility Concord adds is invoked as another `concord <utility>` command.
 * {#p-v7e4l5 >specs/agents-sync.md#the-agent-file} `agents-sync` generates the
   supported tools' agent files from the role texts and their metadata.
 * {#g-njdhjd <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **JavaScript on Node.** Run Concord's JavaScript commands with the Node version declared in its build spec, regardless of the adopting project's language.
 * {#s-92u5vq <arch,m-u4pusr@2be69ad} **Run from the project root.** Every Concord command but
   `agents-sync` acts on the adopting project whose root is its working directory, and reads,
-  writes and prints every project path relative to that root.
+  writes and prints every project path relative to that root. `concord init` also
+  inspects the project rooted at its working directory and prints setup instructions for it.
 * {#s-jhtp93 <arch,m-u4pusr@2be69ad} **One settings file.** An adopting project's declared
   values (What a project declares) are in one file, `concord.json` at its
   root, which every Concord command reads; {#s-2fs4an <arch} a command that acts on
@@ -352,7 +388,8 @@ Concord where it stands.
   for a link line naming an id no marker holds; every entry of (13) for a
   root list holding a reference that names an id no marker holds; every
   entry of (22); every entry of (33); every entry of (28); every entry of
-  (34), (35) (`specs/observations.md`) and (36); every (31) entry in a complete spec unless the statement carries the `not-yet-implemented` flag;
+  (34), (35) (`specs/observations.md`), (36) and (38)
+  (`specs/spec-map-line-types.md`, Sidecar files); every (31) entry in a complete spec unless the statement carries the `not-yet-implemented` flag;
   every (32) entry for an implementation file naming a statement in a
   complete spec; and, for each complete spec, every entry on which a run with that spec's path
   exits non-zero.
@@ -431,7 +468,8 @@ Concord where it stands.
 * {#s-nrp172 <arch,m-yy30zw@60906a5} **Where code references are read.** Guidance,
   implementation, test-file and hand-check references are read in every
   implementation file under `read_directories`, outside ignored directories; comment
-  recognition and content hashes follow the file's language reading.
+  recognition and content hashes follow the file's language reading, or the
+  sidecar rules (`specs/spec-map-line-types.md`, Sidecar files).
 * {#s-iz8176 <arch,m-58bbc0@97f6bed,m-p5u7hb@920f72c} **The record file and the page.** Verdicts
   on hand checks are recorded, in the form Recording a verdict gives, in the
   record file the project declares, and the worklist page is titled
@@ -448,7 +486,7 @@ Concord where it stands.
   the runs ends the measurement as a suite that fails to run does.
   {#s-c4ht17 <arch,m-u4pusr@2be69ad} The measurement writes under
   `tmp/spec-coverage/` at the project root, in every adopting project.
-* {#g-rn2085 <arch,m-yy30zw@60906a5 for=main,architect,fixer via=prompt} **One command line.** Declare the adopting project's `spec-map` target to call Concord's command with arguments unchanged and in order.
+* {#g-lrwos6 <arch,m-yy30zw@60906a5,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} **The checker targets.** Declare the adopting project's `spec-map` and `spec-coverage` targets to call `concord spec-map` and `concord spec-coverage`, respectively, passing arguments through unchanged and in order.
 * {#s-jmslkk <arch,m-yy30zw@60906a5} **The same ruling labels.** The ruling labels
   `RULING (CEO)` and `RULING (architect)` are the labels in every adopting
   project, the CEO being the person whose words are recorded.
@@ -465,8 +503,8 @@ Concord where it stands.
   verdicts; and the path of its observations file and the paths of its
   rules files (`specs/observations.md`). Its build spec declares its Concord targets and its pre-commit
   hook (Where Concord lives, What stops a commit).
-* {#g-ljcs3l <m-2794qp@4644928 for=architect via=prompt} An adopting project's build spec
-  declares a target that runs `~/@concord/bin/concord-hook install`
+* {#g-uz9eg6 <m-2794qp@4644928,m-f9xsif@e917ff9 for=architect via=prompt} An adopting project's build spec
+  declares a target that runs `concord concord-hook install`
   (`specs/concord-hook.md`), run once in every clone, since the git setting
   that makes git run a committed hook belongs to a clone and no commit
   carries it.
@@ -574,6 +612,11 @@ Concord where it stands.
   line saying the project declares no coverage, and exits 2.
 
 ## Language readings
+
+* {#s-3fzgrr <m-efrniq@9d737ed} The user asked for language support to live in one file per language.
+* {#s-rh750h <m-efrniq@9d737ed} **One module per language.** Concord keeps each language reading in one module under `scripts/languages/`, named for that language, such as `javascript.js`, `typescript.js`, `css.js`, `html.js` or `rust.js`. That module owns all behavior specific to reading that language: the files and test files it recognizes, comments and literals, directives and their placement, source classification, header boundaries, test and grouping units, and content normalization.
+* {#s-p54hx2 <m-efrniq@9d737ed} **Shared checker boundary.** The checker consumes language modules through one common reading interface. It owns project traversal, spec and link resolution, coverage, reporting and shared language-independent helpers; it does not select language behavior through extension lists or language-specific branches spread through the checker. Adding a language means adding its reading module and registering that module in one central language registry.
+* {#s-k9xdwy <m-efrniq@9d737ed} **Language module contract.** A reading module provides its language name and file extensions, test-file recognition, and the operations the checker needs to read source, find comments and directives, determine header and test/group units, and normalize content. A module may use shared language-independent helpers, but behavior that interprets a language belongs in that language's module.
 
 * {#p-jczx2d >specs/spec-map.md#test-files-and-owner-lines,s-pjx54j,s-2l6ys1,specs/spec-map.md#statements-that-describe-a-test}
   The JavaScript reading is the one `specs/spec-map.md` and its siblings write

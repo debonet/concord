@@ -35,8 +35,9 @@ outside these.
                              (specs/observations.md)
   spec-coverage-review.md    classified uncovered code of Concord's own
                              (specs/spec-coverage.md)
-  bin/                       the commands: spec-map, spec-coverage,
-                             agents-sync, concord-hook, link-propose
+  bin/                       the concord entry point and utility commands:
+                             spec-map, spec-coverage, agents-sync,
+                             concord-hook, link-propose, concord-init
   scripts/                   the modules behind the commands, and the
                              worklist page template
   specs/                     Concord's specs
@@ -48,11 +49,14 @@ outside these.
 
 ## The commands
 
-* {#s-c744tt <arch} Each file under `bin/` is one Concord command, named as
-  `specs/concord-process.md` (Where Concord lives) names it or, for
-  `link-propose`, as `specs/link-propose.md` names it, with no file
-  extension, executable, and opening with the line `#!/usr/bin/env node`,
-  so it runs by its path from any working directory.
+* {#s-c744tt <arch} Each utility file under `bin/` is an executable command with no file
+  extension, executable, and opens with `#!/usr/bin/env node`.
+* {#s-4pyvbb <arch,m-f9xsif@e917ff9} The `concord` entry point dispatches utility names and arguments
+  to their respective commands, preserving the caller's working directory
+  and exit status. Users invoke utilities as `concord <utility> <arguments>`.
+* {#s-nur3h4 <arch,m-f9xsif@e917ff9} The published npm package exposes only the `concord`
+  executable; utility files in `bin/` are implementation entry points, not
+  separately installed npm commands.
 * {#s-4jegoj <arch} A command acts on its working directory's project and never
   on `~/@concord` unless that is its working directory; it finds its own
   modules and the worklist page template relative to its own file, never
@@ -61,6 +65,10 @@ outside these.
   own dependencies, except that `spec-coverage` starts each declared jest
   run with the `jest` its run directory resolves, so the adopting project's
   jest version runs its suite.
+* {#s-s6e3j6 <arch,m-f9xsif@e917ff9} The package includes `AGENTS.md`, `README.md`,
+  `observations.md`, `orchestration.md`, `docs/`, `roles/`, `specs/`, `bin/`
+  and `scripts/` so installed commands can print setup guidance and agents
+  can read the shared process resources.
 
 ## Concord's own settings
 
@@ -70,27 +78,24 @@ outside these.
 
 `package.json`:
 
-* {#g-673253 <arch for=main,architect,fixer via=prompt} Keep the package private and named `@debonet/concord`.
-* {#g-4p0u7n <arch for=main,architect,fixer via=prompt} Expose `spec-map`, `spec-coverage`, `agents-sync`, `concord-hook` and `link-propose` from their files under `bin/`.
+* {#g-cvkypm <arch,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} Publish the package as `@debonet/concord` so it can be installed with `npm install --global @debonet/concord`.
+* {#g-1sypfn <arch,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} Expose only `concord` in the package's `bin` map, targeting `bin/concord`.
+* {#g-4mi1ga <arch,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} Include the command implementations and all runtime resources needed by `concord` in the published package.
 * {#g-0cjx6u <arch for=main,architect,fixer via=prompt} Keep every module loaded by `bin/` or `scripts/` in `dependencies`, at the version resolved when the commands moved from AIOS.
 * {#g-m4xokh <arch for=main,architect,fixer via=prompt} Keep Jest `^29` and test-only modules in `devDependencies`.
 * scripts:
   * {#g-smevwe <arch for=main,architect,fixer via=prompt} Set `"test"` to `"jest"`.
-  * {#g-53gzsk <arch for=main,architect,fixer via=prompt} Set `"spec-map"` to `"bin/spec-map"`.
-  * {#g-m1hkj5 <arch for=main,architect,fixer via=prompt} Set `"spec-coverage"` to `"bin/spec-coverage"`.
-  * {#g-1nmzd1 <arch for=main,architect,fixer via=prompt} Set `"agents-sync"` to `"bin/agents-sync"`.
-  * {#g-oczcgk <arch for=main,architect,fixer via=prompt} Set `"hook-install"` to `"bin/concord-hook install"`.
-  * {#g-w411h3 <arch for=main,architect,fixer via=prompt} Set `"link-propose"` to `"bin/link-propose"`.
+* {#g-hdc5sb <arch,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} Route npm helper scripts for the spec map, coverage, agent sync, hook and link proposer through `bin/concord` and their corresponding utility subcommands.
 * {#g-uetbxu <arch for=main,architect,fixer via=prompt} Set Jest's root to `<rootDir>/test`.
 
 ## Build and Test
 
 * {#g-hzqtr1 <arch for=main,architect,fixer via=prompt} Install dependencies with `npm install` at `~/@concord`.
 * {#g-pw9m2r <arch for=main,architect,fixer via=prompt} Run the test suite with `npm test` at `~/@concord`; add tests under `test/**/*.test.js`.
-* {#g-dkmfi5 <arch for=main,architect,fixer via=prompt} Run `npm run spec-map [-- <arguments>]` at `~/@concord` to check Concord itself; in adopting projects, declare targets that call `~/@concord/bin/spec-map`.
+* {#g-dkmfi5 <arch for=main,architect,fixer via=prompt} Run `npm run spec-map [-- <arguments>]` at `~/@concord` to check Concord itself; in adopting projects, declare targets that call `concord spec-map`.
 * {#g-yx3xrj <arch for=main,architect,fixer via=prompt} Run `npm run spec-coverage [-- <arguments>]` on demand; do not add it to `npm test`.
 * {#g-etaqj7 <arch for=main,architect,fixer via=prompt} After changing `roles/`, run `npm run agents-sync` to regenerate supported agent files (`specs/agents-sync.md`).
-* {#g-09bik5 <arch for=main,architect,fixer via=prompt} Keep Concord commits gated by `.githooks/pre-commit`; install it in each clone with `npm run hook-install` (`specs/concord-hook.md`).
+* {#g-09bik5 <arch for=main,architect,fixer via=prompt} Keep Concord commits gated by `.githooks/pre-commit`; install it in each clone with `concord concord-hook install` (`specs/concord-hook.md`).
 
 ## Hermeticity
 

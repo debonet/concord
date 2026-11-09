@@ -5,6 +5,7 @@ const path = require( "path" );
 const crypto = require( "crypto" );
 const { spawnSync } = require( "child_process" );
 const { sPathSpecMap, fsConcordJson } = require( "./concord-fixture.js" );
+const { asLanguageName, faReaders } = require( "../scripts/languages" );
 
 const sDirRepo = path.join( __dirname, ".." );
 const sDirFixture = path.join(
@@ -18,6 +19,28 @@ const sTitleNoImplementation = "statements with no implementation link";
 const sTitleNoTestedBy = "implementation files with no test link";
 const sTitleNoCode = "interactive checks with no implementation link";
 const sTitleOwnerBad = "owner lines that do not resolve";
+
+// @proves s-rh750h@cc70238
+// @proves s-p54hx2@dfa5570
+// @proves s-k9xdwy@eb62f8a
+// @proves s-3fzgrr@cc19c25
+test( "language readings — each language has one registered reader with the "
+  + "common operations", () => {
+  const fStub = new Proxy({}, { get: () => () => ({}) });
+  const maReader = faReaders( fStub );
+  expect( Array.from( maReader.keys() )).toEqual( asLanguageName );
+  expect( asLanguageName ).toEqual([
+    "javascript", "typescript", "css", "html", "rust"
+  ]);
+  for( const aReader of maReader.values() ){
+    for( const sOperation of [
+      "faSource", "faHeader", "fvaTestUnit", "fsNormal", "fvsClass",
+      "fvaCodeReference", "fvaFollows", "ftComments", "freCallWrapper"
+    ]){
+      expect( typeof aReader[ sOperation ]).toBe( "function" );
+    }
+  }
+});
 
 const fsHash = ( sText ) => (
   crypto.createHash( "sha1" ).update( sText, "utf8" ).digest( "hex" )

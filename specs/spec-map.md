@@ -71,6 +71,32 @@ file, which spec owns each test, and how every other type of spec line
   the path it is given; it is a command, not a suite, so a project's rule
   that no suite reads the spec directory does not reach it.
 
+## Persistent cache
+
+> {#m-sjv9gw} USER 2026-11-09: "You should provide a mechanism for clearing the spec-map cache."
+
+> {#m-01zr2l} USER 2026-11-06: "In our case skip the checksum, and just assume the fast check, with a flag to always examine every file. We'll never need it, since LLMs actually touch files very slowly because of the model-api latency"
+
+> {#m-r7qm94} USER 2026-11-06: "I timed a full checker run just now: about 31 seconds of one core and 560 MB. It reads every spec, test and code file and recomputes every statement's hash, about 28,000 statements; it caches nothing between runs."
+>
+> "The obvious one is caching file parses between runs, so a run after a one-file edit costs seconds instead of 31."
+
+* {#s-gw6o7i <m-r7qm94@16a88ce} **Cache reuse.** `spec-map` retains parsed file data and statement hashes between separate invocations, and reuses them when their inputs remain current.
+* {#s-etnggy <arch,m-r7qm94@16a88ce} **Current inputs.** Every invocation discovers the current files and reads the current project settings; a cached parse is reusable only when the file's recorded size and modification time, the applicable language reading and the checker's parsing rules match those used to create it. In the default fast check, size and modification time are assumed to establish that the contents are unchanged.
+* {#s-w83alg <m-01zr2l@026620d} **Content check option.** The `spec-map --cache-checksum` option reads and hashes every current input file before reusing a cached parse, so same-size content changes with an unchanged modification time are detected.
+* {#s-pcodyd <m-01zr2l@026620d} **Fast check limitation.** Without `--cache-checksum`, a content change that preserves both file size and modification time may reuse stale parsed data.
+* {#s-n7r3dl <arch,m-r7qm94@16a88ce} A newly added file is parsed, a removed file contributes no cached data, and a renamed file is mapped only at its current project-relative path.
+* {#s-zhg7ac <arch,m-r7qm94@16a88ce} The checker recomputes a statement hash when its normalized text or a resolved inclusion's current hash changes, and may reuse it when both remain unchanged.
+* {#s-akhzjv <m-r7qm94@16a88ce} A cached invocation produces the same reports, standard output, standard error, exit status and writes to project specifications, tests and settings as a fresh computation over the inputs recognized as current by the selected cache check.
+* {#s-7wq05d <arch,m-r7qm94@16a88ce} A missing, unreadable, corrupt or incompatible cache entry is discarded and recomputed; cache read or write failure does not change the checker's result or add cache diagnostics to its output.
+* {#s-opw47h <arch,m-r7qm94@16a88ce} Concurrent invocations never read a partially written cache entry, and each produces the same result it would produce from a fresh computation over the inputs recognized as current by the selected cache check.
+* {#s-gb47zx <m-r7qm94@16a88ce} An unchanged invocation reuses the parsed data for every unchanged file, and an invocation after one input file's size or modification time changes does not parse unchanged files again.
+* {#s-4kencv <m-sjv9gw@a638aed} **Clear command.** A standalone `spec-map --clear-cache` removes all cached data for the current project, including entries from older checker fingerprints, and leaves all project data outside that cache unchanged.
+* {#s-69o630 <m-sjv9gw@a638aed} `spec-map --clear-cache` can run when the project's settings file is malformed.
+* {#s-tot8yl <m-sjv9gw@a638aed} `spec-map --clear-cache` writes `spec-map: cache cleared\n` to standard output and exits 0 whether or not the project already has cached data.
+* {#s-8ydtei <m-sjv9gw@a638aed} A cache-clearing filesystem error writes `spec-map: unable to clear cache: <reason>\n` to standard error and exits 1.
+* {#s-h8i6xs <m-sjv9gw@a638aed} `--clear-cache` combined with any other argument prints the command's usage line to standard error and exits 2 without clearing the cache.
+
 ## Test names
 
 * {#s-ns2gme <s-62b8ec@c221937} **Names carry nothing.** The name of a test or a
@@ -306,6 +332,9 @@ file, which spec owns each test, and how every other type of spec line
   {#s-nudxy0 <arch} (19) never changes the exit code, so a stale link fails
   only the run with the path of the spec whose statement it names.
 * {#s-i6rjuw <arch,m-6pxcni@29fc8b1} The command reports (31) each statement with no resolving `@implements` reference, (32) each implementation file with no resolving `@implements` reference or no resolving `@tested-by` reference, and (33) each malformed, unresolved or stale code reference, naming its implementation file, line and target. A (31) entry for a `not-yet-implemented` statement is identified as intentional.
+* {#s-22a0wo <m-sjwtwk@fe2b2dc} A file read through an eligible `.concord` sidecar is an implementation file for (31), (32), statement queries and implementation coverage; the implementation target is the file beside the sidecar, and the sidecar path and line locate its directives.
+* {#s-8qhv2d <m-sjwtwk@fe2b2dc} List (38) reports each discovered `.concord` sidecar that is not read because its target is absent, not a regular file, recognized as a comment-capable implementation file or test file, or is itself a sidecar. It names the sidecar and reason. With no argument it reports all such sidecars; a run with a spec path does not report (38).
+* {#s-r95w4f <m-sjwtwk@fe2b2dc} A nonempty (38) refuses the commit gate.
 * {#s-tdw4gj <arch,m-6pxcni@29fc8b1} With no argument it reports (31), (32), (33) and (36) over the whole tree and exits 0; with a spec path it reports (31) and (36) for that spec's statements, (32) over implementation files naming those statements and (33) for references naming that spec's statements, exiting non-zero on (33) or (36), on (31) when the spec is complete and the statement is not marked `not-yet-implemented`, and on (32) when the implementation file names a statement in a complete spec.
 * {#s-yyl1i0 <arch,m-6pxcni@29fc8b1} A `@tested-by` reference resolves only when its test file has at least one test that proves a statement implemented by the referring file.
 * {#s-tvuwev <arch} **Unlinked tests.** Beside the other lists the command
@@ -764,6 +793,7 @@ tests prove one.
 
 * {#s-vjgnay <arch,m-ulzcp5@41ae8af,m-tpuy30@018a42c} A spec's `p` pointers resolve to spec files, spec headings or marked lines in the same project, or declare a project-collection target (`specs/spec-map-line-types.md`, Pointers); a pointer to a test or implementation file is reported as an invalid target. A project-collection target discovers child project spec paths only: it does not merge child statements or resolve their links in the parent. An `i` line has no target list; implementation files name it with `@checks` references.
 * {#s-2l6ys1 <arch,m-r3llz8@7fee9b6} An implementation file is a non-test code file in a directory and language the project declares for reading (`specs/concord-process.md`, The settings file).
+* {#s-m4fr78 <m-sjwtwk@fe2b2dc} A regular non-test file under a configured `read_directories` that no configured language reading recognizes as an implementation file is an implementation artifact when it has an eligible `<path>.concord` sidecar; its sidecar's valid references count for the artifact as implementation references.
 * {#s-01nsp8 <arch,m-r3llz8@7fee9b6} Each `@implements` reference in an implementation file names one statement that the file implements.
 * {#s-23wmhe <arch,m-r3llz8@7fee9b6} Each `@tested-by` reference in an implementation file names a test file that verifies code in that implementation file.
 * {#s-3m6dwj <arch,m-r3llz8@7fee9b6} Each `@checks` reference in an implementation file names an interactive check that the implementation file supports.

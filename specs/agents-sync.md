@@ -16,7 +16,7 @@ and writes nothing that is already current.
 
 ## API
 
-* {#s-n7q049 <arch} **Form.** `~/@concord/bin/agents-sync [--dir <path>]
+* {#s-n7q049 <arch} **Form.** `concord agents-sync [--dir <path>]
   [--roles <path>] [--force]` takes each option at most once, in any order.
   {#s-xszaj3 <arch} Given any other argument, an option twice, or `--dir` or
   `--roles` with no path after it, it writes nothing, prints its usage line

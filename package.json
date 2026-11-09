@@ -1,21 +1,28 @@
 {
   "name": "@debonet/concord",
   "version": "0.0.0",
-  "private": true,
   "bin": {
-    "spec-map": "bin/spec-map",
-    "spec-coverage": "bin/spec-coverage",
-    "agents-sync": "bin/agents-sync",
-    "concord-hook": "bin/concord-hook",
-    "link-propose": "bin/link-propose"
+    "concord": "bin/concord"
   },
+  "files": [
+    "AGENTS.md",
+    "README.md",
+    "observations.md",
+    "orchestration.md",
+    "bin/",
+    "docs/",
+    "roles/",
+    "scripts/",
+    "specs/"
+  ],
   "scripts": {
     "test": "jest",
-    "spec-map": "bin/spec-map",
-    "spec-coverage": "bin/spec-coverage",
-    "agents-sync": "bin/agents-sync",
-    "hook-install": "bin/concord-hook install",
-    "link-propose": "bin/link-propose"
+    "concord": "bin/concord",
+    "spec-map": "bin/concord spec-map",
+    "spec-coverage": "bin/concord spec-coverage",
+    "agents-sync": "bin/concord agents-sync",
+    "hook-install": "bin/concord concord-hook install",
+    "link-propose": "bin/concord link-propose"
   },
   "engines": {
     "node": ">=20"

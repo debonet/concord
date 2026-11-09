@@ -32,8 +32,8 @@ files' headers.
 
 ## API
 
-* {#s-58lkl7 <m-l5wmu2@e9804b6,arch} **The command.** `link-propose` is a Concord
-  command, the file `bin/link-propose` of the Concord project, run from an
+* {#s-58lkl7 <m-l5wmu2@e9804b6,arch} **The command.** `concord link-propose` is a Concord
+  command, dispatched to `bin/link-propose` of the Concord project, run from an
   adopting project's root and acting on that project as every Concord
   command does (`specs/concord-process.md`, Where Concord lives).
 * {#s-39kb2j <m-l5wmu2@e9804b6,arch} **Proposals.** `link-propose` with no argument

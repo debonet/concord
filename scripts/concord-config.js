@@ -1,6 +1,6 @@
 // @implements s-jhtp93@4c4ca3c
 // @implements s-2fs4an@26c553f
-// @implements s-92u5vq@475d2f0
+// @implements s-92u5vq@fbe31e8
 // @implements s-zstgty@57da9d2
 // @implements s-am7qu4@d7b2d60
 // @implements s-i0n88z@8f1c352
@@ -25,11 +25,12 @@
 
 const fs = require( "fs" );
 const path = require( "path" );
+const { asLanguageName } = require( "./languages" );
 
 const sFileConfig = "concord.json";
 const sSegmentAny = "*";
 const sDirSpecs = "specs";
-const vsLanguageKnown = [ "javascript", "typescript", "css", "html", "rust" ];
+const vsLanguageKnown = asLanguageName;
 
 const fbObject = ( x ) => (
   x !== null && typeof x === "object" && !Array.isArray( x )

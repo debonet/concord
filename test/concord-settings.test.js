@@ -72,7 +72,9 @@ const faRunCommand = ( sPathCommand, vsArg ) => {
   };
 };
 
-const faRun = ( vsArg ) => faRunCommand( sPathSpecMap, vsArg );
+const faRun = ( vsArg ) => faRunCommand(
+  sPathSpecMap, [ "--cache-checksum" ].concat( vsArg )
+);
 
 const sPathConcordHook = path.join( sDirRepo, "bin", "concord-hook" );
 const sPathAgentsSync = path.join( sDirRepo, "bin", "agents-sync" );
@@ -104,6 +106,13 @@ const fsSpec = ( sTitle, vsBody ) => (
 
 const vsTreeFile = () => fs.readdirSync( sDirFixture, { recursive: true })
   .map(( sPath ) => path.join( sDirFixture, sPath ))
+  .filter(( sPath ) => {
+    const sPathRel = path.relative( sDirFixture, sPath );
+    return !sPathRel.startsWith( path.join( "tmp", "spec-map", "cache" )
+        + path.sep )
+      && !sPathRel.startsWith( path.join( ".git", "spec-map", "cache" )
+        + path.sep );
+  })
   .filter(( sPath ) => fs.statSync( sPath ).isFile())
   .sort()
   .map(( sPath ) => sPath + "\n" + fs.readFileSync( sPath, "utf8" ));
@@ -650,7 +659,7 @@ test( "concord-settings — spec-coverage in a project declaring no coverage "
 });
 
 // @proves s-zupjie@e48f894
-// @proves s-nrp172@4c9ed53
+// @proves s-nrp172@56b8541
 describe( "concord-settings — where guidance references are read", () => {
   test( "under every directory a `*` segment names, in files of a declared "
     + "language, outside the ignored directories, and nowhere else", () => {
@@ -834,7 +843,7 @@ describe( "concord-settings — the hash table", () => {
   });
 });
 
-// @proves s-92u5vq@475d2f0
+// @proves s-92u5vq@fbe31e8
 // @proves s-4jegoj@05acd9f
 describe( "concord-settings — a command acts on its working directory",
 () => {
@@ -883,15 +892,14 @@ test( "concord-settings — Concord's own settings file declares Concord's "
 });
 
 // @proves s-ins4p7@19e76c1
-test( "concord-settings — Concord's own build targets call the commands "
-  + "under bin and preserve the npm target names", () => {
+test( "concord-settings — Concord's npm helper scripts call the master command", () => {
   const aPackage = JSON.parse( fsRepoText( "package.json" ));
   expect( aPackage.scripts ).toMatchObject({
-    "spec-map": "bin/spec-map",
-    "spec-coverage": "bin/spec-coverage",
-    "agents-sync": "bin/agents-sync",
-    "hook-install": "bin/concord-hook install",
-    "link-propose": "bin/link-propose"
+    "spec-map": "bin/concord spec-map",
+    "spec-coverage": "bin/concord spec-coverage",
+    "agents-sync": "bin/concord agents-sync",
+    "hook-install": "bin/concord concord-hook install",
+    "link-propose": "bin/concord link-propose"
   });
   fAssertProjectGate();
 });
@@ -913,9 +921,9 @@ test( "concord-settings — Concord has one root containing its specs, build "
 
 const sDirBin = path.join( sDirRepo, "bin" );
 
-// @proves s-c744tt@f8b2070
-// @proves s-4pq89a@d19cad5
-// @proves s-y7klju@f22102b
+// @proves s-c744tt@ebf0776
+// @proves s-4pq89a@7127ba0
+// @proves s-y7klju@10305b7
 test( "concord-settings — each command under bin is an executable file "
   + "with no extension opening with the node shebang", () => {
   const vsName = fs.readdirSync( sDirBin ).sort();
@@ -991,7 +999,7 @@ test( "concord-settings — Concord's own commits are gated by its committed "
   const sPathHook = path.join( sDirRepo, ".githooks", "pre-commit" );
   expect( fs.statSync( sPathHook ).mode & 0o777 ).toBe( 0o755 );
   expect( fs.readFileSync( sPathHook, "utf8" )).toBe(
-    "#!/bin/sh\n\"$HOME/@concord/bin/spec-map\" --gate || exit 1\n"
+    "#!/bin/sh\nconcord spec-map --gate || exit 1\n"
   );
 });
 

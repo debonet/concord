@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+// @implements s-ualukl@c397c2a
+// @tested-by test/concord-cli.test.js
+"use strict";
+
+const { fzMain } = require( "../scripts/concord-init.js" );
+
+process.exitCode = fzMain(
+  process.argv.slice( 2 ), process.cwd(),
+  ( s ) => process.stdout.write( s ),
+  ( s ) => process.stderr.write( s )
+);

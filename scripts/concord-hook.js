@@ -1,23 +1,23 @@
-// @implements s-khifjg@c398f54
+// @implements s-khifjg@57096fc
 // @implements s-5r1y67@f5cc739
 // @implements s-j6etdh@aba052d
 // @implements s-6d5erl@850ece1
 // @implements s-auxyb0@7cb2648
-// @implements s-c744tt@f8b2070
+// @implements s-c744tt@ebf0776
 // @implements s-4jegoj@05acd9f
 // @implements s-zrgt7e@a066ef0
 // @implements s-pa182t@8008053
-// @implements s-4pq89a@d19cad5
-// @implements s-y7klju@f22102b
+// @implements s-4pq89a@7127ba0
+// @implements s-y7klju@10305b7
 // @implements s-l366c3@ab4230b
-// @implements s-w7hypm@963555b
+// @implements s-w7hypm@317c595
 // @implements s-f15bz3@ccb7236
 // @implements s-xu5wfs@6233752
 // @implements s-64wie3@7be9bbd
 // @implements s-m50rhg@3816675
 // @implements s-wor0b2@f496608
 // @implements s-f79qxz@9d93d73
-// @implements s-nqgv3l@f11b0c4
+// @implements s-nqgv3l@a5d533f
 // @implements s-gfxphd@17a5f25
 // @implements s-7fg356@bad1518
 // @implements s-wkkgpn@5fa3420
@@ -31,14 +31,14 @@ const path = require( "path" );
 const { spawnSync } = require( "child_process" );
 const { ConfigReader } = require( "./concord-config.js" );
 
-const sPathSpecMap = path.join( __dirname, "..", "bin", "spec-map" );
+const sPathConcord = path.join( __dirname, "..", "bin", "concord" );
 const sDirHooks = ".githooks";
 const sPathHookRel = sDirHooks + "/pre-commit";
 const sKeyHooksPath = "core.hooksPath";
-const sLineGate = "\"$HOME/@concord/bin/spec-map\" --gate || exit 1";
+const sLineGate = "concord spec-map --gate || exit 1";
 const sHookText = "#!/bin/sh\n" + sLineGate + "\n";
 const nModeHook = 0o755;
-const sUsage = "usage: concord-hook install|check\n";
+const sUsage = "usage: concord concord-hook install|check\n";
 const asForm = new Set([ "install", "check" ]);
 
 const fbExecutable = ( nMode ) => ( nMode & 0o111 ) !== 0;
@@ -128,9 +128,11 @@ const fsRefusalForInstall = ( git, hook ) => {
 };
 
 const faGate = ( sDirRoot ) => {
-  const aResult = spawnSync( process.execPath, [ sPathSpecMap, "--gate" ], {
+  const aResult = spawnSync(
+    process.execPath, [ sPathConcord, "spec-map", "--gate" ], {
     cwd: sDirRoot, encoding: "utf8", maxBuffer: 64 * 1024 * 1024
-  });
+    }
+  );
   return { cExit: aResult.status, sOut: aResult.stdout || "" };
 };
 

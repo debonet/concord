@@ -51,7 +51,7 @@ const fsRead = ( sPathRel ) => fs.readFileSync(
 const faRun = ( vsArg ) => {
   const aResult = spawnSync(
     process.execPath,
-    [ sPathSpecMap ].concat( vsArg ),
+    [ sPathSpecMap, "--cache-checksum" ].concat( vsArg ),
     { cwd: sDirFixture, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }
   );
   return {
@@ -77,6 +77,13 @@ const fsLineCount = ( sOut ) => sOut.split( "\n" ).find(( sLine ) => (
 
 const vsTreeFile = () => fs.readdirSync( sDirFixture, { recursive: true })
   .map(( sPath ) => path.join( sDirFixture, sPath ))
+  .filter(( sPath ) => {
+    const sPathRel = path.relative( sDirFixture, sPath );
+    return !sPathRel.startsWith( path.join( "tmp", "spec-map", "cache" )
+        + path.sep )
+      && !sPathRel.startsWith( path.join( ".git", "spec-map", "cache" )
+        + path.sep );
+  })
   .filter(( sPath ) => fs.statSync( sPath ).isFile())
   .sort()
   .map(( sPath ) => sPath + "\n" + fs.readFileSync( sPath, "utf8" ));
@@ -426,7 +433,7 @@ const sObsGated = [
   ""
 ].join( "\n" );
 
-// @proves s-ug5kvq@7a53ca2
+// @proves s-ug5kvq@0033049
 describe( "observations — the gate", () => {
   test( "refuses on each malformed entry (34) and dangling citation (35)",
   () => {

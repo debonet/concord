@@ -83,7 +83,7 @@ const fWriteFixture = ( sPathRel, sBody ) => {
 const faRun = ( vsArg, sDirCwd ) => {
   const aResult = spawnSync(
     process.execPath,
-    [ sPathScript ].concat( vsArg ),
+    [ sPathScript, "--cache-checksum" ].concat( vsArg ),
     { cwd: sDirCwd || sDirFixture, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }
   );
   return {
@@ -165,7 +165,7 @@ describe( "test names carry nothing", () => {
 });
 
 describe( "a spec path", () => {
-  // @proves s-92u5vq@475d2f0
+  // @proves s-92u5vq@fbe31e8
   test( "given absolute is the same spec as given relative", () => {
     const aRunRel = faRun( [ sPathSpecRel ] );
     const aRunAbs = faRun( [ path.join( sDirFixture, sPathSpecRel ) ] );
@@ -2361,6 +2361,12 @@ const fsTestLinks = ( vsOwner, vtLink ) => vsOwner
 
 const fvsReadTree = () => fs.readdirSync( sDirFixture, { recursive: true })
   .map(( sPathRel ) => path.join( sDirFixture, sPathRel ))
+  .filter(( sPath ) => {
+    const sPathRel = path.relative( sDirFixture, sPath );
+    const sPathCache = path.join( "tmp", "spec-map", "cache" );
+    return sPathRel !== path.join( "tmp", "spec-map", "cache.bin" )
+      && !sPathRel.startsWith( sPathCache + path.sep );
+  })
   .filter(( sPath ) => fs.statSync( sPath ).isFile())
   .sort()
   .map(( sPath ) => sPath + "\n" + fs.readFileSync( sPath, "utf8" ));

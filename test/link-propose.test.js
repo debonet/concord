@@ -134,7 +134,7 @@ test( "link-propose — the statements it covers are exactly those spec-map "
   expect( fvsIdContext( faRun( sDir, []).sOut )).not.toContain( "s-aaaaa1" );
 });
 
-// @proves s-58lkl7@0f47355
+// @proves s-58lkl7@02b2533
 test( "link-propose — the command under bin acts on the project in its "
   + "working directory", () => {
   const sDir = fsDirBase();
@@ -206,7 +206,7 @@ test( "link-propose — a run with arguments it cannot use maps nothing, "
     const aRun = faRun( sDir, vsArg );
     expect([ vsArg, aRun.z ]).toEqual([ vsArg, 2 ]);
     expect( aRun.sOut ).toBe( "" );
-    expect( aRun.sErr ).toMatch( /^usage: link-propose/ );
+    expect( aRun.sErr ).toMatch( /^usage: concord link-propose/ );
   });
   expect( faSnapshot( sDir )).toEqual( aBefore );
 });

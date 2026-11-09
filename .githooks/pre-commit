@@ -1,2 +1,2 @@
 #!/bin/sh
-"$HOME/@concord/bin/spec-map" --gate || exit 1
+concord spec-map --gate || exit 1

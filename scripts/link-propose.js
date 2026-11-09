@@ -1,4 +1,4 @@
-// @implements s-58lkl7@0f47355
+// @implements s-58lkl7@02b2533
 // @implements s-39kb2j@ad74a84
 // @implements s-tlgm8e@acf5b9e
 // @implements s-ms5aa9@80076b2
@@ -50,7 +50,7 @@ const asFlagMode = new Set([
 const asFlagPath = new Set([ "--file", "--apply" ]);
 const asModeTop = new Set([ "propose", "--file" ]);
 const sUsage = (
-  "usage: link-propose [<spec path>] [--top <n>] | --file <path> [--top <n>] "
+  "usage: concord link-propose [<spec path>] [--top <n>] | --file <path> [--top <n>] "
   + "| --apply <confirm file> | --tested-by [<spec path>] "
   + "| --evaluate [<spec path>]\n"
 );

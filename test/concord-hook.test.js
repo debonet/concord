@@ -16,7 +16,7 @@ const sPathGitOther = path.join( sDirGitBin, "other-git" );
 const sPathGitState = path.join( sDirGitBin, "state.json" );
 const sPathGitLog = path.join( sDirGitBin, "log.jsonl" );
 const sPathHook = path.join( sDirProject, ".githooks", "pre-commit" );
-const sLineGate = "\"$HOME/@concord/bin/spec-map\" --gate || exit 1";
+const sLineGate = "concord spec-map --gate || exit 1";
 const sHookInstalled = "#!/bin/sh\n" + sLineGate + "\n";
 const sDirGitCommon = "git-common";
 
@@ -129,7 +129,7 @@ afterAll(() => {
   fs.rmSync( sDirScratch, { recursive: true, force: true });
 });
 
-// @proves s-khifjg@c398f54
+// @proves s-khifjg@57096fc
 // @proves s-5r1y67@f5cc739
 // @proves s-l366c3@ab4230b
 describe( "concord-hook — its forms", () => {
@@ -145,12 +145,12 @@ describe( "concord-hook — its forms", () => {
     const aRun = faRun( vsArg );
     expect( aRun.cExit ).toBe( 2 );
     expect( aRun.sStdout ).toBe( "" );
-    expect( aRun.sStderr ).toMatch( /^usage: concord-hook install\|check\n$/ );
+    expect( aRun.sStderr ).toMatch( /^usage: concord concord-hook install\|check\n$/ );
     expect( fvsProjectFile()).toEqual( vsBefore );
     expect( fvaGitCall()).toEqual([]);
   });
 
-  // @proves s-92u5vq@475d2f0
+  // @proves s-92u5vq@fbe31e8
   test( "PAIRED: install and check each act on the project whose root is "
     + "the working directory", () => {
     fSetup();
@@ -178,7 +178,8 @@ describe( "concord-hook — which git it runs", () => {
     vaCall.forEach(( aCall ) => expect( aCall.sName ).toBe( "other-git" ));
     expect( vaCall.some( fbSetsConfig )).toBe( true );
     expect( fsHooksPath()).toBe( ".githooks" );
-    expect( fs.readdirSync( path.join( sDirProject, ".git" ))).toEqual([]);
+    expect( fs.readdirSync( path.join( sDirProject, ".git" )))
+      .toEqual([ "spec-map" ]);
   });
 
   test( "PAIRED: `git` on the PATH when CONCORD_GIT is empty", () => {
@@ -252,7 +253,7 @@ describe( "concord-hook — the root of a work tree", () => {
 });
 
 // @proves s-auxyb0@7cb2648
-// @proves s-w7hypm@963555b
+// @proves s-w7hypm@317c595
 // @proves s-f15bz3@ccb7236
 // @proves s-xu5wfs@6233752
 // @proves s-gfxphd@17a5f25
@@ -286,7 +287,7 @@ describe( "concord-hook — install in a project with no hook", () => {
 });
 
 // @proves s-gfxphd@17a5f25
-// @proves s-w7hypm@963555b
+// @proves s-w7hypm@317c595
 describe( "concord-hook — install beside an existing hook holding a gate "
   + "line", () => {
   const sHookOwn = "#!/bin/sh\necho checking\n" + sLineGate + "\necho done\n";
@@ -345,7 +346,7 @@ describe( "concord-hook — what install will not replace", () => {
   });
 });
 
-// @proves s-nqgv3l@f11b0c4
+// @proves s-nqgv3l@a5d533f
 describe( "concord-hook — install where the gate refuses", () => {
   test( "prints the gate's output and one line saying the hook was not "
     + "installed, writes nothing, sets nothing, exits 1", () => {

@@ -25,7 +25,7 @@ const fWriteTree = ( asBodyForPath ) => {
 const faRun = ( vsArg ) => {
   const aResult = spawnSync(
     process.execPath,
-    [ sPathSpecMap ].concat( vsArg ),
+    [ sPathSpecMap, "--cache-checksum" ].concat( vsArg ),
     { cwd: sDirFixture, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }
   );
   return {
@@ -47,6 +47,13 @@ const fvsLineInSection = ( sOut, sTitle ) => {
 
 const vsTreeFile = () => fs.readdirSync( sDirFixture, { recursive: true })
   .map(( sPath ) => path.join( sDirFixture, sPath ))
+  .filter(( sPath ) => {
+    const sPathRel = path.relative( sDirFixture, sPath );
+    return !sPathRel.startsWith( path.join( "tmp", "spec-map", "cache" )
+        + path.sep )
+      && !sPathRel.startsWith( path.join( ".git", "spec-map", "cache" )
+        + path.sep );
+  })
   .filter(( sPath ) => fs.statSync( sPath ).isFile())
   .sort()
   .map(( sPath ) => sPath + "\n" + fs.readFileSync( sPath, "utf8" ));
@@ -295,7 +302,7 @@ afterAll(() => {
 });
 
 // @proves s-nlm91d@4f76fd6
-// @proves s-ug5kvq@7a53ca2
+// @proves s-ug5kvq@0033049
 // @proves s-rkd937@6d33bc3
 // @proves s-u88ict@b5a6934
 // @proves s-nw4u9n@3b57e9b
@@ -450,7 +457,7 @@ describe( "gate — nothing beside it", () => {
     const aRun = faRun( vsArg );
     expect( aRun.cExit ).toBe( 2 );
     expect( aRun.sStdout ).toBe( "" );
-    expect( aRun.sStderr ).toMatch( /^usage: spec-map .*--gate/ );
+    expect( aRun.sStderr ).toMatch( /^usage: concord spec-map .*--gate/ );
     expect( vsTreeFile()).toEqual( vsBefore );
   });
 });

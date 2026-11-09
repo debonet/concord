@@ -3,11 +3,11 @@
 // @implements s-lm68rf@abb02d5
 // @implements s-bw4530@bd1f9d9
 // @implements s-0hg5qn@087947b
-// @implements s-c744tt@f8b2070
+// @implements s-c744tt@ebf0776
 // @implements s-4jegoj@05acd9f
 // @implements s-zrgt7e@a066ef0
 // @implements s-pa182t@8008053
-// @implements s-4pq89a@d19cad5
+// @implements s-4pq89a@7127ba0
 // @implements s-yurmkw@ee703cc
 // @implements s-a40yzg@5e808cd
 // @implements s-l0wfl7@c6ad1b2
@@ -29,7 +29,7 @@
 // @implements s-kkql92@90bba2d
 // @implements s-i2ip58@b70be7c
 // @implements s-s4l32i@b41f304
-// @implements s-ug5kvq@7a53ca2
+// @implements s-ug5kvq@0033049
 // @implements s-qvdtqg@16f3fb4
 // @implements s-tlkzzq@39b39e7
 // @implements s-eltyao@a23e292
@@ -45,7 +45,7 @@
 // @implements s-jmslkk@be3cc50
 // @implements s-k6leed@80135a4
 // @implements s-3oxidy@1ccac2e
-// @implements s-nrp172@4c9ed53
+// @implements s-nrp172@56b8541
 // @implements s-iz8176@bb80e0d
 // @implements s-wthfms@d2c5ecd
 // @implements s-dnog08@dde78ed
@@ -328,6 +328,10 @@
 // @implements s-fsp1a2@02fcf0a
 // @implements s-ctbylk@c20e0f1
 // @implements s-yltboo@95a3db6
+// @implements s-3fzgrr@cc19c25
+// @implements s-rh750h@cc70238
+// @implements s-p54hx2@dfa5570
+// @implements s-k9xdwy@eb62f8a
 // @implements s-aku8n2@4ffc4f1
 // @implements s-qr72mj@9691d37
 // @implements s-nc5n19@aee9454
@@ -386,6 +390,27 @@
 // @implements s-sg7zoy@216a1b0
 // @implements s-sy7274@b9a1e14
 // @implements s-e6bz23@e35e7ac
+// @implements s-zhg7ac@f7ba2b1
+// @implements s-akhzjv@81fd58b
+// @implements s-w83alg@dde527f
+// @implements s-pcodyd@5016f26
+// @implements s-4kencv@f2a5fe1
+// @implements s-69o630@92fe218
+// @implements s-tot8yl@9c5630f
+// @implements s-8ydtei@83a4ba4
+// @implements s-h8i6xs@8462414
+// @implements s-pkmrq7@79d0e81
+// @implements s-zpv3y7@dc2aae2
+// @implements s-yecw0i@8c774c9
+// @implements s-7zyx83@70bc71a
+// @implements s-v7ww36@641e899
+// @implements s-h9tc2m@919d17b
+// @implements s-m9jtjo@3366616
+// @implements s-k3sml3@9ef30dd
+// @implements s-22a0wo@13886ff
+// @implements s-8qhv2d@fe58484
+// @implements s-r95w4f@6a28bae
+// @implements s-m4fr78@238c65f
 // @tested-by test/concord.test.js
 // @tested-by test/spec-map.test.js
 // @tested-by test/project-coverage.test.js
@@ -394,12 +419,29 @@
 // @tested-by test/spec-map-source.test.js
 // @tested-by test/observations.test.js
 // @tested-by test/gate.test.js
+// @tested-by test/side-files.test.js
 "use strict";
 
 const fs = require( "fs" );
 const path = require( "path" );
 const crypto = require( "crypto" );
 const babelParser = require( "@babel/parser" );
+const { ParseCache } = require( "./spec-map-cache.js" );
+const {
+  faReaders, asLanguageName, faProgramForPath, ftMaskRust, fnRustBlockEnd
+} = require( "./languages" );
+
+const fsFingerprintParser = ( aConfig ) => crypto.createHash( "sha256" )
+  .update( process.version )
+  .update( JSON.stringify( aConfig ))
+  .update( fs.readFileSync( __filename ))
+  .update( asLanguageName.map(( sLanguage ) => fs.readFileSync(
+    require.resolve( "./languages/" + sLanguage )
+  )).join( "\n" ))
+  .update( fs.readFileSync( require.resolve( "./spec-map-cache.js" )))
+  .update( fs.readFileSync( require.resolve( "./spec-map-observations.js" )))
+  .update( fs.readFileSync( require.resolve( "@babel/parser" )))
+  .digest( "hex" );
 const {
   sFileConfig, ConfigReader, fnPrefixMatched
 } = require( "./concord-config.js" );
@@ -408,11 +450,6 @@ const {
 } = require( "./spec-map-observations.js" );
 
 const reHeading = /^(#{1,6})\s/;
-const reCallTest = new RegExp(
-  "(?<![\\w$.])(describe|test|it)(?:\\.(?:only|skip|concurrent|failing))*"
-  + "(\\.each)?(?=\\s*[(`])",
-  "g"
-);
 const reOwnerText = /^\s*@spec/;
 const reOwnerLine = /^\s*\/\/ @spec +(\S+\.md)\s*$/;
 const reLinkText = /^\s*@proves/;
@@ -467,32 +504,9 @@ const vtKindMisplacedInTest = [
   [ "tested-by", reTestedByText, reTestedByLoose ],
   [ "checks", reChecksText, reChecksLoose ]
 ];
-const avsExtForLanguage = {
-  javascript: [ ".js", ".mjs", ".cjs", ".jsx" ],
-  typescript: [ ".ts", ".tsx" ],
-  css: [ ".css" ],
-  html: [ ".html", ".htm" ],
-  rust: [ ".rs" ]
-};
-const asLanguageTest = new Set([ "javascript", "typescript", "rust" ]);
-const asTestSuffixForLanguage = {
-  javascript: [ "js", "mjs", "cjs", "jsx" ],
-  typescript: [ "ts", "tsx" ], rust: [ "rs" ]
-};
 const reNever = /(?!)/;
-const reFileCss = /\.css$/;
-const reFileHtml = /\.html?$/;
-const reFileShebang = /\.(?:[cm]?js|jsx|tsx?)$/;
 const reFileJsx = /\.(?:jsx|tsx)$/;
 const reRunLine = /^\s*\/\/\s*@(?:spec|proves|guards|implements)/;
-const reWrapperText = /^\s*@test-wrapper +([A-Za-z_$][\w$]*)\s*$/;
-const asNameCallTest = new Set([ "describe", "test", "it" ]);
-const reDocblock = /\/\*\*[\s\S]*?\*\//g;
-const reJestDocblock = /@jest-environment/;
-const asWordBeforeRegex = new Set([
-  "return", "typeof", "case", "in", "of", "void", "delete", "instanceof",
-  "new", "throw", "yield", "await", "else", "do"
-]);
 const reSpacePlus = /\s*\+\s*/y;
 const reSpace = /\s*/y;
 const reMarkerOpen = /\{#[a-z]-/g;
@@ -538,7 +552,6 @@ const reTargetCollection = /^(?:[\w.@-]+\/)*\*\/specs?\/$/;
 const reTargetPath = new RegExp(
   "^(?!/)(?!(?:.*/)?\\.\\.(?:/|$))[\\w.@-]+(?:/[\\w.@-]+)*/?$"
 );
-const reFileTypeScript = /\.(?:ts|tsx)$/;
 const reFileCode = /\.(?:js|mjs|cjs|jsx|ts|tsx)$/;
 const reCharWord = /[\p{L}\p{N}_$]/u;
 const reCharSpace = /\s/;
@@ -605,6 +618,10 @@ const fsNormal = ( sText ) => sText.replace( /\s+/g, " " ).trim();
 const fsHashForText = ( sText ) => (
   crypto.createHash( "sha1" ).update( sText, "utf8" ).digest( "hex" )
     .slice( 0, 7 )
+);
+
+const fsHashForBytes = ( yBytes ) => (
+  crypto.createHash( "sha1" ).update( yBytes ).digest( "hex" ).slice( 0, 7 )
 );
 
 const fsWords = ( sText ) => (
@@ -1159,450 +1176,12 @@ const fsNameAt = ( sText, nOpen ) => {
   }
 };
 
-class SourceMasker {
-  constructor( sText ){
-    this.vch = sText.split( "" );
-    this.vnComment = [];
-    this.vnCommentBlock = [];
-    this.vcBrace = [];
-    this.sState = "fnCode";
-    this.chQuote = null;
-    this.nQuote = -1;
-    this.bClass = false;
-  }
-
-  fBlank( n ){
-    if( n < this.vch.length && this.vch[ n ] !== "\n" ){ this.vch[ n ] = " ";}
-  }
-
-  fnComment( n, chNext ){
-    ( chNext === "/" ? this.vnComment : this.vnCommentBlock ).push( n );
-    this.sState = chNext === "/" ? "fnLine" : "fnBlock";
-    this.fBlank( n );
-    this.fBlank( n + 1 );
-    return n + 1;
-  }
-
-  fBrace( ch ){
-    const nTop = this.vcBrace.length - 1;
-    if( nTop < 0 ){ return;}
-    if( ch === "{" ){ this.vcBrace[ nTop ]++;}
-    else if( this.vcBrace[ nTop ] > 0 ){ this.vcBrace[ nTop ]--;}
-    else{
-      this.vcBrace.pop();
-      this.sState = "fnTemplate";
-  }}
-
-  fbRegexAt( n ){
-    let nPrev = n - 1;
-    while( nPrev >= 0 && /\s/.test( this.vch[ nPrev ])){ nPrev--;}
-    if( nPrev < 0 ){ return true;}
-    if( !/[\w$]/.test( this.vch[ nPrev ])){
-      return !/[)\]}"'`]/.test( this.vch[ nPrev ]);
-    }
-    let nWord = nPrev;
-    while( nWord >= 0 && /[\w$]/.test( this.vch[ nWord ])){ nWord--;}
-    return asWordBeforeRegex.has(
-      this.vch.slice( nWord + 1, nPrev + 1 ).join( "" )
-    );
-  }
-
-  fnRegex( n ){
-    const ch = this.vch[ n ];
-    if( ch === "\n" || ( ch === "/" && !this.bClass )){
-      this.sState = "fnCode";
-      return n;
-    }
-    if( ch === "[" ){ this.bClass = true;}
-    else if( ch === "]" ){ this.bClass = false;}
-    return this.fnEscape( n );
-  }
-
-  fnCode( n ){
-    const ch = this.vch[ n ];
-    const chNext = this.vch[ n + 1 ];
-    if( ch === "/" && ( chNext === "/" || chNext === "*" )){
-      return this.fnComment( n, chNext );
-    }
-    if( ch === "/" && this.fbRegexAt( n )){
-      this.sState = "fnRegex";
-      this.bClass = false;
-    }
-    else if( ch === "\"" || ch === "'" ){
-      this.sState = "fnQuote";
-      this.chQuote = ch;
-      this.nQuote = n;
-    }
-    else if( ch === "`" ){ this.sState = "fnTemplate";}
-    else if( ch === "{" || ch === "}" ){ this.fBrace( ch );}
-    return n;
-  }
-
-  fnLine( n ){
-    if( this.vch[ n ] === "\n" ){ this.sState = "fnCode";}
-    else{ this.fBlank( n );}
-    return n;
-  }
-
-  fnBlock( n ){
-    const bClose = this.vch[ n ] === "*" && this.vch[ n + 1 ] === "/";
-    this.fBlank( n );
-    if( !bClose ){ return n;}
-    this.fBlank( n + 1 );
-    this.sState = "fnCode";
-    return n + 1;
-  }
-
-  fnEscape( n ){
-    const bEscape = this.vch[ n ] === "\\";
-    this.fBlank( n );
-    if( !bEscape ){ return n;}
-    this.fBlank( n + 1 );
-    return n + 1;
-  }
-
-  fnQuote( n ){
-    const ch = this.vch[ n ];
-    if( ch === "\n" ){ this.fBlank( this.nQuote );}
-    if( ch === "\n" || ch === this.chQuote ){
-      this.sState = "fnCode";
-      return n;
-    }
-    return this.fnEscape( n );
-  }
-
-  fnTemplate( n ){
-    const ch = this.vch[ n ];
-    if( ch === "`" ){
-      this.sState = "fnCode";
-      return n;
-    }
-    if( ch === "$" && this.vch[ n + 1 ] === "{" ){
-      this.fBlank( n );
-      this.vcBrace.push( 0 );
-      this.sState = "fnCode";
-      return n + 1;
-    }
-    return this.fnEscape( n );
-  }
-
-  ft(){
-    for( let n = 0; n < this.vch.length; n++ ){
-      n = this[ this.sState ]( n );
-    }
-    return [
-      this.vch.join( "" ), new Set( this.vnComment ), this.vnCommentBlock
-    ];
-  }
-}
-
-const ftMaskForSource = ( sText ) => new SourceMasker( sText ).ft();
-
-const asTypeOnly = new Set([
-  "TSTypeAnnotation", "TSTypeParameterDeclaration",
-  "TSTypeParameterInstantiation", "TSInterfaceDeclaration",
-  "TSTypeAliasDeclaration", "TSDeclareFunction", "TSModuleDeclaration",
-  "TSImportEqualsDeclaration", "TSExportAssignment",
-  "TSNamespaceExportDeclaration", "TSDeclareMethod",
-  "TSAsExpression", "TSSatisfiesExpression"
-]);
-const asTypeAfterExpression = new Set([
-  "TSNonNullExpression", "TSInstantiationExpression"
-]);
-const asTypeJsxTag = new Set([
-  "JSXOpeningElement", "JSXClosingElement",
-  "JSXOpeningFragment", "JSXClosingFragment"
-]);
-const asTypeJsxHole = new Set([
-  "JSXExpressionContainer", "JSXSpreadAttribute", "JSXSpreadChild"
-]);
-const asKeyUnvisited = new Set([ "loc", "tokens", "comments" ]);
-const asClassForJsx = { t: "c", j: "j", s: "l" };
-
-const ftRangeErased = ( x ) => {
-  if( asTypeOnly.has( x.type )){
-    return [ x.expression === undefined ? x.start : x.expression.end, x.end ];
-  }
-  if( x.type === "TSTypeAssertion" ){ return [ x.start, x.expression.start ];}
-  if( asTypeAfterExpression.has( x.type )){ return [ x.expression.end, x.end ];}
-  if( x.type === "ImportDeclaration" && x.importKind === "type" ){
-    return [ x.start, x.end ];
-  }
-  return x.declare === true ? [ x.start, x.end ] : null;
-};
-
-const ftRangeJsx = ( x, xParent ) => {
-  if( asTypeJsxTag.has( x.type )){ return [ x.start, x.end, "t" ];}
-  if( x.type === "JSXText" ){ return [ x.start, x.end, "j" ];}
-  if(
-    x.type === "StringLiteral"
-    && xParent !== null
-    && xParent.type === "JSXAttribute"
-  ){
-    return [ x.start, x.end, "s" ];
-  }
-  return asTypeJsxHole.has( x.type ) ? [ x.start + 1, x.end - 1, null ] : null;
-};
-
-class SyntaxCollector {
-  constructor(){
-    this.vtErased = [];
-    this.vtJsx = [];
-  }
-
-  fNode( x, xParent ){
-    const tErased = ftRangeErased( x );
-    const tJsx = ftRangeJsx( x, xParent );
-    if( tErased !== null ){ this.vtErased.push( tErased );}
-    if( tJsx !== null ){ this.vtJsx.push( tJsx );}
-  }
-
-  fVisit( x, xParent ){
-    if( x === null || typeof x !== "object" ){ return;}
-    if( Array.isArray( x )){
-      x.forEach(( xItem ) => this.fVisit( xItem, xParent ));
-      return;
-    }
-    const bNode = typeof x.type === "string";
-    if( bNode ){ this.fNode( x, xParent );}
-    Object.keys( x )
-      .filter(( sKey ) => !asKeyUnvisited.has( sKey ))
-      .forEach(( sKey ) => this.fVisit( x[ sKey ], bNode ? x : xParent ));
-  }
-}
-
-const fvsPluginForPath = ( sPath ) => [].concat(
-  reFileTypeScript.test( sPath ) ? [ "typescript" ] : [],
-  reFileJsx.test( sPath ) ? [ "jsx" ] : []
-);
-
-const faProgramForPath = ( sText, sPath ) => {
-  const vsPlugin = fvsPluginForPath( sPath );
-  if( vsPlugin.length === 0 ){ return null;}
-  try{
-    return babelParser.parse( sText, {
-      sourceType: "unambiguous", errorRecovery: true, plugins: vsPlugin
-    }).program;
-  }
-  catch( xErr ){ return null;}
-};
-
-const fbCharKept = ( ch ) => ch === "\n" || ch === "\r";
-
-const fsBlankedForRanges = ( sText, vtRange ) => {
-  const vsChar = sText.split( "" );
-  vtRange.forEach(([ nStart, nEnd ]) => {
-    for( let n = nStart; n < nEnd; n++ ){
-      if( !fbCharKept( vsChar[ n ])){ vsChar[ n ] = " ";}
-    }
-  });
-  return vsChar.join( "" );
-};
-
-const fvsKindForJsx = ( cChar, vtJsx ) => {
-  const vsKind = new Array( cChar ).fill( null );
-  vtJsx.forEach(([ nStart, nEnd, sKind ]) => {
-    for( let n = nStart; n < nEnd; n++ ){ vsKind[ n ] = sKind;}
-  });
-  return vsKind;
-};
-
-const fsBlankedForKinds = ( sText, vsKind ) => sText.split( "" )
-  .map(( ch, n ) => vsKind[ n ] === null || fbCharKept( ch ) ? ch : " " )
-  .join( "" );
-
-const faReadingForPath = ( sText, sPath ) => {
-  const aProgram = faProgramForPath( sText, sPath );
-  if( aProgram === null ){
-    return { sSource: sText, sBlanked: sText, vsJsx: null };
-  }
-  const collector = new SyntaxCollector();
-  collector.fVisit( aProgram, null );
-  const sSource = fsBlankedForRanges( sText, collector.vtErased );
-  if( !reFileJsx.test( sPath )){
-    return { sSource, sBlanked: sSource, vsJsx: null };
-  }
-  const vsJsx = fvsKindForJsx( sText.length, collector.vtJsx );
-  return { sSource, sBlanked: fsBlankedForKinds( sSource, vsJsx ), vsJsx };
-};
-
-const ftMaskRust = ( sText ) => {
-  const vch = sText.split( "" );
-  const vnComment = [];
-  const vnCommentBlock = [];
-  const vtComment = [];
-  const vtLiteral = [];
-  const fBlank = ( n ) => {
-    if( n < vch.length && vch[ n ] !== "\n" && vch[ n ] !== "\r" ){
-      vch[ n ] = " ";
-    }
-  };
-  const fBlankRange = ( nStart, nEnd ) => {
-    for( let n = nStart; n < nEnd; n++ ){ fBlank( n );}
-  };
-  let n = 0;
-  while( n < vch.length ){
-    const sTail = sText.slice( n );
-    const vsRaw = sTail.match( /^(?:br|r)(#*)"/ );
-    if( vsRaw !== null ){
-      const sClose = "\"" + vsRaw[ 1 ];
-      const nClose = sText.indexOf( sClose, n + vsRaw[ 0 ].length );
-      const nEnd = nClose < 0 ? vch.length : nClose + sClose.length;
-      vtLiteral.push([ n, nEnd ]);
-      fBlankRange( n, nEnd );
-      n = nEnd;
-      continue;
-    }
-    const sByteOrString = sText.startsWith( "b\"", n ) ? "\""
-      : sText[ n ] === "\"" ? "\"" : null;
-    if( sByteOrString !== null ){
-      const nQuote = n + ( sText[ n ] === "b" ? 1 : 0 );
-      let nEnd = nQuote + 1;
-      while( nEnd < vch.length ){
-        if( sText[ nEnd ] === "\\" ){ nEnd += 2; continue;}
-        if( sText[ nEnd++ ] === "\"" ){ break;}
-      }
-      vtLiteral.push([ n, nEnd ]);
-      fBlankRange( n, nEnd );
-      n = nEnd;
-      continue;
-    }
-    if( sText.startsWith( "//", n )){
-      const bDoc = sText.startsWith( "///", n )
-        || sText.startsWith( "//!", n );
-      if( !bDoc ){ vnComment.push( n );}
-      const nEnd = sText.indexOf( "\n", n );
-      const nStop = nEnd < 0 ? vch.length : nEnd;
-      vtComment.push([ n, nStop ]);
-      fBlankRange( n, nStop );
-      n = nStop;
-      continue;
-    }
-    if( sText.startsWith( "/*", n )){
-      const bDoc = sText.startsWith( "/**", n )
-        || sText.startsWith( "/*!", n );
-      if( !bDoc ){ vnCommentBlock.push( n );}
-      let cDepth = 1;
-      let nEnd = n + 2;
-      while( nEnd < vch.length && cDepth > 0 ){
-        if( sText.startsWith( "/*", nEnd )){ cDepth++; nEnd += 2;}
-        else if( sText.startsWith( "*/", nEnd )){ cDepth--; nEnd += 2;}
-        else{ nEnd++;}
-      }
-      vtComment.push([ n, nEnd ]);
-      fBlankRange( n, nEnd );
-      n = nEnd;
-      continue;
-    }
-    if( sText[ n ] === "'" ){
-      const vsChar = sText.slice( n ).match( /^'(?:\\.|[^'\\\n])'/ );
-      if( vsChar !== null ){
-        vtLiteral.push([ n, n + vsChar[ 0 ].length ]);
-        fBlankRange( n, n + vsChar[ 0 ].length );
-        n += vsChar[ 0 ].length;
-        continue;
-      }
-    }
-    n++;
-  }
-  return [ vch.join( "" ), vnComment, vnCommentBlock, {
-    vtComment, vtLiteral
-  }];
-};
-
-const fvsClassRust = ( sText ) => {
-  const aRanges = ftMaskRust( sText )[ 3 ];
-  const vsClass = new Array( sText.length ).fill( "c" );
-  aRanges.vtComment.forEach(([ nStart, nEnd ]) => {
-    for( let n = nStart; n < nEnd; n++ ){ vsClass[ n ] = "m";}
-  });
-  aRanges.vtLiteral.forEach(([ nStart, nEnd ]) => {
-    for( let n = nStart; n < nEnd; n++ ){ vsClass[ n ] = "l";}
-  });
-  return vsClass;
-};
-
 const ftMaskForPath = ( sText, sPath ) => {
-  if( sPath.endsWith( ".rs" )){
-    const [ sMasked, vnComment, vnCommentBlock ] = ftMaskRust( sText );
-    return [ sMasked, new Set( vnComment.concat( vnCommentBlock )) ];
-  }
-  return ftMaskForSource( faReadingForPath( sText, sPath ).sBlanked );
+  const aLanguage = faLanguageForPath( sPath );
+  if( aLanguage === null ){ return [ sText, new Set() ];}
+  const aSource = aLanguage.faSource( sText, sPath );
+  return [ aSource.sMasked, aSource.asnComment ];
 };
-
-const asStateComment = new Set([ "fnLine", "fnBlock" ]);
-
-const fsClassForStep = ( sStateBefore, sStateAfter ) => {
-  if( asStateComment.has( sStateBefore )){ return "m";}
-  if( sStateBefore !== "fnCode" ){ return "l";}
-  return asStateComment.has( sStateAfter ) ? "m" : "c";
-};
-
-class SourceClassifier extends SourceMasker {
-  fvsClass(){
-    const vsClass = [];
-    for( let n = 0; n < this.vch.length; n++ ){
-      const sState = this.sState;
-      const nNext = this[ sState ]( n );
-      const sClass = fsClassForStep( sState, this.sState );
-      for( let nStep = n; nStep <= nNext; nStep++ ){ vsClass[ nStep ] = sClass;}
-      n = nNext;
-    }
-    return vsClass;
-  }
-}
-
-class CssClassifier {
-  constructor( sText ){
-    this.sText = sText;
-    this.vsClass = [];
-    this.sState = "c";
-    this.chQuote = null;
-  }
-
-  fnComment( n ){
-    this.vsClass[ n ] = "m";
-    if( this.sText.startsWith( "*/", n )){
-      this.vsClass[ n + 1 ] = "m";
-      this.sState = "c";
-      return n + 1;
-    }
-    return n;
-  }
-
-  fnLiteral( n ){
-    const ch = this.sText[ n ];
-    this.vsClass[ n ] = "l";
-    if( ch === "\\" ){
-      this.vsClass[ n + 1 ] = "l";
-      return n + 1;
-    }
-    if( ch === this.chQuote ){ this.sState = "c";}
-    return n;
-  }
-
-  fnCode( n ){
-    const ch = this.sText[ n ];
-    if( this.sText.startsWith( "/*", n )){
-      this.sState = "m";
-      return this.fnComment( n );
-    }
-    this.vsClass[ n ] = "c";
-    if( ch === "\"" || ch === "'" ){
-      this.sState = "l";
-      this.chQuote = ch;
-    }
-    return n;
-  }
-
-  fvsClass(){
-    const afnForState = { c: "fnCode", m: "fnComment", l: "fnLiteral" };
-    for( let n = 0; n < this.sText.length; n++ ){
-      n = this[ afnForState[ this.sState ]]( n );
-    }
-    return this.vsClass;
-  }
-}
 
 const fbSpaceJsx = ( sText, vsClass, n ) => (
   vsClass[ n ] === "j" && reCharSpace.test( sText[ n ])
@@ -1632,43 +1211,16 @@ const fsCodeNormal = ( sText, vsClass ) => {
   return sOut;
 };
 
-const fvsClassForReading = ( aReading ) => {
-  const vsClass = new SourceClassifier( aReading.sBlanked ).fvsClass();
-  return aReading.vsJsx === null
-    ? vsClass
-    : vsClass.map(( sClass, n ) => (
-      aReading.vsJsx[ n ] === null || aReading.vsJsx[ n ] === undefined
-        ? sClass
-        : asClassForJsx[ aReading.vsJsx[ n ]]
-    ));
-};
-
 const fsNormalForFile = ( sPath, sText ) => {
-  if( reFileHtml.test( sPath )){ return fsNormalForHtml( sText );}
-  if( reFileCss.test( sPath )){
-    return fsCodeNormal( sText, new CssClassifier( sText ).fvsClass());
-  }
-  if( sPath.endsWith( ".rs" )){
-    return fsCodeNormal( sText, fvsClassRust( sText ));
-  }
-  if( !reFileCode.test( sPath )){ return fsNormal( sText );}
-  const aReading = faReadingForPath( sText, sPath );
-  return fsCodeNormal( aReading.sSource, fvsClassForReading( aReading ));
-};
-
-const fvsClassHtml = ( sText ) => {
-  const vsClass = new Array( sText.length ).fill( "c" );
-  faHtmlForText( sText ).vtComment.forEach(([ nStart, nEnd ]) => {
-    for( let n = nStart; n < nEnd; n++ ){ vsClass[ n ] = "m";}
-  });
-  return vsClass;
+  const aLanguage = faLanguageForPath( sPath );
+  return aLanguage === null ? fsNormal( sText )
+    : aLanguage.fsNormal( sPath, sText );
 };
 
 const fvsClassForFile = ( sPath, sText ) => {
-  if( reFileHtml.test( sPath )){ return fvsClassHtml( sText );}
-  if( reFileCss.test( sPath )){ return new CssClassifier( sText ).fvsClass();}
-  if( sPath.endsWith( ".rs" )){ return fvsClassRust( sText );}
-  return fvsClassForReading( faReadingForPath( sText, sPath ));
+  const aLanguage = faLanguageForPath( sPath );
+  return aLanguage === null ? new Array( sText.length ).fill( "c" )
+    : aLanguage.fvsClass( sPath, sText );
 };
 
 const fvnLineStart = ( vsLine ) => {
@@ -1725,107 +1277,17 @@ const fvaCallForRe = ( aSource, re, bWrapper ) => (
   ).filter( Boolean )
 );
 
-const fnRustBlockEnd = ( sMasked, nOpen ) => {
-  let cDepth = 0;
-  for( let n = nOpen; n < sMasked.length; n++ ){
-    if( sMasked[ n ] === "{" ){ cDepth++;}
-    else if( sMasked[ n ] === "}" && --cDepth === 0 ){ return n + 1;}
-  }
-  return sMasked.length;
-};
-
-const faRustCall = ( aSource, sKind, sName, nStart, nAt ) => {
-  const nOpen = aSource.sMasked.indexOf( "{", nAt );
-  return {
-    sKind,
-    sName,
-    sBody: aSource.sText.slice( nStart, fnRustBlockEnd(
-      aSource.sMasked, nOpen
-    )),
-    nStart,
-    nEnd: fnRustBlockEnd( aSource.sMasked, nOpen ),
-    nLine: fnLineAt( aSource.vnLineStart, nAt )
-  };
-};
-
-const fvaCallForRust = ( aSource ) => {
-  const vaCall = [];
-  const reModule = /\bmod\s+([A-Za-z_]\w*)\s*\{/g;
-  for( const vsModule of aSource.sMasked.matchAll( reModule )){
-    const nOpen = vsModule.index + vsModule[ 0 ].lastIndexOf( "{" );
-    const aCall = faRustCall(
-      aSource, "describe", vsModule[ 1 ], vsModule.index, nOpen
-    );
-    vaCall.push( aCall );
-  }
-  const reTestAttr = /#\[\s*(?:[A-Za-z_]\w*\s*::\s*)*test\s*\]/g;
-  for( const vsAttr of aSource.sMasked.matchAll( reTestAttr )){
-    const nAfterAttr = vsAttr.index + vsAttr[ 0 ].length;
-    const vsFn = aSource.sMasked.slice( nAfterAttr )
-      .match( /^\s*(?:(?:async|unsafe)\s+)*fn\s+([A-Za-z_]\w*)\s*\(/ );
-    if( vsFn === null ){ continue;}
-    const nFn = nAfterAttr + vsFn[ 0 ].search( /\S/ );
-    const nName = nAfterAttr + vsFn[ 0 ].indexOf( vsFn[ 1 ]);
-    const aCall = faRustCall(
-      aSource, "test", vsFn[ 1 ], nFn, nName
-    );
-    vaCall.push( aCall );
-  }
-  return vaCall.sort(( aA, aB ) => aA.nStart - aB.nStart );
-};
-
-const fvaCallForSource = ( aSource ) => (
-  aSource.sPath.endsWith( ".rs" )
-    ? fvaCallForRust( aSource )
-    : fvaCallForRe( aSource, reCallTest, false )
-    .concat( aSource.reCallWrapper === null
-      ? []
-      : fvaCallForRe( aSource, aSource.reCallWrapper, true )
-    )
-    .sort(( aA, aB ) => aA.nStart - aB.nStart )
-);
-
-const freCallForWrapper = ( vsWrapper ) => (
-  vsWrapper.length === 0
-    ? null
-    : new RegExp(
-      "(?<![\\w$.])("
-      + vsWrapper.map(( s ) => s.replace( /\$/g, "\\$" )).join( "|" )
-      + ")(?=\\s*\\()",
-      "g"
-    )
-);
-
-const faHeaderForSource = ( aSource ) => {
-  const nLineCode = fnLineCode( aSource );
-  return { nLineCode, nLineDoc: fnLineAfterDocblock( aSource, nLineCode ) };
+const fvaCallForSource = ( aSource ) => {
+  const aLanguage = faLanguageForPath( aSource.sPath );
+  return aLanguage === null ? [] : aLanguage.fvaTestUnit( aSource );
 };
 
 const fbLineInHeader = ( aHeader, nLine ) => (
   nLine < aHeader.nLineCode && nLine >= aHeader.nLineDoc
 );
 
-const fvsWrapperForSource = ( aSource, aHeader ) => Array.from( new Set(
-  Array.from( aSource.asnComment )
-    .map(( nComment ) => ftCommentAt( aSource, nComment ))
-    .filter(( tComment ) => fbLineInHeader( aHeader, tComment[ 0 ]))
-    .map(( tComment ) => tComment[ 2 ].match( reWrapperText ))
-    .filter( Boolean )
-    .map(( vsGroup ) => vsGroup[ 1 ])
-    .filter(( sName ) => !asNameCallTest.has( sName ))
-));
-
 const faSourceForText = ( sText, sPath ) => {
-  let sMasked;
-  let asnComment;
-  if( sPath.endsWith( ".rs" )){
-    const [ sRustMasked, vnLineComment, vnBlockComment ] = ftMaskRust( sText );
-    sMasked = sRustMasked;
-    asnComment = new Set( vnLineComment.concat( vnBlockComment ));
-  }
-  else{
-    [ sMasked, asnComment ] = ftMaskForPath( sText, sPath );
-  }
+  const [ sMasked, asnComment ] = ftMaskForPath( sText, sPath );
   const vsLine = sText.split( "\n" );
   const aSource = {
     sPath,
@@ -1836,30 +1298,16 @@ const faSourceForText = ( sText, sPath ) => {
     vsLineMasked: sMasked.split( "\n" ),
     vnLineStart: fvnLineStart( vsLine )
   };
-  const aHeader = faHeaderForSource( aSource );
+  const aLanguage = faLanguageForPath( sPath );
+  const aHeader = aLanguage === null
+    ? { nLineCode: 0, nLineDoc: 0 }
+    : aLanguage.faHeader( aSource );
   return {
     ...aSource,
     aHeader,
-    reCallWrapper: freCallForWrapper(
-      fvsWrapperForSource( aSource, aHeader )
-    )
+    reCallWrapper: aLanguage === null ? null
+      : aLanguage.freCallWrapper( aSource, aHeader )
   };
-};
-
-const fnLineCode = ( aSource ) => {
-  const n = aSource.vsLineMasked.findIndex(( sLine ) => sLine.trim() !== "" );
-  return n < 0 ? aSource.vsLine.length : n;
-};
-
-const fnLineAfterDocblock = ( aSource, nLineCode ) => {
-  const sHeader = aSource.sText.slice( 0, aSource.vnLineStart[ nLineCode ]);
-  const vsGroup = Array.from( sHeader.matchAll( reDocblock ))
-    .filter(( vs ) => reJestDocblock.test( vs[ 0 ]));
-  if( vsGroup.length === 0 ){ return 0;}
-  const vsLast = vsGroup[ vsGroup.length - 1 ];
-  return 1 + fnLineAt(
-    aSource.vnLineStart, vsLast.index + vsLast[ 0 ].length
-  );
 };
 
 const fbLineRunWhole = ( aSource, nLine ) => (
@@ -1870,10 +1318,8 @@ const fbLineRunWhole = ( aSource, nLine ) => (
 const faCallBelowRun = ( aSource, vaCall, nLine ) => {
   let nNext = nLine + 1;
   while( fbLineRunWhole( aSource, nNext )
-    || ( aSource.sPath.endsWith( ".rs" )
-      && /^\s*(?:#\[|\/\/\/|\/\/!)/.test(
-        aSource.vsLine[ nNext ] || ""
-      ))
+    || ( faLanguageForPath( aSource.sPath ) || { fbDirectiveGapLine: () => false })
+      .fbDirectiveGapLine( aSource.vsLine[ nNext ] || "" )
   ){ nNext++;}
   return vaCall.find(( aCall ) => (
     aCall.nLine === nNext
@@ -2194,9 +1640,14 @@ const faTestOwned = ( aTest, asIdBacked ) => {
   };
 };
 
-const fvaTestResolved = ( vaTest, aIndex ) => {
+const fvaTestResolved = ( vaTest, aIndex, aParseCache ) => {
   const vaTestLinked = vaTest.map(( aFile ) => (
-    faTestLinked( faParseTest( aFile ), aIndex )
+    faTestLinked(
+      aParseCache === undefined
+        ? faParseTest( aFile )
+        : aParseCache.fxParse( "test", aFile, faParseTest ),
+      aIndex
+    )
   ));
   const asIdBacked = fasIdBacked( vaTestLinked );
   return vaTestLinked.map(( aTest ) => faTestOwned( aTest, asIdBacked ));
@@ -2309,7 +1760,7 @@ const ffsTextIncluded = ( vaInclusion ) => {
   return fsText;
 };
 
-const fvaSpecIncluded = ( vaSpecRaw ) => {
+const fvaSpecIncluded = ( vaSpecRaw, aParseCache ) => {
   const vaMarkerRaw = vaSpecRaw.flatMap(( aSpec ) => aSpec.vaMarker );
   const fsText = ffsTextIncluded( faRootRefs({
     vaMarker: vaMarkerRaw, ...faIndexForMarkers( vaMarkerRaw )
@@ -2318,7 +1769,11 @@ const fvaSpecIncluded = ( vaSpecRaw ) => {
     if( aMarker.vaInclusion.length === 0 ){ return aMarker;}
     const sTextIncluded = fsText( aMarker );
     return {
-      ...aMarker, sTextIncluded, sHash: fsHashForText( sTextIncluded )
+      ...aMarker,
+      sTextIncluded,
+      sHash: aParseCache === undefined
+        ? fsHashForText( sTextIncluded )
+        : aParseCache.fsHash( sTextIncluded, fsHashForText )
     };
   };
   return vaSpecRaw.map(( aSpec ) => ({
@@ -2327,14 +1782,21 @@ const fvaSpecIncluded = ( vaSpecRaw ) => {
 };
 
 const faModel = ({
-  vaSpec, vaTest, vaCiter, vaGuided, vaRecord, fbExists, aFiles, aObsInput,
+  vaSpec, vaTest, vaCiter, vaGuided, vaSideBad, vaRecord, fbExists, aFiles, aObsInput,
+  aParseCache
 }) => {
-  const vaSpecParsed = fvaSpecIncluded( vaSpec.map(( aSpec ) => faParseSpec({
-    sPath: fsPosix( aSpec.sPath ), sText: aSpec.sText
-  })));
+  const faParseSpecCached = ( aSpec ) => {
+    const aInput = { sPath: fsPosix( aSpec.sPath ), sText: aSpec.sText };
+    return aParseCache === undefined
+      ? faParseSpec( aInput )
+      : aParseCache.fxParse( "spec", aInput, faParseSpec );
+  };
+  const vaSpecParsed = fvaSpecIncluded(
+    vaSpec.map( faParseSpecCached ), aParseCache
+  );
   const vaMarker = vaSpecParsed.flatMap(( aSpec ) => aSpec.vaMarker );
   const aIndex = faIndexForMarkers( vaMarker );
-  const vaTestParsed = fvaTestResolved( vaTest, aIndex );
+  const vaTestParsed = fvaTestResolved( vaTest, aIndex, aParseCache );
   const vaCode = vaCiter || [];
   const aModel = {
     vaSpecParsed,
@@ -2349,6 +1811,9 @@ const faModel = ({
     vaGuard: vaTestParsed.flatMap(( aTest ) => aTest.vaGuard ),
     vaLinkAny: vaTestParsed.flatMap( fvaLinkAny ),
     vaCode,
+    vaSideBad: vaSideBad || [],
+    aParseCache,
+    aUseTextForBlock: new WeakMap(),
     vaCodeRef: [],
     vaTestParsed,
     aObsInput: aObsInput || aObsInputNone
@@ -2433,13 +1898,20 @@ const fsBlanked = ( sText, nStart, nEnd ) => (
   sText.slice( 0, nStart ) + " ".repeat( nEnd - nStart ) + sText.slice( nEnd )
 );
 
-const fsTextForUse = ( aBlock, aMarkerOwn ) => {
+const fsTextForUse = ( aBlock, aMarkerOwn, aModel ) => {
+  if( aMarkerOwn === null && aModel.aUseTextForBlock.has( aBlock )){
+    return aModel.aUseTextForBlock.get( aBlock );
+  }
   const sOwn = aMarkerOwn === null
     ? aBlock.sText
     : fsBlanked( aBlock.sText, aMarkerOwn.nPosBlock, aMarkerOwn.nEndBlock );
-  return fsNormal( fvtSpanForText( sOwn ).reduce(( sAcc, tSpan ) => (
+  const sTextUse = fsNormal( fvtSpanForText( sOwn ).reduce(( sAcc, tSpan ) => (
     fsBlanked( sAcc, tSpan[ 0 ], tSpan[ 1 ] + tSpan[ 2 ])
   ), sOwn ));
+  if( aMarkerOwn === null ){
+    aModel.aUseTextForBlock.set( aBlock, sTextUse );
+  }
+  return sTextUse;
 };
 
 const freForTerm = ( sTerm ) => new RegExp(
@@ -2455,7 +1927,8 @@ const fvaUseForTerm = ( aModel, aMarker, sTerm ) => {
       aBlock,
       aSpec.sPath === aMarker.sPath && aBlock.nBlock === aMarker.nBlock
         ? aMarker
-        : null
+        : null,
+      aModel
     )))
     .map(( aBlock ) => ({ sPath: aSpec.sPath, nLine: aBlock.vnLine[ 0 ] + 1 }))
   );
@@ -2565,9 +2038,16 @@ class TargetHasher {
   }
 
   fsHashForFile( sPath ){
-    return this.fsMemo( "file " + sPath, () => fsHashForText(
-      fsNormalForFile( sPath, this.aEnv.aFiles.fsTextAt( sPath ))
-    ));
+    return this.fsMemo( "file " + sPath, () => {
+      const aSide = this.aModel.vaCode.find(( aFile ) => (
+        aFile.bSide && aFile.sPath === sPath
+      ));
+      return aSide === undefined
+        ? fsHashForText( fsNormalForFile(
+          sPath, this.aEnv.aFiles.fsTextAt( sPath )
+        ))
+        : fsHashForBytes( this.aEnv.aFiles.fyBytesAt( sPath ));
+    });
   }
 
   fsHashForDir( sDir ){
@@ -2675,7 +2155,7 @@ const fbRecordCurrent = ( aRecord, aMarker, hasher ) => {
   const vsTarget = hasher.aModel.vaCodeRef
     .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
       && aRef.sId === aMarker.sId )
-    .map(( aRef ) => aRef.sPath );
+    .map(( aRef ) => aRef.sPathCode || aRef.sPath );
   return aRecord.sHash === aMarker.sHash
     && Object.keys( asHash ).sort().join( "\n" ) === vsTarget.slice().sort().join( "\n" )
     && vsTarget.every(( sTarget ) => {
@@ -2737,274 +2217,67 @@ const fvaNoCodeForChecks = ( vaCheck, vaChecks ) => vaCheck.filter(( aCheck ) =>
   !vaChecks.some(( aRef ) => aRef.sId === aCheck.aMarker.sId )
 ));
 
-const reHtmlTagName = /[A-Za-z][\w:.-]*/y;
-const reHtmlTagStart = /[A-Za-z]/;
-const reHtmlDeclaration = /^<(?:!|\?|\/[A-Za-z])/;
-const reHtmlDoctype = /^<!doctype/i;
-const asHtmlTagRaw = new Set([ "script", "style" ]);
-const sHtmlCommentOpen = "<!--";
-const sHtmlCommentClose = "-->";
-
-class HtmlScanner {
-  constructor( sText ){
-    this.sText = sText;
-    this.sLower = sText.toLowerCase();
-    this.vtComment = [];
-    this.vtDoctype = [];
-  }
-
-  fnAfter( sClose, n ){
-    const nClose = this.sText.indexOf( sClose, n );
-    return nClose < 0 ? this.sText.length : nClose + sClose.length;
-  }
-
-  fnComment( n ){
-    const nEnd = this.fnAfter(
-      sHtmlCommentClose, n + sHtmlCommentOpen.length
-    );
-    this.vtComment.push([ n, nEnd ]);
-    return nEnd;
-  }
-
-  fnDeclaration( n ){
-    const nEnd = this.fnAfter( ">", n );
-    if( reHtmlDoctype.test( this.sText.slice( n, n + 9 ))){
-      this.vtDoctype.push([ n, nEnd ]);
-    }
-    return nEnd;
-  }
-
-  fnAfterRaw( sName, n ){
-    const nClose = this.sLower.indexOf( "</" + sName, n );
-    return nClose < 0 ? this.sText.length : nClose;
-  }
-
-  fnTag( n ){
-    reHtmlTagName.lastIndex = n + 1;
-    const sName = reHtmlTagName.exec( this.sText )[ 0 ].toLowerCase();
-    let nAt = reHtmlTagName.lastIndex;
-    while( nAt < this.sText.length && this.sText[ nAt ] !== ">" ){
-      const ch = this.sText[ nAt ];
-      nAt = ch === "\"" || ch === "'" ? this.fnAfter( ch, nAt + 1 ) : nAt + 1;
-    }
-    const nEnd = Math.min( nAt + 1, this.sText.length );
-    return asHtmlTagRaw.has( sName ) ? this.fnAfterRaw( sName, nEnd ) : nEnd;
-  }
-
-  fnAt( n ){
-    if( this.sText.startsWith( sHtmlCommentOpen, n )){
-      return this.fnComment( n );
-    }
-    if( reHtmlDeclaration.test( this.sText.slice( n, n + 3 ))){
-      return this.fnDeclaration( n );
-    }
-    return reHtmlTagStart.test( this.sText[ n + 1 ] || "" )
-      ? this.fnTag( n )
-      : n + 1;
-  }
-
-  fScan(){
-    let n = this.sText.indexOf( "<" );
-    while( n >= 0 ){ n = this.sText.indexOf( "<", this.fnAt( n ));}
-    return this;
-  }
-}
-
-const faHtmlForText = ( sText ) => new HtmlScanner( sText ).fScan();
-
-const fsNormalForHtml = ( sText ) => fsNormal(
-  faHtmlForText( sText ).vtComment.reduceRight(
-    ( s, [ nStart, nEnd ]) => s.slice( 0, nStart ) + s.slice( nEnd ), sText
-  )
-);
-
-const fnLineHeaderHtml = ( sText, aHtml ) => {
-  const n = fsBlankedForRanges(
-    sText, aHtml.vtComment.concat( aHtml.vtDoctype )
-  ).split( "\n" ).findIndex(( sLine ) => sLine.trim() !== "" );
-  return n < 0 ? Infinity : n;
-};
-
-const fbHtmlClosed = ( sText, nStart, nEnd ) => (
-  nEnd - sHtmlCommentClose.length >= nStart + sHtmlCommentOpen.length
-  && sText.startsWith( sHtmlCommentClose, nEnd - sHtmlCommentClose.length )
-);
-
-const faCommentForHtml = ( sText, aPlace, tComment ) => {
-  const [ nStart, nEnd ] = tComment;
-  const nLine = fnLineAt( aPlace.vnLineStart, nStart );
-  const sLine = aPlace.vsLine[ nLine ];
-  const nCol = nStart - aPlace.vnLineStart[ nLine ];
-  const bClosed = fbHtmlClosed( sText, nStart, nEnd );
-  const bOneLine = bClosed
-    && fnLineAt( aPlace.vnLineStart, nEnd - 1 ) === nLine;
-  return {
-    nLine,
-    bHeader: nLine < aPlace.nLineHeader,
-    bAlone: bOneLine && (
-      sLine.slice( 0, nCol ) + sLine.slice( nCol + nEnd - nStart )
-    ).trim() === "",
-    sBody: sText.slice(
-      nStart + sHtmlCommentOpen.length,
-      bClosed ? nEnd - sHtmlCommentClose.length : nEnd
-    ).trim(),
-    sText: sLine.trim()
-  };
-};
-
-const fvaCommentForHtml = ( sText ) => {
-  const aHtml = faHtmlForText( sText );
-  const vsLine = sText.split( "\n" );
-  const aPlace = {
-    vsLine,
-    vnLineStart: fvnLineStart( vsLine ),
-    nLineHeader: fnLineHeaderHtml( sText, aHtml )
-  };
-  return aHtml.vtComment.map(( tComment ) => (
-    faCommentForHtml( sText, aPlace, tComment )
-  ));
-};
-
-const freBodyStamped = ( sKind ) => new RegExp(
-  "^@" + sKind + " +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})$"
-);
-
-const areBodyForKind = {
-  implements: freBodyStamped( "implements" ),
-  "tested-by": /^@tested-by +(\S+)$/,
-  checks: freBodyStamped( "checks" ),
-  follows: freBodyStamped( "follows" )
-};
-
-const areLooseForKind = {
-  implements: reImplementsLoose,
-  "tested-by": reTestedByLoose,
-  checks: reChecksLoose,
-  follows: reFollowsLoose
-};
-
-const vsKindCodeReference = [ "implements", "tested-by", "checks" ];
-
-const faDirectiveForHtml = ( sPath, aComment, sKind ) => {
-  if( !aComment.sBody.startsWith( "@" + sKind )){ return null;}
-  const vsLoose = aComment.sBody.match( areLooseForKind[ sKind ]);
-  return {
-    sPath: fsPosix( sPath ),
-    nLine: aComment.nLine + 1,
-    sKind,
-    sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
-    sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
-    bWell: aComment.bAlone && areBodyForKind[ sKind ].test( aComment.sBody ),
-    sText: aComment.sText
-  };
-};
-
-const fvaCodeReferenceForHtml = ( aFile ) => fvaCommentForHtml( aFile.sText )
-  .flatMap(( aComment ) => vsKindCodeReference.map(( sKind ) => {
-    const aRef = faDirectiveForHtml( aFile.sPath, aComment, sKind );
-    return aRef !== null && !aComment.bHeader
-      ? { ...aRef, bWell: false, bMisplaced: true }
-      : aRef;
-  }))
-  .filter( Boolean );
-
-const fvaFollowsForHtml = ( aFile ) => fvaCommentForHtml( aFile.sText )
-  .map(( aComment ) => faDirectiveForHtml( aFile.sPath, aComment, "follows" ))
-  .filter( Boolean )
-  .map(( aRef ) => ({
-    sPath: aRef.sPath,
-    nLine: aRef.nLine,
-    sText: aRef.sText,
-    bWell: aRef.bWell,
-    sId: aRef.sTarget,
-    sHash: aRef.sStamp
-  }));
-
-const fvaCodeReferenceForFile = ( aFile ) => (
-  reFileHtml.test( aFile.sPath )
-    ? fvaCodeReferenceForHtml( aFile )
-    : fvaCodeReferenceForScript( aFile )
-);
-
-const fvaCodeReferenceForScript = ( aFile ) => {
-  if( aFile.sPath.endsWith( ".rs" )){
-    const [ sMasked, vnLineComment ] = ftMaskRust( aFile.sText );
-    const vsLine = aFile.sText.split( "\n" );
-    const vnLineStart = fvnLineStart( vsLine );
-    const nLineCodeFound = sMasked.split( "\n" )
-      .findIndex(( sLine ) => sLine.trim() !== "");
-    const nLineCode = nLineCodeFound < 0 ? Infinity : nLineCodeFound;
-    return vnLineComment.flatMap(( nComment ) => {
-      const nLine = fnLineAt( vnLineStart, nComment );
-      if( nLine >= nLineCode ){ return [];}
-      const sLine = vsLine[ nLine ];
-      const sAfter = sLine.slice( nComment - vnLineStart[ nLine ] + 2 );
-      return [
-        [ "implements", reImplementsText, reImplementsLine, reImplementsLoose ],
-        [ "tested-by", reTestedByText, reTestedByLine, reTestedByLoose ],
-        [ "checks", reChecksText, reChecksLine, reChecksLoose ]
-      ].flatMap(([ sKind, reText, reWell, reLoose ]) => {
-        if( !reText.test( sAfter )){ return [];}
-        const vsLoose = sAfter.match( reLoose );
-        return [{
-          sPath: fsPosix( aFile.sPath ), nLine: nLine + 1, sKind,
-          sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
-          sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
-          bWell: reWell.test( sLine ),
-          sText: sLine.trim()
-        }];
-      });
-    }).concat( fvaMisplacedForFile( aFile, nLineCode ));
-  }
-  const vsLine = aFile.sText.split( "\n" );
-  const vaRef = [];
-  let bHeader = true;
-  let bBlock = false;
-  let nLineHeaderEnd = Infinity;
-  vsLine.forEach(( sLine, n ) => {
-    const sTrim = sLine.trim();
-    if( bHeader ){
-      const bShebang = n === 0 && reFileShebang.test( aFile.sPath )
-        && sTrim.startsWith( "#!" );
-      const bComment = sTrim === "" || sTrim.startsWith( "//" )
-        || sTrim.startsWith( "/*" ) || sTrim.startsWith( "*" )
-        || sTrim.startsWith( "*/" ) || bShebang;
-      if( !bComment ){
-        bHeader = false;
-        nLineHeaderEnd = n;
-      }
-    }
-    if( !bHeader && !bBlock ){ return;}
-    const asDirective = [
-      [ "implements", reImplementsText, reImplementsLine, reImplementsLoose ],
-      [ "tested-by", reTestedByText, reTestedByLine, reTestedByLoose ],
-      [ "checks", reChecksText, reChecksLine, reChecksLoose ]
-    ];
-    asDirective.forEach(([ sKind, reText, reWell, reLoose ]) => {
-      const sComment = sLine.replace( /^\s*(?:\/\/|\/\*|\*)\s?/, "" );
-      if( !reText.test( sComment )){ return;}
-      const vsWell = sLine.match( reWell )
-        || sLine.match( reKindBlock( sKind ));
-      const vsLoose = sComment.match( reLoose );
-      vaRef.push({
-        sPath: fsPosix( aFile.sPath ), nLine: n + 1, sKind,
-        sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
-        sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
-        bWell: vsWell !== null,
-        sText: sLine.trim()
-      });
-    });
-    if( sTrim.startsWith( "/*" ) && !sTrim.includes( "*/" )){ bBlock = true;}
-    if( bBlock && sTrim.includes( "*/" )){ bBlock = false;}
-  });
-  return vaRef.concat( fvaMisplacedForFile( aFile, nLineHeaderEnd ));
-};
+const fvaCodeReferenceForFile = ( aFile ) => aFile.bSide
+  ? fvaCodeReferenceForSide( aFile )
+  : ( faLanguageForPath( aFile.sPath ) || { fvaCodeReference: () => [] })
+    .fvaCodeReference( aFile );
 
 const vtKindCodeReference = [
   [ "implements", reImplementsText, reImplementsLoose ],
   [ "tested-by", reTestedByText, reTestedByLoose ],
   [ "checks", reChecksText, reChecksLoose ]
 ];
+
+const aSidecarDirective = {
+  implements: {
+    reLoose: reImplementsLoose,
+    reWell: /^@implements +[a-z]-[a-z0-9]{6}@[0-9a-f]{7}$/
+  },
+  "tested-by": {
+    reLoose: reTestedByLoose,
+    reWell: /^@tested-by +\S+$/
+  },
+  checks: {
+    reLoose: reChecksLoose,
+    reWell: /^@checks +[a-z]-[a-z0-9]{6}@[0-9a-f]{7}$/
+  },
+  follows: {
+    reLoose: reFollowsLoose,
+    reWell: /^@follows +[a-z]-[a-z0-9]{6}@[0-9a-f]{7}$/
+  }
+};
+const vsSidecarMisplaced = [ "spec", "proves", "guards", "test-wrapper" ];
+const fvaSidecarLine = ( aFile ) => aFile.sText.split( "\n" )
+  .map(( sRaw, n ) => ({
+    sText: sRaw.trim(),
+    sPath: aFile.sPathSidecar,
+    sPathCode: fsPosix( aFile.sPath ),
+    nLine: n + 1
+  }))
+  .filter(( aLine ) => aLine.sText !== "" )
+  .map(( aLine ) => {
+    const sKind = Object.keys( aSidecarDirective ).concat(
+      vsSidecarMisplaced
+    ).find(( sName ) => aLine.sText.startsWith( "@" + sName )) || null;
+    const aDirective = aSidecarDirective[ sKind ];
+    const vsLoose = aDirective === undefined
+      ? null : aLine.sText.match( aDirective.reLoose );
+    return {
+      ...aLine,
+      sKind: sKind || "none",
+      sTarget: vsLoose === null ? "" : vsLoose[ 1 ],
+      sStamp: vsLoose === null ? "" : vsLoose[ 2 ] || "",
+      bWell: aDirective !== undefined && aDirective.reWell.test( aLine.sText ),
+      bMisplaced: vsSidecarMisplaced.includes( sKind )
+    };
+  });
+
+const fvaCodeReferenceForSide = ( aFile ) => fvaSidecarLine( aFile )
+  .filter(( aLine ) => aLine.sKind !== "follows" )
+  .map(( aLine ) => ({
+    ...aLine,
+    bMisplaced: aLine.bMisplaced || aLine.sKind === "none"
+  }));
 
 const faRefMisplacedAt = ( aFile, vsLine, nLine, sAfter ) => (
   vtKindCodeReference
@@ -3039,13 +2312,20 @@ const fvaMisplacedForFile = ( aFile, nLineHeaderEnd ) => {
     .sort(( aA, aB ) => aA.nLine - aB.nLine );
 };
 
-const reKindBlock = ( sKind ) => new RegExp(
-  "^\\s*/\\* *@" + sKind + " +([^*]+) *\\*/\\s*$"
-);
-
 const fvaCodeReferenceResolved = ( aModel ) => {
   const vaTestPath = new Set( aModel.vaTestParsed.map(( aTest ) => aTest.sPath ));
-  const vaRef = aModel.vaCode.flatMap( fvaCodeReferenceForFile );
+  const aResolvedForRef = new Map();
+  const vaRef = aModel.vaCode.flatMap(( aFile ) => (
+    aModel.aParseCache === undefined
+      ? fvaCodeReferenceForFile( aFile )
+      : aModel.aParseCache.fxParse(
+        "code", aFile, ( aInput ) => fvaCodeReferenceForFile({
+          ...aInput,
+          bSide: aFile.bSide,
+          sPathSidecar: aFile.sPathSidecar
+        })
+      )
+  ));
   aModel.vaCodeRef = vaRef.filter(( aRef ) => aRef.sKind === "implements" )
     .map(( aRef ) => {
       const vsId = ( aRef.sTarget + "@" + aRef.sStamp ).match(
@@ -3058,9 +2338,24 @@ const fvaCodeReferenceResolved = ( aModel ) => {
         : aFound.cPlace !== 1 ? "statement id does not resolve uniquely"
           : aFound.aLine.sType !== "s" ? "names a line of type " + fsTypeLine( aFound.aLine.sType )
             : aFound.aLine.sHash !== vsId[ 2 ] ? "stale hash" : null;
-      return { ...aRef, sReason, sId: sReason === null ? vsId[ 1 ] : null };
+      const aResolved = {
+        ...aRef, sReason, sId: sReason === null ? vsId[ 1 ] : null
+      };
+      aResolvedForRef.set( aRef, aResolved );
+      return aResolved;
     });
+  const aasImplForPath = new Map();
+  aModel.vaCodeRef.forEach(( aImpl ) => {
+    if( aImpl.sReason !== null ){ return;}
+    const sPathCode = aImpl.sPathCode || aImpl.sPath;
+    const asImpl = aasImplForPath.get( sPathCode ) || new Set();
+    asImpl.add( aImpl.sId );
+    aasImplForPath.set( sPathCode, asImpl );
+  });
   return vaRef.map(( aRef ) => {
+    if( aRef.sKind === "implements" ){
+      return aResolvedForRef.get( aRef );
+    }
     const vsId = aRef.sTarget.match( /^([a-z]-[a-z0-9]{6})$/ );
     const vsStamped = ( aRef.sTarget + "@" + aRef.sStamp ).match(
       /^([a-z]-[a-z0-9]{6})@([0-9a-f]{7})$/
@@ -3075,10 +2370,9 @@ const fvaCodeReferenceResolved = ( aModel ) => {
       aTest = aModel.vaTestParsed.find(( aEntry ) => aEntry.sPath === sPath );
       if( !vaTestPath.has( sPath )){ sReason = "no such declared test file";}
       else {
-        const asImpl = new Set( aModel.vaCodeRef
-          .filter(( aEntry ) => aEntry.sPath === aRef.sPath
-            && aEntry.sKind === "implements" && aEntry.sReason === null )
-          .map(( aEntry ) => aEntry.sId ));
+        const asImpl = aasImplForPath.get(
+          aRef.sPathCode || aRef.sPath
+        ) || new Set();
         const bOverlap = aTest.vaLink.some(( aLink ) => (
           aLink.sReason === null && asImpl.has( aLink.sId )
         ));
@@ -3105,24 +2399,9 @@ const fvaCodeReferenceResolved = ( aModel ) => {
   )));
 };
 
-const fvnCommentCss = ( sText ) => {
-  const vsClass = new CssClassifier( sText ).fvsClass();
-  return Array.from( sText, ( ch, n ) => n ).filter(( n ) => (
-    vsClass[ n ] === "m" && sText.startsWith( "/*", n )
-    && ( n === 0 || vsClass[ n - 1 ] !== "m" || sText.slice( n - 2, n ) === "*/" )
-  ));
-};
-
 const ftCommentsForCiter = ( aFile ) => {
-  if( reFileCss.test( aFile.sPath )){
-    return [[], fvnCommentCss( aFile.sText )];
-  }
-  if( aFile.sPath.endsWith( ".rs" )){
-    const [ , vnLine, vnBlock ] = ftMaskRust( aFile.sText );
-    return [ vnLine, vnBlock ];
-  }
-  const tMask = ftMaskForPath( aFile.sText, aFile.sPath );
-  return [ Array.from( tMask[ 1 ]), tMask[ 2 ]];
+  const aLanguage = faLanguageForPath( aFile.sPath );
+  return aLanguage === null ? [ [], [] ] : aLanguage.ftComments( aFile );
 };
 
 const faFollowsAt = ( aFile, vnLineStart, nComment, bBlock ) => {
@@ -3146,11 +2425,19 @@ const faFollowsAt = ( aFile, vnLineStart, nComment, bBlock ) => {
   };
 };
 
-const fvaFollowsForFile = ( aFile ) => (
-  reFileHtml.test( aFile.sPath )
-    ? fvaFollowsForHtml( aFile )
-    : fvaFollowsForScript( aFile )
-);
+const fvaFollowsForFile = ( aFile ) => aFile.bSide
+  ? fvaSidecarLine( aFile )
+    .filter(( aLine ) => aLine.sKind === "follows" )
+    .map(( aLine ) => ({
+      sPath: aLine.sPath,
+      nLine: aLine.nLine,
+      sText: aLine.sText,
+      bWell: aLine.bWell,
+      sId: aLine.sTarget,
+      sHash: aLine.sStamp
+    }))
+  : ( faLanguageForPath( aFile.sPath ) || { fvaFollows: () => [] })
+    .fvaFollows( aFile );
 
 const fvaFollowsForScript = ( aFile ) => {
   const vnLineStart = fvnLineStart( aFile.sText.split( "\n" ));
@@ -3161,6 +2448,26 @@ const fvaFollowsForScript = ( aFile ) => {
     .filter( Boolean )
     .sort(( aA, aB ) => aA.nLine - aB.nLine );
 };
+
+const maLanguage = faReaders({
+  fsNormal,
+  fsCodeNormal,
+  fvnLineStart,
+  fnLineAt,
+  fsPosix,
+  fvaMisplacedForFile,
+  ftCommentAt,
+  reImplementsText, reImplementsLine, reImplementsLoose,
+  reTestedByText, reTestedByLine, reTestedByLoose,
+  reChecksText, reChecksLine, reChecksLoose,
+  fvaCallForRe,
+  fvaFollowsForCommentReader: ( aFile ) => fvaFollowsForScript( aFile )
+});
+
+const faLanguageForPath = ( sPath ) => Array.from( maLanguage.values() )
+  .find(( aLanguage ) => aLanguage.vsExtension.some(( sExt ) => (
+    sPath.endsWith( sExt )
+  ))) || null;
 
 const faFollowsResolved = ( aModel, aFollows ) => {
   const aFound = aFollows.bWell
@@ -3211,11 +2518,20 @@ const faLines = ( aModel, aEnv ) => {
       faCheckForMarker( aMarker, aEnv.vaRecord, hasher )
     )),
     vaFollows: aEnv.vaGuided
-      .flatMap( fvaFollowsForFile )
+      .flatMap(( aFile ) => (
+        aModel.aParseCache === undefined
+          ? fvaFollowsForFile( aFile )
+          : aModel.aParseCache.fxParse(
+            "follows", aFile, ( aInput ) => fvaFollowsForFile({
+              ...aInput,
+              bSide: aFile.bSide,
+              sPathSidecar: aFile.sPathSidecar
+            })
+          )
+      ))
       .map(( aFollows ) => faFollowsResolved( aModel, aFollows )),
     vaCodeRef: []
   };
-  aModel.vaCodeRef = fvaCodeReferenceResolved( aModel );
   aLines.vaCodeRef = aModel.vaCodeRef;
   aLines.vaImplements = aModel.vaCodeRef.filter(( aRef ) => (
     aRef.sKind === "implements" && aRef.sReason === null
@@ -3229,25 +2545,34 @@ const faLines = ( aModel, aEnv ) => {
   aLines.vaCodeRefBad = aModel.vaCodeRef.filter(( aRef ) => (
     aRef.sReason !== null
   ));
+  const avaImplementsForId = new Map();
+  aLines.vaImplements.forEach(( aRef ) => {
+    const vaRef = avaImplementsForId.get( aRef.sId ) || [];
+    vaRef.push( aRef );
+    avaImplementsForId.set( aRef.sId, vaRef );
+  });
+  const asImplementedId = new Set( avaImplementsForId.keys());
+  const asTestedByPath = new Set(
+    aLines.vaTestedBy.map(( aRef ) => aRef.sPathCode || aRef.sPath )
+  );
+  const asCheckedId = new Set( aLines.vaChecks.map(( aRef ) => aRef.sId ));
   const asMarkerRoot = fasMarkerRoot( aModel.aRootRefs );
   aLines.vaNoImplementation = fvaLineOfType( aModel, "s" ).filter(( aStmt ) => (
     !asMarkerRoot.has( aStmt )
-    && !aLines.vaImplements.some(( aRef ) => aRef.sId === aStmt.sId )
+    && !asImplementedId.has( aStmt.sId )
   ));
   aLines.vaStatusConflict = fvaLineOfType( aModel, "s" )
     .filter(( aStmt ) => aStmt.bNotImplemented)
     .map(( aStmt ) => ({
       aMarker: aStmt,
-      vaRef: aLines.vaImplements.filter(( aRef ) => (
-      aRef.sId === aStmt.sId
-      ))
+      vaRef: avaImplementsForId.get( aStmt.sId ) || []
     }))
     .filter(( aEntry ) => aEntry.vaRef.length > 0);
   aLines.vaNoTestedBy = aModel.vaCode.filter(( aFile ) => (
-    !aLines.vaTestedBy.some(( aRef ) => aRef.sPath === fsPosix( aFile.sPath ))
+    !asTestedByPath.has( fsPosix( aFile.sPath ))
   ));
   aLines.vaNoChecks = fvaLineOfType( aModel, "i" ).filter(( aCheck ) => (
-    !aLines.vaChecks.some(( aRef ) => aRef.sId === aCheck.sId )
+    !asCheckedId.has( aCheck.sId )
   ));
   return {
     ...aLines, asMarkerSatisfiedOwn: fasMarkerSatisfiedOwn( aModel, aLines )
@@ -3422,28 +2747,20 @@ const faListForMarker = ( aMarker, aCtx ) => {
   };
 };
 
-const fbReachesSelf = ( avaNext, aStart ) => {
-  const asSeen = new Set();
-  const vaTodo = ( avaNext.get( aStart ) || [] ).slice();
-  while( vaTodo.length > 0 ){
-    const aMarker = vaTodo.pop();
-    if( aMarker === aStart ){ return true;}
-    if( !asSeen.has( aMarker )){
-      asSeen.add( aMarker );
-      vaTodo.push( ...( avaNext.get( aMarker ) || [] ));
-  }}
-  return false;
-};
-
 const sReasonCycleList = "leads back to itself through its roots";
 const sReasonCycleInclusion = "lies on a cycle of root references";
 const sReasonInclusionForm = "not in the form {s-xxxxxx}";
 
 const favaNextForRefs = ( vaList, vaInclusion ) => {
   const avaNext = new Map();
-  const fAdd = ( aFrom, aTo ) => avaNext.set(
-    aFrom, ( avaNext.get( aFrom ) || []).concat([ aTo ])
-  );
+  const fAdd = ( aFrom, aTo ) => {
+    let vaNext = avaNext.get( aFrom );
+    if( vaNext === undefined ){
+      vaNext = [];
+      avaNext.set( aFrom, vaNext );
+    }
+    vaNext.push( aTo );
+  };
   vaList
     .filter(( aList ) => aList.sReason === null )
     .forEach(( aList ) => aList.vaRef.forEach(( aRef ) => (
@@ -3455,23 +2772,83 @@ const favaNextForRefs = ( vaList, vaInclusion ) => {
   return avaNext;
 };
 
-const fbReaches = ( avaNext, aFrom, aGoal ) => (
-  aFrom === aGoal || fbReachesSelf(
-    new Map( avaNext ).set( aGoal, [ aFrom ]), aGoal
-  )
-);
+const faCycleIndexForGraph = ( avaNext ) => {
+  const asNode = new Set( avaNext.keys());
+  avaNext.forEach(( vaNext ) => vaNext.forEach(( aTo ) => asNode.add( aTo )));
+  const asSeen = new Set();
+  const vaFinish = [];
+  asNode.forEach(( aStart ) => {
+    if( asSeen.has( aStart )){ return;}
+    asSeen.add( aStart );
+    const vaStack = [{ aNode: aStart, nNext: 0 }];
+    while( vaStack.length > 0 ){
+      const aTop = vaStack[ vaStack.length - 1 ];
+      const vaNext = avaNext.get( aTop.aNode ) || [];
+      if( aTop.nNext < vaNext.length ){
+        const aTo = vaNext[ aTop.nNext++ ];
+        if( !asSeen.has( aTo )){
+          asSeen.add( aTo );
+          vaStack.push({ aNode: aTo, nNext: 0 });
+        }
+      }
+      else{
+        vaFinish.push( aTop.aNode );
+        vaStack.pop();
+      }
+    }
+  });
+
+  const avaPrevious = new Map();
+  asNode.forEach(( aNode ) => avaPrevious.set( aNode, [] ));
+  avaNext.forEach(( vaNext, aFrom ) => vaNext.forEach(( aTo ) => {
+    avaPrevious.get( aTo ).push( aFrom );
+  }));
+  const aComponentForNode = new Map();
+  const vaComponentSize = [];
+  for( let n = vaFinish.length - 1; n >= 0; n-- ){
+    const aStart = vaFinish[ n ];
+    if( aComponentForNode.has( aStart )){ continue;}
+    const nComponent = vaComponentSize.length;
+    let cNode = 0;
+    const vaTodo = [ aStart ];
+    aComponentForNode.set( aStart, nComponent );
+    while( vaTodo.length > 0 ){
+      const aNode = vaTodo.pop();
+      cNode++;
+      ( avaPrevious.get( aNode ) || []).forEach(( aPrevious ) => {
+        if( !aComponentForNode.has( aPrevious )){
+          aComponentForNode.set( aPrevious, nComponent );
+          vaTodo.push( aPrevious );
+        }
+      });
+    }
+    vaComponentSize.push( cNode );
+  }
+  const asCycleNode = new Set();
+  aComponentForNode.forEach(( nComponent, aNode ) => {
+    if( vaComponentSize[ nComponent ] > 1
+      || ( avaNext.get( aNode ) || []).includes( aNode )
+    ){
+      asCycleNode.add( aNode );
+    }
+  });
+  return { aComponentForNode, asCycleNode };
+};
 
 const faRootRefsCycleMarked = ( vaList, vaInclusion ) => {
   const avaNext = favaNextForRefs( vaList, vaInclusion );
+  const aCycles = faCycleIndexForGraph( avaNext );
   return {
     vaList: vaList.map(( aList ) => (
-      aList.sReason === null && fbReachesSelf( avaNext, aList.aMarker )
+      aList.sReason === null && aCycles.asCycleNode.has( aList.aMarker )
         ? { ...aList, sReason: sReasonCycleList, sReasonBase: sReasonCycleList }
         : aList
     )),
     vaInclusion: vaInclusion.map(( aIncl ) => (
       aIncl.sReason === null
-        && fbReaches( avaNext, aIncl.aTarget, aIncl.aMarker )
+        && aCycles.asCycleNode.has( aIncl.aMarker )
+        && aCycles.aComponentForNode.get( aIncl.aMarker )
+          === aCycles.aComponentForNode.get( aIncl.aTarget )
         ? { ...aIncl, aTarget: null, sReason: sReasonCycleInclusion }
         : aIncl
     ))
@@ -3758,6 +3135,7 @@ const faTypeLists = ( aModel, aRoots ) => {
     vaStatusConflict: aLines.vaStatusConflict,
     vaNoTestedBy: aLines.vaNoTestedBy,
     vaCodeRefBad: aLines.vaCodeRefBad,
+    vaSideBad: aModel.vaSideBad,
     vaImplements: aLines.vaImplements,
     vaProblem: fvaProblemForChecks( aLines.vaCheck )
   };
@@ -3863,10 +3241,11 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
     vaStatusConflict: aStmtList.vaStatusConflict.filter( fbSpecMarker ),
     vaNoTestedBy: aStmtList.vaNoTestedBy.filter(( aFile ) => (
       aStmtList.vaImplements.some(( aRef ) => (
-        aRef.sPath === fsPosix( aFile.sPath )
+        ( aRef.sPathCode || aRef.sPath ) === fsPosix( aFile.sPath )
         && aScope.asIdStmt.has( aRef.sId )
       ))
     )),
+    vaSideBad: [],
     vaCodeRefBad: aStmtList.vaCodeRefBad.filter(( aRef ) => (
       aRef.sId === null || aScope.asIdStmt.has( aRef.sId )
     )),
@@ -3971,7 +3350,11 @@ const faKitForModel = ( aModel, fbSatisfied ) => ({
 });
 
 const faObservationsForModel = ( aModel, fbSatisfied ) => faObservations(
-  { ...aModel.aObsInput, vaSpec: aModel.vaSpecParsed },
+  {
+    ...aModel.aObsInput,
+    vaSpec: aModel.vaSpecParsed,
+    aParseCache: aModel.aParseCache
+  },
   faKitForModel( aModel, fbSatisfied )
 );
 
@@ -4202,6 +3585,7 @@ const fsLineForCodeRef = ( aRef ) => (
   + ( aRef.sNameCall ? aRef.sNameCall + "  " : "" )
   + aRef.sText + " (" + aRef.sReason + ")"
 );
+const fsLineForSide = ( aSide ) => aSide.sPath + "  (" + aSide.sState + ")";
 
 const fvsSectionLines = ( aMap ) => [
   fsSection( "dangling targets", aMap.vaDangling.map( fsLineForDangling )),
@@ -4226,10 +3610,13 @@ const fvsSectionLines = ( aMap ) => [
   fsSection( "statements with no implementation link", aMap.vaNoImplementation.map( fsLineForMarker )),
   fsSection( "not-yet-implemented status conflicts", aMap.vaStatusConflict.map(( aEntry ) => (
     fsLineForMarker( aEntry.aMarker ) + "  implemented by "
-    + Array.from( new Set( aEntry.vaRef.map(( aRef ) => aRef.sPath ))).join( ", " )
+    + Array.from( new Set( aEntry.vaRef.map(( aRef ) => (
+      aRef.sPathCode || aRef.sPath
+    )))).join( ", " )
   ))),
   fsSection( "implementation files with no test link", aMap.vaNoTestedBy.map(( aFile ) => aFile.sPath )),
   fsSection( "malformed, unresolved or stale code references", aMap.vaCodeRefBad.map( fsLineForCodeRef )),
+  fsSection( "side files that are not read", aMap.vaSideBad.map( fsLineForSide )),
   fsSectionProblem( aMap.vaProblem )
 ];
 
@@ -4315,7 +3702,9 @@ const aListNoImplementation = {
 const aListStatusConflict = {
   nList: 36, sKey: "vaStatusConflict", fsLine: ( aEntry ) => (
     fsLineForMarker( aEntry.aMarker ) + "  implemented by "
-    + Array.from( new Set( aEntry.vaRef.map(( aRef ) => aRef.sPath ))).join( ", " )
+    + Array.from( new Set( aEntry.vaRef.map(( aRef ) => (
+      aRef.sPathCode || aRef.sPath
+    )))).join( ", " )
   ),
   faPlace: ( aEntry ) => aEntry.aMarker
 };
@@ -4327,6 +3716,10 @@ const aListCodeRefBad = {
   nList: 33, sKey: "vaCodeRefBad", fsLine: fsLineForCodeRef,
   faPlace: ( aRef ) => aRef
 };
+const aListSideBad = {
+  nList: 38, sKey: "vaSideBad", fsLine: fsLineForSide,
+  faPlace: ( aSide ) => ({ sPath: aSide.sPath, nLine: 1 })
+};
 
 const aListObsBad = { nList: 34, sKey: "vaObsBad", fsLine: fsLineOf };
 const aListCitationDangling = {
@@ -4337,7 +3730,7 @@ const vaListFence = [
   aListUnresolved, aListMarkerBad, aListUnproved, aListLinkBad, aListStale,
   aListIncomplete, aListRootBad, aListFence, aListDangling, aListFollowsBad,
   aListNoCode, aListNoImplementation, aListNoTestedBy, aListCodeRefBad,
-  aListStatusConflict
+  aListStatusConflict, aListSideBad
 ];
 
 const fbAlways = () => true;
@@ -4353,7 +3746,7 @@ const vtListRefusing = [
   , [ aListNoCode, fbAlways ], [ aListCodeRefBad, fbAlways ],
   [ aListDangling, fbAlways ],
   [ aListObsBad, fbAlways ], [ aListCitationDangling, fbAlways ],
-  [ aListStatusConflict, fbAlways ]
+  [ aListStatusConflict, fbAlways ], [ aListSideBad, fbAlways ]
 ];
 
 const fbListCounts = ( aMap, aList ) => !aList.bComplete || aMap.bComplete;
@@ -4730,7 +4123,7 @@ const fbPathIgnored = ( sPath, vsDirIgnored ) => sPath.split( path.sep )
 
 const freFileForLanguages = ( vsLanguage ) => {
   const vsExt = vsLanguage.flatMap(( sLanguage ) => (
-    avsExtForLanguage[ sLanguage ]
+    ( maLanguage.get( sLanguage ) || { vsExtension: [] }).vsExtension
   ));
   if( vsExt.length === 0 ){ return reNever;}
   return new RegExp(
@@ -4740,9 +4133,10 @@ const freFileForLanguages = ( vsLanguage ) => {
 };
 
 class TreeReader {
-  constructor( sDirRoot, aConfig ){
+  constructor( sDirRoot, aConfig, aParseCache ){
     this.sDirRoot = sDirRoot;
     this.aConfig = aConfig;
+    this.aParseCache = aParseCache;
     this.configReader = new ConfigReader( sDirRoot );
   }
 
@@ -4763,10 +4157,26 @@ class TreeReader {
       .filter(( sPath ) => (
         fs.statSync( path.join( this.sDirRoot, sPath )).isFile()
       ))
-      .map(( sPath ) => ({
-        sPath,
-        sText: fs.readFileSync( path.join( this.sDirRoot, sPath ), "utf8" )
-    }));
+      .map(( sPath ) => this.faFile( sPath ));
+  }
+
+  faFile( sPath ){
+    const sPathFull = path.join( this.sDirRoot, sPath );
+    const stat = fs.statSync( sPathFull, { bigint: true });
+    let bRead = false;
+    let sText;
+    return {
+      sPath,
+      nSize: stat.size.toString(),
+      sMtimeNs: stat.mtimeNs.toString(),
+      get sText(){
+        if( !bRead ){
+          sText = fs.readFileSync( sPathFull, "utf8" );
+          bRead = true;
+        }
+        return sText;
+      }
+    };
   }
 
   fvaSpec(){
@@ -4860,10 +4270,11 @@ class TreeReader {
 
   fvaTest(){
     const vsSuffix = this.aConfig.vsLanguage.flatMap(( sLanguage ) => (
-      asTestSuffixForLanguage[ sLanguage ] || []
+      ( maLanguage.get( sLanguage ) || { vsTestSuffix: [] }).vsTestSuffix
     ));
     const bTestLanguage = this.aConfig.vsLanguage.some(( sLanguage ) => (
-      asLanguageTest.has( sLanguage )
+      ( maLanguage.get( sLanguage ) || { fbHasTestFiles: () => false })
+        .fbHasTestFiles()
     ));
     const reTest = new RegExp( "\\.test\\.(?:"
       + vsSuffix.join( "|" ) + ")$" );
@@ -4899,6 +4310,46 @@ class TreeReader {
       : null;
   }
 
+  fyBytesAt( sPath ){
+    return this.fsKind( sPath ) === "file"
+      ? fs.readFileSync( path.resolve( this.sDirRoot, sPath ))
+      : null;
+  }
+
+  faSidecars( vsPath, reFileRead, vsTestPath ){
+    const vaSide = [];
+    const vaSideBad = [];
+    vsPath.filter(( sPath ) => sPath.endsWith( ".concord" )).forEach((
+      sPathSidecar
+    ) => {
+      const sPath = fsPosix( sPathSidecar );
+      const sPathFile = sPath.slice( 0, -".concord".length );
+      const sKind = this.fsKind( sPathFile );
+      const sState = sKind === null ? "absent"
+        : sKind !== "file" ? "not a regular file"
+        : sPathFile.endsWith( ".concord" ) ? "side file"
+          : vsTestPath.has( sPathFile ) ? "test file"
+            : reFileRead.test( sPathFile ) ? "commentable" : "read";
+      if( sState !== "read" ){
+        vaSideBad.push({ sPath, sState });
+        return;
+      }
+      const aSide = this.faFile( sPath );
+      const stat = fs.statSync(
+        path.join( this.sDirRoot, sPathSidecar ), { bigint: true }
+      );
+      vaSide.push({
+        sPath: sPathFile,
+        bSide: true,
+        sPathSidecar: sPath,
+        nSize: stat.size.toString(),
+        sMtimeNs: stat.mtimeNs.toString(),
+        sText: aSide.sText
+      });
+    });
+    return { vaSide, vaSideBad };
+  }
+
   fvsPathFile( sDirRel ){
     return this.fvsPathWalk( sDirRel ).map( fsPosix ).sort();
   }
@@ -4926,16 +4377,26 @@ class TreeReader {
     const vsDirSuite = this.fvsDirExpanded(
       this.aConfig.vaSuite.flatMap(( aSuite ) => aSuite.vsDir )
     );
-    const vaGuided = this.fvaFile( Array.from( new Set(
+    const vsPathRead = Array.from( new Set(
       this.fvsDirExpanded( this.aConfig.vsDirRead )
         .flatMap(( sDir ) => this.fvsPathWalk( sDir ))
         .filter(( sPath ) => reFileRead.test( sPath ))
-    )).sort());
+    )).sort();
+    const vsPathTree = Array.from( new Set(
+      this.fvsDirExpanded( this.aConfig.vsDirRead )
+        .flatMap(( sDir ) => this.fvsPathWalk( sDir ))
+    )).sort();
+    const { vaSide, vaSideBad } = this.faSidecars(
+      vsPathTree, reFileRead,
+      new Set( this.fvaTest().map(( aFile ) => fsPosix( aFile.sPath )))
+    );
+    const vaGuided = this.fvaFile( vsPathRead ).concat( vaSide );
     return {
       vaGuided,
-      vaCiter: vaGuided.filter(( aFile ) => !vsDirSuite.some(( sDir ) => (
+      vaCiter: vaGuided.filter(( aFile ) => aFile.bSide || !vsDirSuite.some(( sDir ) => (
         aFile.sPath === sDir || aFile.sPath.startsWith( sDir + path.sep )
-      )))
+      ))),
+      vaSideBad
     };
   }
 
@@ -4948,7 +4409,7 @@ class TreeReader {
       vsDir
         .flatMap(( sDir ) => this.fvsPathWalk( sDir ))
         .filter(( sPath ) => reFileRead.test( sPath ))
-    )).sort()).map(( aFile ) => ({ ...aFile, sPath: fsPosix( aFile.sPath )}));
+    )).sort()).map(( aFile ) => this.faFile( fsPosix( aFile.sPath )));
   }
 
   faObservationFile(){
@@ -5004,7 +4465,8 @@ const faModelForReader = ( reader, bTest ) => faModel({
   vaRecord: reader.fvaRecord(),
   fbExists: ( sPath ) => reader.fbExists( sPath ),
   aFiles: reader,
-  aObsInput: reader.faObservationInput()
+  aObsInput: reader.faObservationInput(),
+  aParseCache: reader.aParseCache
 });
 
 const fasBodyTaken = ( vaSpec, aModel ) => new Set(
@@ -5029,9 +4491,56 @@ const fvsLineAssignObservations = ( reader, aModel, minter ) => {
   return aAssign.vsLine;
 };
 
+const vsKindRetypableCode = [ "implements", "checks" ];
+
+const fvaCodeReferenceRetyped = ( aModel, aFile ) => (
+  fvaCodeReferenceForFile( aFile )
+    .filter(( aRef ) => aRef.bWell
+      && vsKindRetypableCode.includes( aRef.sKind ))
+    .map(( aRef ) => ({
+      ...aRef,
+      sIdRetyped: faLineForId( aModel, aRef.sTarget ).sIdRetyped
+    }))
+    .filter(( aRef ) => aRef.sIdRetyped !== null )
+);
+
+const fsCodeTextRetyped = ( sText, vaRef ) => sText.split( "\n" )
+  .map(( sLine, n ) => vaRef
+    .filter(( aRef ) => aRef.nLine === n + 1 )
+    .reduce(( sAcc, aRef ) => sAcc.replace(
+      new RegExp( "(@" + aRef.sKind + "\\s+)" + aRef.sTarget ),
+      "$1" + aRef.sIdRetyped
+    ), sLine ))
+  .join( "\n" );
+
+const fvsLineAssignCode = ( reader, aModel ) => {
+  const aRead = reader.faFilesRead();
+  return aRead.vaCiter
+    .slice()
+    .sort(( aA, aB ) => (
+      ( aA.bSide ? aA.sPathSidecar : aA.sPath ).localeCompare(
+        aB.bSide ? aB.sPathSidecar : aB.sPath
+      )
+    ))
+    .flatMap(( aFile ) => {
+      const vaRef = fvaCodeReferenceRetyped( aModel, aFile );
+      if( vaRef.length === 0 ){ return [];}
+      const sPath = aFile.bSide ? aFile.sPathSidecar : aFile.sPath;
+      reader.fWriteText( sPath, fsCodeTextRetyped( aFile.sText, vaRef ));
+      return vaRef.map(( aRef ) => fsRewritten(
+        aRef.sPath, aRef.nLine, aRef.sTarget, aRef.sIdRetyped
+      ));
+    });
+};
+
 const fzAssign = ( reader, fWrite ) => {
   const vaSpec = reader.fvaSpec();
-  const aModel = faModel({ vaSpec, vaTest: [] });
+  const aRead = reader.faFilesRead();
+  const aModel = faModel({
+    vaSpec, vaTest: [], ...aRead,
+    aFiles: reader,
+    aParseCache: reader.aParseCache
+  });
   const aRoots = faRoots( aModel, new Set());
   const aFileObs = reader.faObservationFile();
   const minter = new IdMinter( fasBodyTaken(
@@ -5066,6 +4575,7 @@ const fzAssign = ( reader, fWrite ) => {
       .concat( vaEdit.flatMap(( aEdit ) => aEdit.vsRetype ));
   });
   fWrite( vsLine.concat(
+    fvsLineAssignCode( reader, aModel ),
     fvsLineAssignObservations( reader, aModel, minter )
   ).join( "" ));
   return 0;
@@ -5331,7 +4841,11 @@ const fzQuery = ( reader, vsArg, fWrite, fWriteErr ) => {
     return fzSidObservation( reader, vsArg[ 1 ], fWrite, fWriteErr );
   }
   const aModel = vsArg[ 0 ] === "--hash"
-    ? faModel({ vaSpec: reader.fvaSpec(), vaTest: [] })
+    ? faModel({
+      vaSpec: reader.fvaSpec(),
+      vaTest: [],
+      aParseCache: reader.aParseCache
+    })
     : faModelForReader( reader, true );
   const vaMarker = aModel.avaMarkerForId.get( vsArg[ 1 ]) || [];
   if( vaMarker.length !== 1 ){
@@ -5418,7 +4932,8 @@ const faModelForRecord = ( reader ) => faModel({
   ...reader.faFilesRead(),
   vaRecord: reader.fvaRecord(),
   fbExists: ( sPath ) => reader.fbExists( sPath ),
-  aFiles: reader
+  aFiles: reader,
+  aParseCache: reader.aParseCache
 });
 
 const fsProblemForCheckId = ( aModel, sId ) => {
@@ -5433,7 +4948,7 @@ const fasHashForTargets = ( aMarker, hasher ) => Object.fromEntries(
   hasher.aModel.vaCodeRef
     .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
       && aRef.sId === aMarker.sId )
-    .map(( aRef ) => aRef.sPath ).map(( sTarget ) => [
+    .map(( aRef ) => aRef.sPathCode || aRef.sPath ).map(( sTarget ) => [
     sTarget, hasher.fsHash( sTarget )
   ])
 );
@@ -5569,7 +5084,9 @@ const fsDateReset = ( aCheck ) => {
 const fbCheckInWork = ( aModel, aCheck, vsWork ) => aModel.aLines.vaCodeRef
   .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
     && aRef.sId === aCheck.aMarker.sId )
-  .some(( aRef ) => vsWork.includes( fsPathClean( aRef.sPath )));
+  .some(( aRef ) => [ aRef.sPath, aRef.sPathCode ].some(( sPath ) => (
+    sPath !== undefined && vsWork.includes( fsPathClean( sPath ))
+  )));
 
 const fzCompareWorklist = ( aA, aB ) => (
   Number( aB.bWork ) - Number( aA.bWork )
@@ -5713,7 +5230,11 @@ const fzCompareMarkerPlace = ( aA, aB ) => (
 );
 
 const fzHashes = ( reader, fWrite ) => {
-  const aModel = faModel({ vaSpec: reader.fvaSpec(), vaTest: [] });
+  const aModel = faModel({
+    vaSpec: reader.fvaSpec(),
+    vaTest: [],
+    aParseCache: reader.aParseCache
+  });
   fWrite( aModel.vaMarker
     .filter(( aMarker ) => (
       aMarker.sId !== null
@@ -5728,7 +5249,11 @@ const fzHashes = ( reader, fWrite ) => {
 };
 
 const fzArch = ( reader, fWrite ) => {
-  const aModel = faModel({ vaSpec: reader.fvaSpec(), vaTest: [] });
+  const aModel = faModel({
+    vaSpec: reader.fvaSpec(),
+    vaTest: [],
+    aParseCache: reader.aParseCache
+  });
   fWrite( fsSectionArch( faRoots( aModel, new Set()).vaArch ) + "\n" );
   return 0;
 };
@@ -5740,7 +5265,8 @@ const faInputForReader = ( reader, vaSpec ) => ({
   vaRecord: reader.fvaRecord(),
   fbExists: ( sPath ) => reader.fbExists( sPath ),
   aFiles: reader,
-  aObsInput: reader.faObservationInput()
+  aObsInput: reader.faObservationInput(),
+  aParseCache: reader.aParseCache
 });
 
 const fzReport = ( reader, sArg, fWrite ) => {
@@ -5778,7 +5304,7 @@ const fzGate = ( reader, fWrite ) => {
 };
 
 const sUsage = (
-  "usage: spec-map [<spec path>] | --gate | --hash <id> | --sid <id> "
+  "usage: concord spec-map [--cache-checksum] [<spec path>] | --gate | --hash <id> | --sid <id> "
   + "| --candidates <id> | --root <id> | --cross-suite | --probes "
   + "| --interactive | --guidance [--for <label>] | --pass <id> [--note <text>] "
   + "| --fail <id> [--note <text>] | --unable <id> [--note <text>] "
@@ -5809,41 +5335,71 @@ const fbArgsValid = ( vsArg ) => {
 };
 
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
+  if( vsArg.includes( "--clear-cache" )){
+    if( vsArg.length !== 1 ){
+      ( fWriteErr || fWrite )( sUsage );
+      return 2;
+    }
+    try{
+      require( "./spec-map-cache.js" ).fClearCache( sDirRoot );
+      fWrite( "spec-map: cache cleared\n" );
+      return 0;
+    }
+    catch( xError ){
+      ( fWriteErr || fWrite )(
+        "spec-map: unable to clear cache: " + xError.message + "\n"
+      );
+      return 1;
+    }
+  }
+  const cCacheChecksum = vsArg.filter(( sArg ) => (
+    sArg === "--cache-checksum"
+  )).length;
+  vsArg = vsArg.filter(( sArg ) => sArg !== "--cache-checksum" );
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   if( aRead.sProblem !== null ){
     ( fWriteErr || fWrite )( "spec-map: " + aRead.sProblem + "\n" );
     return 2;
   }
-  if( !fbArgsValid( vsArg )){
+  if( cCacheChecksum > 1 || !fbArgsValid( vsArg )){
     ( fWriteErr || fWrite )( sUsage );
     return 2;
   }
-  const reader = new TreeReader( sDirRoot, aRead.aConfig );
-  if( vsArg[ 0 ] === "--assign" ){ return fzAssign( reader, fWrite );}
-  if( vsArg[ 0 ] === "--split-parts" ){
-    return fzSplitParts( reader, fWrite, fWriteErr || fWrite );
+  const aParseCache = new ParseCache(
+    sDirRoot, fsFingerprintParser( aRead.aConfig )
+  );
+  aParseCache.bCheckContent = cCacheChecksum === 1;
+  const reader = new TreeReader( sDirRoot, aRead.aConfig, aParseCache );
+  try{
+    if( vsArg[ 0 ] === "--assign" ){ return fzAssign( reader, fWrite );}
+    if( vsArg[ 0 ] === "--split-parts" ){
+      return fzSplitParts( reader, fWrite, fWriteErr || fWrite );
+    }
+    if( vsArg[ 0 ] === "--hashes" ){ return fzHashes( reader, fWrite );}
+    if( vsArg[ 0 ] === "--gate" ){ return fzGate( reader, fWrite );}
+    if( Object.hasOwn( asVerdictForFlag, vsArg[ 0 ])){
+      return fzRecord( reader, vsArg, fWriteErr || fWrite );
+    }
+    if( vsArg[ 0 ] === "--answers" ){
+      return fzAnswers( reader, vsArg[ 1 ], fWrite, fWriteErr || fWrite );
+    }
+    if( vsArg[ 0 ] === "--worklist" ){
+      return fzWorklist( reader, vsArg, fWrite, fWriteErr || fWrite );
+    }
+    if( Object.hasOwn( afsListForFlag, vsArg[ 0 ] || "" )){
+      return fzList( reader, vsArg, fWrite );
+    }
+    if( vsArg[ 0 ] === "--root" && vsArg[ 1 ] === sArch ){
+      return fzArch( reader, fWrite );
+    }
+    if( Object.hasOwn( afsQueryForFlag, vsArg[ 0 ] || "" )){
+      return fzQuery( reader, vsArg, fWrite, fWriteErr || fWrite );
+    }
+    return fzReport( reader, vsArg[ 0 ], fWrite );
   }
-  if( vsArg[ 0 ] === "--hashes" ){ return fzHashes( reader, fWrite );}
-  if( vsArg[ 0 ] === "--gate" ){ return fzGate( reader, fWrite );}
-  if( Object.hasOwn( asVerdictForFlag, vsArg[ 0 ])){
-    return fzRecord( reader, vsArg, fWriteErr || fWrite );
+  finally{
+    aParseCache.fSave();
   }
-  if( vsArg[ 0 ] === "--answers" ){
-    return fzAnswers( reader, vsArg[ 1 ], fWrite, fWriteErr || fWrite );
-  }
-  if( vsArg[ 0 ] === "--worklist" ){
-    return fzWorklist( reader, vsArg, fWrite, fWriteErr || fWrite );
-  }
-  if( Object.hasOwn( afsListForFlag, vsArg[ 0 ] || "" )){
-    return fzList( reader, vsArg, fWrite );
-  }
-  if( vsArg[ 0 ] === "--root" && vsArg[ 1 ] === sArch ){
-    return fzArch( reader, fWrite );
-  }
-  if( Object.hasOwn( afsQueryForFlag, vsArg[ 0 ] || "" )){
-    return fzQuery( reader, vsArg, fWrite, fWriteErr || fWrite );
-  }
-  return fzReport( reader, vsArg[ 0 ], fWrite );
 };
 
 module.exports = {
