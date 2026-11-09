@@ -164,6 +164,9 @@ Concord where it stands.
   whether the project uses ConcordSTC before any architect or fixer is
   launched there, and writes the line his answer chooses into that
   `AGENTS.md`, creating the file if it is absent.
+> {#m-cmifzx} USER 2026-11-09: "Seems like the harness should be told to run it"
+> {#m-8mr0ax} USER 2026-11-09: "I kind of want the flow to be: shell: start-harness (e.g. `claude` or `codex`) prompt: I want to use concordstc for this project model: let me look up concordstd. I see. Let me see if it is installed. npm install --global. concord init"
+* {#g-2frto4 <m-cmifzx@2e5194f,m-8mr0ax@8f398c7 for=main via=prompt} **Start setup inside the harness.** When the human asks to adopt ConcordSTC, the main thread checks whether the `concord` command is installed; if it is absent, it installs `@debonet/concord` globally with `npm install --global @debonet/concord`. It then runs `concord init` from the project root inside the harness, reads the printed status and setup steps, and follows them before launching an architect or fixer. This explicit request is the human's adoption decision, including when the project currently has an opt-out line; replace that line with the adoption line and do not ask again. `concord init` is read-only.
 * {#g-n9fysz <arch,m-c2gwx4@a84e9f9 for=architect via=prompt} **An architect that finds no line
   asks.** An architect launched in a project whose root `AGENTS.md` holds
   neither line writes no Concord file or marker and returns the question to

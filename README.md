@@ -47,13 +47,13 @@ Follow this sequence in an adopting project. The detailed behavior is defined by
 
 ### 1. Confirm that the project opted in
 
-Read the project's root `AGENTS.md`. Concord applies only when it contains the standalone adoption line printed by `concord init`. That line imports the `AGENTS.md` from the installed package using its absolute path. Run:
+When the project owner asks to adopt ConcordSTC, the harness checks whether `concord` is installed globally and installs it with `npm install --global @debonet/concord` if needed. From inside the harness, it then runs `concord init` with the project root as the working directory. The command is read-only and prints the project's Concord status and next setup steps. Then read the project's root `AGENTS.md`. Concord applies when it contains the standalone adoption line printed by `concord init`; that line imports the `AGENTS.md` from the installed package using its absolute path. The command is:
 
 ```sh
 concord init
 ```
 
-If the project instead says `This project does not use ConcordSTC.`, do not add Concord files or links. If it says neither, resolve adoption with the project owner before an architect or fixer begins. The full adoption contract is in [specs/concord-process.md](specs/concord-process.md#which-projects-use-concord).
+If the project says `This project does not use ConcordSTC.` and the owner has not asked to adopt Concord, do not add Concord files or links. If neither adoption nor opt-out is recorded and the owner has not already requested adoption, ask before an architect or fixer begins. An explicit request to adopt is the owner's decision and replaces an existing opt-out line. The full adoption contract is in [specs/concord-process.md](specs/concord-process.md#which-projects-use-concord).
 
 For an opted-in project, read the installed guide path printed by `concord init` and the project's instructions. At the beginning of a session, run:
 
