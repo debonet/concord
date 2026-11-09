@@ -331,10 +331,10 @@ const fCreate = ( f ) => ({
   fvaCodeReference: ( aFile ) => fvaCodeReferenceForJavaScript( aFile, f ),
   fvaFollows: ( aFile ) => f.fvaFollowsForCommentReader( aFile ),
   ftComments: ( aFile ) => {
-    const [ , asnComment ] = ftMaskForSource(
+    const [ , asnComment, vnCommentBlock ] = ftMaskForSource(
       faReadingForPath( aFile.sText, aFile.sPath ).sBlanked
     );
-    return [ Array.from( asnComment ), [] ];
+    return [ Array.from( asnComment ), vnCommentBlock ];
   },
   fbDirectiveGapLine: () => false
 });

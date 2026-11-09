@@ -1324,7 +1324,8 @@ test( "no other command runs the coverage map", () => {
   const aPackage = JSON.parse(
     fs.readFileSync( path.join( sDirRepo, "package.json" ), "utf8" )
   );
-  expect( aPackage.scripts[ "spec-coverage" ]).toBe( "bin/spec-coverage" );
+  expect( aPackage.scripts[ "spec-coverage" ])
+    .toBe( "bin/concord spec-coverage" );
   const vsOther = Object.entries( aPackage.scripts )
     .filter(( tEntry ) => tEntry[ 0 ] !== "spec-coverage" )
     .map(( tEntry ) => tEntry[ 1 ])

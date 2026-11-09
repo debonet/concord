@@ -77,6 +77,7 @@ const fCreate = ( f ) => {
     vsExtension: [ ".ts", ".tsx" ],
     vsTestSuffix: [ "ts", "tsx" ],
     fbHasTestFiles: () => true,
+    faHeader: ( aSource ) => aJavaScript.faHeader( aSource ),
     faSource: ( sText, sPath ) => {
       const aReading = faReadingForPath( sText, sPath );
       const [ sMasked, asnComment ] = fCreateJavaScript.ftMaskForSource(

@@ -2039,7 +2039,7 @@ class TargetHasher {
 
   fsHashForFile( sPath ){
     return this.fsMemo( "file " + sPath, () => {
-      const aSide = this.aModel.vaCode.find(( aFile ) => (
+      const aSide = ( this.aModel.vaCode || [] ).find(( aFile ) => (
         aFile.bSide && aFile.sPath === sPath
       ));
       return aSide === undefined
