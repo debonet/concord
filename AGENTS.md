@@ -10,6 +10,7 @@ ConcordSTC keeps a project's specs and tests in step. Its specs are the authorit
 * `specs/spec-map.md` and `specs/spec-map-line-types.md` — markers, line types, links, the checker's lists and queries
 * `specs/spec-map-interactive.md` — hand checks
 * `specs/spec-coverage.md` — coverage
+* `specs/spec-conflicts.md` — ranked lexical candidates for specification conflicts
 * `specs/concord-hook.md` — installing the commit gate
 * `specs/agents-sync.md` — generating agent-tool files from the roles
 * `specs/observations.md` — the observations file, observation ids, citations and retirement

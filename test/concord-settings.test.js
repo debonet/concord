@@ -929,7 +929,7 @@ test( "concord-settings — each command under bin is an executable file "
   const vsName = fs.readdirSync( sDirBin ).sort();
   expect( vsName ).toEqual([
     "agents-sync", "concord", "concord-hook", "concord-init",
-    "link-propose", "spec-coverage", "spec-map"
+    "link-propose", "spec-conflicts", "spec-coverage", "spec-map"
   ]);
   vsName.forEach(( sName ) => {
     const sPath = path.join( sDirBin, sName );

@@ -48,6 +48,26 @@ test( "concord forwards utility arguments, working directory and status", () => 
   ]);
 });
 
+// @proves s-mo4ncx@7fcbe1b
+// @proves s-xrmdr0@7ae7c4c
+test( "concord dispatches spec-conflicts through the master command", () => {
+  let aSpawn = null;
+  const nExit = fzConcord(
+    [ "spec-conflicts", "--limit", "5" ], "/project",
+    () => {}, () => {},
+    {
+      sDirBin: "/package/bin",
+      sNode: "/node",
+      spawnSync: ( ...aArgs ) => { aSpawn = aArgs; return { status: 0 }; }
+    }
+  );
+  assert.strictEqual( nExit, 0 );
+  assert.deepStrictEqual( aSpawn, [
+    "/node", [ "/package/bin/spec-conflicts", "--limit", "5" ],
+    { cwd: "/project", stdio: "inherit" }
+  ]);
+});
+
 // @proves s-t99cvq@daf5b13
 // @proves s-nur3h4@3793438
 // @proves s-s6e3j6@4aad693

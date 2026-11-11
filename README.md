@@ -18,7 +18,7 @@ Concord is a separate project so multiple adopting projects can use one checker 
 
 ## Solution (what?)
 
-Concord is a public npm package with one executable, `concord`, plus specifications and agent roles. Its subcommands include `concord spec-map` for statement ids, links and completeness; `concord spec-coverage` for test execution coverage; `concord concord-hook` for the pre-commit gate; `concord agents-sync` for generated agent-tool files; and `concord link-propose` for likely implementation links. `concord init` prints project-specific adoption instructions and does not edit files.
+Concord is a public npm package with one executable, `concord`, plus specifications and agent roles. Its subcommands include `concord spec-map` for statement ids, links and completeness; `concord spec-conflicts` for ranked possible conflicts between spec claims, with agent-readable JSON by default and a `--human` text view; `concord spec-coverage` for test execution coverage; `concord concord-hook` for the pre-commit gate; `concord agents-sync` for generated agent-tool files; and `concord link-propose` for likely implementation links. `concord init` prints project-specific adoption instructions and does not edit files.
 
 The agent process separates specification design from implementation. The architect owns specs and returns a precise fixer plan. The fixer owns code and tests and implements that plan. The project's build spec declares the commands agents may run; the checker and coverage tools are invoked through those project targets.
 
@@ -134,11 +134,16 @@ Use the project's declared targets. For an npm-based project, the common forms a
 ```sh
 concord spec-map
 concord spec-map --gate
+concord spec-conflicts
+concord spec-conflicts --human
+concord spec-conflicts --nextreview
+concord spec-conflicts --nextopen
+concord spec-conflicts --mark conflict-0123456789abcdef incorrect
 concord spec-coverage
 concord spec-coverage --report
 ```
 
-`spec-map` maps specs, tests and implementation references. `--gate` checks the commit-blocking conditions. `spec-coverage` runs the configured test suites and attributes source regions to the statements linked by those tests; `--report` reads the most recent completed measurement. See [specs/spec-map.md](specs/spec-map.md), [specs/spec-coverage.md](specs/spec-coverage.md) and [specs/concord-process.md](specs/concord-process.md#what-stops-a-commit).
+`spec-map` maps specs, tests and implementation references. `--gate` checks the commit-blocking conditions. `spec-conflicts` compares statement pairs only when they share a resolving implementation-file or test-unit link and indexed wording; its score is not a contradiction verdict, and an empty report does not prove consistency. The JSON summary shows how many claims had anchors and how many candidates were reported. It writes candidate IDs and review statuses to the project-root `spec-conflicts.json`. To review a large result in manageable steps, run `concord spec-conflicts --nextreview`; compare the returned claims' scope, conditions and required outcomes, then mark the candidate `incorrect` if both claims can be true or `open` if it is an unresolved conflict, and request the next candidate. Use `concord spec-conflicts --nextopen` to retrieve an unresolved conflict, correct its owning specifications, mark it `resolved`, then request the next one. If a returned conflict remains unresolved, leave it `open`, raise it with the human operator and stop that queue until its status changes. The next commands read stored candidates without rescanning the project and do not advance the queue until the candidate is marked. `incorrect` and `resolved` candidates are omitted from reports; `open` records remain visible until resolved. The default JSON includes instructions for agents; `--human` prints a less structured report. See the [spec-conflicts migration guide](docs/spec-conflicts-overlap-migration.md), [specs/spec-map.md](specs/spec-map.md), [specs/spec-conflicts.md](specs/spec-conflicts.md), [specs/spec-coverage.md](specs/spec-coverage.md) and [specs/concord-process.md](specs/concord-process.md#what-stops-a-commit).
 
 `spec-map` caches parsed input data between invocations. Its default fast check uses file size and modification time as the unchanged-file hint. Use `--cache-checksum` when you need to detect same-size changes that also preserve modification time; it reads and hashes every current input file. To discard this project's cache and force a fresh parse, run the standalone command:
 

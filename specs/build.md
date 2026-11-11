@@ -36,8 +36,9 @@ outside these.
   spec-coverage-review.md    classified uncovered code of Concord's own
                              (specs/spec-coverage.md)
   bin/                       the concord entry point and utility commands:
-                             spec-map, spec-coverage, agents-sync,
-                             concord-hook, link-propose, concord-init
+                             spec-map, spec-coverage, spec-conflicts,
+                             agents-sync, concord-hook, link-propose,
+                             concord-init
   scripts/                   the modules behind the commands, and the
                              worklist page template
   specs/                     Concord's specs
@@ -54,6 +55,7 @@ outside these.
 * {#s-4pyvbb <arch,m-f9xsif@e917ff9} The `concord` entry point dispatches utility names and arguments
   to their respective commands, preserving the caller's working directory
   and exit status. Users invoke utilities as `concord <utility> <arguments>`.
+* {#s-xrmdr0 <arch} `concord spec-conflicts [--human] [--limit <n>]` reports likely related spec-claim pairs for review, `concord spec-conflicts --nextreview` and `--nextopen` return one stored candidate for iterative review as specified by `specs/spec-conflicts.md`, and `concord spec-conflicts --mark <id> <status>` updates a candidate's review status.
 * {#s-nur3h4 <arch,m-f9xsif@e917ff9} The published npm package exposes only the `concord`
   executable; utility files in `bin/` are implementation entry points, not
   separately installed npm commands.

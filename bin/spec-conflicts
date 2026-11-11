@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+// @implements s-c744tt@f8b2070
+// @implements s-4pyvbb@d19cad5
+// @implements s-4jegoj@05acd9f
+// @implements s-pa182t@8008053
+// @tested-by test/spec-conflicts.test.js
+"use strict";
+
+const { fzMain } = require( "../scripts/spec-conflicts.js" );
+
+process.exitCode = fzMain(
+  process.argv.slice( 2 ), process.cwd(),
+  ( s ) => process.stdout.write( s ),
+  ( s ) => process.stderr.write( s )
+);

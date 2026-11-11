@@ -5,6 +5,8 @@
 // @implements s-ssquhw@5229772
 // @implements s-39o0xv@51b819a
 // @implements s-n5ue8s@5c90c01
+// @implements s-mo4ncx@7fcbe1b
+// @implements s-xrmdr0@7ae7c4c
 // @tested-by test/concord-cli.test.js
 "use strict";
 
@@ -12,12 +14,13 @@ const { spawnSync } = require( "child_process" );
 const path = require( "path" );
 
 const asCommands = new Set([
-  "agents-sync", "concord-hook", "link-propose", "spec-coverage", "spec-map"
+  "agents-sync", "concord-hook", "link-propose", "spec-conflicts",
+  "spec-coverage", "spec-map"
 ]);
 const sUsage = (
   "usage: concord <utility> [arguments]\n"
   + "utilities: agents-sync, concord-hook, init, link-propose, "
-  + "spec-coverage, spec-map\n"
+  + "spec-conflicts, spec-coverage, spec-map\n"
 );
 
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
