@@ -22,6 +22,8 @@
 // @implements s-a7d2ke@bfad499
 // @implements s-7kf4xq@6e78f3d
 // @implements s-hp3m8v@accf4c0
+// @implements s-k4z0bs@ebeecd7
+// @implements s-v7ca4r@434b185
 // @implements s-auhz9l@5187048
 // @implements s-b97pxb@a56c6b2
 // @implements s-g0vx2v@a2e1989
@@ -60,9 +62,16 @@ const cReportMax = 1000;
 const cSharedTermMax = 8;
 const sReviewFile = "spec-conflicts.json";
 const sReviewMessage = "The following is a list of potential specification conflicts. Examine each pair in depth, compare its scope, conditions, and required outcomes, and raise any likely conflict with the human operator.";
-const sReviewInstructions = "The score ranks shared wording and does not establish a contradiction. Review the claims' scope, conditions and required outcomes. Mark a candidate incorrect only after review establishes that both claims can be true; mark a confirmed unresolved conflict open and raise it with the human operator. Mark it resolved after correcting the conflict. Follow `next_command` to review the next candidate.";
-const sNextReviewInstructions = "Review both claims and their shared context. If both claims can be true, mark this candidate incorrect; if they conflict, raise the issue with the human operator and mark it open. Then run the response's `next_command` to review the next candidate.";
-const sNextOpenInstructions = "Review this confirmed unresolved conflict and correct the owning specifications using the project's spec-change process. Mark it resolved only after the conflict is corrected. If review shows it is not a conflict, mark it incorrect. If it remains unresolved, mark it open again to record that review, raise it with the human operator, and then run the response's `next_command` to review the next open conflict.";
+const sReviewInstructions = "Use `review_dispatch` and the harness's branch or agent mechanism to review candidates in fresh contexts. The score ranks shared wording and does not establish a contradiction. Review the claims' scope, conditions and required outcomes. Mark a candidate incorrect only after review establishes that both claims can be true; mark a confirmed unresolved conflict open and raise it with the human operator. Mark it resolved after correcting the conflict. Follow `next_command` to continue the queue.";
+const sNextReviewInstructions = "Use `review_dispatch` and the harness's branch or agent mechanism to review this candidate in a fresh context. Review both claims and their shared context. If both claims can be true, mark this candidate incorrect; if they conflict, raise the issue with the human operator and mark it open. Then run the response's `next_command` to review the next candidate.";
+const sNextOpenInstructions = "Use `review_dispatch` and the harness's branch or agent mechanism to review this candidate in a fresh context. Correct the owning specifications using the project's spec-change process. Mark it resolved only after the conflict is corrected. If review shows it is not a conflict, mark it incorrect. If it remains unresolved, mark it open again to record that review, raise it with the human operator, and then run the response's `next_command` to review the next open conflict.";
+const aReviewDispatch = {
+  instructions: "Use the calling harness's branch or agent mechanism; Concord does not launch workers.",
+  unit_of_work: "Assign one candidate to each fresh agent context and branch based on the current project state. Give the worker only its candidate and the relevant current project context.",
+  parallelism: "Review candidates in parallel. Merge fixes in parallel only when their affected specification, implementation, and test paths are disjoint. If paths overlap or independence is uncertain, serialize fixes and revalidate each candidate against the updated project state.",
+  worker_report: [ "candidate_id", "verdict", "evidence", "changed_paths", "branch_or_patch" ],
+  coordination: "Workers do not update spec-conflicts.json. The calling agent integrates results and records each verdict with concord spec-conflicts --mark. Mark a conflict resolved only after its fix is integrated."
+};
 const reCamelBoundary = /([a-z0-9])([A-Z])/g;
 const reToken = /[\p{L}\p{N}]+/gu;
 const reConflictId = /^conflict-[a-f0-9]{16}$/;
@@ -422,6 +431,7 @@ const fsReportJson = ( vaRecord, nLimit, aSummary = {} ) => {
       ? `Found ${cReported} potential specification conflict candidates. Review them one at a time; run \`${sNextCommand}\`.`
       : "Found no potential specification conflict candidates in this report.",
     instructions: sReviewInstructions,
+    review_dispatch: cReported > 0 ? aReviewDispatch : null,
     summary: { ...aSummary, reported: cReported },
     candidate_count: cReported,
     next_command: sNextCommand,
@@ -438,6 +448,7 @@ const fsNextJson = ( aReview, sStatus ) => {
       : sStatus === "new"
         ? "No unreviewed candidates remain in the stored review set. Run `concord spec-conflicts` to refresh it after the project changes."
         : "No confirmed unresolved conflicts remain in the stored review set.",
+    review_dispatch: aCandidate ? aReviewDispatch : null,
     next_command: aCandidate
       ? `concord spec-conflicts --${sStatus === "new" ? "nextreview" : "nextopen"}`
       : null,

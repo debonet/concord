@@ -25,12 +25,14 @@ are consistent.
    compare the statements' conditions and required outcomes. Mark a false
    positive `incorrect`; raise a likely unresolved conflict with the human
    operator and mark it `open`.
-4. For a large result, follow the response's `next_command` to get one stored
-   `new` candidate at a time. Review the returned claims' scope, conditions and
-   required outcomes. Mark it `incorrect` if both claims can be true or `open`
-   if it is a confirmed unresolved conflict, then run the returned
-   `next_command`. The command does not consume a candidate automatically, so
-   mark it before requesting another.
+4. For a large result, follow `review_dispatch` for the candidates in the
+   current report. The harness launches a fresh context and branch for each
+   candidate; workers compare the claims' scope, conditions and required
+   outcomes, then return their verdict, evidence and changed paths. The calling
+   model records `incorrect` if both claims can be true, `open` if the
+   candidate is a confirmed unresolved conflict, or `resolved` after a fix is
+   integrated. After marking the current report's results, follow
+   `next_command` to continue with candidates outside that batch.
 5. Use `concord spec-conflicts --nextopen` to process confirmed unresolved
    conflicts one at a time, oldest review timestamp first. Correct the owning
    specifications, mark each `resolved`, and run the returned `next_command`.
@@ -46,7 +48,13 @@ The initial JSON report states how many candidates it found and includes
 `next_command` pointing to `--nextreview`; an empty report says it found no
 candidates and sets `next_command` to `null`. Each `--nextreview` or
 `--nextopen` response includes the command to request the next item in that
-queue, or `null` when the queue is empty. Every `--mark` records an ISO 8601 UTC `last_reviewed_at`
+queue, or `null` when the queue is empty. The `review_dispatch` object advises
+the calling model to use the harness's branch or agent mechanism, assigning
+one candidate per fresh context and branch. Candidate reviews can run in
+parallel. Keep review-file updates with the coordinator; merge fixes in
+parallel only when specification, implementation and test paths are disjoint.
+Serialize overlapping or uncertain fixes, then revalidate candidates against
+the updated project state. Every `--mark` records an ISO 8601 UTC `last_reviewed_at`
 value; `--nextopen`
 returns the oldest reviewed open candidate, with undated legacy records first
 and report order breaking ties. Re-mark an unresolved candidate `open` to

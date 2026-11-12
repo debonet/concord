@@ -24,6 +24,7 @@ concord spec-conflicts returns \"found 250 conflicts, run `concord spec-conflict
 then
 
 concord spec-conflicts --nextreview returns the conflict and then a version of your instructions in 2, followed by \"then rerun  run `concord spec-conflicts --nextreview`\""
+> {#m-brnch1} USER 2026-11-12: "But the launch of branches is controlled by the harness so we need to **advise** the model calling spec-conflicts to handle it that way"
 
 ## Purpose
 
@@ -40,6 +41,8 @@ Find related specification claims that deserve a human or agent review for contr
 * {#s-a7d2ke <m-daisy1@a99a2af} The default JSON message states the number of reported candidates and directs the agent to `next_command`, or says that no candidates were reported.
 * {#s-7kf4xq <m-daisy1@a99a2af} Each next-command response includes `next_command`, set to the same next command when it returns a candidate and `null` when its queue is empty.
 * {#s-hp3m8v <m-daisy1@a99a2af} Instructions for a returned candidate direct the agent to review it, mark it with the appropriate status, and then run the response's `next_command` to continue the same queue.
+* {#s-k4z0bs <m-brnch1@431ee76} Each nonempty structured report includes `review_dispatch` instructions telling the calling agent to use its harness to start one fresh agent context and branch per candidate, give each worker the current project state and only its assigned candidate, and have each worker return its verdict, evidence and changed paths.
+* {#s-v7ca4r <m-brnch1@431ee76} `review_dispatch` directs the calling agent to run candidate reviews in parallel, keep review-file updates in the coordinator, and merge fixes only when affected specification, implementation and test paths are disjoint; otherwise it directs the agent to serialize fixes and revalidate candidates against the updated project state.
 * {#s-w3u13c <m-2875ig@8263862} The next commands are standalone forms and cannot be combined with `--human`, `--limit` or `--mark`; invalid combinations print usage to standard error and exit 2.
 * {#s-a5663z <arch} The default report is a JSON object containing agent instructions, a `summary` object and a `candidates` array, and exits 0 when the array is empty or non-empty; candidate pairs are not checker failures and do not refuse a commit.
 * {#s-vf9dot <m-5kab8v@609aa38,arch} Each candidate entry contains its conflict id, status, score, both spec paths, line numbers, marker ids, complete claim texts, shared indexed terms, shared implementation-file and test-unit anchors, and a possible-issue explanation. The explanation describes the shared anchors and indexed terms, and directs the reviewer to compare the claims' scope and conditions; it does not infer contradiction from opposing words alone. Entries are ordered by descending score, then by the first and second claim's path, line and id in ascending order.

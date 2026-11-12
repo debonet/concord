@@ -132,13 +132,22 @@ test( "claims with shared terms but no common code or test anchor do not pair", 
 // @proves s-oacf60@11a8228
 // @proves s-6j3n2p@49836bc
 // @proves s-a7d2ke@bfad499
+// @proves s-k4z0bs@ebeecd7
+// @proves s-v7ca4r@434b185
 test( "spec-conflicts reports anchored evidence, summary, and human output", () => {
   fWriteTree({ vaClaim: faClaims() });
   const aJson = faJson( faRun());
   assert.match( aJson.message, /found \d+ potential specification conflict candidates/i );
   assert.match( aJson.instructions, /raise.*human operator/i );
+  assert.match( aJson.instructions, /use `review_dispatch`/i );
   assert.strictEqual( aJson.candidate_count, aJson.candidates.length );
   assert.strictEqual( aJson.next_command, "concord spec-conflicts --nextreview" );
+  assert.match( aJson.review_dispatch.instructions, /calling harness.*does not launch workers/i );
+  assert.match( aJson.review_dispatch.unit_of_work, /one candidate.*fresh agent context and branch/i );
+  assert.match( aJson.review_dispatch.parallelism, /review candidates in parallel/i );
+  assert.match( aJson.review_dispatch.parallelism, /paths are disjoint/i );
+  assert.ok( aJson.review_dispatch.worker_report.includes( "verdict" ));
+  assert.match( aJson.review_dispatch.coordination, /Workers do not update spec-conflicts\.json/i );
   const aHuman = faRun([ "--human" ]);
   assert.strictEqual( aHuman.nExit, 0 );
   assert.match( aHuman.sOut, /claims considered: 4; anchored: 3/i );
@@ -189,6 +198,8 @@ test( "limits and review history retain open items but suppress stale new items"
 // @proves s-s1tiy9@c8cf9e3
 // @proves s-7kf4xq@6e78f3d
 // @proves s-hp3m8v@accf4c0
+// @proves s-k4z0bs@ebeecd7
+// @proves s-v7ca4r@434b185
 test( "nextreview and nextopen return one stored candidate without consuming it", async () => {
   fWriteTree({ vaClaim: faClaims() });
   const aInitial = faJson( faRun());
@@ -202,6 +213,8 @@ test( "nextreview and nextopen return one stored candidate without consuming it"
   assert.strictEqual( aNextReview.candidate.id, aInitial.candidates[ 0 ].id );
   assert.strictEqual( aNextReview.candidate.status, "new" );
   assert.strictEqual( aNextReview.next_command, "concord spec-conflicts --nextreview" );
+  assert.ok( aNextReview.review_dispatch );
+  assert.match( aNextReview.instructions, /use `review_dispatch`/i );
   assert.match( aNextReview.instructions, /mark this candidate incorrect/i );
   assert.match( aNextReview.instructions, /response's `next_command`/ );
   assert.strictEqual( faJson( faRun([ "--nextreview" ])).candidate.id, aNextReview.candidate.id );
@@ -228,6 +241,8 @@ test( "nextreview and nextopen return one stored candidate without consuming it"
   assert.strictEqual( aNextOpen.candidate.id, aLegacyOpen.id );
   assert.strictEqual( aNextOpen.candidate.status, "open" );
   assert.strictEqual( aNextOpen.next_command, "concord spec-conflicts --nextopen" );
+  assert.ok( aNextOpen.review_dispatch );
+  assert.match( aNextOpen.instructions, /use `review_dispatch`/i );
   assert.match( aNextOpen.instructions, /mark it resolved only after/i );
   assert.match( aNextOpen.instructions, /response's `next_command`/ );
   await new Promise(( fResolve ) => setTimeout( fResolve, 5 ));
