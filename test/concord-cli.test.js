@@ -49,7 +49,7 @@ test( "concord forwards utility arguments, working directory and status", () => 
 });
 
 // @proves s-mo4ncx@7fcbe1b
-// @proves s-xrmdr0@7ae7c4c
+// @proves s-xrmdr0@5b1d45a
 test( "concord dispatches spec-conflicts through the master command", () => {
   let aSpawn = null;
   const nExit = fzConcord(

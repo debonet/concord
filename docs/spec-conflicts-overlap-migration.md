@@ -25,21 +25,30 @@ are consistent.
    compare the statements' conditions and required outcomes. Mark a false
    positive `incorrect`; raise a likely unresolved conflict with the human
    operator and mark it `open`.
-4. For a large result, use `concord spec-conflicts --nextreview` to get one
-   stored `new` candidate at a time. After examining it, mark it `incorrect`
-   if both claims can be true or `open` if it is a confirmed unresolved
-   conflict, then request the next review candidate. The command does not
-   consume a candidate automatically, so mark it before requesting another.
+4. For a large result, follow the response's `next_command` to get one stored
+   `new` candidate at a time. Review the returned claims' scope, conditions and
+   required outcomes. Mark it `incorrect` if both claims can be true or `open`
+   if it is a confirmed unresolved conflict, then run the returned
+   `next_command`. The command does not consume a candidate automatically, so
+   mark it before requesting another.
 5. Use `concord spec-conflicts --nextopen` to process confirmed unresolved
-   conflicts one at a time. Correct the owning specifications, mark each
-   `resolved`, and request the next open conflict. If a conflict cannot be
-   resolved during the pass, leave it `open`, raise it with the human
-   operator, and stop that queue until its status changes. If review shows it
-   was not a conflict, mark it `incorrect`.
+   conflicts one at a time, oldest review timestamp first. Correct the owning
+   specifications, mark each `resolved`, and run the returned `next_command`.
+   If a conflict cannot be resolved during the pass, mark it `open` again to
+   record the review and advance the queue, then raise it with the human
+   operator. If review shows it was not a conflict, mark it `incorrect`.
 
 No project setting or spec-link migration is required. Existing review records
 are retained. A stored `new` candidate is reported only when the new anchor
 rules detect it again; a stored `open` candidate remains reported until it is
-resolved. The next-review commands read stored candidates in report order and
-do not rescan or change their status. The candidate id and status commands are
-unchanged.
+resolved. The next-review commands read stored candidates and do not rescan.
+The initial JSON report states how many candidates it found and includes
+`next_command` pointing to `--nextreview`; an empty report says it found no
+candidates and sets `next_command` to `null`. Each `--nextreview` or
+`--nextopen` response includes the command to request the next item in that
+queue, or `null` when the queue is empty. Every `--mark` records an ISO 8601 UTC `last_reviewed_at`
+value; `--nextopen`
+returns the oldest reviewed open candidate, with undated legacy records first
+and report order breaking ties. Re-mark an unresolved candidate `open` to
+record the review and move it behind the other open candidates. The candidate
+id and status commands are unchanged.

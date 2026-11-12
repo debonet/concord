@@ -9,12 +9,19 @@
 // @implements s-9zm2bs@bb16fa3
 // @implements s-a5663z@b3e9695
 // @implements s-szig7f@7368473
-// @implements s-w1y11l@a3aa0bb
+// @implements s-w1y11l@e42db74
 // @implements s-tiu5mc@7841afe
 // @implements s-w3u13c@ad66a44
 // @implements s-adm6xl@7d5d886
-// @implements s-8utq9p@d39759c
+// @implements s-8utq9p@04407bc
 // @implements s-nz8p2n@bcf0bd3
+// @implements s-e0aj7e@393ccd5
+// @implements s-namloz@75976c7
+// @implements s-s1tiy9@c8cf9e3
+// @implements s-6j3n2p@49836bc
+// @implements s-a7d2ke@bfad499
+// @implements s-7kf4xq@6e78f3d
+// @implements s-hp3m8v@accf4c0
 // @implements s-auhz9l@5187048
 // @implements s-b97pxb@a56c6b2
 // @implements s-g0vx2v@a2e1989
@@ -53,9 +60,9 @@ const cReportMax = 1000;
 const cSharedTermMax = 8;
 const sReviewFile = "spec-conflicts.json";
 const sReviewMessage = "The following is a list of potential specification conflicts. Examine each pair in depth, compare its scope, conditions, and required outcomes, and raise any likely conflict with the human operator.";
-const sReviewInstructions = "The score ranks shared wording and does not establish a contradiction. Mark a candidate incorrect only after review establishes that both claims can be true; use `concord spec-conflicts --mark <id> incorrect`. If a contradiction is confirmed, raise it with the human operator and mark it open. Mark it resolved after the confirmed conflict has been corrected.";
-const sNextReviewInstructions = "Review both claims and their shared context. If both claims can be true, mark this candidate incorrect; if they conflict, raise the issue with the human operator and mark it open. Then request the next candidate with `concord spec-conflicts --nextreview`.";
-const sNextOpenInstructions = "Review this confirmed unresolved conflict and correct the owning specifications using the project's spec-change process. Mark it resolved only after the conflict is corrected. If review shows it is not a conflict, mark it incorrect. If it remains unresolved, leave it open, raise it with the human operator, and stop this queue until its status changes. Then request the next open conflict with `concord spec-conflicts --nextopen`.";
+const sReviewInstructions = "The score ranks shared wording and does not establish a contradiction. Review the claims' scope, conditions and required outcomes. Mark a candidate incorrect only after review establishes that both claims can be true; mark a confirmed unresolved conflict open and raise it with the human operator. Mark it resolved after correcting the conflict. Follow `next_command` to review the next candidate.";
+const sNextReviewInstructions = "Review both claims and their shared context. If both claims can be true, mark this candidate incorrect; if they conflict, raise the issue with the human operator and mark it open. Then run the response's `next_command` to review the next candidate.";
+const sNextOpenInstructions = "Review this confirmed unresolved conflict and correct the owning specifications using the project's spec-change process. Mark it resolved only after the conflict is corrected. If review shows it is not a conflict, mark it incorrect. If it remains unresolved, mark it open again to record that review, raise it with the human operator, and then run the response's `next_command` to review the next open conflict.";
 const reCamelBoundary = /([a-z0-9])([A-Z])/g;
 const reToken = /[\p{L}\p{N}]+/gu;
 const reConflictId = /^conflict-[a-f0-9]{16}$/;
@@ -284,6 +291,13 @@ const fnCompareRecord = ( aA, aB ) => (
   || fnCompare( aA.second.statement_id, aB.second.statement_id )
 );
 
+const fnCompareLastReviewed = ( aA, aB ) => {
+  if( !aA.last_reviewed_at && aB.last_reviewed_at ){ return -1;}
+  if( aA.last_reviewed_at && !aB.last_reviewed_at ){ return 1;}
+  return fnCompare( aA.last_reviewed_at || "", aB.last_reviewed_at || "" )
+    || fnCompareRecord( aA, aB );
+};
+
 const bARecordScore = ( aRecord ) => Number( aRecord.score ) || 0;
 
 const fbValidRecord = ( aRecord ) => (
@@ -311,6 +325,12 @@ const fbValidRecord = ( aRecord ) => (
     ))
   ))
   && typeof aRecord.possible_issue === "string"
+  && ( aRecord.last_reviewed_at === undefined || (
+    typeof aRecord.last_reviewed_at === "string"
+    && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test( aRecord.last_reviewed_at )
+    && !Number.isNaN( Date.parse( aRecord.last_reviewed_at ))
+    && new Date( aRecord.last_reviewed_at ).toISOString() === aRecord.last_reviewed_at
+  ))
 );
 
 const faReadReview = ( sDirRoot ) => {
@@ -352,8 +372,12 @@ const faMergeCandidates = ( aReview, vaPair ) => {
   const vaDetected = vaPair.slice( 0, cReportMax );
   vaDetected.forEach(( aPair ) => {
     const sId = fsConflictId( aPair );
-    const sStatus = maRecord.get( sId )?.status || "new";
-    maRecord.set( sId, faRecordFromPair( aPair, sStatus ));
+    const aExisting = maRecord.get( sId );
+    const aRecord = faRecordFromPair( aPair, aExisting?.status || "new" );
+    if( aExisting?.last_reviewed_at !== undefined ){
+      aRecord.last_reviewed_at = aExisting.last_reviewed_at;
+    }
+    maRecord.set( sId, aRecord );
   });
   const aUpdated = {
     version: 1,
@@ -388,23 +412,35 @@ const fsReportHuman = ( vaRecord, nLimit, aSummary = {} ) => {
   ].join( "\n" )).join( "\n\n" ) + "\n";
 };
 
-const fsReportJson = ( vaRecord, nLimit, aSummary = {} ) => JSON.stringify({
-  message: sReviewMessage,
-  instructions: sReviewInstructions,
-  summary: { ...aSummary, reported: Math.min( vaRecord.length, nLimit ) },
-  candidate_count: Math.min( vaRecord.length, nLimit ),
-  candidates: vaRecord.slice( 0, nLimit )
-}, null, 2 ) + "\n";
+const fsReportJson = ( vaRecord, nLimit, aSummary = {} ) => {
+  const cReported = Math.min( vaRecord.length, nLimit );
+  const sNextCommand = cReported > 0
+    ? "concord spec-conflicts --nextreview"
+    : null;
+  return JSON.stringify({
+    message: cReported > 0
+      ? `Found ${cReported} potential specification conflict candidates. Review them one at a time; run \`${sNextCommand}\`.`
+      : "Found no potential specification conflict candidates in this report.",
+    instructions: sReviewInstructions,
+    summary: { ...aSummary, reported: cReported },
+    candidate_count: cReported,
+    next_command: sNextCommand,
+    candidates: vaRecord.slice( 0, nLimit )
+  }, null, 2 ) + "\n";
+};
 
 const fsNextJson = ( aReview, sStatus ) => {
   const aCandidate = aReview.conflicts.filter(( aRecord ) => aRecord.status === sStatus )
-    .sort( fnCompareRecord )[ 0 ] || null;
+    .sort( sStatus === "open" ? fnCompareLastReviewed : fnCompareRecord )[ 0 ] || null;
   return JSON.stringify({
     instructions: aCandidate
       ? sStatus === "new" ? sNextReviewInstructions : sNextOpenInstructions
       : sStatus === "new"
         ? "No unreviewed candidates remain in the stored review set. Run `concord spec-conflicts` to refresh it after the project changes."
         : "No confirmed unresolved conflicts remain in the stored review set.",
+    next_command: aCandidate
+      ? `concord spec-conflicts --${sStatus === "new" ? "nextreview" : "nextopen"}`
+      : null,
     candidate: aCandidate
   }, null, 2 ) + "\n";
 };
@@ -434,6 +470,7 @@ const fzMark = ( aMark, sDirRoot, fWrite, fWriteErr ) => {
     return 2;
   }
   aRecord.status = aMark.sStatus;
+  aRecord.last_reviewed_at = new Date().toISOString();
   const sProblem = fzWriteReview( sDirRoot, aRead.aReview );
   if( sProblem !== null ){
     fWriteErr( "spec-conflicts: " + sProblem + "\n" );

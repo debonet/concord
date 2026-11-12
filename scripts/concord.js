@@ -6,7 +6,7 @@
 // @implements s-39o0xv@51b819a
 // @implements s-n5ue8s@5c90c01
 // @implements s-mo4ncx@7fcbe1b
-// @implements s-xrmdr0@7ae7c4c
+// @implements s-xrmdr0@5b1d45a
 // @tested-by test/concord-cli.test.js
 "use strict";
 

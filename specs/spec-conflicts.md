@@ -16,6 +16,14 @@ Also we need some sort of mechanism to remember that things you flagged as confl
 
 One way might be to actually generate a conflicts file, give each conflict its own ID (conflict-<hash>), and give it a status, e.g. \"new, open, resolved, incorrect\", where the hash is deterministic so a subsequent detection will land in the same spot"
 > {#m-2875ig} USER 2026-11-11: "Right. Add that. And call it --nextreview. We should also provide a --nextopen so that the model can chug through all the open conflicts and resolve them. Then add documentation for all of this so agents know how to use it."
+> {#m-twjhsf} USER 2026-11-11: "This is less than ideal. We need some way to go on to the next one. Do we need to use dates? Show me the open one that was examined least recently?"
+> {#m-daisy1} USER 2026-11-12: "yes, that is right. But is there a way to encapsulate that loop so that we don't need to rely on the model to loop properly? Perhaps the tools should issue daisy-chain-like instructions, e.g.
+
+concord spec-conflicts returns \"found 250 conflicts, run `concord spec-conflicts --nextreview`\"
+
+then
+
+concord spec-conflicts --nextreview returns the conflict and then a version of your instructions in 2, followed by \"then rerun  run `concord spec-conflicts --nextreview`\""
 
 ## Purpose
 
@@ -26,8 +34,12 @@ Find related specification claims that deserve a human or agent review for contr
 * {#s-1o8t4f <m-9pigsq@0f3a5a3} `concord spec-conflicts` reads the current project's declared specification directories, updates the project's `spec-conflicts.json` review file, and reports ranked candidate pairs.
 * {#s-5holqh <arch} `concord spec-conflicts` accepts `--limit <n>`, a positive integer that caps the number of reported pairs. The default limit is 100 and the maximum is 1000. An invalid or missing value prints usage to standard error and exits 2.
 * {#s-szig7f <m-2875ig@8263862} `concord spec-conflicts --nextreview` returns the highest-ranked stored candidate whose status is `new`, using the report's candidate order, without scanning the project, changing the review file or changing the candidate's status.
-* {#s-w1y11l <m-2875ig@8263862} `concord spec-conflicts --nextopen` returns the highest-ranked stored candidate whose status is `open`, using the report's candidate order, without scanning the project, changing the review file or changing the candidate's status.
+* {#s-w1y11l <m-twjhsf@2456a3c} `concord spec-conflicts --nextopen` returns the stored `open` candidate with the oldest `last_reviewed_at`; a candidate without that field is older than one with a timestamp, and candidates tied on time use the report's candidate order.
 * {#s-tiu5mc <m-2875ig@8263862} Each next command prints a JSON object with the command-specific agent instructions and either the full candidate object under `candidate` or `null` when no candidate of that status remains; an empty result exits 0.
+* {#s-6j3n2p <m-daisy1@a99a2af} The default report includes `next_command`, set to `concord spec-conflicts --nextreview` when it reports candidates and `null` when it reports none.
+* {#s-a7d2ke <m-daisy1@a99a2af} The default JSON message states the number of reported candidates and directs the agent to `next_command`, or says that no candidates were reported.
+* {#s-7kf4xq <m-daisy1@a99a2af} Each next-command response includes `next_command`, set to the same next command when it returns a candidate and `null` when its queue is empty.
+* {#s-hp3m8v <m-daisy1@a99a2af} Instructions for a returned candidate direct the agent to review it, mark it with the appropriate status, and then run the response's `next_command` to continue the same queue.
 * {#s-w3u13c <m-2875ig@8263862} The next commands are standalone forms and cannot be combined with `--human`, `--limit` or `--mark`; invalid combinations print usage to standard error and exit 2.
 * {#s-a5663z <arch} The default report is a JSON object containing agent instructions, a `summary` object and a `candidates` array, and exits 0 when the array is empty or non-empty; candidate pairs are not checker failures and do not refuse a commit.
 * {#s-vf9dot <m-5kab8v@609aa38,arch} Each candidate entry contains its conflict id, status, score, both spec paths, line numbers, marker ids, complete claim texts, shared indexed terms, shared implementation-file and test-unit anchors, and a possible-issue explanation. The explanation describes the shared anchors and indexed terms, and directs the reviewer to compare the claims' scope and conditions; it does not infer contradiction from opposing words alone. Entries are ordered by descending score, then by the first and second claim's path, line and id in ascending order.
@@ -40,10 +52,13 @@ Find related specification claims that deserve a human or agent review for contr
 * {#s-auhz9l <m-5kab8v@609aa38,arch} The project-root `spec-conflicts.json` file stores a versioned list of detected candidate pairs and their statuses.
 * {#s-32qvc5 <m-5kab8v@609aa38,arch} A candidate id is `conflict-` followed by the first 16 lowercase hexadecimal characters of the SHA-256 digest of the canonical JSON encoding of the pair's statement ids and exact claim texts, ordered by statement id and then claim text.
 * {#s-37a70o <m-5kab8v@609aa38,arch} A newly detected candidate is stored with status `new`; each subsequent detection with the same id refreshes its candidate details and score while preserving its status.
+* {#s-s1tiy9 <m-twjhsf@2456a3c} A subsequent detection preserves the candidate's `last_reviewed_at` while refreshing its details and score.
 * {#s-o7y7jj <m-5kab8v@609aa38,arch} Status `new` means unreviewed, `open` means a reviewer confirmed an unresolved conflict, `resolved` means the confirmed conflict was corrected, and `incorrect` means review established that the candidate is not a conflict.
 * {#s-3qdzw2 <arch} `concord spec-conflicts --mark <id> <status>` changes a stored candidate's status to `new`, `open`, `resolved` or `incorrect`; an unknown id or invalid status prints a diagnostic to standard error and exits 2 without changing the file.
+* {#s-e0aj7e <m-twjhsf@2456a3c} Every successful `--mark` also sets that candidate's `last_reviewed_at` to the run's UTC time in ISO 8601 form `YYYY-MM-DDTHH:mm:ss.sssZ`, including when the requested status is the status it already has.
+* {#s-namloz <m-twjhsf@2456a3c} A stored candidate may omit `last_reviewed_at` to represent that no mark has recorded a review; when present it must be a valid UTC timestamp in the specified form.
 * {#s-adm6xl <m-2875ig@8263862} After reviewing a candidate from `--nextreview`, an agent marks it `incorrect` when both claims can be true, or `open` when it confirms an unresolved conflict; it then calls `--nextreview` again to continue.
-* {#s-8utq9p <m-2875ig@8263862} After examining a candidate from `--nextopen`, an agent corrects the owning specifications and marks it `resolved`, marks it `incorrect` if review establishes that the pair is not a conflict, or leaves it `open` and raises it with the human operator when it remains unresolved; an unresolved candidate stops that queue until its status changes.
+* {#s-8utq9p <m-twjhsf@2456a3c} After examining a candidate from `--nextopen`, an agent corrects the owning specifications and marks it `resolved`, marks it `incorrect` if review establishes that the pair is not a conflict, or marks it `open` again and raises it with the human operator when it remains unresolved, which records its review time and lets the queue advance.
 * {#s-nz8p2n <m-2875ig@8263862} If no candidate is returned, the agent has completed that review queue; next commands do not consume candidates, so the agent must mark the current candidate before requesting the next one.
 * {#s-jorvck <arch} Candidates with status `incorrect` or `resolved` remain in the review file and are omitted from reports; a `new` candidate is reported only when the current run detects it, and an `open` candidate remains reportable until resolved.
 * {#s-5mgaed <arch} The review file retains candidates that are no longer detected, and the command rejects a malformed or unsupported review file with a diagnostic and exit code 2 without overwriting it.
