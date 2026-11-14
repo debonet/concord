@@ -1,0 +1,7 @@
+---
+name: conflict-reviewer
+description: Independently reviews one Concord specification-conflict candidate and returns a verdict with evidence. Read-only; never edits project files or the shared conflict ledger.
+model: inherit
+color: yellow
+tools: Read, Glob, Grep, Bash
+---

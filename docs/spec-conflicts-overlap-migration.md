@@ -17,25 +17,39 @@ are consistent.
 
 1. Update Concord and run `concord spec-map` to confirm the project's links
    resolve.
-2. Run `concord spec-conflicts` and read `summary.claims_anchored`,
-   `summary.candidate_pairs` and `summary.reported` before reviewing the
-   candidates. A low anchored-claim count means the tool has little linked
-   material to compare.
+2. Run `concord spec-conflicts`. It prints only the eligible count and
+   deliberately omits candidate
+   details. Use `concord spec-conflicts --human` only when a person explicitly
+   needs to inspect detailed candidate evidence.
 3. Review each candidate's shared implementation files or test units, then
    compare the statements' conditions and required outcomes. Mark a false
    positive `incorrect`; raise a likely unresolved conflict with the human
    operator and mark it `open`.
-4. For a large result, follow `review_dispatch` for the candidates in the
-   current report. The harness launches a fresh context and branch for each
-   candidate; workers compare the claims' scope, conditions and required
-   outcomes, then return their verdict, evidence and changed paths. The calling
-   model records `incorrect` if both claims can be true, `open` if the
-   candidate is a confirmed unresolved conflict, or `resolved` after a fix is
-   integrated. After marking the current report's results, follow
-   `next_command` to continue with candidates outside that batch.
-5. Use `concord spec-conflicts --nextopen` to process confirmed unresolved
-   conflicts one at a time, oldest review timestamp first. Correct the owning
-   specifications, mark each `resolved`, and run the returned `next_command`.
+4. Follow `review_dispatch.loop`. The coordinator repeatedly checks
+   `concord spec-conflicts --count`; while the result is greater than zero, it
+   launches as many generated `conflict-reviewer` agents concurrently as the
+   harness allows and waits for them. Each reviewer runs
+   `concord spec-conflicts --nextreview` at startup. That command atomically
+   timestamps and returns one eligible candidate, so concurrent agents and
+   worktrees receive distinct work. Reviewers return evidence and a verdict
+   without editing project files or the review ledger. The coordinator records
+   completed verdicts with `--mark` and repeats the loop. Each reviewer also
+   returns the startup `remaining_count`; when it is positive, the caller can
+   launch another reviewer immediately. Concurrent workers may make the count
+   stale, and an extra reviewer with no assignment reports that no further
+   conflicts are available at this time. `--count` is the number eligible
+   beyond the selected `--since` window, and no coordinator recheck is needed
+   between reviewer launches.
+5. A reviewer that dies or fails to return leaves the candidate eligible again
+   after its handout timestamp is older than the selected cooldown. The default
+   is one hour; use `--since 0` to retry all `new` candidates immediately once
+   no reviewers are still running. An inconclusive result remains `new` and
+   follows the same cooldown.
+6. Use `concord spec-conflicts --nextopen` to process confirmed unresolved
+   conflicts one at a time, oldest review timestamp first. Run
+   `conflict-reviewer` in a fresh harness context for each candidate. For a
+   confirmed conflict, start the architect/fixer process, mark it `resolved`
+   after integrating the correction, and run the returned `next_command`.
    If a conflict cannot be resolved during the pass, mark it `open` again to
    record the review and advance the queue, then raise it with the human
    operator. If review shows it was not a conflict, mark it `incorrect`.
@@ -43,18 +57,21 @@ are consistent.
 No project setting or spec-link migration is required. Existing review records
 are retained. A stored `new` candidate is reported only when the new anchor
 rules detect it again; a stored `open` candidate remains reported until it is
-resolved. The next-review commands read stored candidates and do not rescan.
-The initial JSON report states how many candidates it found and includes
-`next_command` pointing to `--nextreview`; an empty report says it found no
-candidates and sets `next_command` to `null`. Each `--nextreview` or
-`--nextopen` response includes the command to request the next item in that
-queue, or `null` when the queue is empty. The `review_dispatch` object advises
-the calling model to use the harness's branch or agent mechanism, assigning
-one candidate per fresh context and branch. Candidate reviews can run in
-parallel. Keep review-file updates with the coordinator; merge fixes in
-parallel only when specification, implementation and test paths are disjoint.
-Serialize overlapping or uncertain fixes, then revalidate candidates against
-the updated project state. Every `--mark` records an ISO 8601 UTC `last_reviewed_at`
+resolved. The review commands read stored candidates and do not rescan. The
+default command and `--count` print the eligible count only; neither emits
+candidate ids, texts, paths or anchors. `--count` prints eligible `new` candidates not handed
+out during the selected cooldown; `--nextreview` atomically timestamps and
+returns one eligible candidate. Handout timestamps are shared by worktrees in
+the same repository. `--since <duration>` changes the default one-hour
+cooldown; accepted suffixes are seconds (`s`), minutes (`m`), hours (`h`) and
+days (`d`), and zero makes all `new` candidates eligible. Reviewers do not
+modify the ledger; the coordinator updates it with Concord commands and applies
+confirmed fixes using Concord's architect/fixer process.
+
+**Do not** inspect, parse, or edit `spec-conflicts.json` manually. Use
+`concord spec-conflicts` to generate or display the report, `--count` and
+`--nextreview` for the new-candidate queue, `--nextopen` for confirmed open
+conflicts, and `--mark` to record statuses. Every `--mark` records an ISO 8601 UTC `last_reviewed_at`
 value; `--nextopen`
 returns the oldest reviewed open candidate, with undated legacy records first
 and report order breaking ties. Re-mark an unresolved candidate `open` to

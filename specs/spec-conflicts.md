@@ -25,6 +25,32 @@ then
 
 concord spec-conflicts --nextreview returns the conflict and then a version of your instructions in 2, followed by \"then rerun  run `concord spec-conflicts --nextreview`\""
 > {#m-brnch1} USER 2026-11-12: "But the launch of branches is controlled by the harness so we need to **advise** the model calling spec-conflicts to handle it that way"
+> {#m-rvw001} USER 2026-11-12: "Ok, so do it that way. Produce a conflict-reviewer agent and tell the model to run that agent for each conflict"
+> {#m-qloop1} USER 2026-11-12: "This is not working well.
+
+What should happen is we should provide a tight loop for the main model to run:
+
+while spec-conflicts --count  > 0 {
+  launch as many conflit-reviewer agents as you can in parallel
+}
+
+Then each conflit reviewer should run spec-conflicts --nextreview at its own start
+and --nextreview should automatically tag the conflict it has handed out to prevent the next agent from getting the same one"
+> {#m-hour01} USER 2026-11-12: "You've got to do something to handle agents that die without reponding.
+
+I think it would be much easier to simply update the timestamp when a conflict is handed out via --nextreveiew and only hand out conflicts that are open and haven't been reviewed in the last hour (and provide a --since option)"
+> {#m-docno1} USER 2026-11-12: "When you're done make sure there's a comprehensive set of docs for how to do a conflict review:
+
+1. run spec-conflicts
+2. while (spec-conflicts --count > 0) { launch parallel conflict-reviewers }
+
+with some DO NOTS:
+
+* DO NOT example the conflicts file manually
+* DO NOT modify the conflicts file manually
+etc."
+> {#m-remn01} USER 2026-11-12: "we can do a little better than a while loop: --nextreview can return the remaining count and the conflict-reviewer can return that count to the calling model and say there are likely additional conflicts to review so launch me again, or not"
+> {#m-count1} USER 2026-11-12: "OOOOh. The report should not display anything but the count! We don't want to pollute the context!"
 
 ## Purpose
 
@@ -32,23 +58,38 @@ Find related specification claims that deserve a human or agent review for contr
 
 ## Command
 
-* {#s-1o8t4f <m-9pigsq@0f3a5a3} `concord spec-conflicts` reads the current project's declared specification directories, updates the project's `spec-conflicts.json` review file, and reports ranked candidate pairs.
-* {#s-5holqh <arch} `concord spec-conflicts` accepts `--limit <n>`, a positive integer that caps the number of reported pairs. The default limit is 100 and the maximum is 1000. An invalid or missing value prints usage to standard error and exits 2.
-* {#s-szig7f <m-2875ig@8263862} `concord spec-conflicts --nextreview` returns the highest-ranked stored candidate whose status is `new`, using the report's candidate order, without scanning the project, changing the review file or changing the candidate's status.
+* {#s-1o8t4f <m-9pigsq@0f3a5a3,m-count1@564cabd} `concord spec-conflicts` reads the current project's declared specification directories, updates the project's `spec-conflicts.json` review file, and prints the eligible candidate count.
+* {#s-5holqh <arch,m-count1@564cabd} `concord spec-conflicts` accepts `--limit <n>` only with `--human`; it caps the number of detailed candidate entries printed, defaults to 100 and has a maximum of 1000. An invalid or missing value prints usage to standard error and exits 2. The default count output has no candidate entries, so `--limit` does not apply to it.
+* {#s-szig7f <m-2875ig@8263862,m-qloop1@c2ad5eb,m-hour01@2f53b5b} `concord spec-conflicts --nextreview` atomically timestamps and returns the highest-ranked available stored candidate whose status is `new`, without scanning the project or changing the candidate's review status.
+* {#s-9tz7a2 <m-qloop1@c2ad5eb,m-hour01@2f53b5b} `concord spec-conflicts --count` prints the number of stored `new` candidates whose last handout timestamp is older than the selected `--since` duration, making them eligible for review.
+* {#s-c6h4x1 <m-qloop1@c2ad5eb,m-hour01@2f53b5b} Each `concord spec-conflicts --nextreview` invocation atomically timestamps and returns the highest-ranked available stored candidate whose status is `new`, so concurrent invocations in worktrees of the same Git repository receive different candidates during the cooldown window.
+* {#s-4phc2k <m-hour01@2f53b5b} A candidate handed out by `--nextreview` is unavailable to subsequent `--nextreview` and `--count` calls until its handout timestamp is older than the selected `--since` duration.
+* {#s-vh5m1r <m-hour01@2f53b5b} A `--nextreview` response returns `candidate: null` if no candidate is past the cooldown window.
 * {#s-w1y11l <m-twjhsf@2456a3c} `concord spec-conflicts --nextopen` returns the stored `open` candidate with the oldest `last_reviewed_at`; a candidate without that field is older than one with a timestamp, and candidates tied on time use the report's candidate order.
-* {#s-tiu5mc <m-2875ig@8263862} Each next command prints a JSON object with the command-specific agent instructions and either the full candidate object under `candidate` or `null` when no candidate of that status remains; an empty result exits 0.
-* {#s-6j3n2p <m-daisy1@a99a2af} The default report includes `next_command`, set to `concord spec-conflicts --nextreview` when it reports candidates and `null` when it reports none.
-* {#s-a7d2ke <m-daisy1@a99a2af} The default JSON message states the number of reported candidates and directs the agent to `next_command`, or says that no candidates were reported.
-* {#s-7kf4xq <m-daisy1@a99a2af} Each next-command response includes `next_command`, set to the same next command when it returns a candidate and `null` when its queue is empty.
-* {#s-hp3m8v <m-daisy1@a99a2af} Instructions for a returned candidate direct the agent to review it, mark it with the appropriate status, and then run the response's `next_command` to continue the same queue.
-* {#s-k4z0bs <m-brnch1@431ee76} Each nonempty structured report includes `review_dispatch` instructions telling the calling agent to use its harness to start one fresh agent context and branch per candidate, give each worker the current project state and only its assigned candidate, and have each worker return its verdict, evidence and changed paths.
-* {#s-v7ca4r <m-brnch1@431ee76} `review_dispatch` directs the calling agent to run candidate reviews in parallel, keep review-file updates in the coordinator, and merge fixes only when affected specification, implementation and test paths are disjoint; otherwise it directs the agent to serialize fixes and revalidate candidates against the updated project state.
-* {#s-w3u13c <m-2875ig@8263862} The next commands are standalone forms and cannot be combined with `--human`, `--limit` or `--mark`; invalid combinations print usage to standard error and exit 2.
-* {#s-a5663z <arch} The default report is a JSON object containing agent instructions, a `summary` object and a `candidates` array, and exits 0 when the array is empty or non-empty; candidate pairs are not checker failures and do not refuse a commit.
-* {#s-vf9dot <m-5kab8v@609aa38,arch} Each candidate entry contains its conflict id, status, score, both spec paths, line numbers, marker ids, complete claim texts, shared indexed terms, shared implementation-file and test-unit anchors, and a possible-issue explanation. The explanation describes the shared anchors and indexed terms, and directs the reviewer to compare the claims' scope and conditions; it does not infer contradiction from opposing words alone. Entries are ordered by descending score, then by the first and second claim's path, line and id in ascending order.
-* {#s-jizeit <m-0wens7@4f196fe,arch} The `summary` object gives `claims_considered`, `claims_anchored`, `candidate_pairs` and `reported`; `candidate_pairs` counts distinct newly detected candidates and still-open stored candidates after per-claim selection but before `--limit`, and `reported` is the number of entries in `candidates`.
+* {#s-tiu5mc <m-2875ig@8263862,m-qloop1@c2ad5eb,m-hour01@2f53b5b} Each `--nextreview` response prints a JSON object with command instructions and either the handed-out candidate under `candidate` or `null` when no candidate is past the cooldown; an empty result exits 0.
+* {#s-j5m8r0 <m-qloop1@c2ad5eb,m-hour01@2f53b5b} `--count` prints only the eligible candidate count as a base-10 integer followed by a newline.
+* {#s-6j3n2p <m-daisy1@a99a2af,m-qloop1@c2ad5eb,m-count1@564cabd} The default `concord spec-conflicts` run refreshes the stored candidate set and prints the same eligible count as `--count`; `--count` does not rescan the project.
+* {#s-a7d2ke <m-daisy1@a99a2af,m-qloop1@c2ad5eb,m-count1@564cabd} The default command prints only the eligible candidate count as a base-10 integer followed by a newline; it prints no candidate ids, texts, paths, anchors or orchestration instructions.
+* {#s-7kf4xq <m-daisy1@a99a2af,m-qloop1@c2ad5eb,m-remn01@32d31bf} A `--nextreview` response sets `next_command` to `null` and uses `remaining_count` to guide the coordinator's next reviewer launch; a `--nextopen` response sets it to `concord spec-conflicts --nextopen`; an empty queue sets it to `null`.
+* {#s-hp3m8v <m-daisy1@a99a2af,m-rvw001@64bc6a0,m-qloop1@c2ad5eb,m-remn01@32d31bf} Instructions for a `--nextreview` response direct the reviewer to examine its handed-out candidate and return its verdict and `remaining_count` to the coordinator; a positive count recommends launching another reviewer without requiring a count recheck, and the reviewer does not request another candidate itself.
+* {#s-k4z0bs <m-brnch1@431ee76,m-rvw001@64bc6a0,m-qloop1@c2ad5eb,m-hour01@2f53b5b,m-docno1@965df1d,m-count1@564cabd} Each nonempty `--nextreview` response includes `review_dispatch` naming the `conflict-reviewer` agent and directing the calling agent to use `--count` for the initial queue size, launch up to its available parallel capacity, then launch additional reviewers from returned `remaining_count` values; each reviewer gets its candidate by running `concord spec-conflicts --nextreview` at startup.
+* {#s-6zq3hc <m-rvw001@64bc6a0,m-qloop1@c2ad5eb} `review_dispatch.required` is `true`; it requires the calling agent to use the count-and-launch loop and requires each reviewer to call `--nextreview` before examining a candidate.
+* {#s-v7ca4r <m-brnch1@431ee76,m-rvw001@64bc6a0,m-qloop1@c2ad5eb,m-hour01@2f53b5b} `review_dispatch` directs the calling agent to wait for launched reviewers, record completed verdicts after checking that each result still matches its candidate, and repeat the count-and-launch loop until no candidates are past the cooldown window and all workers have returned.
+* {#s-uw4f3x <m-qloop1@c2ad5eb,m-hour01@2f53b5b} `review_dispatch.loop` gives the exact count command, reviewer startup command and cooldown configuration so the calling agent can run the prescribed parallel loop without constructing commands itself.
+* {#s-ogk3jb <m-qloop1@c2ad5eb,m-hour01@2f53b5b} Handout timestamps are stored in the shared repository root's ignored `tmp` directory, so worktrees of that Git repository use one queue without modifying the Git metadata directory.
+* {#s-6yh3bx <m-qloop1@c2ad5eb,m-hour01@2f53b5b} The `conflict-reviewer` runs `concord spec-conflicts --nextreview` at startup and reviews only the candidate returned by that command; if no candidate is returned, it reports `not_assigned` and stops.
+* {#s-nc4c5e <m-rvw001@64bc6a0} The `conflict-reviewer` agent reports `incorrect` when both claims can be true, `confirmed_conflict` when they cannot, or `inconclusive` when the evidence is insufficient or the candidate is stale; it does not change the review status or edit project files.
+* {#s-hr7p9x <m-rvw001@64bc6a0,m-qloop1@c2ad5eb,m-remn01@32d31bf} The `conflict-reviewer` returns one JSON object with `candidate_id`, `verdict`, `remaining_count`, `reason`, `evidence` and `recommended_next_step` fields; `verdict` is `incorrect`, `confirmed_conflict`, `inconclusive` or `not_assigned`.
+* {#s-w3u13c <m-2875ig@8263862,m-qloop1@c2ad5eb,m-hour01@2f53b5b} `--nextopen` is a standalone form; `--count` and `--nextreview` accept an optional `--since <duration>`; these forms cannot be combined with `--human`, `--limit` or `--mark`; invalid combinations print usage to standard error and exit 2.
+* {#s-49pthq <m-hour01@2f53b5b} The default `--since` duration is `1h`; accepted values are nonnegative integers followed by `s`, `m`, `h` or `d`, and `0` disables the cooldown.
+* {#s-1oc3uc <m-docno1@965df1d} Agents read and update `spec-conflicts.json` only through `concord spec-conflicts` commands; they never inspect or modify the file manually.
+* {#s-9a4t7g <m-remn01@32d31bf} A `--nextreview` response includes `remaining_count`, the number of candidates eligible under the same `--since` window immediately after its handout is timestamped.
+* {#s-u5605f <m-remn01@32d31bf} The `conflict-reviewer` returns its startup `remaining_count` and recommends launching another reviewer when that count is greater than zero; a stale positive count may lead to an extra reviewer that gets no candidate and reports no work available at this time.
+* {#s-a5663z <arch,m-count1@564cabd} The default report prints only the eligible count and exits 0 regardless of that count; candidate pairs are not checker failures and do not refuse a commit.
+* {#s-vf9dot <m-5kab8v@609aa38,arch} A candidate object returned by `--nextreview` or printed by `--human` contains its conflict id, status, score, both spec paths, line numbers, marker ids, complete claim texts, shared indexed terms, shared implementation-file and test-unit anchors, and a possible-issue explanation. The explanation describes the shared anchors and indexed terms, and directs the reviewer to compare the claims' scope and conditions; it does not infer contradiction from opposing words alone. Entries are ordered by descending score, then by the first and second claim's path, line and id in ascending order.
+* {#s-jizeit <m-0wens7@4f196fe,arch} The `--human` report summary gives `claims_considered`, `claims_anchored`, `candidate_pairs` and `reported`; `candidate_pairs` counts distinct newly detected candidates and still-open stored candidates after per-claim selection, and `reported` is the number of detailed entries printed.
 * {#s-k28ggu <m-5kab8v@609aa38} `concord spec-conflicts --human` prints a less structured plain-text report with review instructions and the candidate details, while preserving the same candidate ordering and limit.
-* {#s-oacf60 <m-5kab8v@609aa38,arch} The default report instructs the reviewing agent to examine each candidate's scope and conditions in depth, raise a likely conflict with the human operator, and mark a candidate `incorrect` only after establishing that it is not a conflict.
+* {#s-oacf60 <m-5kab8v@609aa38,arch,m-count1@564cabd} The `--human` report instructs the reviewer to examine each candidate's scope and conditions in depth, raise a likely conflict with the human operator, and mark a candidate `incorrect` only after establishing that it is not a conflict.
 
 ## Review file
 
@@ -60,8 +101,8 @@ Find related specification claims that deserve a human or agent review for contr
 * {#s-3qdzw2 <arch} `concord spec-conflicts --mark <id> <status>` changes a stored candidate's status to `new`, `open`, `resolved` or `incorrect`; an unknown id or invalid status prints a diagnostic to standard error and exits 2 without changing the file.
 * {#s-e0aj7e <m-twjhsf@2456a3c} Every successful `--mark` also sets that candidate's `last_reviewed_at` to the run's UTC time in ISO 8601 form `YYYY-MM-DDTHH:mm:ss.sssZ`, including when the requested status is the status it already has.
 * {#s-namloz <m-twjhsf@2456a3c} A stored candidate may omit `last_reviewed_at` to represent that no mark has recorded a review; when present it must be a valid UTC timestamp in the specified form.
-* {#s-adm6xl <m-2875ig@8263862} After reviewing a candidate from `--nextreview`, an agent marks it `incorrect` when both claims can be true, or `open` when it confirms an unresolved conflict; it then calls `--nextreview` again to continue.
-* {#s-8utq9p <m-twjhsf@2456a3c} After examining a candidate from `--nextopen`, an agent corrects the owning specifications and marks it `resolved`, marks it `incorrect` if review establishes that the pair is not a conflict, or marks it `open` again and raises it with the human operator when it remains unresolved, which records its review time and lets the queue advance.
+* {#s-adm6xl <m-2875ig@8263862,m-rvw001@64bc6a0} After `conflict-reviewer` examines a candidate from `--nextreview`, the calling agent marks it `incorrect` when both claims can be true, or `open` when the reviewer confirms an unresolved conflict; it then follows `next_command` to continue.
+* {#s-8utq9p <m-twjhsf@2456a3c,m-rvw001@64bc6a0} After `conflict-reviewer` examines a candidate from `--nextopen`, the calling agent starts the spec-change process for a confirmed conflict, marks it `resolved` only after the correction is integrated, marks it `incorrect` if review establishes there is no conflict, or marks it `open` again and raises it with the human operator when it remains unresolved.
 * {#s-nz8p2n <m-2875ig@8263862} If no candidate is returned, the agent has completed that review queue; next commands do not consume candidates, so the agent must mark the current candidate before requesting the next one.
 * {#s-jorvck <arch} Candidates with status `incorrect` or `resolved` remain in the review file and are omitted from reports; a `new` candidate is reported only when the current run detects it, and an `open` candidate remains reportable until resolved.
 * {#s-5mgaed <arch} The review file retains candidates that are no longer detected, and the command rejects a malformed or unsupported review file with a diagnostic and exit code 2 without overwriting it.

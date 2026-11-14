@@ -168,6 +168,7 @@ describe( "agents-sync — no project", () => {
 // @proves s-yf8wyo@0128e34
 // @proves s-jlo94e@7c8068c
 // @proves s-ab1xqm@af290be
+// @proves s-k4z0bs@e3c8f5e
 describe( "agents-sync — Concord's own roles", () => {
   test( "with no --roles it reads the roles directory of the Concord "
     + "project it belongs to, whatever its working directory", () => {
@@ -178,6 +179,7 @@ describe( "agents-sync — Concord's own roles", () => {
       fs.readdirSync( sDirRolesOwn ).map(( sName ) => sName.split( "." )[ 0 ])
     )).sort();
     expect( vsRole.length ).toBeGreaterThan( 0 );
+    expect( vsRole ).toContain( "conflict-reviewer" );
     expect( fs.readdirSync( sDirTarget ).sort()).toEqual(
       vsRole.flatMap(( sRole ) => [ sRole + ".md", sRole + ".toml" ])
         .concat([ sFileRecord ]).sort()

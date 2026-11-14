@@ -55,7 +55,7 @@ outside these.
 * {#s-4pyvbb <arch,m-f9xsif@e917ff9} The `concord` entry point dispatches utility names and arguments
   to their respective commands, preserving the caller's working directory
   and exit status. Users invoke utilities as `concord <utility> <arguments>`.
-* {#s-xrmdr0 <arch} `concord spec-conflicts [--human] [--limit <n>]` reports likely related spec-claim pairs for review, `concord spec-conflicts --nextreview` and `--nextopen` return one stored candidate for iterative review as specified by `specs/spec-conflicts.md`, and `concord spec-conflicts --mark <id> <status>` updates a candidate's review status and timestamp.
+* {#s-xrmdr0 <arch,m-count1@564cabd} `concord spec-conflicts [--human [--limit <n>]]` reports the eligible candidate count by default and prints candidate details only in human mode; `--count` prints the eligible count, `--nextreview` atomically timestamps and returns one candidate with `remaining_count`, `--since <duration>` selects the cooldown, `--nextopen` returns an open candidate, and `--mark <id> <status>` updates a candidate's review status and timestamp as specified by `specs/spec-conflicts.md`.
 * {#s-nur3h4 <arch,m-f9xsif@e917ff9} The published npm package exposes only the `concord`
   executable; utility files in `bin/` are implementation entry points, not
   separately installed npm commands.
@@ -74,7 +74,7 @@ outside these.
 
 ## Concord's own settings
 
-* {#g-hmmu3p <arch for=main,architect,fixer via=prompt} Declare Concord's own name, suite, language readings, read and ignored directories, record file, observations file (`observations.md`), rules files (`AGENTS.md`, `orchestration.md`, `roles/architect.md`, `roles/fixer.md`), coverage run and review file in `concord.json`; keep those values aligned with this spec.
+* {#g-hmmu3p <arch for=main,architect,fixer via=prompt} Declare Concord's own name, suite, language readings, read and ignored directories, record file, observations file (`observations.md`), rules files (`AGENTS.md`, `orchestration.md`, `roles/architect.md`, `roles/fixer.md`, `roles/conflict-reviewer.md`), coverage run and review file in `concord.json`; keep those values aligned with this spec.
 
 ## Packages and Dependencies
 

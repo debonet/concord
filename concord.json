@@ -9,7 +9,8 @@
   "record_file": "test/interactive-passes.jsonl",
   "observations_file": "observations.md",
   "rules_files": [
-    "AGENTS.md", "orchestration.md", "roles/architect.md", "roles/fixer.md"
+    "AGENTS.md", "orchestration.md", "roles/architect.md", "roles/fixer.md",
+    "roles/conflict-reviewer.md"
   ],
   "coverage": {
     "runs": [

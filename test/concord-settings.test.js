@@ -873,7 +873,8 @@ test( "concord-settings — Concord's own settings file declares Concord's "
     record_file: "test/interactive-passes.jsonl",
     observations_file: "observations.md",
     rules_files: [
-      "AGENTS.md", "orchestration.md", "roles/architect.md", "roles/fixer.md"
+      "AGENTS.md", "orchestration.md", "roles/architect.md", "roles/fixer.md",
+      "roles/conflict-reviewer.md"
     ],
     coverage: {
       runs: [{ name: "root", directory: "." }],
@@ -961,7 +962,8 @@ test( "concord-settings — Concord's root AGENTS.md names its installed "
     "specs/spec-map-interactive.md",
     "specs/spec-coverage.md",
     "roles/architect.md",
-    "roles/fixer.md"
+    "roles/fixer.md",
+    "roles/conflict-reviewer.md"
   ].forEach(( sPath ) => expect( sAgents ).toContain( sPath ));
   fAssertProjectGate();
 });
@@ -984,11 +986,32 @@ test( "concord-settings — each role, architect and fixer among them, has its "
   const vsRole = Array.from( new Set(
     vsName.map(( sName ) => sName.split( "." )[ 0 ])
   ));
-  expect( vsRole ).toEqual( expect.arrayContaining([ "architect", "fixer" ]));
+  expect( vsRole ).toEqual( expect.arrayContaining([
+    "architect", "fixer", "conflict-reviewer"
+  ]));
   expect( vsName ).toEqual( vsRole.flatMap(( sRole ) => [
     sRole + ".claude-frontmatter", sRole + ".codex-frontmatter", sRole + ".md"
   ]).sort());
   fAssertProjectGate();
+});
+
+// @proves s-nc4c5e@50edcb3
+// @proves s-hr7p9x@ac3b457
+// @proves s-6yh3bx@ff3c0c2
+// @proves s-1oc3uc@ccf72fb
+// @proves s-u5605f@d947cd4
+test( "concord-settings — conflict-reviewer is a read-only, one-candidate "
+  + "agent with a structured verdict", () => {
+  const sRole = fsRepoText( "roles/conflict-reviewer.md" );
+  expect( sRole ).toMatch( /exactly one potential specification conflict/i );
+  expect( sRole ).toMatch( /run `concord spec-conflicts --nextreview`/i );
+  expect( sRole ).toMatch( /read-only/i );
+  expect( sRole ).toMatch( /do not edit project files/i );
+  expect( sRole ).toMatch( /inspect or edit `spec-conflicts\.json` manually/i );
+  expect( sRole ).toMatch( /remaining_count/i );
+  expect( sRole ).toMatch( /"verdict": "incorrect \| confirmed_conflict \| inconclusive \| not_assigned"/ );
+  [ "candidate_id", "verdict", "remaining_count", "reason", "evidence", "recommended_next_step" ]
+    .forEach(( sField ) => expect( sRole ).toContain( `"${sField}"` ));
 });
 
 // @proves s-s4l32i@b41f304

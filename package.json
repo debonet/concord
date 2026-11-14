@@ -1,6 +1,6 @@
 {
   "name": "@debonet/concord",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "bin": {
     "concord": "bin/concord"
   },

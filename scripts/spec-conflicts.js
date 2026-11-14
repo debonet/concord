@@ -1,48 +1,62 @@
-// @implements s-1o8t4f@c246139
+// @implements s-1o8t4f@0a2987d
 // @implements s-32qvc5@b756ab8
 // @implements s-37a70o@fd48021
 // @implements s-3qdzw2@f9d8f24
 // @implements s-432gno@4a3e738
 // @implements s-490dus@bed4927
-// @implements s-5holqh@7e67d8d
+// @implements s-5holqh@f911567
 // @implements s-5mgaed@94f4323
 // @implements s-9zm2bs@bb16fa3
-// @implements s-a5663z@b3e9695
-// @implements s-szig7f@7368473
+// @implements s-a5663z@b17746a
+// @implements s-szig7f@2053627
 // @implements s-w1y11l@e42db74
-// @implements s-tiu5mc@7841afe
-// @implements s-w3u13c@ad66a44
-// @implements s-adm6xl@7d5d886
-// @implements s-8utq9p@04407bc
+// @implements s-tiu5mc@5061d9b
+// @implements s-w3u13c@1f1013b
+// @implements s-adm6xl@3131120
+// @implements s-8utq9p@2aa3077
 // @implements s-nz8p2n@bcf0bd3
 // @implements s-e0aj7e@393ccd5
 // @implements s-namloz@75976c7
 // @implements s-s1tiy9@c8cf9e3
-// @implements s-6j3n2p@49836bc
-// @implements s-a7d2ke@bfad499
-// @implements s-7kf4xq@6e78f3d
-// @implements s-hp3m8v@accf4c0
-// @implements s-k4z0bs@ebeecd7
-// @implements s-v7ca4r@434b185
+// @implements s-6j3n2p@f716218
+// @implements s-a7d2ke@9dbc467
+// @implements s-7kf4xq@50a7265
+// @implements s-hp3m8v@bfec02c
+// @implements s-k4z0bs@e3c8f5e
+// @implements s-6zq3hc@6004ec4
+// @implements s-v7ca4r@403c0f3
+// @implements s-9tz7a2@cb492ec
+// @implements s-c6h4x1@77b4ace
+// @implements s-4phc2k@abbaaf8
+// @implements s-vh5m1r@2739781
+// @implements s-j5m8r0@d0d3d6c
+// @implements s-uw4f3x@b5190fe
+// @implements s-ogk3jb@8fa2e26
+// @implements s-9a4t7g@7ad74c8
+// @implements s-u5605f@d947cd4
+// @implements s-49pthq@660fcd0
+// @implements s-1oc3uc@ccf72fb
+// @implements s-nc4c5e@50edcb3
+// @implements s-hr7p9x@ac3b457
 // @implements s-auhz9l@5187048
 // @implements s-b97pxb@a56c6b2
 // @implements s-g0vx2v@a2e1989
 // @implements s-iib1an@2174339
 // @implements s-iixdd3@05f8734
 // @implements s-j84nl9@3646653
-// @implements s-jizeit@2ade316
+// @implements s-jizeit@d73f506
 // @implements s-jorvck@057c853
 // @implements s-k28ggu@d0b23b6
 // @implements s-l1ejuq@74290c0
 // @implements s-mdie6i@20387f2
 // @implements s-o3lq0h@8b8de27
 // @implements s-o7y7jj@8aa8ddb
-// @implements s-oacf60@11a8228
+// @implements s-oacf60@4479a31
 // @implements s-of7uc3@d1614af
 // @implements s-q61vzh@596af51
 // @implements s-rh8mff@322b7f7
 // @implements s-run5j3@4f313fd
-// @implements s-vf9dot@6795317
+// @implements s-vf9dot@ee01a4a
 // @implements s-wroxli@a1038eb
 // @implements s-x5iowz@1df7600
 // @implements s-y6b91m@5d7f2ee
@@ -50,6 +64,7 @@
 "use strict";
 
 const crypto = require( "crypto" );
+const childProcess = require( "child_process" );
 const fs = require( "fs" );
 const path = require( "path" );
 
@@ -62,15 +77,32 @@ const cReportMax = 1000;
 const cSharedTermMax = 8;
 const sReviewFile = "spec-conflicts.json";
 const sReviewMessage = "The following is a list of potential specification conflicts. Examine each pair in depth, compare its scope, conditions, and required outcomes, and raise any likely conflict with the human operator.";
-const sReviewInstructions = "Use `review_dispatch` and the harness's branch or agent mechanism to review candidates in fresh contexts. The score ranks shared wording and does not establish a contradiction. Review the claims' scope, conditions and required outcomes. Mark a candidate incorrect only after review establishes that both claims can be true; mark a confirmed unresolved conflict open and raise it with the human operator. Mark it resolved after correcting the conflict. Follow `next_command` to continue the queue.";
-const sNextReviewInstructions = "Use `review_dispatch` and the harness's branch or agent mechanism to review this candidate in a fresh context. Review both claims and their shared context. If both claims can be true, mark this candidate incorrect; if they conflict, raise the issue with the human operator and mark it open. Then run the response's `next_command` to review the next candidate.";
-const sNextOpenInstructions = "Use `review_dispatch` and the harness's branch or agent mechanism to review this candidate in a fresh context. Correct the owning specifications using the project's spec-change process. Mark it resolved only after the conflict is corrected. If review shows it is not a conflict, mark it incorrect. If it remains unresolved, mark it open again to record that review, raise it with the human operator, and then run the response's `next_command` to review the next open conflict.";
+const sReviewInstructions = "Use `review_dispatch` as a coordinator loop: while `concord spec-conflicts --count` is greater than zero, launch as many conflict-reviewer agents in parallel as the harness allows, then wait for their results, record verdicts with --mark, and repeat. Each reviewer must get its candidate by running `concord spec-conflicts --nextreview` as its first review action. Unanswered candidates become available again after the --since cooldown. The score ranks shared wording and does not establish a contradiction.";
+const sNextReviewInstructions = "This candidate was handed out to you. Examine it in the current project context and return one verdict to the coordinator. Do not mark it or request another candidate. If you do not return, the candidate becomes available again after the --since cooldown.";
+const sNextOpenInstructions = "Run the named `conflict-reviewer` agent for this candidate using the harness in a fresh context and branch. If it confirms a conflict, start the architect/fixer process to correct the owning specifications and mark it resolved only after the correction is integrated. If review establishes that there is no conflict, mark it incorrect. If it remains unresolved, mark it open again to record that review, raise it with the human operator, and then run the response's `next_command` to review the next open conflict.";
 const aReviewDispatch = {
-  instructions: "Use the calling harness's branch or agent mechanism; Concord does not launch workers.",
-  unit_of_work: "Assign one candidate to each fresh agent context and branch based on the current project state. Give the worker only its candidate and the relevant current project context.",
-  parallelism: "Review candidates in parallel. Merge fixes in parallel only when their affected specification, implementation, and test paths are disjoint. If paths overlap or independence is uncertain, serialize fixes and revalidate each candidate against the updated project state.",
-  worker_report: [ "candidate_id", "verdict", "evidence", "changed_paths", "branch_or_patch" ],
-  coordination: "Workers do not update spec-conflicts.json. The calling agent integrates results and records each verdict with concord spec-conflicts --mark. Mark a conflict resolved only after its fix is integrated."
+  required: true,
+  agent: "conflict-reviewer",
+  count_command: "concord spec-conflicts --count",
+  reviewer_start_command: "concord spec-conflicts --nextreview",
+  remaining_count_field: "remaining_count",
+  since_default: "1h",
+  since_option: "--since <duration>",
+  instructions: "Concord does not launch agents. The calling model starts with count_command and launches reviewers up to its harness parallel limit. Each conflict-reviewer must run reviewer_start_command at startup to atomically timestamp and receive one unique candidate. The reviewer returns remaining_count and recommends another launch when positive. A stale positive count is safe: an extra reviewer can receive no candidate and report that no more work is available now. Never inspect or edit spec-conflicts.json manually; use Concord commands for reports and status changes.",
+  unit_of_work: "One conflict-reviewer agent receives exactly one candidate at startup and reviews it in its own fresh context and branch.",
+  parallelism: "Launch as many reviewers concurrently as the harness allows while count_command is greater than zero, then wait for all launched reviewers. Reviewers do not edit project files or the review ledger.",
+  loop: [
+    "Run concord spec-conflicts --count.",
+    "While the count is greater than zero, launch up to the harness parallel limit of conflict-reviewer agents concurrently.",
+    "Each reviewer runs concord spec-conflicts --nextreview at startup, receives one candidate, reviews it and returns its verdict.",
+    "Wait for all launched reviewers; record completed verdicts with concord spec-conflicts --mark <id> <status>.",
+    "For failed or inconclusive reviews, leave the candidate unchanged; its timestamp makes it available again after the selected --since duration.",
+    "When a reviewer returns a positive remaining_count, launch another reviewer if harness capacity is available. Wait for all active reviewers before finishing; a reviewer that gets no candidate reports that no work is available now."
+  ],
+  recovery: "A candidate with no returned review becomes available again after the --since duration; the default cooldown is one hour.",
+  parallelism_note: "The harness owns agent creation and its concurrency limit; Concord timestamps each handout to prevent duplicate assignments during the cooldown.",
+  worker_report: [ "candidate_id", "verdict", "reason", "evidence", "recommended_next_step" ],
+  coordination: "Workers do not edit project files or update spec-conflicts.json. The coordinator checks that each result still matches its claimed candidate and records verdicts with --mark."
 };
 const reCamelBoundary = /([a-z0-9])([A-Z])/g;
 const reToken = /[\p{L}\p{N}]+/gu;
@@ -190,9 +222,15 @@ const faCandidatePairs = ( vaClaimInput ) => {
 };
 
 const faOptions = ( vsArg ) => {
-  if( vsArg[ 0 ] === "--nextreview" || vsArg[ 0 ] === "--nextopen" ){
-    if( vsArg.length !== 1 ){ return null;}
-    return { sNext: vsArg[ 0 ] === "--nextreview" ? "new" : "open" };
+  if([ "--nextreview", "--nextopen", "--count" ].includes( vsArg[ 0 ])){
+    if( vsArg[ 0 ] === "--nextopen" ){ return vsArg.length === 1 ? { sNext: "open" } : null; }
+    if( vsArg.length === 1 ){ return vsArg[ 0 ] === "--nextreview" ? { sNext: "new", nSince: 3600000 } : { sMode: "count", nSince: 3600000 }; }
+    if( vsArg.length === 3 && vsArg[ 1 ] === "--since" ){
+      const nSince = fnDurationMs( vsArg[ 2 ] );
+      if( nSince === null ){ return null; }
+      return vsArg[ 0 ] === "--nextreview" ? { sNext: "new", nSince } : { sMode: "count", nSince };
+    }
+    return null;
   }
   if( vsArg[ 0 ] === "--mark" ){
     if( vsArg.length !== 3 ){
@@ -215,7 +253,17 @@ const faOptions = ( vsArg ) => {
       return null;
     }
   }
+  if( bLimit && !bHuman ){ return null; }
   return { nLimit, bHuman };
+};
+
+const fnDurationMs = ( sDuration ) => {
+  const aMatch = /^(\d+)(s|m|h|d)$/.exec( sDuration );
+  if( sDuration === "0" ){ return 0; }
+  if( !aMatch ){ return null; }
+  const nMultiplier = { s: 1000, m: 60000, h: 3600000, d: 86400000 }[ aMatch[ 2 ]];
+  const nMs = Number( aMatch[ 1 ]) * nMultiplier;
+  return Number.isSafeInteger( nMs ) ? nMs : null;
 };
 
 const fsClaimForMarker = ( aMarker ) => (
@@ -421,23 +469,7 @@ const fsReportHuman = ( vaRecord, nLimit, aSummary = {} ) => {
   ].join( "\n" )).join( "\n\n" ) + "\n";
 };
 
-const fsReportJson = ( vaRecord, nLimit, aSummary = {} ) => {
-  const cReported = Math.min( vaRecord.length, nLimit );
-  const sNextCommand = cReported > 0
-    ? "concord spec-conflicts --nextreview"
-    : null;
-  return JSON.stringify({
-    message: cReported > 0
-      ? `Found ${cReported} potential specification conflict candidates. Review them one at a time; run \`${sNextCommand}\`.`
-      : "Found no potential specification conflict candidates in this report.",
-    instructions: sReviewInstructions,
-    review_dispatch: cReported > 0 ? aReviewDispatch : null,
-    summary: { ...aSummary, reported: cReported },
-    candidate_count: cReported,
-    next_command: sNextCommand,
-    candidates: vaRecord.slice( 0, nLimit )
-  }, null, 2 ) + "\n";
-};
+const fsReportCount = ( nAvailable ) => String( nAvailable ) + "\n";
 
 const fsNextJson = ( aReview, sStatus ) => {
   const aCandidate = aReview.conflicts.filter(( aRecord ) => aRecord.status === sStatus )
@@ -456,9 +488,117 @@ const fsNextJson = ( aReview, sStatus ) => {
   }, null, 2 ) + "\n";
 };
 
+const fsClaimStorePath = ( sDirRoot ) => {
+  if( !fs.existsSync( path.join( sDirRoot, ".git" ))){
+    return path.join( sDirRoot, "tmp", "concord-spec-conflict-claims.json" );
+  }
+  try {
+    const sGitCommon = childProcess.execFileSync(
+      "git", [ "rev-parse", "--git-common-dir" ], { cwd: sDirRoot, encoding: "utf8" }
+    ).trim();
+    const sCommonRoot = path.dirname( path.resolve( sDirRoot, sGitCommon ));
+    return path.join( sCommonRoot, "tmp", "concord-spec-conflict-claims.json" );
+  } catch( e ){
+    return path.join( sDirRoot, "tmp", "concord-spec-conflict-claims.json" );
+  }
+};
+
+const faReadClaims = ( sPath ) => {
+  if( !fs.existsSync( sPath )){ return {} ;}
+  const aClaims = JSON.parse( fs.readFileSync( sPath, "utf8" ));
+  if( aClaims === null || typeof aClaims !== "object" || Array.isArray( aClaims )
+    || Object.values( aClaims ).some(( sStamp ) => typeof sStamp !== "string" || Number.isNaN( Date.parse( sStamp )))){
+    throw new Error( "claim queue has an invalid format" );
+  }
+  return aClaims;
+};
+
+const fzWithClaimLock = ( sPath, fAction ) => {
+  const sLock = sPath + ".lock";
+  fs.mkdirSync( path.dirname( sPath ), { recursive: true });
+  let bLocked = false;
+  for( let nTry = 0; nTry < 200; nTry++ ){
+    try { fs.mkdirSync( sLock ); bLocked = true; break; }
+    catch( e ){
+      if( e.code !== "EEXIST" ){ throw e; }
+      Atomics.wait( new Int32Array( new SharedArrayBuffer( 4 )), 0, 0, 10 );
+    }
+  }
+  if( !bLocked ){ throw new Error( "timed out waiting for the shared claim queue lock" ); }
+  try { return fAction(); }
+  finally { fs.rmdirSync( sLock ); }
+};
+
+const fzWriteClaims = ( sPath, aClaims ) => {
+  const sTempPath = sPath + ".tmp-" + process.pid;
+  fs.writeFileSync( sTempPath, JSON.stringify( aClaims, null, 2 ) + "\n" );
+  fs.renameSync( sTempPath, sPath );
+};
+
+const fzClaimNext = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
+  const sClaimPath = fsClaimStorePath( sDirRoot );
+  try {
+    const aResult = fzWithClaimLock( sClaimPath, () => {
+      const aClaims = faReadClaims( sClaimPath );
+      const nCutoff = Date.now() - nSince;
+      const aCandidate = aReview.conflicts.filter(( aRecord ) => (
+        aRecord.status === "new"
+        && ( !aClaims[ aRecord.id ] || Date.parse( aClaims[ aRecord.id ]) <= nCutoff )
+      )).sort( fnCompareRecord )[ 0 ] || null;
+      const sHandedOutAt = aCandidate ? new Date().toISOString() : null;
+      if( aCandidate ){
+        aClaims[ aCandidate.id ] = sHandedOutAt;
+        fzWriteClaims( sClaimPath, aClaims );
+      }
+      const nRemaining = aReview.conflicts.filter(( aRecord ) => aRecord.status === "new"
+        && ( !aClaims[ aRecord.id ] || Date.parse( aClaims[ aRecord.id ]) <= nCutoff )).length;
+      return { aCandidate, sHandedOutAt, nRemaining };
+    });
+    fWrite( JSON.stringify({
+      instructions: aResult.aCandidate
+        ? sNextReviewInstructions + ( aResult.nRemaining > 0
+          ? " There are likely additional conflicts to review; launch another conflict-reviewer if capacity is available."
+          : " There are no additional candidates eligible right now." )
+        : "There are no additional conflicts to review at this time. This reviewer has no candidate assigned.",
+      review_dispatch: aResult.aCandidate ? aReviewDispatch : null,
+      next_command: null,
+      remaining_count: aResult.nRemaining,
+      handed_out_at: aResult.sHandedOutAt,
+      candidate: aResult.aCandidate
+    }, null, 2 ) + "\n" );
+    return 0;
+  } catch( e ){
+    fWriteErr( "spec-conflicts: could not hand out candidate: " + e.message + "\n" );
+    return 2;
+  }
+};
+
+const fzCount = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
+  try {
+    const cAvailable = fnCountAvailable( sDirRoot, aReview, nSince );
+    fWrite( String( cAvailable ) + "\n" );
+    return 0;
+  } catch( e ){
+    fWriteErr( "spec-conflicts: could not read claim queue: " + e.message + "\n" );
+    return 2;
+  }
+};
+
+const fnCountAvailable = ( sDirRoot, aReview, nSince ) => {
+  const sClaimPath = fsClaimStorePath( sDirRoot );
+  return fzWithClaimLock( sClaimPath, () => {
+    const aClaims = faReadClaims( sClaimPath );
+    const nCutoff = Date.now() - nSince;
+    return aReview.conflicts.filter(( aRecord ) => aRecord.status === "new"
+      && ( !aClaims[ aRecord.id ] || Date.parse( aClaims[ aRecord.id ]) <= nCutoff )).length;
+  });
+};
+
 const sUsage = "usage: concord spec-conflicts [--human] [--limit <n>]\n"
-  + "       concord spec-conflicts --nextreview\n"
+  + "       concord spec-conflicts --count [--since <duration>]\n"
+  + "       concord spec-conflicts --nextreview [--since <duration>]\n"
   + "       concord spec-conflicts --nextopen\n"
+  + "       duration: nonnegative integer with s, m, h or d suffix; default 1h\n"
   + "       concord spec-conflicts --mark <id> <new|open|resolved|incorrect>\n";
 
 const fzMark = ( aMark, sDirRoot, fWrite, fWriteErr ) => {
@@ -508,8 +648,14 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
     return 2;
   }
   if( aOptions.sNext ){
+    if( aOptions.sNext === "new" ){
+      return fzClaimNext( sDirRoot, aReviewRead.aReview, aOptions.nSince, fWrite, fWriteError );
+    }
     fWrite( fsNextJson( aReviewRead.aReview, aOptions.sNext ));
     return 0;
+  }
+  if( aOptions.sMode === "count" ){
+    return fzCount( sDirRoot, aReviewRead.aReview, aOptions.nSince, fWrite, fWriteError );
   }
   const { ConfigReader } = require( "./concord-config.js" );
   const { TreeReader, faModel } = require( "./spec-map.js" );
@@ -544,14 +690,21 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
     fWriteError( "spec-conflicts: " + sProblem + "\n" );
     return 2;
   }
-  fWrite( aOptions.bHuman
-    ? fsReportHuman( vaReport, aOptions.nLimit, aSummary )
-    : fsReportJson( vaReport, aOptions.nLimit, aSummary )
-  );
+  if( aOptions.bHuman ){
+    fWrite( fsReportHuman( vaReport, aOptions.nLimit, aSummary ));
+  } else {
+    try {
+      fWrite( fsReportCount( fnCountAvailable( sDirRoot, aUpdated, 3600000 )));
+    } catch( e ){
+      fWriteError( "spec-conflicts: could not count eligible candidates: " + e.message + "\n" );
+      return 2;
+    }
+  }
   return 0;
 };
 
 module.exports = {
-  fzMain, faCandidatePairs, fvsToken, fsReportJson, fsReportHuman,
-  fsConflictId, faOptions, faReadReview, faMergeCandidates, fsNextJson
+  fzMain, faCandidatePairs, fvsToken, fsReportCount, fsReportHuman,
+  fsConflictId, faOptions, faReadReview, faMergeCandidates, fsNextJson,
+  fsClaimStorePath
 };
