@@ -1,6 +1,6 @@
 # Migrating to a gate that refuses every dangling pointer
 
-This guide is for projects that adopted ConcordSTC while its gate refused a
+This guide is for projects that adopted Concord while its gate refused a
 dangling pointer target, an entry of list (22), only when the pointer sat
 in a spec declaring `Statement ids: complete`. The rule has always said
 that every entry of (22) refuses a commit

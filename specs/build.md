@@ -38,7 +38,7 @@ outside these.
   bin/                       the concord entry point and utility commands:
                              spec-map, spec-coverage, spec-conflicts,
                              agents-sync, concord-hook, link-propose,
-                             concord-init
+                             concord-init, concord-migrate
   scripts/                   the modules behind the commands, and the
                              worklist page template
   specs/                     Concord's specs
@@ -55,6 +55,9 @@ outside these.
 * {#s-4pyvbb <arch,m-f9xsif@e917ff9} The `concord` entry point dispatches utility names and arguments
   to their respective commands, preserving the caller's working directory
   and exit status. Users invoke utilities as `concord <utility> <arguments>`.
+* {#s-0scrxa <arch,m-la578k@404c7f8} `concord migrate` dispatches to the project-name migration
+  utility specified in `specs/concord-process.md`, preserving its working
+  directory, standard streams and exit status.
 * {#s-xrmdr0 <arch,m-count1@564cabd} `concord spec-conflicts [--human [--limit <n>]]` reports the eligible candidate count by default and prints candidate details only in human mode; `--count` prints the eligible count, `--nextreview` atomically timestamps and returns one candidate with `remaining_count`, `--since <duration>` selects the cooldown, `--nextopen` returns an open candidate, and `--mark <id> <status>` updates a candidate's review status and timestamp as specified by `specs/spec-conflicts.md`.
 * {#s-nur3h4 <arch,m-f9xsif@e917ff9} The published npm package exposes only the `concord`
   executable; utility files in `bin/` are implementation entry points, not

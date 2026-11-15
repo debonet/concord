@@ -1,6 +1,6 @@
 # Migrating an existing project to reverse links
 
-This guide is for projects that adopted ConcordSTC before the reverse-link
+This guide is for projects that adopted Concord before the reverse-link
 model. Keep the existing specs and tests; migrate the links in small steps so
 you can compare the checker reports before and after.
 

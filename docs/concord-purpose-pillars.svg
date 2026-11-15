@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 290" role="img" aria-labelledby="title desc">
-  <title id="title">Four guarantees of ConcordSTC</title>
+  <title id="title">Four guarantees of Concord</title>
   <desc id="desc">Preservation: human intent and decisions become durable specs with their origins recorded; new work starts from intent, not guesses. Verification: tests point to statements they verify, code points to what it implements and tests that check it, and stale links or missing evidence surface. Comprehensiveness: coverage exposes specs lacking tests or code, and code lacking spec or test links, making rogue code visible. Consistency: agents update specs before implementation, and the checker and commit gate catch drift as the project changes.</desc>
   <defs>
     <filter id="shadow" x="-15%" y="-15%" width="130%" height="145%">

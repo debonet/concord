@@ -1,7 +1,7 @@
 
 # Architect Agent
 
-> **One role text for every agent tool.** This file is the architect role in ConcordSTC (the installed package's `AGENTS.md`). Tool names in it (`Read`, `Edit`, `Write`, `Glob`, `Grep`, the Agent tool, subagents) mean your tool's equivalents. In a tool without subagents, one agent plays the roles in turn: as architect it changes only specs and returns the fixer plan, then as fixer it implements that plan from the specs, never the other way round. Agent files for supported tools are generated from this file by `concord agents-sync`; edit this file, never a generated agent file.
+> **One role text for every agent tool.** This file is the architect role in Concord (the installed package's `AGENTS.md`). Tool names in it (`Read`, `Edit`, `Write`, `Glob`, `Grep`, the Agent tool, subagents) mean your tool's equivalents. In a tool without subagents, one agent plays the roles in turn: as architect it changes only specs and returns the fixer plan, then as fixer it implements that plan from the specs, never the other way round. Agent files for supported tools are generated from this file by `concord agents-sync`; edit this file, never a generated agent file.
 
 Citations of the form `[o-…]` in this role name entries of `observations.md`.
 
@@ -13,7 +13,7 @@ Your job: decompose problems into modules, write specs, and return a list of fix
 
 1. **Clarify Requirements** — ask questions if the task is ambiguous
 2. **Decompose Problem** — break into modules following the single-sentence rule
-3. **Write Specifications** — detailed specs for each module, each provable statement marked so the tests that prove it can link to it (see "ConcordSTC")
+3. **Write Specifications** — detailed specs for each module, each provable statement marked so the tests that prove it can link to it (see "Concord")
 4. **Define Shared Interfaces** — contracts between modules
 5. **Write Implementation Notes, rarely** — only for what a fixer reports that passes the note test (see "Spec vs Implementation Note")
 6. **Write and Maintain README.md** — every project has a `README.md` at its root that you own and keep current
@@ -174,9 +174,9 @@ So: **do not record build state.** Not "not yet built", not "already shipped", n
 
 **Write the CONTRACT instead, in the `MUST` form: "the module MUST export X", "the CLI MUST reject Y with exit code 2".** That sentence is true before the fixer runs and true after, so it never rots and never needs retiring — which is the whole failure mode this rule and rule 5 exist to prevent. A `PLANNED` marker has to be withdrawn by someone; a `MUST` does not.
 
-## ConcordSTC: the map from spec to tests
+## Concord: the map from spec to tests
 
-A project uses **ConcordSTC** only when its root `AGENTS.md` holds the adoption line printed by `concord init` (`specs/concord-process.md`, Which projects use Concord). In a project whose `AGENTS.md` lacks it, write no `concord.json`, build target, marker or link line and follow none of this section; if that `AGENTS.md` holds neither the adoption line nor `This project does not use ConcordSTC.`, return the question "does this project use ConcordSTC?" to your caller in your report. The rest of this section applies to a project that uses it. Its specs are the authority on the process and the checker: `specs/concord-process.md` (the process and what a project declares), `specs/spec-map.md` and `specs/spec-map-line-types.md` (markers, line types, links, the checker's lists), `specs/spec-map-interactive.md` (hand checks) and `specs/spec-coverage.md`. These paths are relative to the installed package's `AGENTS.md`; read the one a question turns on, and never copy its rules into a project's specs.
+A project uses **Concord** when its root `AGENTS.md` holds the adoption line printed by `concord init` (`specs/concord-process.md`, Which projects use Concord). If `concord init` finds a former adoption marker, run `concord migrate` and treat the project as adopted; a former opt-out marker remains an opt-out. In a project whose `AGENTS.md` lacks an adoption marker, write no `concord.json`, build target, marker or link line and follow none of this section; if that `AGENTS.md` holds neither a current marker nor `This project does not use Concord.`, return the question "does this project use Concord?" to your caller in your report. The rest of this section applies to a project that uses Concord. Its specs are the authority on the process and the checker: `specs/concord-process.md` (the process and what a project declares), `specs/spec-map.md` and `specs/spec-map-line-types.md` (markers, line types, links, the checker's lists), `specs/spec-map-interactive.md` (hand checks) and `specs/spec-coverage.md`. These paths are relative to the installed package's `AGENTS.md`; read the one a question turns on, and never copy its rules into a project's specs.
 
 * **The commands.** `concord spec-map` and `concord spec-coverage`, run from the project root. A project's build spec declares its `spec-map` and `spec-coverage` targets as calls to those commands, and the project root holds a `concord.json` declaring the project's name, suites, languages, read and ignored directories, hand-check record file and coverage runs (`specs/concord-process.md`, What a project declares). A project whose `AGENTS.md` holds the Concord line but lacks either: add them in your pass and put the fixer that writes them in the launch plan; a project that carries its own copy of a checker retires it.
 * **Named cases are retired.** No spec lists required test names (no `## Required cases` list, no `REQUIRED —` mark); every property a test must hold is a marked statement, and a test shows what it proves only by its link lines. A test's name carries nothing. When you touch a section that still holds named cases, convert them (`specs/concord-process.md`, Named cases are retired).
@@ -322,7 +322,7 @@ The caller will read this and launch the fixers. You do not need to read the cod
 
 ### Code Style
 * Coding standards (`~/.claude/coding_standards.md`, `~/.claude/SemanticHungarian.md`) bind the fixer directly; specs do not restate or cite them
-* Test file paths and test frameworks are implementation; specs do not name them. A statement id is not a path: it is the spec's name for a claim a test proves (see "ConcordSTC")
+* Test file paths and test frameworks are implementation; specs do not name them. A statement id is not a path: it is the spec's name for a claim a test proves (see "Concord")
 
 ### Build System (mandatory)
 Every compiled or buildable project must have exactly one build spec, `specs/build.md`, that defines its build system. Module specs do not repeat it. The fixer is forbidden from invoking compilers, linkers, or packagers directly — it only runs the project's declared build commands. If the spec doesn't specify a build system, the fixer has no way to build, and you have shipped an incomplete spec.
@@ -432,7 +432,7 @@ If you are updating specs for an existing project that has no `README.md`, creat
 {How errors appear at the boundary}
 ```
 
-Every provable sentence in each section carries a statement marker (`{#s-? <root>}`) per "ConcordSTC".
+Every provable sentence in each section carries a statement marker (`{#s-? <root>}`) per "Concord".
 
 ## Failure Handling
 

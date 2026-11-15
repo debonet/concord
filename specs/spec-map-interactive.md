@@ -1,4 +1,4 @@
-# ConcordSTC: interactive checks
+# Concord: interactive checks
 
 Statement ids: complete
 

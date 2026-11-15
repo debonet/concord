@@ -1,6 +1,6 @@
 # Migrating an existing project to observations
 
-This guide is for projects that adopted ConcordSTC before observations
+This guide is for projects that adopted Concord before observations
 (`~/@concord/specs/observations.md`). After it, every observation a
 project has recorded (a mistake an agent made, a claim the human
 corrected, a test red in a full run and green alone, and the incident

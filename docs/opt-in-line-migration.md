@@ -1,56 +1,46 @@
-# Migrating to the Concord opt-in line
+# Update a former Concord adoption marker
 
-A project now uses ConcordSTC only when its root `AGENTS.md` says so, on a line
-of its own. A project without the line gets nothing of Concord's added to it,
-and a session that finds neither the opt-in line nor the opt-out line asks the
-human which applies. The rules are in
-[`specs/concord-process.md`](../specs/concord-process.md#which-projects-use-concord).
+Older projects may have an adoption or opt-out line that uses Concord's former
+name. The current tools still recognize those lines, so the project remains
+classified correctly while it is upgraded. The migration changes only the
+standalone marker in the project root's `AGENTS.md`.
 
-Before changing the project, save its current checker reports from the project
-root:
+Run the commands from the project root:
 
 ```sh
-mkdir -p tmp/concord-opt-in-migration
-npm run spec-map > tmp/concord-opt-in-migration/spec-map-before.txt
-npm run spec-map -- --gate > tmp/concord-opt-in-migration/gate-before.txt
+concord init
+concord migrate
+concord init
 ```
 
-## Add the line
+`concord init` is read-only. When it finds one former marker, it reports the
+existing adoption choice and recommends `concord migrate`. The migration
+updates an old adoption line such as:
 
-1. Open the project's root `AGENTS.md`.
-2. Replace the sentence that points at `~/@concord/AGENTS.md` (for example
-   "Any coding agent working in this repository follows ConcordSTC: read
-   `~/@concord/AGENTS.md` first.") with this line, on a line of its own and
-   outside backticks:
-
-   ```
-   Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.
-   ```
-
-3. Check it is present exactly once:
-
-   ```sh
-   grep -cxF 'Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.' AGENTS.md
-   ```
-
-   The command prints `1`.
-
-A project that does not use ConcordSTC holds this line instead, so sessions
-stop asking:
-
+```text
+Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.
 ```
+
+to the current line using the installed package's path:
+
+```text
+Read @<installed-package-path>/AGENTS.md before any other work; this project uses Concord.
+```
+
+It also updates the former opt-out line:
+
+```text
 This project does not use ConcordSTC.
 ```
 
-## Compare the reports
+to:
 
-The line changes no checker output. Save the reports again and compare:
-
-```sh
-npm run spec-map > tmp/concord-opt-in-migration/spec-map-after.txt
-npm run spec-map -- --gate > tmp/concord-opt-in-migration/gate-after.txt
-diff -u tmp/concord-opt-in-migration/spec-map-before.txt tmp/concord-opt-in-migration/spec-map-after.txt
-diff -u tmp/concord-opt-in-migration/gate-before.txt tmp/concord-opt-in-migration/gate-after.txt
+```text
+This project does not use Concord.
 ```
 
-Both diffs are empty.
+If `AGENTS.md` has multiple, duplicate, or conflicting markers, `concord migrate`
+reports the conflict and leaves the file untouched. Resolve those
+markers manually, then run the command again. The migration does not edit
+other project files; update any copied instructions separately if they still
+use the old name.

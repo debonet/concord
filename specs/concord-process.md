@@ -1,4 +1,4 @@
-# ConcordSTC: the process
+# Concord: the process
 
 Statement ids: complete
 
@@ -68,11 +68,13 @@ Concord where it stands.
 
 ## Terms
 
+> {#m-la578k} USER 2026-11-14: "yeah, let's get rid of the \"STC\" everywhere and just use \"concord\" -- do it in a way that's backward compatible with old projects, but which updates them"
+
 * {#d-xhw3y4 <arch,m-yy30zw@60906a5,m-c2gwx4@a84e9f9} **Adopting project** — a project whose root
   `AGENTS.md` holds the Concord line, and whose specs, tests and code Concord
   links, whatever languages its tests and code are written in.
 * {#d-1q16kc <m-c2gwx4@a84e9f9} **Concord line** — the one line in a project's root `AGENTS.md`
-  that says the project uses ConcordSTC.
+  that says the project uses Concord.
 * {#d-nlb9g1 <arch,m-yy30zw@60906a5} **Checker** — the program that reads an adopting
   project's specs, tests and code and reports how Concord's rules are met:
   the `spec-map` command of the Concord project (Where Concord lives).
@@ -144,9 +146,9 @@ Concord where it stands.
 > claude should be set to ask if the user has not specified."
 
 * {#g-ho8w3d <m-c2gwx4@a84e9f9,m-f9xsif@e917ff9 for=main,architect via=prompt} **One line in AGENTS.md.** A
-  project uses ConcordSTC when its root `AGENTS.md` holds, on a line of its
+  project uses Concord when its root `AGENTS.md` holds, on a line of its
   own, `Read @<path>/AGENTS.md before any other work; this project uses
-  ConcordSTC.` The path is the path to the Concord package's `AGENTS.md`,
+  Concord.` The path is the path to the Concord package's `AGENTS.md`,
   printed by `concord init`; the `@` path is written outside backticks, so a
   tool that imports `@` paths loads the file and any other tool reads the
   sentence as an instruction.
@@ -155,25 +157,45 @@ Concord where it stands.
   writes a `concord.json`, a Concord build target, a pre-commit gate, a
   statement marker or a link line, and no agent follows Concord's rules
   there.
-* {#g-gljrho <arch,m-c2gwx4@a84e9f9 for=main via=prompt} **The opt-out line.** A project that
-  does not use ConcordSTC records it with a line of its own in its root
-  `AGENTS.md`, exactly: `This project does not use ConcordSTC.`
+* {#g-gljrho <arch,m-c2gwx4@a84e9f9,m-la578k@404c7f8 for=main via=prompt} **The opt-out line.** A project that
+  does not use Concord records it with a line of its own in its root
+  `AGENTS.md`, exactly: `This project does not use Concord.`
+* {#s-ppyrc4 <arch,m-la578k@404c7f8} **Legacy adoption lines.** `concord init`
+  recognizes as legacy markers a standalone line of the former adoption form
+  `Read @<path>/AGENTS.md before any other work; this project uses ConcordSTC.`
+  and the former opt-out line `This project does not use ConcordSTC.`. It
+  reports the project as adopted or opted out respectively and tells the user
+  to run `concord migrate`; it does not ask them to choose again and does not
+  change files. A file containing both old and current markers, or contradictory
+  adoption and opt-out markers, is reported as conflicting rather than treated
+  as adopted or opted out.
+* {#s-idlwf3 <arch,m-la578k@404c7f8} **Name migration command.** `concord migrate`,
+  run from a project root without arguments, replaces one recognized legacy
+  adoption line with the canonical adoption line using the installed package's
+  current `AGENTS.md` path, or replaces the exact legacy opt-out line with the
+  canonical opt-out line. It changes only that standalone line in the root
+  `AGENTS.md`; it preserves all other bytes and line endings. If multiple
+  markers occur, a legacy marker appears together with a canonical marker, or
+  adoption and opt-out markers conflict, the command makes no change, reports
+  the conflict and exits nonzero. If there is no `AGENTS.md` or no legacy
+  marker, it makes no change and exits 0. A successful migration is
+  idempotent. Arguments print usage to standard error and exit 2.
 * {#g-ulqj8h <m-c2gwx4@a84e9f9 for=main via=prompt} **Ask when unsaid.** When a session works
   in a project whose root `AGENTS.md` holds neither the Concord line nor the
   opt-out line, or that has no `AGENTS.md`, the main thread asks the human
-  whether the project uses ConcordSTC before any architect or fixer is
+  whether the project uses Concord before any architect or fixer is
   launched there, and writes the line his answer chooses into that
   `AGENTS.md`, creating the file if it is absent.
 > {#m-cmifzx} USER 2026-11-09: "Seems like the harness should be told to run it"
 > {#m-8mr0ax} USER 2026-11-09: "I kind of want the flow to be: shell: start-harness (e.g. `claude` or `codex`) prompt: I want to use concordstc for this project model: let me look up concordstd. I see. Let me see if it is installed. npm install --global. concord init"
-* {#g-2frto4 <m-cmifzx@2e5194f,m-8mr0ax@8f398c7 for=main via=prompt} **Start setup inside the harness.** When the human asks to adopt ConcordSTC, the main thread checks whether the `concord` command is installed; if it is absent, it installs `@debonet/concord` globally with `npm install --global @debonet/concord`. It then runs `concord init` from the project root inside the harness, reads the printed status and setup steps, and follows them before launching an architect or fixer. This explicit request is the human's adoption decision, including when the project currently has an opt-out line; replace that line with the adoption line and do not ask again. `concord init` is read-only.
+* {#g-2frto4 <m-cmifzx@2e5194f,m-8mr0ax@8f398c7 for=main via=prompt} **Start setup inside the harness.** When the human asks to adopt Concord, the main thread checks whether the `concord` command is installed; if it is absent, it installs `@debonet/concord` globally with `npm install --global @debonet/concord`. It then runs `concord init` from the project root inside the harness, reads the printed status and setup steps, and follows them before launching an architect or fixer. This explicit request is the human's adoption decision, including when the project currently has an opt-out line; replace that line with the adoption line and do not ask again. `concord init` is read-only.
 * {#g-n9fysz <arch,m-c2gwx4@a84e9f9 for=architect via=prompt} **An architect that finds no line
   asks.** An architect launched in a project whose root `AGENTS.md` holds
   neither line writes no Concord file or marker and returns the question to
   its caller in its report.
 * {#g-afghbn <m-c2gwx4@a84e9f9 for=main,architect via=prompt} **Never for every project at once.**
   No instruction file that sessions in every project read, as a user's
-  global `~/.claude/CLAUDE.md`, says that every project uses ConcordSTC;
+  global `~/.claude/CLAUDE.md`, says that every project uses Concord;
   such a file holds at most the rule of this section and a pointer to it.
 
 ## Where Concord lives

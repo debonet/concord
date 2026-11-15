@@ -1,10 +1,10 @@
-# ConcordSTC: the spec map
+# Concord: the spec map
 
 Statement ids: complete
 
 ## Purpose
 
-ConcordSTC (Concord, STC or sid for short) links specs, tests and code:
+Concord links specs, tests and code:
 `npm run spec-map` reports which statements tests prove, which statements
 code implements, which tests are declared to verify each implementation
 file, which spec owns each test, and how every other type of spec line

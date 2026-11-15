@@ -1,13 +1,13 @@
 <div align="center">
-  <h1>ConcordSTC</h1>
+  <h1>Concord</h1>
   <h2>Eliminate AI slop by keeping specifications, tests, and code in concord.</h2>
   <p><strong>Preserve human intent · Verify what was built · Find what was never specified</strong></p>
   <p><em>Keep a growing project coherent beyond any model's context window.</em></p>
 </div>
 
-ConcordSTC makes the relationship between what people ask for, what tests verify, and what code implements explicit and checkable. The project's durable memory lives in its specifications and proof links—not in a model's conversation history.
+Concord makes the relationship between what people ask for, what tests verify, and what code implements explicit and checkable. The project's durable memory lives in its specifications and proof links—not in a model's conversation history.
 
-<p align="center"><img src="docs/concord-purpose-pillars.svg" alt="Four colored cards: Preservation, Verification, Comprehensiveness, and Consistency, each describing how ConcordSTC keeps human intent, evidence, code coverage, and changes aligned."></p>
+<p align="center"><img src="docs/concord-purpose-pillars.svg" alt="Four colored cards: Preservation, Verification, Comprehensiveness, and Consistency, each describing how Concord keeps human intent, evidence, code coverage, and changes aligned."></p>
 
 ## Built for big projects
 
@@ -15,17 +15,17 @@ A model's context window is temporary. A project's specifications, tests, links,
 
 That is how a project can grow beyond a convincing demo: keep the intent, proof, and implementation connected as teams, packages, and codebases grow.
 
-### Bringing ConcordSTC to an existing project
+### Bringing Concord to an existing project
 
-Retroactively adopting ConcordSTC is recommended. The conversion can take substantial work: a mature codebase may contain conflicting specifications, inconsistent behavior, and gaps in test coverage. Treat that effort as the cost of paying down the project's existing technical debt. As the contract, tests, and code are reconciled, the project gains a reliable foundation for future changes.
+Retroactively adopting Concord is recommended. The conversion can take substantial work: a mature codebase may contain conflicting specifications, inconsistent behavior, and gaps in test coverage. Treat that effort as the cost of paying down the project's existing technical debt. As the contract, tests, and code are reconciled, the project gains a reliable foundation for future changes.
 
-## The ConcordSTC model
+## The Concord model
 
-ConcordSTC maintains strict relationships between specs, tests, and code. These relationships allow for modularization and compartmentalization of the information coding agents need to have in context to work within the codebase.
+Concord maintains strict relationships between specs, tests, and code. These relationships allow for modularization and compartmentalization of the information coding agents need to have in context to work within the codebase.
 
 Regardless of the impetus for a change—a new feature, a bug, or something else—the model can find the relevant starting point and follow the links to all the information required to keep the system fully specified, internally consistent, and fully tested.
 
-<p align="center"><img src="docs/concord-link-model.svg" alt="ConcordSTC relationship graph: specification statements derive from human intent; code points to specifications and tests; tests point to specifications."></p>
+<p align="center"><img src="docs/concord-link-model.svg" alt="Concord relationship graph: specification statements derive from human intent; code points to specifications and tests; tests point to specifications."></p>
 
 Specifications stand alone. Tests and code point to the specifications they support; code also points to the tests that verify it.
 
@@ -54,6 +54,8 @@ concord init
 
 `concord init` reports the project's current setup and prints the next steps. It does not edit project files. Follow those steps before beginning Concord work.
 
+For an existing project whose `AGENTS.md` still uses the former ConcordSTC adoption or opt-out line, `concord init` recognizes it and recommends `concord migrate`. That command updates only the standalone marker in the root `AGENTS.md`; see the [migration guide](docs/opt-in-line-migration.md).
+
 ## Instructions for agents
 
 > **AGENT PROCEDURE · MACHINE-ORIENTED**
@@ -73,6 +75,7 @@ Run commands from the adopting project root:
 | Command | What it does |
 | --- | --- |
 | `concord init` | Reports adoption status and prints setup instructions. |
+| `concord migrate` | Updates a former adoption or opt-out marker in the root `AGENTS.md`. |
 | `concord agents-sync` | Generates the supported agent-tool files from Concord roles. |
 | `concord spec-map` | Checks statement ids, links, completeness, and cache state. |
 | `concord spec-map --assign` | Assigns placeholder statement ids and refreshes link hashes. |

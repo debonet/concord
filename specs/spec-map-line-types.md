@@ -1,4 +1,4 @@
-# ConcordSTC: line types
+# Concord: line types
 
 Statement ids: complete
 
@@ -34,9 +34,9 @@ is marked, and how Concord checks that each is satisfied.
 > code change; putting the guidance into the fixer agents initial prompt,
 > etc)"
 
-* {#d-yhsx1r <m-v9bxg2@2a81a64} **Concord** — the spec, test and code linking framework
-  that `specs/spec-map.md` and its sibling specs define, run as
-  `npm run spec-map`; also called ConcordSTC, STC or sid.
+* {#d-yhsx1r <m-v9bxg2@2a81a64,m-la578k@404c7f8} **Concord** — the product name and
+  spec, test and code linking framework that `specs/spec-map.md` and its
+  sibling specs define, run as `npm run spec-map`.
 * {#s-fc5ccj <m-k55xs4@88cd8e4} **Six line types.** A line is the text a marker covers
   (The statement a marker covers), and its type is the letter its id
   opens with: `s` a statement, which tests prove; `p` a pointer, to spec files

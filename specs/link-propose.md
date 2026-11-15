@@ -1,4 +1,4 @@
-# ConcordSTC: link proposals
+# Concord: link proposals
 
 Statement ids: complete
 

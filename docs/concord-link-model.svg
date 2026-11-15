@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 575" role="img" aria-labelledby="title desc">
-  <title id="title">ConcordSTC relationships between human intent, specifications, tests, and code</title>
+  <title id="title">Concord relationships between human intent, specifications, tests, and code</title>
   <desc id="desc">Specifications derive from recorded human intent. Specification statements may derive from other spec statements. Code implements specifications and points to tests; tests prove specification statements.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">

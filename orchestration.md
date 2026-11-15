@@ -1,6 +1,6 @@
-# orchestration.md — running architect and fixer agents (ConcordSTC, any tool)
+# orchestration.md — running architect and fixer agents (Concord, any tool)
 
-Rules for the agent that launches and coordinates architects and fixers in a ConcordSTC project, whatever its tool. Each rule cites the observations it rests on, by id, in `~/@concord/observations.md`; they were made in AIOS (`~/@aios`), so paths and commands in the rules are AIOS's. In another project, substitute that project's assign command, hash table, direct-change queue and suites (its `AGENTS.md` names them). Tool names (`Agent`, `SendMessage`, `ListAgents`, `Edit`/`Write`, `Bash`, `model: "sonnet"`) are Claude Code's; use your tool's equivalent. A tool without subagents plays each role in turn and skips the rules about concurrent agents.
+Rules for the agent that launches and coordinates architects and fixers in a Concord project, whatever its tool. Each rule cites the observations it rests on, by id, in `~/@concord/observations.md`; they were made in AIOS (`~/@aios`), so paths and commands in the rules are AIOS's. In another project, substitute that project's assign command, hash table, direct-change queue and suites (its `AGENTS.md` names them). Tool names (`Agent`, `SendMessage`, `ListAgents`, `Edit`/`Write`, `Bash`, `model: "sonnet"`) are Claude Code's; use your tool's equivalent. A tool without subagents plays each role in turn and skips the rules about concurrent agents.
 
 * **A scope you sent by message is a scope you assigned.** Before launching,
   re-read every `SendMessage` this session: if one extended a live agent's scope

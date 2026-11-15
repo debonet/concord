@@ -911,7 +911,10 @@ test( "concord-settings — Concord has one root containing its specs, build "
   [ "specs", "test", "README.md", "package.json" ].forEach(( sPath ) => {
     expect( fs.existsSync( path.join( sDirRepo, sPath ))).toBe( true );
   });
-  expect( fsRepoText( "README.md" )).toContain( "ConcordSTC" );
+  expect( fsRepoText( "README.md" )).toContain( "<h1>Concord</h1>" );
+  expect( fsRepoText( "docs/concord-link-model.svg" )).toContain(
+    "Concord relationships between human intent"
+  );
   const aGate = spawnSync(
     process.execPath, [ path.join( sDirRepo, "bin", "spec-map" ), "--gate" ],
     { cwd: sDirRepo, encoding: "utf8" }
@@ -929,7 +932,7 @@ test( "concord-settings — each command under bin is an executable file "
   + "with no extension opening with the node shebang", () => {
   const vsName = fs.readdirSync( sDirBin ).sort();
   expect( vsName ).toEqual([
-    "agents-sync", "concord", "concord-hook", "concord-init",
+    "agents-sync", "concord", "concord-hook", "concord-init", "concord-migrate",
     "link-propose", "spec-conflicts", "spec-coverage", "spec-map"
   ]);
   vsName.forEach(( sName ) => {

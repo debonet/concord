@@ -4,6 +4,7 @@
 // @implements s-t99cvq@daf5b13
 // @implements s-ssquhw@5229772
 // @implements s-39o0xv@51b819a
+// @implements s-0scrxa@422bf40
 // @implements s-n5ue8s@5c90c01
 // @implements s-mo4ncx@7fcbe1b
 // @implements s-xrmdr0@5803a25
@@ -14,13 +15,13 @@ const { spawnSync } = require( "child_process" );
 const path = require( "path" );
 
 const asCommands = new Set([
-  "agents-sync", "concord-hook", "link-propose", "spec-conflicts",
-  "spec-coverage", "spec-map"
+  "agents-sync", "concord-hook", "link-propose", "migrate",
+  "spec-conflicts", "spec-coverage", "spec-map"
 ]);
 const sUsage = (
   "usage: concord <utility> [arguments]\n"
   + "utilities: agents-sync, concord-hook, init, link-propose, "
-  + "spec-conflicts, spec-coverage, spec-map\n"
+  + "migrate, spec-conflicts, spec-coverage, spec-map\n"
 );
 
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
@@ -36,7 +37,9 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   const sCommand = vsArg[ 0 ];
   if( sCommand === "init" || asCommands.has( sCommand )){
     const sCommandPath = path.join(
-      sDirBin, sCommand === "init" ? "concord-init" : sCommand
+      sDirBin,
+      sCommand === "init" ? "concord-init"
+        : sCommand === "migrate" ? "concord-migrate" : sCommand
     );
     const aResult = fSpawn( sNode, [ sCommandPath, ...vsArg.slice( 1 ) ], {
       cwd: sDirRoot, stdio: "inherit"

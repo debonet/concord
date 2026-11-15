@@ -1,4 +1,4 @@
-# ConcordSTC: observations
+# Concord: observations
 
 Statement ids: complete
 

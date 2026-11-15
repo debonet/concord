@@ -68,6 +68,24 @@ test( "concord dispatches spec-conflicts through the master command", () => {
   ]);
 });
 
+// @proves s-0scrxa@422bf40
+test( "concord dispatches migrate through the master command", () => {
+  let aSpawn = null;
+  const nExit = fzConcord(
+    [ "migrate" ], "/project", () => {}, () => {},
+    {
+      sDirBin: "/package/bin",
+      sNode: "/node",
+      spawnSync: ( ...aArgs ) => { aSpawn = aArgs; return { status: 0 }; }
+    }
+  );
+  assert.strictEqual( nExit, 0 );
+  assert.deepStrictEqual( aSpawn, [
+    "/node", [ "/package/bin/concord-migrate" ],
+    { cwd: "/project", stdio: "inherit" }
+  ]);
+});
+
 // @proves s-t99cvq@daf5b13
 // @proves s-nur3h4@3793438
 // @proves s-s6e3j6@4aad693
@@ -115,6 +133,77 @@ test( "concord init prints project-specific setup instructions without writing",
   assert.match( sOut, /spec-coverage target: master command found/ );
   assert.match( sOut, /Pre-commit hook file: present/ );
   assert.strictEqual( aFiles.size, 3 );
+});
+
+// @proves s-ppyrc4@818dcec
+test( "concord init recognizes the former adoption marker and recommends migration", () => {
+  const aFiles = new Map([
+    [ "/fixture/AGENTS.md", "Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.\n" ]
+  ]);
+  let sOut = "";
+  let sErr = "";
+  assert.strictEqual(
+    fzInit( [], "/fixture", ( s ) => { sOut += s; }, ( s ) => { sErr += s; },
+      {
+        sPackageRoot: "/installed/concord",
+        existsSync: ( sPath ) => aFiles.has( sPath ),
+        readFileSync: ( sPath ) => aFiles.get( sPath )
+      }
+    ),
+    0
+  );
+  assert.match( sOut, /Concord opt-in: present \(legacy\)/ );
+  assert.match( sOut, /adopted using the former name/ );
+  assert.match( sOut, /concord migrate/ );
+  assert.doesNotMatch( sOut, /Ask the project owner/ );
+  assert.strictEqual( sErr, "" );
+  assert.strictEqual( aFiles.get( "/fixture/AGENTS.md" ),
+    "Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.\n"
+  );
+});
+
+// @proves s-ppyrc4@818dcec
+test( "concord init recognizes the former opt-out marker", () => {
+  const aFiles = new Map([
+    [ "/fixture/AGENTS.md", "This project does not use ConcordSTC.\n" ]
+  ]);
+  let sOut = "";
+  assert.strictEqual(
+    fzInit( [], "/fixture", ( s ) => { sOut += s; }, () => {},
+      {
+        existsSync: ( sPath ) => aFiles.has( sPath ),
+        readFileSync: ( sPath ) => aFiles.get( sPath )
+      }
+    ),
+    0
+  );
+  assert.match( sOut, /Concord opt-in: opted out \(legacy\)/ );
+  assert.match( sOut, /opts out using the former name/ );
+  assert.match( sOut, /concord migrate/ );
+});
+
+// @proves s-ppyrc4@818dcec
+test( "concord init reports mixed current and former markers as a conflict", () => {
+  const aFiles = new Map([
+    [ "/fixture/AGENTS.md", [
+      "Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.",
+      "Read @/installed/concord/AGENTS.md before any other work; this project uses Concord."
+    ].join( "\n" )]
+  ]);
+  let sOut = "";
+  assert.strictEqual(
+    fzInit( [], "/fixture", ( s ) => { sOut += s; }, () => {},
+      {
+        sPackageRoot: "/installed/concord",
+        existsSync: ( sPath ) => aFiles.has( sPath ),
+        readFileSync: ( sPath ) => aFiles.get( sPath )
+      }
+    ),
+    0
+  );
+  assert.match( sOut, /Concord opt-in: conflicting markers/ );
+  assert.match( sOut, /Resolve them manually/ );
+  assert.doesNotMatch( sOut, /Add build targets/ );
 });
 
 // @proves s-ualukl@c397c2a
