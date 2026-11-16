@@ -9,13 +9,11 @@ Run the commands from the project root:
 
 ```sh
 concord init
-concord migrate
-concord init
 ```
 
-`concord init` is read-only. When it finds one former marker, it reports the
-existing adoption choice and recommends `concord migrate`. The migration
-updates an old adoption line such as:
+`concord init` updates one former adoption or opt-out line automatically while
+preserving the rest of `AGENTS.md`. `concord migrate` remains available when a
+project wants to update only that marker. An old adoption line such as:
 
 ```text
 Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.

@@ -179,7 +179,7 @@ describe( "concord-settings — a command run with no settings file", () => {
 
 // @proves s-am7qu4@d7b2d60
 // @proves s-i0n88z@8f1c352
-// @proves s-j38rej@b1a5c57
+// @proves s-j38rej@7fe18e5
 // @proves s-sx6vdb@f89dcd2
 // @proves s-wu6tv6@dae6381
 // @proves s-xqx0r5@8596529
@@ -506,7 +506,7 @@ test( "a matched nested Concord project keeps its own spec map", () => {
 // @proves s-zstgty@57da9d2
 // @proves s-am7qu4@d7b2d60
 // @proves s-i0n88z@8f1c352
-// @proves s-j38rej@b1a5c57
+// @proves s-j38rej@7fe18e5
 // @proves s-sx6vdb@f89dcd2
 // @proves s-wu6tv6@dae6381
 // @proves s-xqx0r5@8596529
@@ -557,12 +557,12 @@ describe( "concord-settings — a bad settings file", () => {
     expect( fsRead( "specs/a.md" )).toMatch( /\{#s-[a-z0-9]{6}\} A/ );
   });
 
-  // @proves s-j38rej@b1a5c57
-  test( "PAIRED: a file naming every language Language readings defines "
+// @proves s-j38rej@7fe18e5
+test( "PAIRED: a file naming every language Language readings defines "
     + "is well formed", () => {
     fWriteTree({
       "concord.json": fsConcordJson({
-        languages: [ "javascript", "typescript", "css", "html", "rust" ]
+        languages: [ "javascript", "typescript", "css", "html", "rust", "bash" ]
       }),
       "specs/a.md": fsSpec( "A", [ "* {#s-?} A placeholder rule." ])
     });
@@ -843,7 +843,7 @@ describe( "concord-settings — the hash table", () => {
   });
 });
 
-// @proves s-92u5vq@fbe31e8
+// @proves s-92u5vq@c29e9c7
 // @proves s-4jegoj@05acd9f
 describe( "concord-settings — a command acts on its working directory",
 () => {

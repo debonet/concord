@@ -8,7 +8,8 @@ const afCreateReader = [
   require( "./typescript" ),
   require( "./css" ),
   require( "./html" ),
-  require( "./rust" )
+  require( "./rust" ),
+  require( "./bash" )
 ];
 const fCreateRust = afCreateReader[ 4 ];
 
@@ -26,7 +27,7 @@ const faReaders = ( f ) => new Map(
 const faProgramForPath = ( sText, sPath ) => {
   const fCreate = afCreateReader.find(( fModule ) => (
     typeof fModule.fbCanReadPath === "function"
-      && fModule.fbCanReadPath( sPath )
+      && fModule.fbCanReadPath( sPath, sText )
   ));
   return fCreate === undefined ? null : fCreate.faProgramForPath( sText, sPath );
 };

@@ -7,8 +7,15 @@ names, source extensions, test-file suffixes, source reading, test units,
 normalization, code references, guidance references, and comment locations.
 
 Existing adopting projects do not need to change `concord.json`, their source
-files, or their checker commands. The configured names remain `javascript`,
-`typescript`, `css`, `html`, and `rust`.
+files, or their checker commands. The configured names are `javascript`,
+`typescript`, `css`, `html`, `rust`, and `bash`.
+
+Bash projects can declare `"bash"` in `languages`. Concord reads `.sh` and
+`.bash` files and executable extensionless files with a Bash shebang. Bash
+suite scripts may use `*.test.sh`, `*.test.bash`, `test_*.sh`, `*_test.sh`, or
+`run_tests.sh` names. Since shell scripts have no shared test-case syntax,
+Concord treats each such test script as one test unit; put its `@proves` lines
+in `#` comments in the script header.
 
 When adding a language to Concord:
 

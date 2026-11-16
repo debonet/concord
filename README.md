@@ -44,7 +44,7 @@ The checker can follow these links when code is moved or rewritten because the s
 
 ## Start using Concord
 
-Install the public npm package, then run its setup guide **from the project root inside your coding harness**:
+Install the public npm package, then initialize the project **from its root inside your coding harness**:
 
 ```sh
 npm install --global @debonet/concord
@@ -52,9 +52,9 @@ cd path/to/your-project
 concord init
 ```
 
-`concord init` reports the project's current setup and prints the next steps. It does not edit project files. Follow those steps before beginning Concord work.
+`concord init` creates missing baseline setup: `concord.json`, the `spec-map` and `spec-coverage` build commands, and the Concord adoption line in the root `AGENTS.md`. It detects configured languages from the project files and preserves existing settings and commands. It then attempts to install the pre-commit gate. If the gate finds existing specification or coverage issues, init reports them and leaves the hook uninstalled; fix the issues and rerun `concord init`.
 
-For an existing project whose `AGENTS.md` still uses the former ConcordSTC adoption or opt-out line, `concord init` recognizes it and recommends `concord migrate`. That command updates only the standalone marker in the root `AGENTS.md`; see the [migration guide](docs/opt-in-line-migration.md).
+For an existing project whose `AGENTS.md` still uses the former ConcordSTC adoption or opt-out line, `concord init` updates that standalone marker while preserving the rest of the file. See the [migration guide](docs/opt-in-line-migration.md).
 
 ## Instructions for agents
 
@@ -74,7 +74,7 @@ Run commands from the adopting project root:
 
 | Command | What it does |
 | --- | --- |
-| `concord init` | Reports adoption status and prints setup instructions. |
+| `concord init` | Creates missing project setup and attempts to install the commit gate. |
 | `concord migrate` | Updates a former adoption or opt-out marker in the root `AGENTS.md`. |
 | `concord agents-sync` | Generates the supported agent-tool files from Concord roles. |
 | `concord spec-map` | Checks statement ids, links, completeness, and cache state. |

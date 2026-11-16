@@ -27,11 +27,12 @@ npm install --global @debonet/concord
 concord init
 ```
 
-`concord init` reports the project's current setup and prints the next steps
-that apply. It does not modify project files. If the project opts in, put its
-printed Concord adoption line in the root `AGENTS.md` and keep project-specific
-facts after that line. If the project has opted out, do not add Concord
-configuration or links.
+`concord init` creates missing baseline settings and build commands, adds the
+Concord adoption line to the root `AGENTS.md`, and attempts to install the
+pre-commit gate. It preserves existing settings and commands. If the gate
+refuses because the project already has specification or coverage issues, fix
+those issues and rerun `concord init`; the hook is installed only after the
+gate passes.
 
 ## Route tools through the master command
 

@@ -6,6 +6,26 @@ const fs = require( "fs" );
 const path = require( "path" );
 const { fzMain: fzConcord } = require( "../scripts/concord.js" );
 const { fzMain: fzInit } = require( "../scripts/concord-init.js" );
+const sDirRepo = path.join( __dirname, ".." );
+
+const fInitFixture = () => {
+  const sRoot = fs.mkdtempSync( path.join( sDirRepo, "tmp", "concord-init-" ));
+  fs.mkdirSync( path.join( sRoot, "test" ), { recursive: true });
+  return sRoot;
+};
+
+const fInit = ( sRoot, aResult = { status: 0, stdout: "already installed\n", stderr: "" } ) => {
+  let sOut = "";
+  let sErr = "";
+  const cExit = fzInit(
+    [], sRoot, ( s ) => { sOut += s; }, ( s ) => { sErr += s; },
+    {
+      sPackageRoot: path.join( sDirRepo, "tmp", "installed-concord" ),
+      spawnSync: () => aResult
+    }
+  );
+  return { cExit, sOut, sErr };
+};
 
 // @proves s-39o0xv@51b819a
 test( "concord prints help and rejects unknown utilities", () => {
@@ -68,6 +88,7 @@ test( "concord dispatches spec-conflicts through the master command", () => {
   ]);
 });
 
+// @spec specs/build.md
 // @proves s-0scrxa@422bf40
 test( "concord dispatches migrate through the master command", () => {
   let aSpawn = null;
@@ -108,105 +129,130 @@ test( "the npm package exposes concord and routes helper scripts through it", ()
   }
 });
 
-// @proves s-ualukl@c397c2a
-test( "concord init prints project-specific setup instructions without writing", () => {
-  const aFiles = new Map([
-    [ "/fixture/AGENTS.md", "# Project\n" ],
-    [ "/fixture/package.json", '{"scripts":{"spec-map":"concord spec-map","spec-coverage":"concord spec-coverage"}}' ],
-    [ "/fixture/.githooks/pre-commit", "concord spec-map --gate || exit 1\n" ]
-  ]);
-  let sOut = "";
-  let sErr = "";
-  const nExit = fzInit(
-    [], "/fixture", ( s ) => { sOut += s; }, ( s ) => { sErr += s; },
-    {
-      sPackageRoot: "/installed/@debonet/concord",
-      existsSync: ( sPath ) => aFiles.has( sPath ),
-      readFileSync: ( sPath ) => aFiles.get( sPath )
+// @proves s-ualukl@413cc4f
+// @proves s-qfk1yl@ce3e3eb
+// @proves s-s3xpz5@265fff1
+// @proves s-tyykqo@a902908
+test( "concord init creates project settings, npm targets and adoption line, then installs the gate",
+() => {
+  const sRoot = fInitFixture();
+  try{
+    fs.writeFileSync( path.join( sRoot, "AGENTS.md" ), "# Project\n" );
+    fs.writeFileSync( path.join( sRoot, "package.json" ), JSON.stringify({
+      name: "bash-project", scripts: { test: "bash test/run_tests.sh" }
+    }) + "\n" );
+    fs.mkdirSync( path.join( sRoot, "src" ));
+    fs.writeFileSync( path.join( sRoot, "src", "tool" ), "#!/usr/bin/env bash\necho ok\n" );
+    fs.chmodSync( path.join( sRoot, "src", "tool" ), 0o755 );
+    const { cExit, sOut, sErr } = fInit( sRoot );
+    assert.strictEqual( cExit, 0 );
+    assert.strictEqual( sErr, "" );
+    assert.match( sOut, /created concord\.json/ );
+    assert.match( sOut, /added npm script spec-map/ );
+    assert.match( sOut, /added npm script spec-coverage/ );
+    assert.match( sOut, /updated AGENTS\.md adoption line/ );
+    assert.match( sOut, /already installed/ );
+    const aConfig = JSON.parse( fs.readFileSync( path.join( sRoot, "concord.json" ), "utf8" ));
+    assert.deepStrictEqual( aConfig.languages, [ "bash" ] );
+    assert.deepStrictEqual( aConfig.read_directories, [ "." ] );
+    assert.match( fs.readFileSync( path.join( sRoot, "AGENTS.md" ), "utf8" ),
+      /Read @.*installed-concord\/AGENTS\.md before any other work; this project uses Concord\./
+    );
+    const aPackage = JSON.parse( fs.readFileSync( path.join( sRoot, "package.json" ), "utf8" ));
+    assert.strictEqual( aPackage.scripts.test, "bash test/run_tests.sh" );
+    assert.strictEqual( aPackage.scripts[ "spec-map" ], "concord spec-map" );
+    assert.strictEqual( aPackage.scripts[ "spec-coverage" ], "concord spec-coverage" );
+  } finally {
+    fs.rmSync( sRoot, { recursive: true, force: true });
+  }
+});
+
+// @proves s-ualukl@413cc4f
+// @proves s-tyykqo@a902908
+// @proves s-ppyrc4@814bce2
+test( "concord init upgrades one legacy adoption or opt-out line", () => {
+  [
+    "Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.\n",
+    "This project does not use ConcordSTC.\n"
+  ].forEach(( sOldLine ) => {
+    const sRoot = fInitFixture();
+    try{
+      fs.writeFileSync( path.join( sRoot, "AGENTS.md" ), sOldLine );
+      fs.writeFileSync( path.join( sRoot, "package.json" ), "{}\n" );
+      const { cExit, sOut } = fInit( sRoot );
+      assert.strictEqual( cExit, 0 );
+      assert.match( sOut, /updated AGENTS\.md adoption line/ );
+      const sAgents = fs.readFileSync( path.join( sRoot, "AGENTS.md" ), "utf8" );
+      assert.match( sAgents, /this project uses Concord\./ );
+      assert.doesNotMatch( sAgents, /ConcordSTC|does not use Concord/ );
+    } finally {
+      fs.rmSync( sRoot, { recursive: true, force: true });
     }
-  );
-  assert.strictEqual( nExit, 0 );
-  assert.strictEqual( sErr, "" );
-  assert.match( sOut, /Concord agent guide: \/installed\/@debonet\/concord\/AGENTS\.md/ );
-  assert.match( sOut, /Read @\/installed\/@debonet\/concord\/AGENTS\.md before any other work/ );
-  assert.match( sOut, /spec-map target: master command found/ );
-  assert.match( sOut, /spec-coverage target: master command found/ );
-  assert.match( sOut, /Pre-commit hook file: present/ );
-  assert.strictEqual( aFiles.size, 3 );
+  });
 });
 
-// @proves s-ppyrc4@818dcec
-test( "concord init recognizes the former adoption marker and recommends migration", () => {
-  const aFiles = new Map([
-    [ "/fixture/AGENTS.md", "Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.\n" ]
-  ]);
-  let sOut = "";
-  let sErr = "";
-  assert.strictEqual(
-    fzInit( [], "/fixture", ( s ) => { sOut += s; }, ( s ) => { sErr += s; },
-      {
-        sPackageRoot: "/installed/concord",
-        existsSync: ( sPath ) => aFiles.has( sPath ),
-        readFileSync: ( sPath ) => aFiles.get( sPath )
-      }
-    ),
-    0
-  );
-  assert.match( sOut, /Concord opt-in: present \(legacy\)/ );
-  assert.match( sOut, /adopted using the former name/ );
-  assert.match( sOut, /concord migrate/ );
-  assert.doesNotMatch( sOut, /Ask the project owner/ );
-  assert.strictEqual( sErr, "" );
-  assert.strictEqual( aFiles.get( "/fixture/AGENTS.md" ),
-    "Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.\n"
-  );
-});
-
-// @proves s-ppyrc4@818dcec
-test( "concord init recognizes the former opt-out marker", () => {
-  const aFiles = new Map([
-    [ "/fixture/AGENTS.md", "This project does not use ConcordSTC.\n" ]
-  ]);
-  let sOut = "";
-  assert.strictEqual(
-    fzInit( [], "/fixture", ( s ) => { sOut += s; }, () => {},
-      {
-        existsSync: ( sPath ) => aFiles.has( sPath ),
-        readFileSync: ( sPath ) => aFiles.get( sPath )
-      }
-    ),
-    0
-  );
-  assert.match( sOut, /Concord opt-in: opted out \(legacy\)/ );
-  assert.match( sOut, /opts out using the former name/ );
-  assert.match( sOut, /concord migrate/ );
-});
-
-// @proves s-ppyrc4@818dcec
-test( "concord init reports mixed current and former markers as a conflict", () => {
-  const aFiles = new Map([
-    [ "/fixture/AGENTS.md", [
+// @proves s-ualukl@413cc4f
+// @proves s-s3xpz5@265fff1
+// @proves s-tyykqo@a902908
+test( "concord init leaves conflicting markers and build commands unchanged", () => {
+  const sRoot = fInitFixture();
+  try{
+    const sAgentsBefore = [
       "Read @~/@concord/AGENTS.md before any other work; this project uses ConcordSTC.",
       "Read @/installed/concord/AGENTS.md before any other work; this project uses Concord."
-    ].join( "\n" )]
-  ]);
-  let sOut = "";
-  assert.strictEqual(
-    fzInit( [], "/fixture", ( s ) => { sOut += s; }, () => {},
-      {
-        sPackageRoot: "/installed/concord",
-        existsSync: ( sPath ) => aFiles.has( sPath ),
-        readFileSync: ( sPath ) => aFiles.get( sPath )
-      }
-    ),
-    0
-  );
-  assert.match( sOut, /Concord opt-in: conflicting markers/ );
-  assert.match( sOut, /Resolve them manually/ );
-  assert.doesNotMatch( sOut, /Add build targets/ );
+    ].join( "\n" );
+    fs.writeFileSync( path.join( sRoot, "AGENTS.md" ), sAgentsBefore );
+    fs.writeFileSync( path.join( sRoot, "package.json" ), JSON.stringify({
+      scripts: { "spec-map": "other-checker" }
+    }) );
+    const { cExit, sErr } = fInit( sRoot );
+    assert.strictEqual( cExit, 1 );
+    assert.match( sErr, /conflicting or hand-written adoption markers/ );
+    assert.strictEqual( fs.readFileSync( path.join( sRoot, "AGENTS.md" ), "utf8" ), sAgentsBefore );
+    assert.strictEqual( fs.existsSync( path.join( sRoot, "concord.json" )), false );
+  } finally {
+    fs.rmSync( sRoot, { recursive: true, force: true });
+  }
 });
 
-// @proves s-ualukl@c397c2a
+// @proves s-ualukl@413cc4f
+test( "concord init reports when the spec gate blocks hook installation", () => {
+  const sRoot = fInitFixture();
+  try{
+    fs.writeFileSync( path.join( sRoot, "package.json" ), "{}\n" );
+    const { cExit, sOut } = fInit( sRoot, {
+      status: 1, stdout: "statements no test proves (1)\n", stderr: ""
+    });
+    assert.strictEqual( cExit, 1 );
+    assert.match( sOut, /setup files are ready/ );
+    assert.match( sOut, /statements no test proves/ );
+    assert.match( sOut, /rerun `concord init`/ );
+  } finally {
+    fs.rmSync( sRoot, { recursive: true, force: true });
+  }
+});
+
+// @proves s-s3xpz5@265fff1
+// @proves s-qfk1yl@ce3e3eb
+test( "concord init creates a Makefile and missing test directory when needed", () => {
+  const sRoot = fs.mkdtempSync( path.join( sDirRepo, "tmp", "concord-init-make-" ));
+  try{
+    const { cExit, sOut } = fInit( sRoot );
+    assert.strictEqual( cExit, 0 );
+    assert.match( sOut, /created test\// );
+    assert.match( sOut, /created Makefile/ );
+    const sMakefile = fs.readFileSync( path.join( sRoot, "Makefile" ), "utf8" );
+    assert.match( sMakefile, /^spec-map:\n\tconcord spec-map \$\(ARGS\)$/m );
+    assert.match( sMakefile, /^spec-coverage:\n\tconcord spec-coverage \$\(ARGS\)$/m );
+    assert.match( fs.readFileSync( path.join( sRoot, "AGENTS.md" ), "utf8" ),
+      /this project uses Concord\./
+    );
+  } finally {
+    fs.rmSync( sRoot, { recursive: true, force: true });
+  }
+});
+
+// @proves s-ualukl@413cc4f
 test( "concord init rejects arguments", () => {
   let sErr = "";
   assert.strictEqual(
@@ -214,4 +260,16 @@ test( "concord init rejects arguments", () => {
     2
   );
   assert.strictEqual( sErr, "usage: concord init\n" );
+});
+
+// @proves s-ualukl@413cc4f
+test( "concord init reports a working directory that is not a project directory", () => {
+  let sErr = "";
+  assert.strictEqual(
+    fzInit( [], path.join( sDirRepo, "tmp", "missing-concord-project" ),
+      () => {}, ( s ) => { sErr += s; }, { bSkipHookInstall: true }
+    ),
+    2
+  );
+  assert.match( sErr, /not a project directory/ );
 });

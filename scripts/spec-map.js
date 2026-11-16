@@ -1177,7 +1177,7 @@ const fsNameAt = ( sText, nOpen ) => {
 };
 
 const ftMaskForPath = ( sText, sPath ) => {
-  const aLanguage = faLanguageForPath( sPath );
+  const aLanguage = faLanguageForPath( sPath, sText );
   if( aLanguage === null ){ return [ sText, new Set() ];}
   const aSource = aLanguage.faSource( sText, sPath );
   return [ aSource.sMasked, aSource.asnComment ];
@@ -1212,13 +1212,13 @@ const fsCodeNormal = ( sText, vsClass ) => {
 };
 
 const fsNormalForFile = ( sPath, sText ) => {
-  const aLanguage = faLanguageForPath( sPath );
+  const aLanguage = faLanguageForPath( sPath, sText );
   return aLanguage === null ? fsNormal( sText )
     : aLanguage.fsNormal( sPath, sText );
 };
 
 const fvsClassForFile = ( sPath, sText ) => {
-  const aLanguage = faLanguageForPath( sPath );
+  const aLanguage = faLanguageForPath( sPath, sText );
   return aLanguage === null ? new Array( sText.length ).fill( "c" )
     : aLanguage.fvsClass( sPath, sText );
 };
@@ -1278,7 +1278,7 @@ const fvaCallForRe = ( aSource, re, bWrapper ) => (
 );
 
 const fvaCallForSource = ( aSource ) => {
-  const aLanguage = faLanguageForPath( aSource.sPath );
+  const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
   return aLanguage === null ? [] : aLanguage.fvaTestUnit( aSource );
 };
 
@@ -1298,7 +1298,7 @@ const faSourceForText = ( sText, sPath ) => {
     vsLineMasked: sMasked.split( "\n" ),
     vnLineStart: fvnLineStart( vsLine )
   };
-  const aLanguage = faLanguageForPath( sPath );
+  const aLanguage = faLanguageForPath( sPath, sText );
   const aHeader = aLanguage === null
     ? { nLineCode: 0, nLineDoc: 0 }
     : aLanguage.faHeader( aSource );
@@ -1310,15 +1310,25 @@ const faSourceForText = ( sText, sPath ) => {
   };
 };
 
-const fbLineRunWhole = ( aSource, nLine ) => (
-  reRunLine.test( aSource.vsLine[ nLine ] || "" )
-  && aSource.vsLineMasked[ nLine ].trim() === ""
-);
+const fbLineRunWhole = ( aSource, nLine ) => {
+  const sLine = aSource.vsLine[ nLine ] || "";
+  const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
+  const nComment = Array.from( aSource.asnComment ).find(( nAt ) => (
+    fnLineAt( aSource.vnLineStart, nAt ) === nLine
+  ));
+  const sDirective = nComment === undefined ? sLine
+    : aLanguage !== null && typeof aLanguage.fsDirectiveLine === "function"
+      ? aLanguage.fsDirectiveLine(
+        sLine, nComment - aSource.vnLineStart[ nLine ]
+      ) : sLine;
+  return reRunLine.test( sDirective )
+    && aSource.vsLineMasked[ nLine ].trim() === "";
+};
 
 const faCallBelowRun = ( aSource, vaCall, nLine ) => {
   let nNext = nLine + 1;
   while( fbLineRunWhole( aSource, nNext )
-    || ( faLanguageForPath( aSource.sPath ) || { fbDirectiveGapLine: () => false })
+    || ( faLanguageForPath( aSource.sPath, aSource.sText ) || { fbDirectiveGapLine: () => false })
       .fbDirectiveGapLine( aSource.vsLine[ nNext ] || "" )
   ){ nNext++;}
   return vaCall.find(( aCall ) => (
@@ -1332,13 +1342,22 @@ const ftCommentAt = ( aSource, nComment ) => {
   const nLine = fnLineAt( aSource.vnLineStart, nComment );
   const sLine = aSource.vsLine[ nLine ];
   const nCol = nComment - aSource.vnLineStart[ nLine ];
-  return [ nLine, sLine, sLine.slice( nCol + 2 ) ];
+  const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
+  const sDirective = aLanguage !== null
+    && typeof aLanguage.fsDirectiveLine === "function"
+    ? aLanguage.fsDirectiveLine( sLine, nCol ) : sLine;
+  return [ nLine, sLine, sDirective.slice( nCol + 2 ) ];
 };
 
 const faOwnerForComment = ( aSource, vaCall, aHeader, nComment ) => {
   const [ nLine, sLine, sAfter ] = ftCommentAt( aSource, nComment );
   if( !reOwnerText.test( sAfter )){ return null;}
-  const vsGroup = sLine.match( reOwnerLine );
+  const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
+  const sDirective = aLanguage !== null
+    && typeof aLanguage.fsDirectiveLine === "function"
+    ? aLanguage.fsDirectiveLine( sLine, nComment - aSource.vnLineStart[ nLine ])
+    : sLine;
+  const vsGroup = sDirective.match( reOwnerLine );
   const bWhole = fbLineRunWhole( aSource, nLine );
   const aCall = !bWhole || nLine < aHeader.nLineCode
     ? null
@@ -1361,14 +1380,19 @@ const fsPartForLine = ( sLine ) => {
 const faLinkForComment = ( aSource, vaCall, nComment, aForm ) => {
   const [ nLine, sLine, sAfter ] = ftCommentAt( aSource, nComment );
   if( !aForm.reText.test( sAfter )){ return null;}
-  const vsWell = sLine.match( aForm.reLine );
+  const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
+  const sDirective = aLanguage !== null
+    && typeof aLanguage.fsDirectiveLine === "function"
+    ? aLanguage.fsDirectiveLine( sLine, nComment - aSource.vnLineStart[ nLine ])
+    : sLine;
+  const vsWell = sDirective.match( aForm.reLine );
   const vsLoose = sAfter.match( aForm.reLoose );
   return {
     nLine: nLine + 1,
     sText: sLine.trim(),
     sId: vsLoose === null ? null : vsLoose[ 1 ],
     sHash: vsLoose === null ? "" : vsLoose[ 2 ],
-    sPart: fsPartForLine( sLine ),
+    sPart: fsPartForLine( sDirective ),
     bWell: vsWell !== null,
     bGuard: aForm.bGuard,
     aCall: fbLineRunWhole( aSource, nLine )
@@ -2219,7 +2243,7 @@ const fvaNoCodeForChecks = ( vaCheck, vaChecks ) => vaCheck.filter(( aCheck ) =>
 
 const fvaCodeReferenceForFile = ( aFile ) => aFile.bSide
   ? fvaCodeReferenceForSide( aFile )
-  : ( faLanguageForPath( aFile.sPath ) || { fvaCodeReference: () => [] })
+  : ( faLanguageForPath( aFile.sPath, aFile.sText ) || { fvaCodeReference: () => [] })
     .fvaCodeReference( aFile );
 
 const vtKindCodeReference = [
@@ -2400,7 +2424,7 @@ const fvaCodeReferenceResolved = ( aModel ) => {
 };
 
 const ftCommentsForCiter = ( aFile ) => {
-  const aLanguage = faLanguageForPath( aFile.sPath );
+  const aLanguage = faLanguageForPath( aFile.sPath, aFile.sText );
   return aLanguage === null ? [ [], [] ] : aLanguage.ftComments( aFile );
 };
 
@@ -2409,11 +2433,16 @@ const faFollowsAt = ( aFile, vnLineStart, nComment, bBlock ) => {
   const sLine = aFile.sText.slice(
     vnLineStart[ nLine ], vnLineStart[ nLine + 1 ] - 1
   );
-  const sAfterRaw = sLine.slice( nComment - vnLineStart[ nLine ] + 2 );
+  const aLanguage = faLanguageForPath( aFile.sPath, aFile.sText );
+  const sDirective = aLanguage !== null
+    && typeof aLanguage.fsDirectiveLine === "function"
+    ? aLanguage.fsDirectiveLine( sLine, nComment - vnLineStart[ nLine ])
+    : sLine;
+  const sAfterRaw = sDirective.slice( nComment - vnLineStart[ nLine ] + 2 );
   const nClose = bBlock ? sAfterRaw.indexOf( "*/" ) : -1;
   const sAfter = nClose < 0 ? sAfterRaw : sAfterRaw.slice( 0, nClose );
   if( !reFollowsText.test( sAfter )){ return null;}
-  const vsWell = sLine.match( bBlock ? reFollowsBlock : reFollowsLine );
+  const vsWell = sDirective.match( bBlock ? reFollowsBlock : reFollowsLine );
   const vsLoose = sAfter.match( reFollowsLoose );
   return {
     sPath: fsPosix( aFile.sPath ),
@@ -2436,7 +2465,7 @@ const fvaFollowsForFile = ( aFile ) => aFile.bSide
       sId: aLine.sTarget,
       sHash: aLine.sStamp
     }))
-  : ( faLanguageForPath( aFile.sPath ) || { fvaFollows: () => [] })
+  : ( faLanguageForPath( aFile.sPath, aFile.sText ) || { fvaFollows: () => [] })
     .fvaFollows( aFile );
 
 const fvaFollowsForScript = ( aFile ) => {
@@ -2464,10 +2493,19 @@ const maLanguage = faReaders({
   fvaFollowsForCommentReader: ( aFile ) => fvaFollowsForScript( aFile )
 });
 
-const faLanguageForPath = ( sPath ) => Array.from( maLanguage.values() )
-  .find(( aLanguage ) => aLanguage.vsExtension.some(( sExt ) => (
-    sPath.endsWith( sExt )
-  ))) || null;
+const faLanguageForPath = ( sPath, sText = "" ) => Array.from( maLanguage.values() )
+  .find(( aLanguage ) => (
+    typeof aLanguage.fbCanReadPath === "function"
+      ? aLanguage.fbCanReadPath( sPath, sText )
+      : aLanguage.vsExtension.some(( sExt ) => sPath.endsWith( sExt ))
+  )) || null;
+
+const fbTestPathForLanguage = ( aLanguage, sPath ) => (
+  typeof aLanguage.fbIsTestPath === "function"
+    ? aLanguage.fbIsTestPath( sPath )
+    : new RegExp( "\\.test\\.(?:" + ( aLanguage.vsTestSuffix || []).join( "|" ) + ")$" )
+      .test( sPath )
+);
 
 const faFollowsResolved = ( aModel, aFollows ) => {
   const aFound = aFollows.bWell
@@ -4121,15 +4159,38 @@ const fvaEditForSpec = ( aModel, vaMarker, aRoots, asIdNewForMarker ) => (
 const fbPathIgnored = ( sPath, vsDirIgnored ) => sPath.split( path.sep )
   .some(( sPart ) => vsDirIgnored.includes( sPart ));
 
-const freFileForLanguages = ( vsLanguage ) => {
-  const vsExt = vsLanguage.flatMap(( sLanguage ) => (
-    ( maLanguage.get( sLanguage ) || { vsExtension: [] }).vsExtension
-  ));
-  if( vsExt.length === 0 ){ return reNever;}
-  return new RegExp(
-    "(?:" + vsExt.map(( sExt ) => sExt.replace( reEscape, "\\$&" ))
-      .join( "|" ) + ")$"
-  );
+const fbFileForLanguages = ( sPath, vsLanguage, sDirRoot ) => {
+  const vaLanguage = vsLanguage.map(( sLanguage ) => maLanguage.get( sLanguage ))
+    .filter( Boolean );
+  if( vaLanguage.some(( aLanguage ) => aLanguage.vsExtension.some(( sExt ) => (
+    sPath.endsWith( sExt )
+  )))){ return true;}
+  if( !vaLanguage.some(( aLanguage ) => (
+    typeof aLanguage.fbCanReadPath === "function"
+  ))){ return false;}
+  let sFirstLine = "";
+  let nFd;
+  try{
+    const vBuffer = Buffer.alloc( 4096 );
+    nFd = fs.openSync( path.join( sDirRoot, sPath ), "r" );
+    const cRead = fs.readSync( nFd, vBuffer, 0, vBuffer.length, 0 );
+    sFirstLine = vBuffer.toString( "utf8", 0, cRead ).split( "\n", 1 )[ 0 ];
+  } catch( xError ){
+    return false;
+  } finally {
+    if( nFd !== undefined ){ fs.closeSync( nFd );}
+  }
+  return vaLanguage.some(( aLanguage ) => {
+    if( typeof aLanguage.fbCanReadPath !== "function"
+      || !aLanguage.fbCanReadPath( sPath, sFirstLine )
+    ){ return false;}
+    if( !aLanguage.fbRequiresExecutable ){ return true;}
+    try{
+      return ( fs.statSync( path.join( sDirRoot, sPath )).mode & 0o111 ) !== 0;
+    } catch( xError ){
+      return false;
+    }
+  });
 };
 
 class TreeReader {
@@ -4269,21 +4330,21 @@ class TreeReader {
   }
 
   fvaTest(){
-    const vsSuffix = this.aConfig.vsLanguage.flatMap(( sLanguage ) => (
-      ( maLanguage.get( sLanguage ) || { vsTestSuffix: [] }).vsTestSuffix
-    ));
     const bTestLanguage = this.aConfig.vsLanguage.some(( sLanguage ) => (
       ( maLanguage.get( sLanguage ) || { fbHasTestFiles: () => false })
         .fbHasTestFiles()
     ));
-    const reTest = new RegExp( "\\.test\\.(?:"
-      + vsSuffix.join( "|" ) + ")$" );
+    const vaTestLanguage = this.aConfig.vsLanguage.map(( sLanguage ) => (
+      maLanguage.get( sLanguage )
+    )).filter( Boolean );
     const vsDirSuite = this.fvsDirExpanded(
       this.aConfig.vaSuite.flatMap(( aSuite ) => aSuite.vsDir )
     );
     return this.fvaFile( Array.from( new Set(
       vsDirSuite.flatMap(( sDir ) => this.fvsPathUnder( sDir, ( sPath ) => (
-        bTestLanguage && reTest.test( sPath )
+        bTestLanguage && vaTestLanguage.some(( aLanguage ) => (
+          fbTestPathForLanguage( aLanguage, sPath )
+        ))
       )))
     )));
   }
@@ -4316,7 +4377,7 @@ class TreeReader {
       : null;
   }
 
-  faSidecars( vsPath, reFileRead, vsTestPath ){
+  faSidecars( vsPath, fbFileRead, vsTestPath ){
     const vaSide = [];
     const vaSideBad = [];
     vsPath.filter(( sPath ) => sPath.endsWith( ".concord" )).forEach((
@@ -4329,7 +4390,7 @@ class TreeReader {
         : sKind !== "file" ? "not a regular file"
         : sPathFile.endsWith( ".concord" ) ? "side file"
           : vsTestPath.has( sPathFile ) ? "test file"
-            : reFileRead.test( sPathFile ) ? "commentable" : "read";
+            : fbFileRead( sPathFile ) ? "commentable" : "read";
       if( sState !== "read" ){
         vaSideBad.push({ sPath, sState });
         return;
@@ -4373,21 +4434,24 @@ class TreeReader {
   }
 
   faFilesRead(){
-    const reFileRead = freFileForLanguages( this.aConfig.vsLanguage );
     const vsDirSuite = this.fvsDirExpanded(
       this.aConfig.vaSuite.flatMap(( aSuite ) => aSuite.vsDir )
     );
     const vsPathRead = Array.from( new Set(
       this.fvsDirExpanded( this.aConfig.vsDirRead )
         .flatMap(( sDir ) => this.fvsPathWalk( sDir ))
-        .filter(( sPath ) => reFileRead.test( sPath ))
+        .filter(( sPath ) => fbFileForLanguages(
+          sPath, this.aConfig.vsLanguage, this.sDirRoot
+        ))
     )).sort();
     const vsPathTree = Array.from( new Set(
       this.fvsDirExpanded( this.aConfig.vsDirRead )
         .flatMap(( sDir ) => this.fvsPathWalk( sDir ))
     )).sort();
     const { vaSide, vaSideBad } = this.faSidecars(
-      vsPathTree, reFileRead,
+      vsPathTree, ( sPath ) => fbFileForLanguages(
+        sPath, this.aConfig.vsLanguage, this.sDirRoot
+      ),
       new Set( this.fvaTest().map(( aFile ) => fsPosix( aFile.sPath )))
     );
     const vaGuided = this.fvaFile( vsPathRead ).concat( vaSide );
@@ -4401,14 +4465,15 @@ class TreeReader {
   }
 
   fvaFileCiting(){
-    const reFileRead = freFileForLanguages( this.aConfig.vsLanguage );
     const vsDir = this.fvsDirExpanded( this.aConfig.vsDirRead.concat(
       this.aConfig.vaSuite.flatMap(( aSuite ) => aSuite.vsDir )
     ));
     return this.fvaFile( Array.from( new Set(
       vsDir
         .flatMap(( sDir ) => this.fvsPathWalk( sDir ))
-        .filter(( sPath ) => reFileRead.test( sPath ))
+        .filter(( sPath ) => fbFileForLanguages(
+          sPath, this.aConfig.vsLanguage, this.sDirRoot
+        ))
     )).sort()).map(( aFile ) => this.faFile( fsPosix( aFile.sPath )));
   }
 

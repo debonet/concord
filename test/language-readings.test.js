@@ -30,7 +30,7 @@ test( "language readings — each language has one registered reader with the "
   const maReader = faReaders( fStub );
   expect( Array.from( maReader.keys() )).toEqual( asLanguageName );
   expect( asLanguageName ).toEqual([
-    "javascript", "typescript", "css", "html", "rust"
+    "javascript", "typescript", "css", "html", "rust", "bash"
   ]);
   for( const aReader of maReader.values() ){
     for( const sOperation of [
@@ -40,6 +40,45 @@ test( "language readings — each language has one registered reader with the "
       expect( typeof aReader[ sOperation ]).toBe( "function" );
     }
   }
+});
+
+// @proves s-ycwj4o@7836a5a
+// @proves s-9fk6j3@cf4d322
+// @proves s-g76ukd@a8b4b44
+test( "language-readings — Bash shebang files, comments, directives and suite units",
+() => {
+  const sHereDocument = "cat <<'EOF'\n# not a directive\nEOF\n"
+    + "# @implements s-lng005@0000000\n";
+  const [ , vnCommentBash ] = require( "../scripts/languages/bash" )
+    .ftMaskBash( sHereDocument );
+  expect( vnCommentBash ).toEqual([ sHereDocument.lastIndexOf( "#" ) ]);
+  fWriteTree([ "bash" ], {
+    "src/tool": [
+      "#!/usr/bin/env bash",
+      "# @implements " + fsRef( "s-lng005" ),
+      "# @tested-by test/run_tests.sh",
+      "printf '%s\\n' 'literal # is not a comment'",
+      ""
+    ].join( "\n" ),
+    "test/run_tests.sh": [
+      "#!/usr/bin/env bash",
+      "# @spec specs/a.md",
+      "# @proves " + fsRef( "s-lng001" ),
+      "# @proves " + fsRef( "s-lng005" ),
+      "printf '%s\\n' 'run suite'",
+      ""
+    ].join( "\n" ),
+    "test/stubs/tool.sh": "#!/bin/sh\n# a helper, not a suite\n"
+  });
+  fs.chmodSync( path.join( sDirFixture, "src/tool" ), 0o755 );
+  const sOut = fsReport();
+  expect( fvsProver( "s-lng001" )).toEqual([ "test/run_tests.sh:3  run_tests" ]);
+  expect( fvsLineInSection( sOut, sTitleNoImplementation )).not.toContain(
+    expect.stringContaining( "s-lng005" )
+  );
+  expect( fvsLineInSection( sOut, sTitleNoTestedBy )).toEqual( [] );
+  expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual( [] );
+  expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 1" );
 });
 
 const fsHash = ( sText ) => (

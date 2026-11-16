@@ -165,7 +165,7 @@ describe( "test names carry nothing", () => {
 });
 
 describe( "a spec path", () => {
-  // @proves s-92u5vq@fbe31e8
+  // @proves s-92u5vq@c29e9c7
   test( "given absolute is the same spec as given relative", () => {
     const aRunRel = faRun( [ sPathSpecRel ] );
     const aRunAbs = faRun( [ path.join( sDirFixture, sPathSpecRel ) ] );

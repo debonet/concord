@@ -150,7 +150,7 @@ describe( "concord-hook — its forms", () => {
     expect( fvaGitCall()).toEqual([]);
   });
 
-  // @proves s-92u5vq@fbe31e8
+  // @proves s-92u5vq@c29e9c7
   test( "PAIRED: install and check each act on the project whose root is "
     + "the working directory", () => {
     fSetup();

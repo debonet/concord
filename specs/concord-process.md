@@ -163,12 +163,10 @@ Concord where it stands.
 * {#s-ppyrc4 <arch,m-la578k@404c7f8} **Legacy adoption lines.** `concord init`
   recognizes as legacy markers a standalone line of the former adoption form
   `Read @<path>/AGENTS.md before any other work; this project uses ConcordSTC.`
-  and the former opt-out line `This project does not use ConcordSTC.`. It
-  reports the project as adopted or opted out respectively and tells the user
-  to run `concord migrate`; it does not ask them to choose again and does not
-  change files. A file containing both old and current markers, or contradictory
-  adoption and opt-out markers, is reported as conflicting rather than treated
-  as adopted or opted out.
+  and the former opt-out line `This project does not use ConcordSTC.`. When
+  either is the only adoption marker, `init` replaces it with the current
+  adoption line. A file containing multiple adoption markers or a hand-written
+  marker is reported as conflicting and left unchanged.
 * {#s-idlwf3 <arch,m-la578k@404c7f8} **Name migration command.** `concord migrate`,
   run from a project root without arguments, replaces one recognized legacy
   adoption line with the canonical adoption line using the installed package's
@@ -188,7 +186,7 @@ Concord where it stands.
   `AGENTS.md`, creating the file if it is absent.
 > {#m-cmifzx} USER 2026-11-09: "Seems like the harness should be told to run it"
 > {#m-8mr0ax} USER 2026-11-09: "I kind of want the flow to be: shell: start-harness (e.g. `claude` or `codex`) prompt: I want to use concordstc for this project model: let me look up concordstd. I see. Let me see if it is installed. npm install --global. concord init"
-* {#g-2frto4 <m-cmifzx@2e5194f,m-8mr0ax@8f398c7 for=main via=prompt} **Start setup inside the harness.** When the human asks to adopt Concord, the main thread checks whether the `concord` command is installed; if it is absent, it installs `@debonet/concord` globally with `npm install --global @debonet/concord`. It then runs `concord init` from the project root inside the harness, reads the printed status and setup steps, and follows them before launching an architect or fixer. This explicit request is the human's adoption decision, including when the project currently has an opt-out line; replace that line with the adoption line and do not ask again. `concord init` is read-only.
+* {#g-2frto4 <m-cmifzx@2e5194f,m-8mr0ax@8f398c7 for=main via=prompt} **Start setup inside the harness.** When the human asks to adopt Concord, the main thread checks whether the `concord` command is installed; if it is absent, it installs `@debonet/concord` globally with `npm install --global @debonet/concord`. It then runs `concord init` from the project root inside the harness, reviews the files it creates, resolves any reported conflicts or remaining setup steps, and only then launches an architect or fixer. This explicit request is the human's adoption decision, including when the project currently has an opt-out line; replace that line with the adoption line and do not ask again.
 * {#g-n9fysz <arch,m-c2gwx4@a84e9f9 for=architect via=prompt} **An architect that finds no line
   asks.** An architect launched in a project whose root `AGENTS.md` holds
   neither line writes no Concord file or marker and returns the question to
@@ -218,16 +216,11 @@ Concord where it stands.
   its usage to standard error and exits 2. For a known utility, it passes all
   remaining arguments in order, preserves the working directory and standard
   streams, and exits with that utility's status.
-* {#s-ualukl <arch,m-f9xsif@e917ff9} **Project setup instructions.** `concord init`, run from a
-  project root without additional arguments, prints an actionable sequence
-  for setting up that project to use Concord. It identifies whether the root
-  `AGENTS.md`, `concord.json`, master-command build targets and the
-  `.githooks/pre-commit` file are present,
-  gives the absolute path to the installed package's `AGENTS.md`, and gives
-  the exact Concord adoption line with that path and the next setup steps
-  that apply to the observed project state. It does not modify project files
-  and exits 0 after printing the instructions. Arguments to `init` print its
-  usage to standard error and exit 2.
+* {#m-31dbd9} USER 2026-11-15: "That's the wrong behavior. 'init' means initialize. It should get the project set up to use concord."
+* {#s-ualukl <arch,m-f9xsif@e917ff9,m-31dbd9@63bdd97} **Project initialization.** `concord init`, run from a project root without additional arguments, creates missing baseline Concord setup files, preserves existing project settings and build commands, reports each change and any remaining work, and attempts to install the pre-commit gate after setup. It exits 0 when setup and hook installation succeed, 1 when a conflict prevents a safe write or when the gate or hook installation needs attention, and 2 when arguments are invalid or the working directory is not a project directory.
+* {#s-qfk1yl <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Generated settings.** When `concord.json` is absent, `concord init` writes a valid settings file using the project name from `package.json` or the root directory name, an existing `test` or `tests` directory (creating `test` when neither exists), the languages it finds among configured language readers (defaulting to `javascript` when it finds none), the project root as the read directory, and standard ignored directories. It never replaces an existing `concord.json`.
+* {#s-s3xpz5 <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Build commands.** `concord init` adds `spec-map` and `spec-coverage` commands to `package.json` when it is the project's build file, or adds equivalent targets to a new `Makefile` when no supported build file exists. It preserves unrelated fields and commands, and never replaces an existing command that does not already invoke the matching Concord utility; it reports that conflict and exits 1.
+* {#s-tyykqo <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Adoption and gate.** `concord init` writes the standalone adoption line to the root `AGENTS.md`, creating the file if needed, and replaces the standalone former opt-out or legacy adoption line. It leaves conflicting or hand-written adoption markers unchanged and reports them for resolution. Once the settings and build commands are valid, it runs `concord concord-hook install`; a gate refusal leaves the hook uninstalled, reports the gate output, and returns 1 so the project can fix its existing specification or coverage issues and rerun `concord init`.
 * {#s-n5ue8s <arch,m-f9xsif@e917ff9} Keep each utility implementation under `~/@concord/bin`;
   the `concord` command dispatches to those utilities. `spec-map` takes every
   argument form its spec gives after `concord spec-map`, including assignment,
@@ -239,8 +232,8 @@ Concord where it stands.
 * {#g-njdhjd <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **JavaScript on Node.** Run Concord's JavaScript commands with the Node version declared in its build spec, regardless of the adopting project's language.
 * {#s-92u5vq <arch,m-u4pusr@2be69ad} **Run from the project root.** Every Concord command but
   `agents-sync` acts on the adopting project whose root is its working directory, and reads,
-  writes and prints every project path relative to that root. `concord init` also
-  inspects the project rooted at its working directory and prints setup instructions for it.
+  writes and prints every project path relative to that root. `concord init` initializes the
+  project rooted at its working directory and prints paths relative to that root.
 * {#s-jhtp93 <arch,m-u4pusr@2be69ad} **One settings file.** An adopting project's declared
   values (What a project declares) are in one file, `concord.json` at its
   root, which every Concord command reads; {#s-2fs4an <arch} a command that acts on
@@ -579,7 +572,7 @@ Concord where it stands.
   file holds, and `directories`, a non-empty array of directories relative to
   the project root, as in `{ "name": "web", "directories": [ "packages/web-client/test" ] }`.
 * {#s-j38rej <arch,s-jhtp93@4c4ca3c,m-jz8p3b@ccdaa82,m-fi6q34@6b5ef4d} **Languages.** `languages` is a non-empty array of
-  language names, each `javascript`, `typescript`, `css`, `html` or `rust`, naming the readings
+  language names, each `javascript`, `typescript`, `css`, `html`, `rust` or `bash`, naming the readings
   Language readings defines.
 * {#s-sx6vdb <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Read and ignored directories.** `read_directories` is an array
   of the directories read for code and guidance references, and
@@ -643,10 +636,15 @@ Concord where it stands.
 
 ## Language readings
 
+* {#m-y2l3xm} USER 2026-11-15: "Looks like we need to add a bash support module"
+
 * {#s-3fzgrr <m-efrniq@9d737ed} The user asked for language support to live in one file per language.
 * {#s-rh750h <m-efrniq@9d737ed} **One module per language.** Concord keeps each language reading in one module under `scripts/languages/`, named for that language, such as `javascript.js`, `typescript.js`, `css.js`, `html.js` or `rust.js`. That module owns all behavior specific to reading that language: the files and test files it recognizes, comments and literals, directives and their placement, source classification, header boundaries, test and grouping units, and content normalization.
 * {#s-p54hx2 <m-efrniq@9d737ed} **Shared checker boundary.** The checker consumes language modules through one common reading interface. It owns project traversal, spec and link resolution, coverage, reporting and shared language-independent helpers; it does not select language behavior through extension lists or language-specific branches spread through the checker. Adding a language means adding its reading module and registering that module in one central language registry.
 * {#s-k9xdwy <m-efrniq@9d737ed} **Language module contract.** A reading module provides its language name and file extensions, test-file recognition, and the operations the checker needs to read source, find comments and directives, determine header and test/group units, and normalize content. A module may use shared language-independent helpers, but behavior that interprets a language belongs in that language's module.
+* {#s-ycwj4o <m-y2l3xm@91f2a22} **Bash reading.** Concord has a `bash` reading in `scripts/languages/bash.js`, registered in the central language registry. It reads `.sh` and `.bash` files and executable extensionless files whose first line has a Bash shebang. Bash recognition and interpretation live in that module.
+* {#s-9fk6j3 <s-ycwj4o@7836a5a,m-y2l3xm@91f2a22} **Bash comments and directives.** Bash comments begin with `#` where the shell grammar permits a comment, outside single-quoted, double-quoted, ANSI-C-quoted, escaped text, and here-document bodies. A full-line comment may carry the Bash directives `@spec`, `@proves`, `@guards`, `@follows`, `@implements`, `@tested-by`, or `@checks` using the same meanings and placement rules as other script languages; `#!` on the first line is a shebang, not a directive. A `#` in a literal, here-document body, or escaped word is not a comment.
+* {#s-g76ukd <s-k9xdwy@eb62f8a,s-ycwj4o@7836a5a,m-y2l3xm@91f2a22} **Bash source and tests.** The Bash reading preserves shell words and literals while removing comments for content normalization. A Bash test file is named `*.test.sh`, `*.test.bash`, `test_*.sh`, `*_test.sh`, or `run_tests.sh` under a declared suite directory. The whole Bash test file is one test unit named by its basename, because Bash has no common test-case syntax; a file-level `@proves` directive therefore links the suite as a whole. Bash files do not declare Concord test wrappers or grouping units.
 
 * {#p-jczx2d >specs/spec-map.md#test-files-and-owner-lines,s-pjx54j,s-2l6ys1,specs/spec-map.md#statements-that-describe-a-test}
   The JavaScript reading is the one `specs/spec-map.md` and its siblings write
