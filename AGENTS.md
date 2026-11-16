@@ -4,6 +4,8 @@ This file is the shared instruction set for any coding agent (Claude Code, Codex
 
 ## What Concord is
 
+This project uses IDD. Before other work, read the installed package's instructions at the path printed by `node -p "require.resolve('@debonet/idd/INSTRUCTIONS.md')"`. If IDD is not installed, run `npm install @debonet/idd` first.
+
 Concord keeps a project's specs and tests in step. Its specs are the authority on everything below; read the one a question turns on:
 
 * `specs/concord-process.md` — the process, what a project declares, what stops a commit
