@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "id": "78318b6e77764724418c40a71a8052690170c619b22e286c04b1ed5ee49e3521",
+    "branchHash": "72c30ca5a6f1a6c676eec69c2095d04d06186f2109e22cf667a678b8ec95d874",
+    "title": "How should Concord handle coverage for Bash-only projects?",
+    "body": "When `concord init` is run in a project whose code and tests are Bash, the generated `spec-coverage` command needs coverage settings. Concord's current coverage runner runs Jest and measures JavaScript, so a Jest-based declaration would fail on this project; leaving coverage undeclared makes `spec-coverage` exit with an error. What should Concord provide for Bash-only projects?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Concord measures which Bash source lines the Bash test scripts execute, and `spec-coverage` works for this project."
+      },
+      {
+        "key": "B",
+        "text": "Concord reports Bash execution coverage as unsupported; setup clearly says coverage is incomplete until Concord supports it."
+      },
+      {
+        "key": "X",
+        "text": "None of the above are right. Let me explain:"
+      }
+    ],
+    "createdAt": "2026-11-16T19:42:32.553Z"
+  }
+]
