@@ -1,6 +1,8 @@
 // @implements s-ycwj4o@7836a5a
 // @implements s-9fk6j3@cf4d322
 // @implements s-g76ukd@a8b4b44
+// @implements s-k3nfhj@45aa33f
+// @implements s-qqyciz@cfdb477
 // @tested-by test/language-readings.test.js
 "use strict";
 
@@ -148,6 +150,40 @@ const fvsClassBash = ( sText ) => {
   return vsClass;
 };
 
+const fvnExecutableLineBash = ( sText ) => {
+  const vsLine = ftMaskBash( sText )[ 0 ].split( "\n" );
+  const vnExecutable = [];
+  let bContinued = false;
+  vsLine.forEach(( sLine, nLine ) => {
+    const sTrim = sLine.trim();
+    const bContinues = /\\\s*$/.test( sTrim );
+    if( !bContinued && sTrim !== ""
+      && !/^(?:then|do|fi|done|else|esac|;;|;&|;;&|\{|\})\s*;?$/.test( sTrim )
+      && !/^(?:if|while|until|select|case\b.*\bin\s*;?|function\s+[A-Za-z_][A-Za-z0-9_]*)$/.test( sTrim )
+      && !/^(?:function\s+)?[A-Za-z_][A-Za-z0-9_]*\s*(?:\(\s*\))?\s*\{\s*$/.test( sTrim )
+    ){
+      vnExecutable.push( nLine + 1 );
+    }
+    bContinued = bContinues;
+  });
+  return vnExecutable;
+};
+
+const freTraceBash = /__CONCORD_COV__(.*):([0-9]+)__ /;
+
+const fvaTraceBash = ( sText, sDirCwd ) => {
+  const aaLineForPath = new Map();
+  sText.split( /\r?\n/ ).forEach(( sLine ) => {
+    const vaMatch = sLine.match( freTraceBash );
+    if( vaMatch === null ){ return;}
+    const sPath = path.resolve( sDirCwd, vaMatch[ 1 ] );
+    const vnLine = aaLineForPath.get( sPath ) || new Set();
+    vnLine.add( Number( vaMatch[ 2 ] ));
+    aaLineForPath.set( sPath, vnLine );
+  });
+  return aaLineForPath;
+};
+
 const fbBashShebang = ( sPath, sText ) => (
   path.extname( sPath ) === ""
   && typeof sText === "string"
@@ -228,6 +264,7 @@ const fCreate = ( f ) => ({
   },
   fsNormal: ( sPath, sText ) => f.fsCodeNormal( sText, fvsClassBash( sText )),
   fvsClass: ( sPath, sText ) => fvsClassBash( sText ),
+  fvnExecutableLine: ( sText ) => fvnExecutableLineBash( sText ),
   fvaCodeReference: ( aFile ) => fvaCodeReferenceForBash( aFile, f ),
   fvaFollows: ( aFile ) => f.fvaFollowsForCommentReader( aFile ),
   ftComments: ( aFile ) => [ ftMaskBash( aFile.sText )[ 1 ], [] ],
@@ -239,6 +276,9 @@ const fCreate = ( f ) => ({
 fCreate.sLanguageName = "bash";
 fCreate.fbCanReadPath = ( sPath, sText ) => /\.(?:sh|bash)$/.test( sPath )
   || fbBashShebang( sPath, sText );
+fCreate.fbIsTestPath = ( sPath ) => reTestName.test( path.basename( sPath ));
 fCreate.ftMaskBash = ftMaskBash;
 fCreate.fvsClassBash = fvsClassBash;
+fCreate.fvnExecutableLineBash = fvnExecutableLineBash;
+fCreate.fvaTraceBash = fvaTraceBash;
 module.exports = fCreate;

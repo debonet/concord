@@ -182,7 +182,7 @@ describe( "concord-settings — a command run with no settings file", () => {
 // @proves s-j38rej@7fe18e5
 // @proves s-sx6vdb@f89dcd2
 // @proves s-wu6tv6@dae6381
-// @proves s-xqx0r5@8596529
+// @proves s-xqx0r5@ae22890
 test( "a project accepts the human-readable concord.json keys", () => {
   fWriteTree({
     "concord.json": fsReadableConcordJson(),
@@ -193,7 +193,7 @@ test( "a project accepts the human-readable concord.json keys", () => {
   expect( aRun.sStderr ).toBe( "" );
 });
 
-// @proves s-tps44b@015cdec
+// @proves s-tps44b@b7d58ca
 // @proves s-ulp42m@25ec2c6
 test( "each legacy concord.json key warns with its canonical key and spec link", () => {
   fWriteTree({
@@ -446,7 +446,7 @@ test( "the legacy dirs_specs key is accepted as spec_directories", () => {
   );
 });
 
-// @proves s-tps44b@015cdec
+// @proves s-tps44b@b7d58ca
 test( "a bad legacy dirs_specs value is reported under its canonical name",
 () => {
   fWriteTree({
@@ -509,7 +509,7 @@ test( "a matched nested Concord project keeps its own spec map", () => {
 // @proves s-j38rej@7fe18e5
 // @proves s-sx6vdb@f89dcd2
 // @proves s-wu6tv6@dae6381
-// @proves s-xqx0r5@8596529
+// @proves s-xqx0r5@ae22890
 describe( "concord-settings — a bad settings file", () => {
   test( "a concord.json directory is reported as unreadable", () => {
     fWriteTree({});

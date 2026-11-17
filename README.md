@@ -52,7 +52,7 @@ cd path/to/your-project
 concord init
 ```
 
-`concord init` creates missing baseline setup: `concord.json`, the `spec-map` and `spec-coverage` build commands, and the Concord adoption line in the root `AGENTS.md`. It detects configured languages from the project files and preserves existing settings and commands. It then attempts to install the pre-commit gate. If the gate finds existing specification or coverage issues, init reports them and leaves the hook uninstalled; fix the issues and rerun `concord init`.
+`concord init` creates missing baseline setup: `concord.json`, the `spec-map` and `spec-coverage` build commands, and the Concord adoption line in the root `AGENTS.md`. It detects configured languages from the project files, preserves existing settings and commands, and adds a Bash coverage declaration when it finds Bash test scripts and implementation files. It then attempts to install the pre-commit gate. If the gate finds existing specification or coverage issues, init reports them and leaves the hook uninstalled; fix the issues and rerun `concord init`.
 
 For an existing project whose `AGENTS.md` still uses the former ConcordSTC adoption or opt-out line, `concord init` updates that standalone marker while preserving the rest of the file. See the [migration guide](docs/opt-in-line-migration.md).
 
@@ -84,6 +84,8 @@ Run commands from the adopting project root:
 | `concord spec-map --clear-cache` | Clears the current project's persistent spec-map cache. |
 | `concord spec-conflicts` | Refreshes ranked candidates and prints only the eligible review count. |
 | `concord link-propose` | Suggests likely implementation links for human or agent review. |
+
+For Bash projects, `concord init` configures source-line measurement when it can identify Bash tests and implementation files. Bash runs can also be declared in `concord.json` with `"runner": "bash"` on a coverage run; each recognized Bash test script runs as one test unit. The coverage report maps traced Bash source lines to those scripts and lists executable command lines no test reached as uncovered. See [Bash coverage setup](docs/migration-bash-coverage.md).
 
 ### Reviewing possible spec conflicts
 

@@ -1114,7 +1114,7 @@ describe( "spec-coverage-writes-only-tmp", () => {
   });
 });
 
-// @proves s-9prjr2@99200b9
+// @proves s-9prjr2@1a46cc4
 describe( "a suite that does not run to completion keeps the previous "
   + "measurement", () => {
   test( "jest erroring names the suite and exits non-zero", () => {
@@ -1200,7 +1200,7 @@ describe( "the measurement records the time it was taken", () => {
   });
 });
 
-// @proves s-qpkoc3@5bb9377
+// @proves s-qpkoc3@605c600
 test( "the real runner's web build runs the checkout's build:web script "
   + "and reports whether it succeeded", () => {
   const runner = new SuiteRunner( sDir, () => {});
@@ -1268,7 +1268,7 @@ test( "the command run as a script prints the report of the last "
   expect( aResult.stdout ).toBe( faRun([ "--report" ]).sOut );
 });
 
-// @proves s-qpkoc3@5bb9377
+// @proves s-qpkoc3@605c600
 // @proves s-bi8reu@bf16aef
 describe( "a measurement runs both suites, the web build first, with "
   + "coverage", () => {

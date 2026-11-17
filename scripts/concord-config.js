@@ -8,7 +8,7 @@
 // @implements s-sx6vdb@f89dcd2
 // @implements s-zupjie@e48f894
 // @implements s-wu6tv6@dae6381
-// @implements s-xqx0r5@8596529
+// @implements s-xqx0r5@ae22890
 // @implements s-w8ivpb@ffb0e3a
 // @implements s-4j8qm7@89b7c16
 // @implements s-pwo03p@679e44b
@@ -16,7 +16,7 @@
 // @implements s-6rfqdf@00eba76
 // @implements s-bqv6fu@d463477
 // @implements s-jpfy1o@af3aa2b
-// @implements s-tps44b@015cdec
+// @implements s-tps44b@b7d58ca
 // @implements s-ulp42m@25ec2c6
 // @implements s-np5ty8@bb18bff
 // @tested-by test/concord-settings.test.js
@@ -40,6 +40,10 @@ const fbStringFull = ( x ) => typeof x === "string" && x !== "";
 
 const fsProblemString = ( x ) => (
   fbStringFull( x ) ? null : "is not a non-empty string"
+);
+
+const fsProblemCoverageRunner = ( x ) => (
+  x === "bash" ? null : "must be `bash` when present"
 );
 
 const ffsProblemStrings = ( bFull ) => ( x ) => (
@@ -106,7 +110,8 @@ const aSchemaSuite = {
 
 const aSchemaRun = {
   sName: { bRequired: true, fsProblem: fsProblemString },
-  sDirRun: { bRequired: true, fsProblem: fsProblemString }
+  sDirRun: { bRequired: true, fsProblem: fsProblemString },
+  sRunner: { bRequired: false, fsProblem: fsProblemCoverageRunner }
 };
 
 const aSchemaCoverage = {
@@ -155,6 +160,7 @@ const asCanonicalKey = {
   aCoverage: "coverage",
   vaRun: "runs",
   sDirRun: "directory",
+  sRunner: "runner",
   vsCommandBefore: "commands_before",
   vsDirSource: "source_directories",
   sPathReview: "review_file"
@@ -190,7 +196,8 @@ const vaAliasConfigCoverage = [
 ];
 
 const vaAliasConfigRun = [
-  [ "sName", "name" ], [ "sDirRun", "directory" ]
+  [ "sName", "name" ], [ "sDirRun", "directory" ],
+  [ "sRunner", "runner" ]
 ];
 
 const faNormalizeMembers = (

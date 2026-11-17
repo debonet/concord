@@ -1,5 +1,6 @@
 // @implements s-ualukl@413cc4f
-// @implements s-qfk1yl@ce3e3eb
+// @implements s-qfk1yl@7d3f9a7
+// @implements s-1rrzwx@2cfa4a7
 // @implements s-s3xpz5@265fff1
 // @implements s-tyykqo@a902908
 // @implements s-ppyrc4@814bce2
@@ -10,6 +11,7 @@ const fs = require( "fs" );
 const path = require( "path" );
 const { spawnSync } = require( "child_process" );
 const { faReaders, asLanguageName } = require( "./languages" );
+const fCreateBash = require( "./languages/bash.js" );
 
 const vsBuildFiles = [ "Makefile", "makefile", "GNUmakefile" ];
 const sUsage = "usage: concord init\n";
@@ -56,6 +58,77 @@ const faLanguagesForFiles = ( sRoot, vsPath ) => {
   });
   return asLanguage.size === 0 ? [ "javascript" ]
     : asLanguageName.filter(( sName ) => asLanguage.has( sName ));
+};
+
+const fvsDirSegments = ( sPath ) => {
+  const vsPart = sPath.split( "/" );
+  const vsDir = vsPart.slice( 0, -1 ).map(( sPart, n ) => (
+    vsPart.slice( 0, n + 1 ).join( "/" )
+  ));
+  return vsDir.length === 0 ? [ "." ] : vsDir;
+};
+
+const freDirectoryPattern = ( sPattern ) => new RegExp(
+  "^" + sPattern.split( "*" ).map(( sPart ) => sPart.replace(
+    /[.+?^${}()|[\]\\]/g, "\\$&"
+  )).join( "[^/]+" ) + "$"
+);
+
+const faBashCoverageForProject = ( sRoot, vsPathFile, aConfig, fRead ) => {
+  if( aConfig === null || typeof aConfig !== "object"
+    || Array.isArray( aConfig ) || Object.hasOwn( aConfig, "coverage" )
+    || Object.hasOwn( aConfig, "aCoverage" )
+  ){
+    return null;
+  }
+  const vsBashPath = vsPathFile.filter(( sPath ) => {
+    const sAbsolute = path.join( sRoot, sPath );
+    let sText;
+    try{ sText = fRead( sAbsolute, "utf8" );}
+    catch( xError ){ return false;}
+    return fCreateBash.fbCanReadPath( sAbsolute, sText )
+      && ( !fCreateBash.fbRequiresExecutable
+        || ( fs.statSync( sAbsolute ).mode & 0o111 ) !== 0 );
+  }).map(( sPath ) => sPath.split( path.sep ).join( "/" ));
+  const vaSuite = aConfig.suites || aConfig.vaSuite;
+  if( !Array.isArray( vaSuite ) || vsBashPath.length === 0 ){ return null;}
+  const vsDirSuite = new Set();
+  vaSuite.forEach(( aSuite ) => {
+    const vsDir = aSuite.directories || aSuite.vsDir || [];
+    const vsCandidate = new Set( vsBashPath.flatMap( fvsDirSegments ));
+    vsDir.forEach(( sPattern ) => {
+      const rePattern = freDirectoryPattern( sPattern );
+      vsCandidate.forEach(( sDir ) => {
+        if( rePattern.test( sDir )){ vsDirSuite.add( sDir );}
+      });
+    });
+  });
+  const vsDirTestAll = Array.from( vsDirSuite ).filter(( sDir ) => (
+    vsBashPath.some(( sPath ) => ( sDir === "." || sPath.startsWith( sDir + "/" ))
+      && fCreateBash.fbIsTestPath( sPath ))
+  )).sort();
+  const vsDirTest = vsDirTestAll.filter(( sDir ) => !vsDirTestAll.some(( sParent ) => (
+    sParent !== sDir && sDir.startsWith( sParent + "/" )
+  )));
+  const vaRun = vsDirTest.map(( sDir, n ) => ({
+    name: "bash-" + ( n + 1 ), directory: sDir, runner: "bash"
+  }));
+  if( vaRun.length === 0 ){ return null;}
+  const asTestDir = new Set( vsDirTest );
+  const vsDirSource = Array.from( new Set( vsBashPath
+    .filter(( sPath ) => !fCreateBash.fbIsTestPath( sPath ))
+    .filter(( sPath ) => !Array.from( asTestDir ).some(( sDir ) => (
+      sPath.startsWith( sDir + "/" )
+    )))
+    .map(( sPath ) => path.posix.dirname( sPath ) || ".")
+  )).sort();
+  if( vsDirSource.length === 0 ){ return null;}
+  return {
+    runs: vaRun,
+    commands_before: [],
+    source_directories: vsDirSource,
+    review_file: "spec-coverage-review.md"
+  };
 };
 
 const fsAdoptionLine = ( sPackageRoot ) => (
@@ -215,6 +288,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   }
 
   let aConfig = null;
+  let bConfigWrite = !fExists( sConfig );
   let sTestDirCreate = null;
   if( !fExists( sConfig )){
     const sTestDir = [ "test", "tests" ].find(( sDir ) => (
@@ -241,6 +315,15 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
     catch( xError ){ vsProblem.push( "concord.json is not valid JSON" );}
   }
 
+  const aBashCoverage = faBashCoverageForProject(
+    sRoot, vsPathFile, aConfig, fRead
+  );
+  if( aBashCoverage !== null ){
+    aConfig.coverage = aBashCoverage;
+    bConfigWrite = true;
+    vsChange.push( "added Bash coverage declaration to concord.json" );
+  }
+
   const aBuild = faBuildUpdate(
     sRoot, sPackageText, aPackage
   );
@@ -258,7 +341,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
     if( sTestDirCreate !== null ){
       fMkdir( path.join( sRoot, sTestDirCreate ), { recursive: true });
     }
-    if( !fExists( sConfig )){
+    if( bConfigWrite ){
       fWriteFile( sConfig, JSON.stringify( aConfig, null, 2 ) + "\n" );
     }
     if( aBuild.vaWrite.length > 0 ){
@@ -304,4 +387,4 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   return 0;
 };
 
-module.exports = { fzMain, vsBuildFiles };
+module.exports = { fzMain, vsBuildFiles, faBashCoverageForProject };

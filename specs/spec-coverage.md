@@ -24,6 +24,10 @@ shows exactly which lines its tests touch."
 > code that is unspecified? (which as you point out is the biggest benefit of
 > linking code to specification)"
 
+> {#m-84wkyp} RULING (CEO), 2026-11-17, q78318b6e77764724418c40a71a8052690170c619b22e286c04b1ed5ee49e3521:
+> "Concord measures which Bash source lines the Bash test scripts execute,
+> and `spec-coverage` works for this project."
+
 ## API
 
 * {#s-toq51s <m-hcwpy6@a59d7de} `npm run spec-coverage` at the repo root measures, then
@@ -42,15 +46,18 @@ shows exactly which lines its tests touch."
   prints nothing on stdout and exits non-zero.
 * {#s-aw1u7o <arch} No other command runs it: `npm test`, its `pretest`, the web
   suite run and `npm run spec-map` never invoke it.
+* {#s-tn2pd8 <m-84wkyp@31d83f9} A coverage run whose `runner` is `bash` runs the Bash test scripts
+  found under its configured directory, each as one test unit represented by
+  its project-relative test path. A run with no `runner` keeps the existing
+  Jest behavior.
 
 ## Observable Behaviour
 
 ### Measurement
 
-* {#s-qpkoc3 <m-hcwpy6@a59d7de} A measurement runs the root jest suite and the web jest
-  suite, each over the same test files and with the same preconditions as
-  their ordinary runs (the web build first), with code coverage collected,
-  except the default time limit of a test.
+* {#s-qpkoc3 <m-hcwpy6@a59d7de} Each Jest run in a measurement runs over the same
+  test files and with the same preconditions as its ordinary run, with code
+  coverage collected, except the default time limit of a test.
 * {#s-xoq4ak <arch} Under measurement, a test that sets no time limit of its own
   runs with six times its suite's ordinary default limit; a test that sets
   its own limit keeps that limit unchanged.
@@ -111,9 +118,23 @@ shows exactly which lines its tests touch."
   no in-process call produces that record, and the run's start takes seconds
   whatever fixture it runs, so a case that waits on it is a real-process
   probe (`specs/test-plan.md`, Case unit).
-* {#s-9prjr2 <arch} When either suite fails to run to completion (jest itself
-  errors, or a suite fails with no failing test), the command names the suite
-  on stderr, keeps the previous completed measurement, and exits non-zero.
+* {#s-9prjr2 <arch} When a run fails to start or complete, the command names
+  the run on stderr, keeps the previous completed measurement and exits
+  non-zero.
+* {#s-1cabsl <m-84wkyp@31d83f9} A Bash coverage run executes each discovered test script with
+  Bash execution tracing enabled and attributes every traced source line in
+  the declared source scope to that script's test unit. It records failing
+  scripts as failed tests and continues through the remaining scripts.
+* {#s-qqyciz <arch} Bash coverage includes each Bash command line in the source
+  scope, including command lines that no test executes, so the report can show
+  unexecuted Bash code. Lines that contain only comments, blank space, or shell
+  syntax with no command are not executable lines.
+* {#s-k3nfhj <arch} Bash source files in scope are `.sh` and `.bash` files and
+  executable extensionless files with a Bash shebang; Bash test files and
+  files under ignored directories are excluded.
+* {#s-ghfwp5 <arch} A Bash coverage run with no matching test scripts is incomplete;
+  the command names the run on stderr, keeps the previous completed
+  measurement and exits non-zero.
 
 ### What it writes
 

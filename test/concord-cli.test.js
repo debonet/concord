@@ -130,7 +130,7 @@ test( "the npm package exposes concord and routes helper scripts through it", ()
 });
 
 // @proves s-ualukl@413cc4f
-// @proves s-qfk1yl@ce3e3eb
+// @proves s-qfk1yl@7d3f9a7
 // @proves s-s3xpz5@265fff1
 // @proves s-tyykqo@a902908
 test( "concord init creates project settings, npm targets and adoption line, then installs the gate",
@@ -144,6 +144,7 @@ test( "concord init creates project settings, npm targets and adoption line, the
     fs.mkdirSync( path.join( sRoot, "src" ));
     fs.writeFileSync( path.join( sRoot, "src", "tool" ), "#!/usr/bin/env bash\necho ok\n" );
     fs.chmodSync( path.join( sRoot, "src", "tool" ), 0o755 );
+    fs.writeFileSync( path.join( sRoot, "test", "run_tests.sh" ), "#!/usr/bin/env bash\ntrue\n" );
     const { cExit, sOut, sErr } = fInit( sRoot );
     assert.strictEqual( cExit, 0 );
     assert.strictEqual( sErr, "" );
@@ -155,6 +156,10 @@ test( "concord init creates project settings, npm targets and adoption line, the
     const aConfig = JSON.parse( fs.readFileSync( path.join( sRoot, "concord.json" ), "utf8" ));
     assert.deepStrictEqual( aConfig.languages, [ "bash" ] );
     assert.deepStrictEqual( aConfig.read_directories, [ "." ] );
+    assert.deepStrictEqual( aConfig.coverage.runs, [
+      { name: "bash-1", directory: "test", runner: "bash" }
+    ]);
+    assert.deepStrictEqual( aConfig.coverage.source_directories, [ "src" ] );
     assert.match( fs.readFileSync( path.join( sRoot, "AGENTS.md" ), "utf8" ),
       /Read @.*installed-concord\/AGENTS\.md before any other work; this project uses Concord\./
     );
@@ -162,6 +167,37 @@ test( "concord init creates project settings, npm targets and adoption line, the
     assert.strictEqual( aPackage.scripts.test, "bash test/run_tests.sh" );
     assert.strictEqual( aPackage.scripts[ "spec-map" ], "concord spec-map" );
     assert.strictEqual( aPackage.scripts[ "spec-coverage" ], "concord spec-coverage" );
+  } finally {
+    fs.rmSync( sRoot, { recursive: true, force: true });
+  }
+});
+
+// @proves s-1rrzwx@2cfa4a7
+test( "concord init adds inferred Bash coverage to existing project settings", () => {
+  const sRoot = fInitFixture();
+  try{
+    fs.writeFileSync( path.join( sRoot, "concord.json" ), JSON.stringify({
+      name: "existing-bash-project",
+      suites: [{ name: "shell", directories: [ "test" ] }],
+      languages: [ "bash" ],
+      read_directories: [ "." ],
+      ignored_directories: [ ".git", "node_modules" ],
+      record_file: "test/passes.jsonl"
+    }, null, 2 ));
+    fs.mkdirSync( path.join( sRoot, "src" ), { recursive: true });
+    fs.writeFileSync( path.join( sRoot, "src", "main.sh" ), "echo ready\n" );
+    fs.writeFileSync( path.join( sRoot, "test", "run_tests.sh" ), "true\n" );
+    const { cExit, sOut } = fInit( sRoot );
+    expect( cExit ).toBe( 0 );
+    expect( sOut ).toMatch( /added Bash coverage declaration to concord\.json/ );
+    const aConfig = JSON.parse( fs.readFileSync(
+      path.join( sRoot, "concord.json" ), "utf8"
+    ));
+    expect( aConfig.name ).toBe( "existing-bash-project" );
+    expect( aConfig.coverage ).toMatchObject({
+      runs: [{ name: "bash-1", directory: "test", runner: "bash" }],
+      source_directories: [ "src" ]
+    });
   } finally {
     fs.rmSync( sRoot, { recursive: true, force: true });
   }
@@ -233,7 +269,7 @@ test( "concord init reports when the spec gate blocks hook installation", () => 
 });
 
 // @proves s-s3xpz5@265fff1
-// @proves s-qfk1yl@ce3e3eb
+// @proves s-qfk1yl@7d3f9a7
 test( "concord init creates a Makefile and missing test directory when needed", () => {
   const sRoot = fs.mkdtempSync( path.join( sDirRepo, "tmp", "concord-init-make-" ));
   try{

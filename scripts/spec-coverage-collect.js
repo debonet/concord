@@ -7,6 +7,7 @@
 // @implements s-ficxlp@91445c0
 // @implements s-pmq9t1@7fb387f
 // @implements s-ii54an@ee79563
+// @implements s-k3nfhj@45aa33f
 // @implements s-m3tqg6@8e17ef1
 // @implements s-igoasz@b481867
 // @implements s-2c5too@f5a4a7e
@@ -31,11 +32,12 @@ const {
   fsPathWindow
 } = require( "./spec-coverage-window.js" );
 const { fnPrefixMatched, configStore } = require( "./concord-config.js" );
+const fCreateBash = require( "./languages/bash.js" );
 
 const sFileSummary = "summary.json";
 const nUnitFile = -1;
 const vsKindUnmeasured = [ "env", "node", "bundle" ];
-const reSourceExt = /\.(?:c|m)?jsx?$/;
+const reSourceExt = /\.(?:c|m)?jsx?$|\.(?:sh|bash)$/;
 const reTestFile = /\.test\.(?:c|m)?jsx?$/;
 const reDirBuilt = /^(?:dist|build|build-[\w.-]+|out)$/;
 const reMapFileComment = /[#@]\s*sourceMappingURL=(?!data:)/;
@@ -59,13 +61,26 @@ const fnPrefixInScope = ( vsPart, vsDirSource ) => vsDirSource
   .filter(( nPrefix ) => nPrefix >= 0 && nPrefix < vsPart.length )
   .reduce(( nBest, nPrefix ) => Math.max( nBest, nPrefix ), -1 );
 
-const fbPathInScope = ( sPathRel, vsDirSource ) => {
+const fbBashSourcePath = ( sPathRel, sDirRoot ) => {
+  if( /\.(?:sh|bash)$/.test( sPathRel )){ return true;}
+  if( path.extname( sPathRel ) !== "" ){ return false;}
+  const sPathAbs = path.resolve( sDirRoot || process.cwd(), sPathRel );
+  try{
+    if(( fs.statSync( sPathAbs ).mode & 0o111 ) === 0 ){ return false;}
+    const sText = fs.readFileSync( sPathAbs, "utf8" );
+    return fCreateBash.fbCanReadPath( sPathAbs, sText );
+  }
+  catch( xErr ){ return false;}
+};
+
+const fbPathInScope = ( sPathRel, vsDirSource, sDirRoot ) => {
   const vsPart = sPathRel.split( "/" );
   const nPrefix = fnPrefixInScope( vsPart, vsDirSource );
   return (
     nPrefix >= 0
-    && reSourceExt.test( sPathRel )
+    && ( reSourceExt.test( sPathRel ) || fbBashSourcePath( sPathRel, sDirRoot ))
     && !reTestFile.test( sPathRel )
+    && !fCreateBash.fbIsTestPath( sPathRel )
     && !vsPart.slice( nPrefix, -1 ).some(( sPart ) => asDirSkip.has( sPart ))
   );
 };
@@ -77,7 +92,7 @@ const fvsDirSourceForRoot = ( sDirRoot ) => {
 };
 
 const fbInRootScope = ( sDirRoot, sPathRel ) => fbPathInScope(
-  sPathRel, fvsDirSourceForRoot( sDirRoot )
+  sPathRel, fvsDirSourceForRoot( sDirRoot ), sDirRoot
 );
 
 const fbPathInRoot = ( sPathRel ) => {
@@ -448,6 +463,7 @@ module.exports = {
   fsPathRel,
   fsSha1,
   fbPathInScope,
+  fbBashSourcePath,
   fvsDirSourceForRoot,
   fbInRootScope,
   fbPathInRoot,

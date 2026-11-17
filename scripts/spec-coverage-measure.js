@@ -1,9 +1,13 @@
-// @implements s-qpkoc3@5bb9377
+// @implements s-qpkoc3@605c600
 // @implements s-xoq4ak@39497ea
 // @implements s-itmj4d@a1e8c28
 // @implements s-vhve0l@16601c0
 // @implements s-mrpnyc@03b594d
-// @implements s-9prjr2@99200b9
+// @implements s-9prjr2@1a46cc4
+// @implements s-tn2pd8@020e25c
+// @implements s-1cabsl@c392ae5
+// @implements s-qqyciz@cfdb477
+// @implements s-ghfwp5@412ccc7
 // @implements s-1lktaq@64cbd78
 // @implements s-dokd3g@edd7c92
 // @tested-by test/spec-coverage.test.js
@@ -22,12 +26,14 @@ const {
   fsSha1,
   fbPathInScope,
   fvaPosStmtForSource,
+  fsPathRecord,
   SourceIndex,
   fxJsonRead
 } = require( "./spec-coverage-collect.js" );
 const { sEnvEnvironment } = require( "./spec-coverage-window.js" );
 const { ChildCoverage } = require( "./spec-coverage-v8.js" );
 const { ConfigReader } = require( "./concord-config.js" );
+const fCreateBash = require( "./languages/bash.js" );
 
 const sDirOutRel = path.join( "tmp", "spec-coverage" );
 const sFileMeasurement = "measurement.json";
@@ -39,7 +45,11 @@ const cSlowdown = 6;
 
 const fvaSuiteForCoverage = ( aCoverage ) => aCoverage.vaRun.map((
   aRun
-) => ({ sSuite: aRun.sName, sDirRel: aRun.sDirRun }));
+) => ({
+  sSuite: aRun.sName,
+  sDirRel: aRun.sDirRun,
+  sRunner: aRun.sRunner || "jest"
+}));
 
 const fsDirOut = ( sDirRoot ) => path.join( sDirRoot, sDirOutRel );
 
@@ -131,9 +141,13 @@ const faConfigForSuite = ({
   };
 };
 
-const fvnLineExecutable = ( sText, sPath ) => Array.from( new Set(
-  fvaPosStmtForSource( sText, sPath ).map(( aPos ) => aPos.line )
-)).sort(( nA, nB ) => nA - nB );
+const fvnLineExecutable = ( sText, sPath ) => fCreateBash.fbCanReadPath(
+  sPath, sText
+)
+  ? fCreateBash.fvnExecutableLineBash( sText )
+  : Array.from( new Set(
+    fvaPosStmtForSource( sText, sPath ).map(( aPos ) => aPos.line )
+  )).sort(( nA, nB ) => nA - nB );
 
 const fvsPathSourceInScope = ( sDirRoot, vsDirSource ) => {
   const configReader = new ConfigReader( sDirRoot );
@@ -144,7 +158,7 @@ const fvsPathSourceInScope = ( sDirRoot, vsDirSource ) => {
       fs.readdirSync( path.join( sDirRoot, sDir ), { recursive: true })
         .map(( sPathRel ) => fsPosix( path.join( sDir, sPathRel )))
     ))
-    .filter(( sPath ) => fbPathInScope( sPath, vsDirSource ))
+    .filter(( sPath ) => fbPathInScope( sPath, vsDirSource, sDirRoot ))
     .filter(( sPath ) => fs.statSync( path.join( sDirRoot, sPath )).isFile())
   )).sort();
 };
@@ -289,6 +303,9 @@ class SuiteRunner {
   }
 
   faRunSuite( aSuite, sDirRun ){
+    if( aSuite.sRunner === "bash" ){
+      return this.faRunBash( aSuite, sDirRun );
+    }
     const sDirSuite = path.join( this.sDirRoot, aSuite.sDirRel );
     const sPathConfig = path.join( sDirRun, "jest.config.json" );
     const aConfig = this.faConfigRead( sDirSuite );
@@ -325,6 +342,89 @@ class SuiteRunner {
       xStatus: aResult.status,
       aSummary: fxJsonRead( path.join( sDirRun, sFileSummary ))
     };
+  }
+
+  faRunBash( aSuite, sDirRun ){
+    const sDirSuite = path.resolve( this.sDirRoot, aSuite.sDirRel );
+    const vsPathTest = fs.readdirSync( sDirSuite, { recursive: true })
+      .map(( sPath ) => path.join( sDirSuite, sPath ))
+      .filter(( sPath ) => fs.statSync( sPath ).isFile())
+      .filter(( sPath ) => fCreateBash.fbIsTestPath( sPath ))
+      .sort();
+    let cPassed = 0;
+    let cFailed = 0;
+    let cSuiteRuntimeError = 0;
+    const vsPathSuiteError = [];
+    const aConfig = new ConfigReader( this.sDirRoot ).faConfig();
+    const vsDirSource = aConfig.aConfig.aCoverage.vsDirSource;
+    vsPathTest.forEach(( sPathTest ) => {
+      const sShellOpts = Array.from( new Set(
+        ( process.env.SHELLOPTS || "" ).split( ":" ).concat( "xtrace" )
+      )).filter( Boolean ).join( ":" );
+      const aEnv = {
+        ...process.env,
+        PS4: "__CONCORD_COV__${BASH_SOURCE[0]}:${LINENO}__ ",
+        SHELLOPTS: sShellOpts
+      };
+      delete aEnv.BASH_XTRACEFD;
+      const aResult = this.fxSpawnSync( "bash", [ "-x", sPathTest ], {
+        cwd: sDirSuite,
+        stdio: [ "ignore", "pipe", "pipe" ],
+        env: aEnv,
+        encoding: "utf8",
+        maxBuffer: 64 * 1024 * 1024
+      });
+      const sTrace = ( aResult.stderr || "" ) + ( aResult.stdout || "" );
+      const aaLineForPath = fCreateBash.fvaTraceBash( sTrace, sDirSuite );
+      const aFile = {};
+      aaLineForPath.forEach(( vnLine, sPath ) => {
+        const sPathRel = fsPosix( path.relative( this.sDirRoot, sPath ));
+        if( fbPathInScope( sPathRel, vsDirSource, this.sDirRoot )){
+          const vnSorted = Array.from( vnLine ).sort(( nA, nB ) => nA - nB );
+          aFile[ sPathRel ] = {
+            vnLine: vnSorted,
+            avnUnitForLine: Object.fromEntries(
+              vnSorted.map(( nLine ) => [ nLine, [ -1 ]])
+            )
+          };
+        }
+      });
+      const aRecord = {
+        sSuite: aSuite.sSuite,
+        sPathTest: fsPosix( path.relative( this.sDirRoot, sPathTest )),
+        bWindow: false,
+        vaTest: [],
+        aFile,
+        vaUnmeasured: []
+      };
+      fs.writeFileSync(
+        fsPathRecord( sDirRun, sPathTest ), JSON.stringify( aRecord )
+      );
+      if( aResult.status === 0 ){ cPassed++;}
+      else{
+        cFailed++;
+        if( aResult.error !== undefined || aResult.status === null ){
+          cSuiteRuntimeError++;
+          vsPathSuiteError.push( sPathTest );
+        }
+      }
+    });
+    if( vsPathTest.length === 0 ){
+      cSuiteRuntimeError = 1;
+      vsPathSuiteError.push( sDirSuite );
+    }
+    const aSummary = {
+      cPassed,
+      cFailed,
+      cSkipped: 0,
+      cSuiteRuntimeError,
+      bInterrupted: false,
+      vsPathSuiteError
+    };
+    fs.writeFileSync(
+      path.join( sDirRun, sFileSummary ), JSON.stringify( aSummary )
+    );
+    return { xStatus: 0, aSummary };
   }
 
   ftGit(){

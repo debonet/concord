@@ -218,7 +218,8 @@ Concord where it stands.
   streams, and exits with that utility's status.
 * {#m-31dbd9} USER 2026-11-15: "That's the wrong behavior. 'init' means initialize. It should get the project set up to use concord."
 * {#s-ualukl <arch,m-f9xsif@e917ff9,m-31dbd9@63bdd97} **Project initialization.** `concord init`, run from a project root without additional arguments, creates missing baseline Concord setup files, preserves existing project settings and build commands, reports each change and any remaining work, and attempts to install the pre-commit gate after setup. It exits 0 when setup and hook installation succeed, 1 when a conflict prevents a safe write or when the gate or hook installation needs attention, and 2 when arguments are invalid or the working directory is not a project directory.
-* {#s-qfk1yl <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Generated settings.** When `concord.json` is absent, `concord init` writes a valid settings file using the project name from `package.json` or the root directory name, an existing `test` or `tests` directory (creating `test` when neither exists), the languages it finds among configured language readers (defaulting to `javascript` when it finds none), the project root as the read directory, and standard ignored directories. It never replaces an existing `concord.json`.
+* {#s-qfk1yl <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Generated settings.** When `concord.json` is absent, `concord init` writes a valid settings file using the project name from `package.json` or the root directory name, an existing `test` or `tests` directory (creating `test` when neither exists), the languages it finds among configured language readers (defaulting to `javascript` when it finds none), the project root as the read directory, and standard ignored directories. It does not replace an existing settings file with these defaults.
+* {#s-1rrzwx <arch} When `concord init` finds Bash test scripts and Bash source files and the project has no coverage declaration, it adds a Bash coverage declaration. It creates one Bash coverage run for each configured suite directory containing a Bash test, and source directories for the discovered Bash implementation files. It preserves all existing settings.
 * {#s-s3xpz5 <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Build commands.** `concord init` adds `spec-map` and `spec-coverage` commands to `package.json` when it is the project's build file, or adds equivalent targets to a new `Makefile` when no supported build file exists. It preserves unrelated fields and commands, and never replaces an existing command that does not already invoke the matching Concord utility; it reports that conflict and exits 1.
 * {#s-tyykqo <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Adoption and gate.** `concord init` writes the standalone adoption line to the root `AGENTS.md`, creating the file if needed, and replaces the standalone former opt-out or legacy adoption line. It leaves conflicting or hand-written adoption markers unchanged and reports them for resolution. Once the settings and build commands are valid, it runs `concord concord-hook install`; a gate refusal leaves the hook uninstalled, reports the gate output, and returns 1 so the project can fix its existing specification or coverage issues and rerun `concord init`.
 * {#s-n5ue8s <arch,m-f9xsif@e917ff9} Keep each utility implementation under `~/@concord/bin`;
@@ -595,9 +596,10 @@ Concord where it stands.
   observations file, as in `"rules_files": [ "AGENTS.md", "CLAUDE.md" ]`;
   {#s-0w4rbg <arch} a project that declares none has no rules files.
 * {#s-xqx0r5 <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Coverage.** `coverage` is optional. When present it is
-  an object of `runs`, a non-empty array of the jest runs a measurement
-  makes, each an object of `name` and `directory`, the directory relative to
-  the root the run's jest starts in; `commands_before`, an array of shell
+  an object of `runs`, a non-empty array of measurement runs, each an object
+  of `name` and `directory`, the directory relative to the root the run
+  starts in, and optional `runner`, which is `bash` for a Bash script run and
+  absent for the existing Jest run; `commands_before`, an array of shell
   commands run in order at the root before the runs; `source_directories`, the
   source in scope, with `*` read as in `read_directories`; and `review_file`, the
   review file's path relative to the root.
@@ -611,8 +613,8 @@ Concord where it stands.
   as aliases for `name` and `directories`. Within `coverage`, `vaRun`,
   `vsCommandBefore`, `vsDirSource` and `sPathReview` are accepted as aliases
   for `runs`, `commands_before`, `source_directories` and `review_file`; within
-  each run, `sName` and `sDirRun` are accepted as aliases for `name` and
-  `directory`.
+  each run, `sName`, `sDirRun` and `sRunner` are accepted as aliases for
+  `name`, `directory` and `runner`.
 * {#s-ulp42m <m-fi6q34@6b5ef4d} **Legacy key warning.** Every occurrence of a legacy
   key prints one warning line to stderr in the form
   `concord.json: <legacy-path> is deprecated; use <canonical-path> (see specs/concord-process.md#the-settings-file)`.
