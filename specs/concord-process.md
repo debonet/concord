@@ -203,6 +203,7 @@ Concord where it stands.
 * {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} `agents-sync` and `concord-hook` are utility commands alongside `spec-map` and `spec-coverage`.
 * {#s-mo4ncx <arch} `spec-conflicts` is a utility command that ranks possible conflicting specification-claim pairs for review (`specs/spec-conflicts.md`).
 * {#s-hp433f <m-yzk3ge@48080f7} `context` is a utility command that builds a role-specific, budgeted context pack from the project's Concord graph (`specs/context.md`).
+* {#s-48tk0i <m-r665b1@2823062} `tree` is a utility command that creates a self-contained HTML browser for the project's Concord relationship graph (`specs/concord-tree.md`).
 * {#s-t99cvq <arch,m-f9xsif@e917ff9} **npm package.** Publish Concord as the public npm package
   `@debonet/concord`, installable globally with `npm install --global
   @debonet/concord`.

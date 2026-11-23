@@ -84,9 +84,12 @@ Run commands from the adopting project root:
 | `concord spec-map --clear-cache` | Clears the current project's persistent spec-map cache. |
 | `concord spec-conflicts` | Refreshes ranked candidates and prints only the eligible review count. |
 | `concord context --for <role> --intent "<description>" --budget <tokens>` | Finds related recorded motives from new intent text, then builds a role-specific context pack with details and pointers within the budget. |
+| `concord tree [--output <path>]` | Writes a self-contained, searchable HTML browser for the project's Concord graph to `tmp/concord-tree.html` or the selected path. |
 | `concord link-propose` | Suggests likely implementation links for human or agent review. |
 
 Use `concord context` to prepare a focused agent handoff from a new intent description. The description is supplied directly; it does not need to be recorded as a motive first. Concord ranks recorded motives by shared content words, then follows their spec links. The pack includes reachable motives and specs, plus tests and code for fixers; it fills the budget with complete node details in graph-distance order and leaves pointers for the remaining nodes. Treat lexical matches as candidates. Read pointer-only material before relying on it.
+
+Run `concord tree` from a project root to create an offline HTML browser of its Concord graph. Open the reported output path in a browser. Use search and type filters to find motives, specifications, tests, and implementation files; select a node to inspect its text or source locations, then follow its incoming and outgoing relationships.
 
 The description must contain at least two paragraphs and 20 distinct content words. The budget depends on how many related nodes exist; this example allows 18,000 estimated tokens:
 

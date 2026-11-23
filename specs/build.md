@@ -37,7 +37,8 @@ outside these.
                              (specs/spec-coverage.md)
   bin/                       the concord entry point and utility commands:
                              spec-map, spec-coverage, spec-conflicts,
-                             agents-sync, concord-hook, context, link-propose,
+                             agents-sync, concord-hook, context, tree,
+                             link-propose,
                              concord-init, concord-migrate
   scripts/                   the modules behind the commands, and the
                              worklist page template

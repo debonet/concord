@@ -10,6 +10,7 @@
 // @implements s-xrmdr0@5803a25
 // @implements s-wq42my@339610a
 // @implements s-hp433f@86be765
+// @implements s-48tk0i@7bc9472
 // @tested-by test/concord-cli.test.js
 "use strict";
 
@@ -18,12 +19,12 @@ const path = require( "path" );
 
 const asCommands = new Set([
   "agents-sync", "concord-hook", "context", "link-propose", "migrate",
-  "spec-conflicts", "spec-coverage", "spec-map"
+  "spec-conflicts", "spec-coverage", "spec-map", "tree"
 ]);
 const sUsage = (
   "usage: concord <utility> [arguments]\n"
   + "utilities: agents-sync, concord-hook, init, link-propose, "
-  + "context, migrate, spec-conflicts, spec-coverage, spec-map\n"
+  + "context, migrate, spec-conflicts, spec-coverage, spec-map, tree\n"
 );
 
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
