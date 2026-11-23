@@ -411,6 +411,7 @@
 // @implements s-8qhv2d@fe58484
 // @implements s-r95w4f@6a28bae
 // @implements s-m4fr78@238c65f
+// @implements s-y0zs35@09f15af
 // @tested-by test/concord.test.js
 // @tested-by test/spec-map.test.js
 // @tested-by test/project-coverage.test.js
@@ -420,6 +421,7 @@
 // @tested-by test/observations.test.js
 // @tested-by test/gate.test.js
 // @tested-by test/side-files.test.js
+// @tested-by test/context.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -4534,6 +4536,22 @@ const faModelForReader = ( reader, bTest ) => faModel({
   aParseCache: reader.aParseCache
 });
 
+const faContextModel = ( sDirRoot ) => {
+  const aRead = new ConfigReader( sDirRoot ).faConfig();
+  if( aRead.sProblem !== null ){ return { sProblem: aRead.sProblem };}
+  const aParseCache = new ParseCache(
+    sDirRoot, fsFingerprintParser( aRead.aConfig )
+  );
+  const reader = new TreeReader( sDirRoot, aRead.aConfig, aParseCache );
+  const aModel = faModelForReader( reader, true );
+  aParseCache.fSave();
+  return {
+    sProblem: null,
+    reader,
+    aModel
+  };
+};
+
 const fasBodyTaken = ( vaSpec, aModel ) => new Set(
   vaSpec
     .flatMap(( aSpec ) => Array.from(
@@ -5471,6 +5489,7 @@ module.exports = {
   faMap,
   fsReport,
   fzMain,
+  faContextModel,
   faModel,
   faRoots,
   fasIdProved,

@@ -88,6 +88,29 @@ test( "concord dispatches spec-conflicts through the master command", () => {
   ]);
 });
 
+// @proves s-wq42my@339610a
+// @proves s-hp433f@86be765
+test( "concord dispatches context through the master command", () => {
+  let aSpawn = null;
+  const nExit = fzConcord(
+    [ "context", "--for", "architect", "--intent", "Improve Bash coverage", "--budget", "500" ],
+    "/project", () => {}, () => {},
+    {
+      sDirBin: "/package/bin",
+      sNode: "/node",
+      spawnSync: ( ...aArgs ) => { aSpawn = aArgs; return { status: 0 }; }
+    }
+  );
+  assert.strictEqual( nExit, 0 );
+  assert.deepStrictEqual( aSpawn, [
+    "/node", [
+      "/package/bin/context", "--for", "architect", "--intent", "Improve Bash coverage",
+      "--budget", "500"
+    ],
+    { cwd: "/project", stdio: "inherit" }
+  ]);
+});
+
 // @spec specs/build.md
 // @proves s-0scrxa@422bf40
 test( "concord dispatches migrate through the master command", () => {

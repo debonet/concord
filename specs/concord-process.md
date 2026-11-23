@@ -202,6 +202,7 @@ Concord where it stands.
 * {#s-4pq89a <m-u4pusr@2be69ad,m-f9xsif@e917ff9} **Utility commands.** Concord's utility implementations live under `~/@concord/bin`; agents and project build targets invoke them through the `concord` master command.
 * {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} `agents-sync` and `concord-hook` are utility commands alongside `spec-map` and `spec-coverage`.
 * {#s-mo4ncx <arch} `spec-conflicts` is a utility command that ranks possible conflicting specification-claim pairs for review (`specs/spec-conflicts.md`).
+* {#s-hp433f <m-yzk3ge@48080f7} `context` is a utility command that builds a role-specific, budgeted context pack from the project's Concord graph (`specs/context.md`).
 * {#s-t99cvq <arch,m-f9xsif@e917ff9} **npm package.** Publish Concord as the public npm package
   `@debonet/concord`, installable globally with `npm install --global
   @debonet/concord`.

@@ -37,7 +37,7 @@ outside these.
                              (specs/spec-coverage.md)
   bin/                       the concord entry point and utility commands:
                              spec-map, spec-coverage, spec-conflicts,
-                             agents-sync, concord-hook, link-propose,
+                             agents-sync, concord-hook, context, link-propose,
                              concord-init, concord-migrate
   scripts/                   the modules behind the commands, and the
                              worklist page template
@@ -59,6 +59,7 @@ outside these.
   utility specified in `specs/concord-process.md`, preserving its working
   directory, standard streams and exit status.
 * {#s-xrmdr0 <arch,m-count1@564cabd} `concord spec-conflicts [--human [--limit <n>]]` reports the eligible candidate count by default and prints candidate details only in human mode; `--count` prints the eligible count, `--nextreview` atomically timestamps and returns one candidate with `remaining_count`, `--since <duration>` selects the cooldown, `--nextopen` returns an open candidate, and `--mark <id> <status>` updates a candidate's review status and timestamp as specified by `specs/spec-conflicts.md`.
+* {#s-wq42my <m-yzk3ge@48080f7} `concord context` dispatches to the context builder specified in `specs/context.md`, preserving its working directory, standard streams and exit status.
 * {#s-nur3h4 <arch,m-f9xsif@e917ff9} The published npm package exposes only the `concord`
   executable; utility files in `bin/` are implementation entry points, not
   separately installed npm commands.

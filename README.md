@@ -83,7 +83,20 @@ Run commands from the adopting project root:
 | `concord spec-coverage` | Checks test execution coverage against linked statements. |
 | `concord spec-map --clear-cache` | Clears the current project's persistent spec-map cache. |
 | `concord spec-conflicts` | Refreshes ranked candidates and prints only the eligible review count. |
+| `concord context --for <role> --intent "<description>" --budget <tokens>` | Finds related recorded motives from new intent text, then builds a role-specific context pack with details and pointers within the budget. |
 | `concord link-propose` | Suggests likely implementation links for human or agent review. |
+
+Use `concord context` to prepare a focused agent handoff from a new intent description. The description is supplied directly; it does not need to be recorded as a motive first. Concord ranks recorded motives by shared content words, then follows their spec links. The pack includes reachable motives and specs, plus tests and code for fixers; it fills the budget with complete node details in graph-distance order and leaves pointers for the remaining nodes. Treat lexical matches as candidates. Read pointer-only material before relying on it.
+
+The description must contain at least two paragraphs and 20 distinct content words. The budget depends on how many related nodes exist; this example allows 18,000 estimated tokens:
+
+```sh
+concord context --for architect --intent 'Improve Bash coverage reporting by measuring which executable source lines the project’s Bash tests exercise. Keep the report connected to the existing coverage command and test scripts.
+
+Show which executable lines remain uncovered so maintainers can identify missing test cases. Preserve the current Bash test workflow, and leave report format or other behavior changes unspecified unless required by the request.' --budget 18000
+```
+
+Concord has no model access and cannot infer that different wording describes the same capability. If the description is too short or no recorded motives match, `concord context` exits with an error and asks the calling agent to generalize the user's request into 2–3 complete paragraphs. Explain the underlying capability or domain, affected area, desired outcome, and known constraints; preserve the request, label inferences, and do not add requirements. Retry with that fuller description. If it still has no matches, report that limitation instead of pretending the context pack is complete.
 
 For Bash projects, `concord init` configures source-line measurement when it can identify Bash tests and implementation files. Bash runs can also be declared in `concord.json` with `"runner": "bash"` on a coverage run; each recognized Bash test script runs as one test unit. The coverage report maps traced Bash source lines to those scripts and lists executable command lines no test reached as uncovered. See [Bash coverage setup](docs/migration-bash-coverage.md).
 
