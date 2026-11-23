@@ -71,14 +71,17 @@ const fModel = () => {
       vaTestParsed: [ aTest, {
         sPath: "test/manual.test.js", sText: "manual test file", vaCall: []
       } ],
-      aLines: { vaImplements: [{
-        sId: "aaaaaa", sPath: "src/feature.js", nLine: 1
-      }] },
+      aLines: {
+        vaImplements: [{
+          sId: "aaaaaa", sPath: "src/feature.js", nLine: 1
+        }],
+        vaTestedBy: [{
+          sKind: "tested-by", sReason: null,
+          sPath: "src/feature.js", sTarget: "test/manual.test.js", nLine: 2
+        }]
+      },
       vaCode: [ aCode ],
-      vaCodeRef: [{
-        sKind: "tested-by", sReason: null,
-        sPath: "src/feature.js", sTarget: "test/manual.test.js", nLine: 2
-      }]
+      vaCodeRef: []
     }
   };
 };
@@ -146,6 +149,13 @@ test( "context graph follows motive, statement, sibling motive and inclusion lin
 test( "fixers get linked tests and implementations while architects get pointers", () => {
   const { aModel } = fModel();
   const aFixer = faGraph( aModel, "Add Bash coverage", "fixer" );
+  const vsRootGraphKeys = aFixer.vaNode
+    .filter(( aNode ) => [ "m", "s" ].includes( aNode.sType ))
+    .map(( aNode ) => aNode.sType + ":" + aNode.sKey)
+    .sort();
+  assert.deepStrictEqual( vsRootGraphKeys, [
+    "m:seed01", "m:sibling", "s:aaaaaa", "s:bbbbbb", "s:cccccc"
+  ]);
   const aTest = aFixer.vaNode.find(( aNode ) => aNode.sType === "t");
   const aManualTest = aFixer.vaNode.find(( aNode ) => (
     aNode.sKey === "test/manual.test.js"
@@ -330,13 +340,20 @@ test( "context packs keep required pointers and spend remaining budget on whole 
 });
 
 // @proves s-y0zs35@09f15af
+// @proves s-7bh252@a30b098
 test( "context reads a project's configuration and Concord artifacts", () => {
   const sRoot = fs.mkdtempSync( path.join( sDirRepo, "tmp", "context-fixture-" ));
   try{
     fWriteConcord( sRoot );
+    fs.mkdirSync( path.join( sRoot, "test" ), { recursive: true });
+    const sTestSource = 'test( "sample", () => {} );\n';
+    fs.writeFileSync( path.join( sRoot, "test", "sample.test.js" ), sTestSource );
     const aLoaded = faContextModel( sRoot );
     assert.strictEqual( aLoaded.sProblem, null );
     assert.strictEqual( aLoaded.aModel.avaMarkerForId.size, 0 );
+    assert.strictEqual(
+      aLoaded.aModel.vaTestParsed[ 0 ].sText, sTestSource
+    );
     fs.writeFileSync( path.join( sRoot, "concord.json" ), "not JSON\n" );
     assert.match( faContextModel( sRoot ).sProblem, /concord\.json/ );
   }

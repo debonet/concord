@@ -412,6 +412,7 @@
 // @implements s-r95w4f@6a28bae
 // @implements s-m4fr78@238c65f
 // @implements s-y0zs35@09f15af
+// @implements s-7bh252@a30b098
 // @tested-by test/concord.test.js
 // @tested-by test/spec-map.test.js
 // @tested-by test/project-coverage.test.js
@@ -4544,6 +4545,12 @@ const faContextModel = ( sDirRoot ) => {
   );
   const reader = new TreeReader( sDirRoot, aRead.aConfig, aParseCache );
   const aModel = faModelForReader( reader, true );
+  const maTestText = new Map(
+    reader.fvaTest().map(( aFile ) => [ fsPosix( aFile.sPath ), aFile.sText ])
+  );
+  aModel.vaTestParsed.forEach(( aTest ) => {
+    aTest.sText = maTestText.get( fsPosix( aTest.sPath ));
+  });
   aParseCache.fSave();
   return {
     sProblem: null,

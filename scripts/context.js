@@ -298,7 +298,7 @@ const faGraph = ( aModel, sIntent, sRole ) => {
     const maCodePath = new Map(
       Array.from( maCodeNode.values()).map(( aNode ) => [ aNode.sPath, aNode ])
     );
-    aModel.vaCodeRef
+    ( aModel.aLines.vaTestedBy || aModel.vaCodeRef )
       .filter(( aRef ) => aRef.sKind === "tested-by" && aRef.sReason === null)
       .forEach(( aRef ) => {
         const sPathCode = aRef.sPathCode || aRef.sPath;
@@ -323,7 +323,6 @@ const faGraph = ( aModel, sIntent, sRole ) => {
           sPath: sPathCode, nLine: aRef.nLine, sRelation: "@tested-by"
         });
       });
-    maNode.clear();
     [ ...maTestNode.values(), ...maCodeNode.values() ].forEach(( aNode ) => {
       aNode.vsVia = Array.from( aNode.asVia ).sort();
       delete aNode.asVia;
@@ -362,7 +361,7 @@ const faGraph = ( aModel, sIntent, sRole ) => {
         nLine: aImpl.nLine, sId: aImpl.sId
       });
     });
-    aModel.vaCodeRef
+    ( aModel.aLines.vaTestedBy || aModel.vaCodeRef )
       .filter(( aRef ) => aRef.sKind === "tested-by" && aRef.sReason === null)
       .forEach(( aRef ) => {
         const sPathCode = aRef.sPathCode || aRef.sPath;
