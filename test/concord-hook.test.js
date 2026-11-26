@@ -16,7 +16,7 @@ const sPathGitOther = path.join( sDirGitBin, "other-git" );
 const sPathGitState = path.join( sDirGitBin, "state.json" );
 const sPathGitLog = path.join( sDirGitBin, "log.jsonl" );
 const sPathHook = path.join( sDirProject, ".githooks", "pre-commit" );
-const sLineGate = "concord spec-map --gate || exit 1";
+const sLineGate = "if [ -x bin/concord ] && [ -f scripts/spec-map.js ]; then bin/concord spec-map --gate || exit 1; else concord spec-map --gate || exit 1; fi";
 const sHookInstalled = "#!/bin/sh\n" + sLineGate + "\n";
 const sDirGitCommon = "git-common";
 
@@ -253,7 +253,7 @@ describe( "concord-hook — the root of a work tree", () => {
 });
 
 // @proves s-auxyb0@7cb2648
-// @proves s-w7hypm@317c595
+// @proves s-w7hypm@d64f737
 // @proves s-f15bz3@ccb7236
 // @proves s-xu5wfs@6233752
 // @proves s-gfxphd@17a5f25
@@ -287,7 +287,7 @@ describe( "concord-hook — install in a project with no hook", () => {
 });
 
 // @proves s-gfxphd@17a5f25
-// @proves s-w7hypm@317c595
+// @proves s-w7hypm@d64f737
 describe( "concord-hook — install beside an existing hook holding a gate "
   + "line", () => {
   const sHookOwn = "#!/bin/sh\necho checking\n" + sLineGate + "\necho done\n";

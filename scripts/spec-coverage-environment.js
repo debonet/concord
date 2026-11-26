@@ -2,8 +2,8 @@
 // @implements s-ddknwk@bad1045
 // @implements s-i5esri@cca5118
 // @implements s-ifdflw@601453e
-// @implements s-bfp0se@62eefb2
 // @tested-by test/spec-coverage-jest.test.js
+// @implements s-bi8reu@bf16aef
 "use strict";
 
 const fs = require( "fs" );
@@ -209,6 +209,7 @@ class CoverageEnvironment extends clsInner {
     await super.teardown();
   }
 
+  // @implements s-bfp0se@62eefb2
   async handleTestEvent( aEvent, aState ){
     if( this.watch !== null ){ this.watch.fEvent( aEvent.name, this.global );}
     if( typeof super.handleTestEvent === "function" ){

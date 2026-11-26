@@ -1,2 +1,2 @@
 #!/bin/sh
-concord spec-map --gate || exit 1
+if [ -x bin/concord ] && [ -f scripts/spec-map.js ]; then bin/concord spec-map --gate || exit 1; else concord spec-map --gate || exit 1; fi

@@ -1,36 +1,8 @@
-// @implements s-58lkl7@02b2533
-// @implements s-39kb2j@ad74a84
-// @implements s-tlgm8e@acf5b9e
-// @implements s-ms5aa9@80076b2
-// @implements s-5eou7w@05eaa15
-// @implements s-vmwsli@d444cbb
-// @implements s-wr76ai@453246a
-// @implements s-xtahx4@5a052db
-// @implements s-fchiq4@ec7418c
-// @implements s-h6nvbh@0de0c64
-// @implements s-1ihvga@a3dbb44
-// @implements s-lnre2x@9a8bc8f
-// @implements s-v1uxhn@3cc3521
-// @implements s-ibre86@6608f9c
-// @implements s-ae8jdy@607e4e4
-// @implements s-577ckm@21f72df
-// @implements s-gbgn3f@f4cbab4
-// @implements s-fbr7pr@356ffee
-// @implements s-ffxkxt@1c8d35f
-// @implements s-h6zcx6@c576da5
-// @implements s-n1ht3r@d1f80fd
-// @implements s-gizegg@e0e4146
-// @implements s-k5ttgk@52242db
-// @implements s-u56cnv@5620146
-// @implements s-8qvv6k@4068ad2
-// @implements s-ner018@a3a30a2
-// @implements s-wx8o4v@de91e1a
-// @tested-by test/link-propose.test.js
-// @tested-by test/link-propose-apply.test.js
 "use strict";
 
 const fs = require( "fs" );
 const path = require( "path" );
+// @implements s-wx8o4v@de91e1a
 const { faModel, TreeReader } = require( "./spec-map.js" );
 const { ConfigReader } = require( "./concord-config.js" );
 const { fsPosix } = require( "./spec-coverage-collect.js" );
@@ -41,6 +13,7 @@ const {
 const { faConfirmParsed, LinkWriter } = require( "./link-propose-apply.js" );
 
 const sName = "link-propose";
+// @implements s-ms5aa9@80076b2
 const cTopDefault = 5;
 const reTop = /^[1-9][0-9]*$/;
 const vcTopEvaluated = [ 1, 3, 5 ];
@@ -57,6 +30,9 @@ const sUsage = (
 
 const fbFlagArgBad = ( s ) => s === undefined || s.startsWith( "--" );
 
+// @implements s-ms5aa9@80076b2
+// @implements s-xtahx4@5a052db
+// @tested-by test/link-propose.test.js
 const faArgsStep = ( aArgs, vsArg, n ) => {
   const s = vsArg[ n ];
   if( s === "--top" ){
@@ -75,6 +51,8 @@ const faArgsStep = ( aArgs, vsArg, n ) => {
   return [{ ...aArgs, bBad, sPathSpec: s }, n + 1 ];
 };
 
+// @implements s-ms5aa9@80076b2
+// @implements s-xtahx4@5a052db
 const faArgs = ( vsArg ) => {
   let aArgs = { sMode: "propose", sPathSpec: null, sPath: null, nTop: null };
   let n = 0;
@@ -90,6 +68,7 @@ const faArgs = ( vsArg ) => {
   return aArgs.nTop !== null && !asModeTop.has( aArgs.sMode ) ? null : aArgs;
 };
 
+// @implements s-wx8o4v@de91e1a
 class ProjectReading {
   constructor( sDirRoot, aConfig ){
     const reader = new TreeReader( sDirRoot, aConfig );
@@ -123,6 +102,7 @@ class ProjectReading {
     ));
   }
 
+  // @implements s-u56cnv@5620146
   faMeasurement(){
     if( this.aMeasurement === undefined ){
       this.aMeasurement = new CoverageReader( this.sDirRoot ).faMeasurement();
@@ -183,6 +163,7 @@ const fsLineSummary = ( c, cWith ) => (
   + ( c - cWith ) + " without"
 );
 
+// @implements s-fchiq4@ec7418c
 const fvaMarkerUnlinked = ( aModel, sPathSpec ) => aModel.aLines
   .vaNoImplementation
   .filter(( aMarker ) => sPathSpec === null || aMarker.sPath === sPathSpec )
@@ -199,6 +180,16 @@ const fvaCandidateFor = ( proposer, aMarker ) => (
   aMarker.sId === null ? [] : proposer.fvaCandidate( aMarker, false )
 );
 
+// @implements s-39kb2j@ad74a84
+// @implements s-h6nvbh@0de0c64
+// @implements s-1ihvga@a3dbb44
+// @implements s-lnre2x@9a8bc8f
+// @implements s-v1uxhn@3cc3521
+// @implements s-ibre86@6608f9c
+// @implements s-ae8jdy@607e4e4
+// @implements s-577ckm@21f72df
+// @implements s-gbgn3f@f4cbab4
+// @tested-by test/link-propose.test.js
 const fsProposals = ( reading, vaMarker, fvaShown ) => {
   const proposer = faProposer( reading, vaMarker );
   const vsLine = [ fsLineCoverage( reading.faMeasurement()) ];
@@ -234,6 +225,13 @@ const favsPathForId = ( aModel ) => {
   return avsPath;
 };
 
+// @implements s-wr76ai@453246a
+// @implements s-ffxkxt@1c8d35f
+// @implements s-h6zcx6@c576da5
+// @implements s-n1ht3r@d1f80fd
+// @implements s-k5ttgk@52242db
+// @implements s-u56cnv@5620146
+// @tested-by test/link-propose.test.js
 const fsEvaluation = ( reading, sPathSpec ) => {
   const avsPathForId = favsPathForId( reading.aModel );
   const vaMarker = reading.aModel.vaMarker
@@ -271,12 +269,21 @@ const fsEvaluation = ( reading, sPathSpec ) => {
   ).join( "\n" ) + "\n";
 };
 
+// @implements s-fbr7pr@356ffee
 const fWarnSpaced = ( reading, fWriteErr ) => reading.vsPathImpl
   .filter( fbPathSpaced )
   .forEach(( sPath ) => fWriteErr(
     sName + ": " + sPath + " is never proposed: its path holds whitespace\n"
   ));
 
+// @implements s-tlgm8e@acf5b9e
+// @implements s-39kb2j@ad74a84
+// @implements s-fchiq4@ec7418c
+// @implements s-fbr7pr@356ffee
+// @implements s-gizegg@e0e4146
+// @implements s-k5ttgk@52242db
+// @implements s-u56cnv@5620146
+// @tested-by test/link-propose.test.js
 const fzPropose = ( reading, aArgs, aOut ) => {
   const cTop = aArgs.nTop === null ? cTopDefault : aArgs.nTop;
   fWarnSpaced( reading, aOut.fWriteErr );
@@ -300,6 +307,10 @@ const fzPropose = ( reading, aArgs, aOut ) => {
   return 0;
 };
 
+// @implements s-vmwsli@d444cbb
+// @implements s-5eou7w@05eaa15
+// @implements s-wx8o4v@de91e1a
+// @tested-by test/link-propose-apply.test.js
 const fzWrite = ( reading, aArgs, aOut, aConfirm ) => {
   const writer = new LinkWriter({
     sDirRoot: reading.sDirRoot,
@@ -322,6 +333,7 @@ const fzWrite = ( reading, aArgs, aOut, aConfirm ) => {
   return writer.acCount.refused === 0 ? 0 : 1;
 };
 
+// @implements s-ner018@a3a30a2
 const fsProblemForArgs = ( reading, aArgs ) => {
   if( aArgs.sPathSpec !== null
     && !reading.vsPathSpec.includes( reading.fsPathRel( aArgs.sPathSpec ))
@@ -349,6 +361,9 @@ const fzConfirmBad = ( aArgs, aConfirm, fWriteErr ) => {
   return 1;
 };
 
+// @implements s-5eou7w@05eaa15
+// @implements s-ner018@a3a30a2
+// @tested-by test/link-propose-apply.test.js
 const fzRun = ( sDirRoot, aConfig, aArgs, aOut ) => {
   let aConfirm = null;
   if( aArgs.sMode === "--apply" ){
@@ -372,6 +387,8 @@ const fzRun = ( sDirRoot, aConfig, aArgs, aOut ) => {
     ? null
     : reading.fsPathRel( aArgs.sPathSpec );
   const aArgsRel = { ...aArgs, sPathSpec };
+  // @implements s-wr76ai@453246a
+  // @implements s-ffxkxt@1c8d35f
   if( aArgs.sMode === "--evaluate" ){
     aOut.fWrite( fsEvaluation( reading, sPathSpec ));
     return 0;
@@ -382,6 +399,10 @@ const fzRun = ( sDirRoot, aConfig, aArgs, aOut ) => {
   return fzPropose( reading, aArgsRel, aOut );
 };
 
+// @implements s-58lkl7@02b2533
+// @implements s-xtahx4@5a052db
+// @implements s-8qvv6k@4068ad2
+// @tested-by test/link-propose.test.js
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   if( aRead.sProblem !== null ){

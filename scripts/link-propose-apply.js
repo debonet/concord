@@ -1,38 +1,11 @@
-// @implements s-5eou7w@05eaa15
-// @implements s-q2lggv@b84d55b
-// @implements s-ck7s5x@7b81fa6
-// @implements s-ieckkc@85e1247
-// @implements s-gj3tfl@fb293e7
-// @implements s-kx8ajy@9826e66
-// @implements s-pzjwup@6654181
-// @implements s-pyr21s@b5afae0
-// @implements s-yua8vz@7373601
-// @implements s-txnavs@85a2c4c
-// @implements s-oncg4p@5c9d766
-// @implements s-cgc0vb@ecec457
-// @implements s-98n0jr@68a4e48
-// @implements s-68w9rn@12484c8
-// @implements s-mfht72@18981bb
-// @implements s-97oh4r@a333fff
-// @implements s-8qoeyd@9f39652
-// @implements s-0dezvq@81ba7b7
-// @implements s-b2wi6l@57c601c
-// @implements s-i3n7xx@722d3b2
-// @implements s-bswa11@ce8569d
-// @implements s-3smw7c@122e254
-// @implements s-rzukyl@30a8803
-// @implements s-6ch142@2ca8557
-// @implements s-aok5ze@9be1053
-// @implements s-ysdk89@717c1d5
-// @implements s-0m5r6m@7d5188e
-// @implements s-tq6by8@5f0be54
-// @implements s-lqs3hw@4ca074c
-// @implements s-wx8o4v@de91e1a
 // @tested-by test/link-propose-apply.test.js
+// @implements s-kx8ajy@9826e66
+// @implements s-3smw7c@122e254
 "use strict";
 
 const fs = require( "fs" );
 const path = require( "path" );
+// @implements s-wx8o4v@de91e1a
 const { fvaCodeReferenceResolved } = require( "./spec-map.js" );
 const { fsPosix } = require( "./spec-coverage-collect.js" );
 
@@ -46,6 +19,8 @@ const sReasonStale = "stale hash";
 const sKindImpl = "implements";
 const sKindTest = "tested-by";
 
+// @implements s-q2lggv@b84d55b
+// @implements s-ieckkc@85e1247
 const faConfirmParsed = ( sText ) => {
   const aConfirm = { vaLine: [], vaBad: []};
   sText.split( "\n" ).forEach(( sLineRaw, n ) => {
@@ -74,10 +49,13 @@ const fsDirective = ( sPath, sKind, sTarget ) => {
   return "// " + sBody;
 };
 
+// @implements s-97oh4r@a333fff
 const fbHeaderPlace = ( sPath, sText ) => (
   !( reFileCss.test( sPath ) && reCharset.test( sText ))
 );
 
+// @implements s-68w9rn@12484c8
+// @implements s-mfht72@18981bb
 const fnInsertAt = ( vsLine, vaRef ) => {
   if( vaRef.length > 0 ){
     return Math.max( ...vaRef.map(( aRef ) => aRef.nLine ));
@@ -85,6 +63,14 @@ const fnInsertAt = ( vsLine, vaRef ) => {
   return vsLine[ 0 ].startsWith( "#!" ) ? 1 : 0;
 };
 
+// @implements s-5eou7w@05eaa15
+// @implements s-txnavs@85a2c4c
+// @implements s-oncg4p@5c9d766
+// @implements s-98n0jr@68a4e48
+// @implements s-68w9rn@12484c8
+// @implements s-mfht72@18981bb
+// @implements s-8qoeyd@9f39652
+// @implements s-lqs3hw@4ca074c
 const faEdited = ( aPlan ) => {
   const bCrlf = aPlan.sText.includes( "\r\n" );
   const vsLine = aPlan.sText.split( "\n" );
@@ -118,6 +104,8 @@ const faEdited = ( aPlan ) => {
   return { sText: vsLine.join( "\n" ), vaChange };
 };
 
+// @implements s-0dezvq@81ba7b7
+// @implements s-wx8o4v@de91e1a
 const fbEditResolves = ( aModel, sPath, aEdited ) => {
   const vaRef = fvaCodeReferenceResolved({
     ...aModel, vaCode: [{ sPath, sText: aEdited.sText }]
@@ -129,6 +117,7 @@ const fbEditResolves = ( aModel, sPath, aEdited ) => {
   )));
 };
 
+// @implements s-rzukyl@30a8803
 const fvsTestDue = ( aModel, asId ) => aModel.vaTestParsed
   .filter(( aTest ) => aTest.vaLink.some(( aLink ) => (
     aLink.sReason === null && asId.has( aLink.sId )
@@ -136,6 +125,8 @@ const fvsTestDue = ( aModel, asId ) => aModel.vaTestParsed
   .map(( aTest ) => aTest.sPath )
   .sort();
 
+// @implements s-pzjwup@6654181
+// @implements s-tq6by8@5f0be54
 const fsReasonForLine = ( aModel, asPathImpl, aLine ) => {
   const vaMarker = aModel.avaMarkerForId.get( aLine.sId ) || [];
   if( vaMarker.length === 0 ){ return "no such statement";}
@@ -147,6 +138,7 @@ const fsReasonForLine = ( aModel, asPathImpl, aLine ) => {
   return asPathImpl.has( aLine.sPath ) ? null : "no implementation file";
 };
 
+// @implements s-5eou7w@05eaa15
 class LinkWriter {
   constructor({ sDirRoot, aModel, asTextForPath, asPathImpl, evidence }){
     this.sDirRoot = sDirRoot;
@@ -176,6 +168,8 @@ class LinkWriter {
       .map(( aRef ) => aRef.sId ));
   }
 
+  // @implements s-i3n7xx@722d3b2
+  // @implements s-6ch142@2ca8557
   fvsTestMissing( sPath, asIdNew ){
     const asId = new Set([ ...this.fasIdResolving( sPath ), ...asIdNew ]);
     const asNamed = new Set( this.fvaRefForPath( sPath )
@@ -196,6 +190,7 @@ class LinkWriter {
     ));
   }
 
+  // @implements s-b2wi6l@57c601c
   fsTextOnDisk( sPath ){
     try{
       return fs.readFileSync( path.join( this.sDirRoot, sPath ), "utf8" );
@@ -203,6 +198,9 @@ class LinkWriter {
     catch( xErr ){ return null;}
   }
 
+  // @implements s-97oh4r@a333fff
+  // @implements s-0dezvq@81ba7b7
+  // @implements s-b2wi6l@57c601c
   fsReasonForPlan( aPlan, aEdited ){
     if( !fbHeaderPlace( aPlan.sPath, aPlan.sText )){ return "no header place";}
     if( !fbEditResolves( this.aModel, aPlan.sPath, aEdited )){
@@ -213,6 +211,8 @@ class LinkWriter {
       : "changed during run";
   }
 
+  // @implements s-bswa11@ce8569d
+  // @implements s-aok5ze@9be1053
   fsOutForChange( sPath, aChange ){
     const bUnverified = aChange.sKind === sKindTest
       && aChange.sOut.startsWith( "+" )
@@ -221,6 +221,9 @@ class LinkWriter {
       + ( bUnverified ? "  unverified" : "" );
   }
 
+  // @implements s-yua8vz@7373601
+  // @implements s-8qoeyd@9f39652
+  // @implements s-lqs3hw@4ca074c
   fbWritePlan( aPlan, fRefused ){
     const aEdited = faEdited( aPlan );
     if( aEdited.vaChange.length === 0 ){ return true;}
@@ -241,6 +244,8 @@ class LinkWriter {
     return true;
   }
 
+  // @implements s-yua8vz@7373601
+  // @implements s-txnavs@85a2c4c
   faPlanForLines( sPath, vaLine ){
     const vaRef = this.fvaRefForPath( sPath );
     const asIdResolving = this.fasIdResolving( sPath );
@@ -276,6 +281,13 @@ class LinkWriter {
     };
   }
 
+  // @implements s-ck7s5x@7b81fa6
+  // @implements s-gj3tfl@fb293e7
+  // @implements s-pzjwup@6654181
+  // @implements s-pyr21s@b5afae0
+  // @implements s-yua8vz@7373601
+  // @implements s-cgc0vb@ecec457
+  // @implements s-0m5r6m@7d5188e
   fvaLineAccepted( sPathConfirm, vaLine ){
     const asKey = new Set();
     return vaLine
@@ -292,6 +304,12 @@ class LinkWriter {
       });
   }
 
+  // @implements s-ck7s5x@7b81fa6
+  // @implements s-gj3tfl@fb293e7
+  // @implements s-pyr21s@b5afae0
+  // @implements s-yua8vz@7373601
+  // @implements s-i3n7xx@722d3b2
+  // @implements s-0m5r6m@7d5188e
   fApply( sPathConfirm, vaLine ){
     const avaLineForPath = new Map();
     this.fvaLineAccepted( sPathConfirm, vaLine ).forEach(( aLine ) => {
@@ -308,6 +326,10 @@ class LinkWriter {
     });
   }
 
+  // @implements s-i3n7xx@722d3b2
+  // @implements s-6ch142@2ca8557
+  // @implements s-ysdk89@717c1d5
+  // @implements s-tq6by8@5f0be54
   fTestedBy( vsPath ){
     vsPath.forEach(( sPath ) => this.fbWritePlan({
       sPath,
@@ -319,6 +341,8 @@ class LinkWriter {
     }, ( sReason ) => this.fRefuse( sPath, sReason )));
   }
 
+  // @implements s-bswa11@ce8569d
+  // @implements s-ysdk89@717c1d5
   fsReport(){
     return this.vsOut.concat([
       "Applied: " + this.acCount.added + " added, "

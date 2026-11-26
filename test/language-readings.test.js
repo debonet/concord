@@ -22,7 +22,7 @@ const sTitleOwnerBad = "owner lines that do not resolve";
 
 // @proves s-rh750h@cc70238
 // @proves s-p54hx2@dfa5570
-// @proves s-k9xdwy@eb62f8a
+// @proves s-k9xdwy@ccaee82
 // @proves s-3fzgrr@cc19c25
 test( "language readings — each language has one registered reader with the "
   + "common operations", () => {
@@ -43,8 +43,8 @@ test( "language readings — each language has one registered reader with the "
 });
 
 // @proves s-ycwj4o@7836a5a
-// @proves s-9fk6j3@cf4d322
-// @proves s-g76ukd@a8b4b44
+// @proves s-9fk6j3@6bac58d
+// @proves s-g76ukd@d16beac
 test( "language-readings — Bash shebang files, comments, directives and suite units",
 () => {
   const sHereDocument = "cat <<'EOF'\n# not a directive\nEOF\n"
@@ -52,12 +52,24 @@ test( "language-readings — Bash shebang files, comments, directives and suite 
   const [ , vnCommentBash ] = require( "../scripts/languages/bash" )
     .ftMaskBash( sHereDocument );
   expect( vnCommentBash ).toEqual([ sHereDocument.lastIndexOf( "#" ) ]);
+  const sHereString = "cat <<< \"$s_input\"\n# @implements s-lng005@0000000\necho done\n";
+  const [ , vnCommentHereString ] = require( "../scripts/languages/bash" )
+    .ftMaskBash( sHereString );
+  expect( vnCommentHereString ).toEqual([ sHereString.indexOf( "#" ) ]);
   fWriteTree([ "bash" ], {
     "src/tool": [
       "#!/usr/bin/env bash",
       "# @implements " + fsRef( "s-lng005" ),
       "# @tested-by test/run_tests.sh",
       "printf '%s\\n' 'literal # is not a comment'",
+      ""
+    ].join( "\n" ),
+    "src/here-string.sh": [
+      "#!/usr/bin/env bash",
+      "# @tested-by test/run_tests.sh",
+      "cat <<< \"$s_input\"",
+      "# @implements " + fsRef( "s-lng005" ),
+      "printf '%s\\n' 'body-scoped implementation'",
       ""
     ].join( "\n" ),
     "test/run_tests.sh": [
@@ -72,11 +84,14 @@ test( "language-readings — Bash shebang files, comments, directives and suite 
   });
   fs.chmodSync( path.join( sDirFixture, "src/tool" ), 0o755 );
   const sOut = fsReport();
-  expect( fvsProver( "s-lng001" )).toEqual([ "test/run_tests.sh:3  run_tests" ]);
+  expect( fvsProver( "s-lng001" )).toEqual([ "test/run_tests.sh:3  lines 5-5" ]);
   expect( fvsLineInSection( sOut, sTitleNoImplementation )).not.toContain(
     expect.stringContaining( "s-lng005" )
   );
   expect( fvsLineInSection( sOut, sTitleNoTestedBy )).toEqual( [] );
+  expect( faRun([ "--sid", "s-lng005" ]).sStdout ).toContain(
+    "src/here-string.sh"
+  );
   expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual( [] );
   expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 1" );
 });
@@ -203,10 +218,10 @@ describe( "language-readings — the JavaScript reading's files", () => {
         + "\nexport const e = <p>it's</p>;\n"
     });
     expect( fvsProver( "s-lng001" )).toEqual([
-      "test/a.test.js:1  js",
-      "test/b.test.mjs:3  group",
-      "test/c.test.cjs:1  cjs",
-      "test/d.test.jsx:1  jsx"
+      "test/a.test.js:1  lines 2-2",
+      "test/b.test.mjs:3  lines 4-6",
+      "test/c.test.cjs:1  lines 2-2",
+      "test/d.test.jsx:1  lines 2-2"
     ]);
     expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 4" );
     expect( fvsCiter()).toContain( "src/g.jsx:1  current" );
@@ -236,8 +251,8 @@ test( "language-readings — TypeScript test files, directives, groups and "
     "test/not-a-test.ts": "test( \"helper\", () => {} );\n"
   });
   expect( fvsProver( "s-lng001" )).toEqual([
-    "test/a.test.ts:2  group %i",
-    "test/b.test.tsx:2  tsx case"
+    "test/a.test.ts:2  lines 3-5",
+    "test/b.test.tsx:2  lines 3-3"
   ]);
   expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 2" );
   expect( fvsLineInSection( fsReport(), sTitleOwnerBad )).toEqual( [] );
@@ -270,7 +285,7 @@ describe( "language-readings — JSX text and attribute strings are literals",
     + "text or a JSX attribute string are not read", ( sPath, vsLanguage ) => {
     fWriteTree( vsLanguage, { [ sPath ]: fsJsxInside() });
     expect( fvsProver( "s-lng002" )).toEqual( [] );
-    expect( fvsProver( "s-lng003" )).toEqual([ sPath + ":10  after" ]);
+    expect( fvsProver( "s-lng003" )).toEqual([ sPath + ":10  lines 11-11" ]);
     expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 1" );
   });
 
@@ -283,9 +298,9 @@ describe( "language-readings — JSX text and attribute strings are literals",
     [ "a backslash ending an attribute string", "<p title=\"C:\\\">x</p>" ]
   ];
 
-  test.each( vtElement )( "PAIRED: %s opens no literal and no comment, so "
-    + "the group around it ends where it ends and the link line after it is "
-    + "read", ( sWhat, sElement ) => {
+  test.each( vtElement )( "PAIRED: %s opens no literal and no comment, and "
+    + "a proof group with no replacement extends through end of file",
+  ( sWhat, sElement ) => {
     fWriteTree([ "javascript" ], {
       "test/x.test.jsx": [
         fsLink( "s-lng004" ),
@@ -300,8 +315,10 @@ describe( "language-readings — JSX text and attribute strings are literals",
         ""
       ].join( "\n" )
     });
-    expect( fvsProver( "s-lng003" )).toEqual([ "test/x.test.jsx:6  after" ]);
-    expect( fsUnlinked()).toBe( "Unlinked tests: 1 of 2" );
+    expect( fvsProver( "s-lng003" )).toEqual([
+      "test/x.test.jsx:6  lines 7-9"
+    ]);
+    expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 2" );
   });
 });
 
@@ -327,7 +344,9 @@ test( "language-readings — a comment in a JSX expression container is a "
   const sOut = fsReport();
   expect( fvsLineInSection( sOut, sTitleOwnerBad )).toEqual( [] );
   expect( fvsProver( "s-lng002" )).toEqual( [] );
-  expect( fvsProver( "s-lng003" )).toEqual([ "test/x.test.jsx:9  after" ]);
+  expect( fvsProver( "s-lng003" )).toEqual([
+    "test/x.test.jsx:9  lines 10-10"
+  ]);
   expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 1" );
 });
 
@@ -336,8 +355,8 @@ test( "language-readings — a .js file is read with no JSX, so what JSX "
   + "would hide is read there", () => {
   fWriteTree([ "javascript" ], { "test/x.test.js": fsJsxInside() });
   expect( fvsProver( "s-lng002" )).toEqual([
-    "test/x.test.js:2  in text",
-    "test/x.test.js:6  in attribute"
+    "test/x.test.js:2  lines 3-5",
+    "test/x.test.js:6  lines 7-9"
   ]);
   expect( fsUnlinked()).toBe( "Unlinked tests: 0 of 3" );
 });
@@ -463,12 +482,14 @@ test( "language-readings — an HTML comment is read outside script and style "
 // @proves s-2jld9b@f37640f
 // @proves s-zney60@13f1359
 // @proves s-qb233y@6930374
-// @proves s-7tlfzo@3813b5e
+// @proves s-7tlfzo@6deec61
+// @proves s-dkjdl0@511a833
+// @proves s-gkhfa4@3deac5b
 describe( "language-readings — HTML code references", () => {
   test( "one-line comments above or below the doctype in the header are "
     + "directives for the whole file, PAIRED with one sharing its line and "
-    + "one spanning lines, which are malformed, and ones after the header, "
-    + "which are misplaced", () => {
+    + "one spanning lines, which are malformed, and later ones are valid "
+    + "scoped links", () => {
     fWriteTree( vsLanguageHtml, {
       "test/a.test.js": [
         fsLink( "s-lng005" ), "test( \"proves\", () => {} );", ""
@@ -484,19 +505,21 @@ describe( "language-readings — HTML code references", () => {
         "<html><!-- @implements " + fsRef( "s-lng006" ) + " -->",
         "<!-- @implements " + fsRef( "s-lng006" ) + " -->",
         "</html>",
+        "<!-- @tested-by test/a.test.js -->",
+        "<!-- @checks " + fsRef( "i-lng008" ) + " -->",
         ""
       ].join( "\n" )
     });
     const sOut = fsReport();
-    expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
+    const vsCodeRefBad = fvsLineInSection( sOut, sTitleCodeRefBad );
+    expect( vsCodeRefBad ).toEqual([
       expect.stringMatching( /^src\/h\.html:5 .*\(malformed\)$/ ),
       expect.stringMatching( /^src\/h\.html:6 .*\(malformed\)$/ ),
-      expect.stringMatching( /^src\/h\.html:8 .*\(misplaced\)$/ ),
-      expect.stringMatching( /^src\/h\.html:9 .*\(misplaced\)$/ )
+      expect.stringMatching( /^src\/h\.html:8 .*\(malformed\)$/ )
     ]);
     const vsNoImplementation = fvsLineInSection( sOut, sTitleNoImplementation );
     expect( vsNoImplementation.some(( s ) => s.includes( "s-lng006" )))
-      .toBe( true );
+      .toBe( false );
     expect( vsNoImplementation.some(( s ) => s.includes( "s-lng005" )))
       .toBe( false );
     expect( fvsLineInSection( sOut, sTitleNoTestedBy )).toEqual( [] );
@@ -513,8 +536,8 @@ describe( "language-readings — HTML code references", () => {
 // @proves s-wut129@714b56a
 // @proves s-846yjd@fa50804
 // @proves s-n4r9dw@4bcc808
-// @proves s-op9bak@37c9f3e
-// @proves s-8tx2ob@cc1c510
+// @proves s-op9bak@ecaff86
+// @proves s-8tx2ob@ba817e4
 // @proves s-5un01z@b74caaa
 // @proves s-rkbz86@59f60c9
 // @proves s-k6leed@80135a4
@@ -544,8 +567,8 @@ describe( "language-readings — the Rust reading", () => {
       ].join( "\n" )
     });
     expect( fvsProver( "s-lng001" )).toEqual([
-      "test/rust.test.rs:2  rust_unit",
-      "test/rust.test.rs:6  nested"
+      "test/rust.test.rs:2  lines 3-5",
+      "test/rust.test.rs:6  lines 7-16"
     ]);
     expect( fvsProver( "s-lng002" )).toEqual( [] );
     expect( fvsLineInSection( fsReport(), sTitleLinkBad )).toEqual( [] );
@@ -555,9 +578,9 @@ describe( "language-readings — the Rust reading", () => {
 
 // @proves s-rv4wbq@86ed5ff
 // @proves s-2l6ys1@d966d32
-// @proves s-01nsp8@60401fe
-// @proves s-23wmhe@fec8ae0
-// @proves s-3m6dwj@187ed85
+// @proves s-01nsp8@5e482e6
+// @proves s-23wmhe@454713f
+// @proves s-3m6dwj@e7b4c8e
 test( "language-readings — implementation files of each reading use its "
   + "comment syntax, PAIRED with a directive in a string and in an "
   + "attribute value, which are not read", () => {
@@ -584,9 +607,9 @@ test( "language-readings — implementation files of each reading use its "
 // @proves s-zrjuk3@760428d
 // @proves s-tghouh@f811aec
 // @proves s-bqioq5@e78161a
-test( "language-readings — Rust code references are header line comments, "
-  + "not doc comments or literals, and ones after the header are "
-  + "misplaced", () => {
+// @proves s-dkjdl0@511a833
+test( "language-readings — Rust implementation, tested-by and checks "
+  + "groups work in the body", () => {
   const sImpl = fsRef( "s-lng005" );
   const sCheck = fsRef( "i-lng008" );
   const sSpecLink = "// @proves " + fsRef( "s-lng005" );
@@ -602,6 +625,8 @@ test( "language-readings — Rust code references are header line comments, "
       "  let s = r#\"// @implements s-lng006@0000000\"#;",
       "}",
       "// @implements s-lng006@0000000",
+      "// @tested-by test/rust.test.rs",
+      "// @checks " + sCheck,
       ""
     ].join( "\n" ),
     "test/rust.test.rs": [
@@ -613,9 +638,10 @@ test( "language-readings — Rust code references are header line comments, "
     ].join( "\n" )
   });
   const sOut = fsReport();
-  expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
-    expect.stringMatching( /^src\/r\.rs:6 .*\(misplaced\)$/ ),
-    expect.stringMatching( /^src\/r\.rs:10 .*\(misplaced\)$/ )
+  const vsCodeRefBad = fvsLineInSection( sOut, sTitleCodeRefBad );
+  expect( vsCodeRefBad ).toEqual([
+    expect.stringMatching( /^src\/r\.rs:6 .*stale hash/ ),
+    expect.stringMatching( /^src\/r\.rs:10 .*stale hash/ )
   ]);
   expect( fvsLineInSection( sOut, sTitleNoTestedBy )).toEqual( [] );
   expect( fvsLineInSection( sOut, sTitleNoCode )).toEqual( [] );
@@ -645,7 +671,7 @@ test( "language-readings — an implementation reference to a non-statement is r
   ]);
 });
 
-// @proves s-4hsltb@35856a9
+// @proves s-4hsltb@ebe272b
 test( "language-readings — an implementation with no tested-by line is listed", () => {
   fWriteTree([ "javascript" ], {
     "src/untested.js": "// @implements " + fsRef( "s-lng001" ) + "\n"
@@ -708,7 +734,7 @@ test( "language-readings — Rust normalisation removes comments and "
 });
 
 // @proves s-zsxa7g@af4b09e
-// @proves s-3bftr3@5507835
+// @proves s-3bftr3@3529be7
 describe( "language-readings — HTML normalisation", () => {
   const fsPage = ( sBody ) => (
     "<!-- @checks " + fsRef( "i-lng008" ) + " -->\n<!DOCTYPE html>\n" + sBody
@@ -738,8 +764,9 @@ describe( "language-readings — HTML normalisation", () => {
   });
 });
 
-// @proves s-9ho983@b227496
-// @proves s-obz7rg@010c79a
+// @proves s-9ho983@29e4110
+// @proves s-obz7rg@4fcc16d
+// @proves s-dkjdl0@511a833
 test( "language-readings — a Rust test's @implements stands in the run "
   + "above its test attribute and counts for its statement, PAIRED with one "
   + "after a blank line", () => {
@@ -764,10 +791,7 @@ test( "language-readings — a Rust test's @implements stands in the run "
   const vsNoImplementation = fvsLineInSection( sOut, sTitleNoImplementation )
     .map(( s ) => s.split( "  " )[ 1 ]);
   expect( vsNoImplementation ).not.toContain( "s-lng001" );
-  expect( vsNoImplementation ).toContain( "s-lng003" );
+  expect( vsNoImplementation ).not.toContain( "s-lng003" );
   expect( fvsLineInSection( sOut, sTitleOwnerBad )).toEqual( [] );
-  expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
-    "test/rust.test.rs:8  // @implements " + fsRef( "s-lng003" )
-      + " (misplaced)"
-  ]);
+  expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual( [] );
 });

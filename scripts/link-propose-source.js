@@ -1,7 +1,3 @@
-// @implements s-kb99wj@9e816c1
-// @implements s-ebmvdj@1e3219b
-// @implements s-50fqg8@d697296
-// @implements s-x28dlo@eaa2cb6
 // @tested-by test/link-propose.test.js
 "use strict";
 
@@ -77,6 +73,7 @@ const fbLiteral = ( x ) => (
   x !== null && typeof x === "object" && x.type === "StringLiteral"
 );
 
+// @implements s-kb99wj@9e816c1
 const fxSpecifierForCall = ( x ) => {
   const bRequire = x.callee.type === "Identifier"
     && x.callee.name === "require";
@@ -99,6 +96,7 @@ const fxSpecifierForNode = ( x ) => {
   return null;
 };
 
+// @implements s-50fqg8@d697296
 const fvsNameForPattern = ( x ) => {
   if( x === null || typeof x !== "object" ){ return [];}
   if( x.type === "Identifier" ){ return [ x.name ];}
@@ -184,6 +182,7 @@ const faFactsNone = ( sCode ) => ({
   vsSpecifier: [], vsLiteral: [], asDefine: new Set(), sCode
 });
 
+// @implements s-x28dlo@eaa2cb6
 const faFactsForScript = ( sPath, sText ) => {
   const aFile = faFileParsed( sText, sPath );
   if( aFile === null ){
@@ -211,12 +210,14 @@ const fsCodeForText = ( sPath, sText ) => {
   return sText;
 };
 
+// @implements s-ebmvdj@1e3219b
 const faFactsForFile = ( sPath, sText ) => (
   fbScript( sPath )
     ? faFactsForScript( sPath, sText )
     : faFactsNone( fsCodeForText( sPath, sText ))
 );
 
+// @implements s-x28dlo@eaa2cb6
 class TermIndex {
   constructor( vsTerm ){
     this.vaNode = [{ aChild: new Map(), nFail: 0, vsOut: [] }];

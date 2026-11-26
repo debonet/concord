@@ -1,42 +1,6 @@
-// @implements s-c744tt@ebf0776
-// @implements s-6yh3bx@ff3c0c2
-// @implements s-u5605f@d947cd4
-// @implements s-hr7p9x@ac3b457
 // @implements s-4jegoj@05acd9f
-// @implements s-zrgt7e@a066ef0
 // @implements s-pa182t@8008053
-// @implements s-4pq89a@7127ba0
-// @implements s-y7klju@10305b7
 // @implements s-gaewu5@b5462f6
-// @implements s-048ffy@dc732cc
-// @implements s-n7q049@e6823a7
-// @implements s-yf8wyo@0128e34
-// @implements s-xszaj3@4653a38
-// @implements s-dvkjf9@2c46b39
-// @implements s-z7h1uz@6f81274
-// @implements s-npmw3x@2ff75c0
-// @implements s-pite2d@c490345
-// @implements s-jlo94e@7c8068c
-// @implements s-ab1xqm@af290be
-// @implements s-7ul58j@7eae97c
-// @implements s-jmhct4@e503ded
-// @implements s-sjq95s@3031d2d
-// @implements s-i062i7@696127c
-// @implements s-4gru26@be7ee15
-// @implements s-8e60a5@97bd2af
-// @implements s-cmdkv2@24d9372
-// @implements s-d9mhcc@b3f38ff
-// @implements s-i1uuvg@f52fbd1
-// @implements s-aqxbjg@5b401f4
-// @implements s-tgbh92@04130f6
-// @implements s-utqlgq@59ec117
-// @implements s-ct9wos@02f9aaf
-// @implements s-j4tine@a618915
-// @implements s-kn4es1@360bbdd
-// @implements s-h1qxdb@0e70fa9
-// @implements s-gim8db@1c2e9d7
-// @implements s-0woned@b3f5245
-// @implements s-lx979r@8ac38af
 // @tested-by test/agents-sync.test.js
 "use strict";
 
@@ -45,12 +9,15 @@ const os = require( "os" );
 const path = require( "path" );
 const crypto = require( "crypto" );
 
+// @implements s-z7h1uz@6f81274
 const sDirRolesOwn = path.join( __dirname, "..", "roles" );
 const sExtText = ".md";
 const sExtClaude = ".claude-frontmatter";
 const sExtCodex = ".codex-frontmatter";
+// @implements s-utqlgq@59ec117
 const sFileRecord = ".concord-agents-sync.json";
 const reHash = /^[0-9a-f]{64}$/;
+// @implements s-n7q049@e6823a7
 const acArgForFlag = { "--dir": 1, "--roles": 1, "--force": 0 };
 const sUsage = (
   "usage: concord agents-sync [--dir <path>] [--roles <path>] [--force]\n"
@@ -60,6 +27,7 @@ const fsSha = ( y ) => (
   crypto.createHash( "sha256" ).update( y ).digest( "hex" )
 );
 
+// @implements s-xszaj3@4653a38
 const faArgsParsed = ( vsArg, aOption ) => {
   if( vsArg.length === 0 ){ return aOption;}
   const sFlag = vsArg[ 0 ];
@@ -73,6 +41,7 @@ const faArgsParsed = ( vsArg, aOption ) => {
   });
 };
 
+// @implements s-z7h1uz@6f81274
 const fvsStemForExt = ( vsName, sExt ) => vsName
   .filter(( sName ) => sName.endsWith( sExt ) && sName.length > sExt.length )
   .map(( sName ) => sName.slice( 0, -sExt.length ));
@@ -85,6 +54,8 @@ const fbDirectory = ( sPath ) => (
   fs.existsSync( sPath ) && fs.statSync( sPath ).isDirectory()
 );
 
+// @implements s-z7h1uz@6f81274
+// @implements s-npmw3x@2ff75c0
 const faRolesFor = ( sDirRoles ) => {
   if( !fbDirectory( sDirRoles )){
     return { sProblem: "roles directory " + sDirRoles + " does not exist" };
@@ -108,6 +79,8 @@ const faRolesFor = ( sDirRoles ) => {
   return { vsRole: vsText.slice().sort(), sProblem: null };
 };
 
+// @implements s-utqlgq@59ec117
+// @implements s-0woned@b3f5245
 const fbRecordWell = ( x ) => (
   x !== null && typeof x === "object" && !Array.isArray( x )
   && Object.values( x ).every(( s ) => (
@@ -137,6 +110,8 @@ class AgentDir {
     return fs.existsSync( sPath ) ? fs.readFileSync( sPath ) : null;
   }
 
+  // @implements s-7ul58j@7eae97c
+  // @implements s-i1uuvg@f52fbd1
   fbWritten( sName, y ){
     try{
       fs.writeFileSync( path.join( this.sDir, sName ), y );
@@ -145,11 +120,16 @@ class AgentDir {
     catch( xErr ){ return false;}
   }
 
+  // @implements s-i1uuvg@f52fbd1
+  // @implements s-tgbh92@04130f6
   fsNameFailed( vaWrite ){
     const aWrite = vaWrite.find(( a ) => !this.fbWritten( a.sName, a.y ));
     return aWrite ? aWrite.sName : null;
   }
 
+  // @implements s-j4tine@a618915
+  // @implements s-kn4es1@360bbdd
+  // @implements s-0woned@b3f5245
   faRecord(){
     const yRecord = this.fyRead( sFileRecord );
     if( yRecord === null ){ return { aRecord: {}, bWell: true };}
@@ -160,11 +140,14 @@ class AgentDir {
   }
 }
 
+// @implements s-6yh3bx@ff3c0c2
 const faPlansForRole = ( sDirRoles, sRole, agentDirClaude, agentDirCodex ) => {
   const yText = fs.readFileSync( path.join( sDirRoles, sRole + sExtText ));
+  // @implements s-jlo94e@7c8068c
   const yClaude = Buffer.concat([
     fs.readFileSync( path.join( sDirRoles, sRole + sExtClaude )), yText
   ]);
+  // @implements s-ab1xqm@af290be
   const yCodexMeta = fs.readFileSync(
     path.join( sDirRoles, sRole + sExtCodex ), "utf8"
   );
@@ -184,27 +167,43 @@ const faPlansForRole = ( sDirRoles, sRole, agentDirClaude, agentDirCodex ) => {
   ];
 };
 
+// @implements s-j4tine@a618915
+// @implements s-kn4es1@360bbdd
 const fbHandEdited = ( aPlan, aRecord ) => (
   aPlan.yOld !== null
   && !aPlan.yOld.equals( aPlan.yAgent )
   && fsSha( aPlan.yOld ) !== aRecord[ aPlan.sName ]
 );
 
+// @implements s-sjq95s@3031d2d
+// @implements s-i062i7@696127c
+// @implements s-4gru26@be7ee15
 const fbUnchanged = ( aPlan ) => (
   aPlan.yOld !== null && aPlan.yOld.equals( aPlan.yAgent )
 );
 
 const fzByKey = ([ sA ], [ sB ]) => ( sA < sB ? -1 : sA > sB ? 1 : 0 );
 
+// @implements s-cmdkv2@24d9372
+// @implements s-utqlgq@59ec117
+// @implements s-ct9wos@02f9aaf
 const fsRecordText = ( aRecord ) => JSON.stringify(
   Object.fromEntries( Object.entries( aRecord ).sort( fzByKey )), null, 2
 ) + "\n";
 
+// @implements s-jmhct4@e503ded
 const fsLine = ( aPlan ) => (
   ( fbUnchanged( aPlan ) ? "unchanged " : "wrote " )
   + aPlan.agentDir.fsShown( aPlan.sName )
 );
 
+// @implements s-sjq95s@3031d2d
+// @implements s-i062i7@696127c
+// @implements s-4gru26@be7ee15
+// @implements s-8e60a5@97bd2af
+// @implements s-cmdkv2@24d9372
+// @implements s-ct9wos@02f9aaf
+// @implements s-lx979r@8ac38af
 const fvaWrite = ( vaPlan, aRecordBase, yRecordOld ) => {
   const sRecord = fsRecordText({
     ...aRecordBase,
@@ -221,12 +220,15 @@ const fvaWrite = ( vaPlan, aRecordBase, yRecordOld ) => {
     .concat( bRecordSame ? [] : [{ sName: sFileRecord, y: sRecord }]);
 };
 
+// @implements s-i1uuvg@f52fbd1
 const fsFailedWrite = ( agentDir, sName ) => (
   "agents-sync: " + agentDir.fsShown( sName ) + " needed a write that could"
   + " not be made; run agents-sync where the target directory is writable\n"
 );
 
+// @implements s-h1qxdb@0e70fa9
 const fvsRefusal = ( vaPlan, aRecordRead, agentDir ) => {
+  // @implements s-0woned@b3f5245
   if( !aRecordRead.bWell ){
     return [
       "record file " + agentDir.fsShown( sFileRecord )
@@ -241,16 +243,23 @@ const fvsRefusal = ( vaPlan, aRecordRead, agentDir ) => {
     ));
 };
 
+// @implements s-048ffy@dc732cc
+// @implements s-6yh3bx@ff3c0c2
+// @implements s-yf8wyo@0128e34
+// @implements s-xszaj3@4653a38
+// @implements s-aqxbjg@5b401f4
 const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
   const aOption = faArgsParsed( vsArg, {});
   if( aOption === null ){
     fWriteErr( sUsage );
     return 2;
   }
+  // @implements s-dvkjf9@2c46b39
   const sDirRoles = path.resolve(
     sDirWork, aOption[ "--roles" ] || sDirRolesOwn
   );
   const sHome = ( aEnv && aEnv.HOME ) || os.homedir();
+  // @implements s-pite2d@c490345
   const agentDirClaude = new AgentDir(
     aOption[ "--dir" ] || path.join( sHome, ".claude", "agents" ), sDirWork
   );
@@ -264,6 +273,7 @@ const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
     vaAgentDir.push( agentDirCodex );
   }
   const aRoles = faRolesFor( sDirRoles );
+  // @implements s-npmw3x@2ff75c0
   if( aRoles.sProblem !== null ){
     fWriteErr( "agents-sync: " + aRoles.sProblem + "\n" );
     return 2;
@@ -275,13 +285,19 @@ const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
     agentDir, aRead: agentDir.faRecord(), yOld: agentDir.fyRead( sFileRecord ),
     vaPlan: vaPlan.filter(( aPlan ) => aPlan.agentDir.sDir === agentDir.sDir)
   }));
+  // @implements s-gim8db@1c2e9d7
+  // @implements s-lx979r@8ac38af
   const vsRefusal = aOption[ "--force" ] ? [] : vaRecord.flatMap(( a ) => (
     fvsRefusal( a.vaPlan, a.aRead, a.agentDir )
   ));
+  // @implements s-0woned@b3f5245
+  // @implements s-h1qxdb@0e70fa9
   if( vsRefusal.length > 0 ){
     fWriteErr( vsRefusal.map(( s ) => "agents-sync: " + s + "\n" ).join( "" ));
     return 2;
   }
+  // @implements s-pite2d@c490345
+  // @implements s-i1uuvg@f52fbd1
   for( const { agentDir } of vaRecord ){
     try{
       if( !fs.existsSync( agentDir.sDir )){
@@ -293,10 +309,18 @@ const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
       return 3;
     }
   }
+  // @implements s-i062i7@696127c
+  // @implements s-4gru26@be7ee15
   const vaWriteByDir = vaRecord.map(( a ) => ({
     agentDir: a.agentDir,
     vaWrite: fvaWrite( a.vaPlan, a.aRead.aRecord, a.yOld )
   }));
+  // @implements s-7ul58j@7eae97c
+  // @implements s-8e60a5@97bd2af
+  // @implements s-d9mhcc@b3f38ff
+  // @implements s-i1uuvg@f52fbd1
+  // @implements s-tgbh92@04130f6
+  // @implements s-gim8db@1c2e9d7
   for( const a of vaWriteByDir ){
     const sNameFailed = a.agentDir.fsNameFailed(
       a.vaWrite.filter(( aWrite ) => aWrite.sName !== sFileRecord )
@@ -306,6 +330,8 @@ const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
       return 3;
     }
   }
+  // @implements s-7ul58j@7eae97c
+  // @implements s-d9mhcc@b3f38ff
   for( const a of vaWriteByDir ){
     const sNameFailed = a.agentDir.fsNameFailed(
       a.vaWrite.filter(( aWrite ) => aWrite.sName === sFileRecord )
@@ -315,6 +341,8 @@ const fzMain = ( vsArg, sDirWork, fWrite, fWriteErr, aEnv ) => {
       return 3;
     }
   }
+  // @implements s-jmhct4@e503ded
+  // @implements s-i062i7@696127c
   fWrite( vaPlan.map(( aPlan ) => fsLine( aPlan ) + "\n" ).join( "" ));
   return 0;
 };

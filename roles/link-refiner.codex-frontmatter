@@ -1,0 +1,2 @@
+name = "link-refiner"
+description = "Reviews and narrows file-wide Concord code links for one hashed filename shard, running spec-map at each completed-file boundary."

@@ -655,7 +655,7 @@ describe( "concord-interactive-pass-recorded — an interactive check", () => {
   // @proves s-vhci8f@cf04778
   // @proves s-khw3hm@18fc4f5
   // @proves s-j0u6oi@c752acc
-  // @proves s-oy6kxo@66e62d5
+  // @proves s-oy6kxo@4b8acb4
   // @proves s-rypq7c@adb23df
   // @proves s-32o5r7@1ced769
   test( "is listed unchecked, then passed once recorded, PAIRED with a "
@@ -716,7 +716,7 @@ describe( "concord-interactive-pass-recorded — an interactive check", () => {
     ]);
   });
 
-  // @proves s-m544u1@eee094d
+  // @proves s-m544u1@462f4f1
   // @proves s-zac0m4@4b07675
   test( "with Look for before Do, no target list or a missing target is "
     + "reported, PAIRED with no record file written by a map run", () => {
@@ -1224,7 +1224,7 @@ describe( "concord-reword-resets-check — a reworded check", () => {
   // @proves s-d0p52k@8a9d95e
   // @proves s-g8h2jz@c4623dc
   // @proves s-ikjpbw@fc0cb7c
-  // @proves s-oy6kxo@66e62d5
+  // @proves s-oy6kxo@4b8acb4
   test( "passed is listed passed, PAIRED with one word changed, after which "
     + "it is stale, --worklist resets it as reworded and its card says "
     + "so", () => {
@@ -1272,10 +1272,10 @@ describe( "concord-code-change-resets-check — a check's code changes", () => {
   const fvsStatus = () => vsId.map( fsStatusOf );
   const vsPassed = [ "passed", "passed", "passed" ];
 
-  // @proves s-g8r0ur@13a27c5
-  // @proves s-zcb6gq@2302e9b
-  // @proves s-wp3dpp@abede2f
-  // @proves s-lgrhug@dcbf12a
+  // @proves s-g8r0ur@f2d68ec
+  // @proves s-zcb6gq@fdaa5bb
+  // @proves s-wp3dpp@040ef82
+  // @proves s-lgrhug@02a57ce
   // @proves s-tclcd8@3d6d619
   test( "comments and whitespace leave linked checks passed, PAIRED with "
     + "code changes and a deleted implementation file", () => {
@@ -1330,7 +1330,7 @@ describe( "concord-code-change-resets-check — a check's code changes", () => {
     ]);
   });
 
-  // @proves s-zcb6gq@2302e9b
+  // @proves s-zcb6gq@fdaa5bb
   test( "inside a string or regular expression, whitespace is kept, and a "
     + "word changed in linked code changes its hash, PAIRED with a CSS "
     + "comment and code whitespace, which do not", () => {
@@ -1361,9 +1361,9 @@ describe( "concord-code-change-resets-check — a check's code changes", () => {
     expect( vsLit.map( fsStatusOf )).toEqual([ "passed", "stale", "stale" ]);
   });
 
-  // @proves s-g8r0ur@13a27c5
-  // @proves s-m5inu7@1f5b447
-  // @proves s-lgrhug@dcbf12a
+  // @proves s-g8r0ur@f2d68ec
+  // @proves s-m5inu7@1c00f9a
+  // @proves s-lgrhug@02a57ce
   test( "a check tracks its linked implementation file, not spec lines", () => {
     const fWriteSpecs = ( sRule, sSub, sOther ) => {
       fWriteFile( "specs/a.md", fsSpec( "A", [
@@ -1386,6 +1386,38 @@ describe( "concord-code-change-resets-check — a check's code changes", () => {
     expect( fsStatusOf( "i-sec002" )).toBe( "passed" );
     fWriteFile( "src/check.js", "const x = 2;\n" );
     expect( fsStatusOf( "i-sec002" )).toBe( "stale" );
+  });
+
+  // @proves s-g8r0ur@f2d68ec
+  test( "a scoped @checks link hashes only its owned source region", () => {
+    const sCheckOne = "**Do:** open page. **Look for:** target shown.";
+    const sCheckTwo = "**Do:** open page. **Look for:** other shown.";
+    fWriteTree({
+      "specs/a.md": fsSpec( "A", [
+        "* {#i-scp001 >src/x.js} " + sCheckOne,
+        "* {#i-scp002 >src/x.js} " + sCheckTwo
+      ]),
+      "src/x.js": [
+        "const outside = 0;",
+        "",
+        "// @checks i-scp001@" + fsHash( sCheckOne ),
+        "function target(){ return 1; }",
+        "",
+        "// @checks i-scp002@" + fsHash( sCheckTwo ),
+        "function other(){ return 2; }",
+        ""
+      ].join( "\n" )
+    }, false );
+    expect( faRun([ "--pass", "i-scp001" ]).cExit ).toBe( 0 );
+    expect( fsStatusOf( "i-scp001" )).toBe( "passed" );
+    fWriteFile( "src/x.js", fsRead( "src/x.js" ).replace(
+      "function other(){ return 2; }", "function other(){ return 3; }"
+    ));
+    expect( fsStatusOf( "i-scp001" )).toBe( "passed" );
+    fWriteFile( "src/x.js", fsRead( "src/x.js" ).replace(
+      "function target(){ return 1; }", "function target(){ return 9; }"
+    ));
+    expect( fsStatusOf( "i-scp001" )).toBe( "stale" );
   });
 });
 
@@ -1440,7 +1472,7 @@ describe( "concord-no-code-target-flagged — a check without code", () => {
     ])
   });
 
-  // @proves s-m5inu7@1f5b447
+  // @proves s-m5inu7@1c00f9a
   // @proves s-ocpfpw@c6adf07
   // @proves s-bxs0rr@4c0a68e
   // @proves s-ol2dmr@37d4979
@@ -1463,9 +1495,9 @@ describe( "concord-no-code-target-flagged — a check without code", () => {
 });
 
 describe( "concord-implementation-links — code references", () => {
-  // @proves s-5i9gec@e31c13c
-  // @proves s-50dzy6@2129482
-  // @proves s-yyl1i0@2a9826b
+  // @proves s-5i9gec@d5e5ed3
+  // @proves s-50dzy6@3c05a41
+  // @proves s-yyl1i0@0abeae1
   test( "resolves a stamped implementation reference and its tested-by link", () => {
     const sHash = fsHash( "A code rule." );
     fWriteTree({
@@ -1497,7 +1529,7 @@ describe( "concord-unable-reopen-problems — unable, fail and reopen", () => {
   // @proves s-s8an6z@bb4aac8
   // @proves s-xsbw7s@7a18f8e
   // @proves s-ikjpbw@fc0cb7c
-  // @proves s-oy6kxo@66e62d5
+  // @proves s-oy6kxo@4b8acb4
   // @proves s-j0u6oi@c752acc
   test( "unable with a note is unchecked and a problem, a fail stays off "
     + "the page, a reopen closes it and puts it back, PAIRED with a noted "

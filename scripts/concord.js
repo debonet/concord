@@ -1,32 +1,33 @@
-// @implements s-4pyvbb@ca117f6
-// @implements s-nur3h4@3793438
-// @implements s-s6e3j6@4aad693
-// @implements s-t99cvq@daf5b13
-// @implements s-ssquhw@5229772
-// @implements s-39o0xv@51b819a
-// @implements s-0scrxa@422bf40
-// @implements s-n5ue8s@5c90c01
-// @implements s-mo4ncx@7fcbe1b
-// @implements s-xrmdr0@5803a25
-// @implements s-wq42my@339610a
-// @implements s-hp433f@86be765
-// @implements s-48tk0i@7bc9472
 // @tested-by test/concord-cli.test.js
+// @implements s-4pq89a@7127ba0
 "use strict";
 
 const { spawnSync } = require( "child_process" );
 const path = require( "path" );
 
+// @implements s-mo4ncx@7fcbe1b
+// @implements s-48tk0i@7bc9472
+// @implements s-qwhv92@cc699b1
 const asCommands = new Set([
-  "agents-sync", "concord-hook", "context", "link-propose", "migrate",
+  "agents-sync", "concord-hook", "context", "link-propose", "link-refine", "migrate",
   "spec-conflicts", "spec-coverage", "spec-map", "tree"
 ]);
 const sUsage = (
   "usage: concord <utility> [arguments]\n"
-  + "utilities: agents-sync, concord-hook, init, link-propose, "
+  + "utilities: agents-sync, concord-hook, init, link-propose, link-refine, "
   + "context, migrate, spec-conflicts, spec-coverage, spec-map, tree\n"
 );
 
+// @implements s-4pyvbb@ca117f6
+// @implements s-ssquhw@5229772
+// @implements s-39o0xv@51b819a
+// @implements s-0scrxa@422bf40
+// @implements s-n5ue8s@5c90c01
+// @implements s-mo4ncx@7fcbe1b
+// @implements s-wq42my@339610a
+// @implements s-hp433f@86be765
+// @implements s-48tk0i@7bc9472
+// @implements s-qwhv92@cc699b1
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   const fSpawn = aDeps.spawnSync || spawnSync;
   const sNode = aDeps.sNode || process.execPath;

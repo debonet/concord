@@ -10,27 +10,7 @@ unchecked ones in front of him.
 
 ## Interactive checks
 
-> {#m-58bbc0} RULING (CEO) 2026-10-21, q82, asked: "When a hand check is
-> reworded, do you check it again? Per your new line types, some checks
-> only you can do by looking at the screen (interactive checks). Example:
-> "Open a reply that shows a dialog and press Esc. Look for: the dialog
-> closes and the reply text stays." When you tap Pass, that is recorded
-> with the check. Later someone rewords the check, say to add "and the
-> cursor returns to the message box". What happens to your earlier
-> Pass?" He chose, of four options (the others, summarised: B the pass
-> stays; C nothing is recorded; D asked again only when the code it names
-> changes), A: "It goes back to "not checked" and the check is put to you
-> again after any rewording.", with the note: "These tests should use a
-> mechanism like this webpage to create a worklist for the human and
-> simple radio button answers, e.g. "Pass - the dialog closes and the
-> text stays", as well as a freeform text box to add extra details"
 
-> {#m-p5u7hb} RULING (CEO) 2026-10-21, extending his q82 note: "Also, when
-> the code changes in a relevant section, the test moves from "passed" to
-> "not checked" -- that makes it so you can just have a web page that
-> surfaces all the "not checked" tests -- perhaps prioritized by what
-> you're working on -- and the human can just keep it open as a work
-> queue."
 
 * {#s-0eydbi <m-k55xs4@88cd8e4} **Do and look for.** An `i` line tells the CEO how to
   check a behaviour by hand and what to look for: its text holds the bold
@@ -39,12 +19,13 @@ unchecked ones in front of him.
   {#s-zac0m4 <arch} An `i` line lacking either label, holding them in the other
   order, or with no text after either is malformed, reported in (6).
   {#s-vhci8f <m-k55xs4@88cd8e4} It is never a jest test: no test link resolves to it.
-* {#s-m544u1 <m-xjun0a@9dd245b} **What a check covers.** An `i` line carries no
+* {#s-m544u1 <m-xjun0a@9dd245b,m-2xr2e6@7e323df} **What a check covers.** An `i` line carries no
   target list. An implementation file names a check it supports with
-  `// @checks i-xxxxxx@hhhhhhh`; the check's related implementation files
-  are exactly the files with resolving references to its id. {#s-lgrhug <m-xjun0a@9dd245b}
+  `// @checks i-xxxxxx@hhhhhhh`; the check's related implementation regions
+  are exactly the source regions with a resolving reference to its id, with
+  an initial header reference covering the whole file. {#s-lgrhug <m-xjun0a@9dd245b,m-2xr2e6@7e323df}
   So the checks a change touches are those named by `@checks` references in
-  changed implementation files, and checks whose text or linked statement
+  changed implementation regions, and checks whose text or linked statement
   changed.
 * {#s-khw3hm <arch} **Recording a verdict.** `--pass <id>` and `--fail <id>`,
   each optionally followed by `--note <text>`, append one line to
@@ -61,11 +42,11 @@ unchecked ones in front of him.
   write nothing else and exit 0; for an id that is not an `i` line held
   by exactly one marker they name the problem on stderr, write nothing
   and exit non-zero.
-* {#s-oy6kxo <m-58bbc0@97f6bed,m-p5u7hb@920f72c} **Status.** A check's status is read from the last line of
+* {#s-oy6kxo <m-58bbc0@97f6bed,m-p5u7hb@920f72c,m-2xr2e6@7e323df} **Status.** A check's status is read from the last line of
   that file naming its id: `passed` when it records a pass whose `sHash`
   is the check's current hash and whose `asHashForTarget` holds, for every
-  implementation file with a resolving `@checks` reference to the id, that
-  file's current content hash; `stale` when it records any other pass; `failed` when it
+  implementation file with a resolving `@checks` reference to the id, the
+  current hash of the source lines owned by those references; `stale` when it records any other pass; `failed` when it
   records a fail; and `unchecked` when it records `unable`, `reopen` or
   `reset`, or when no line names the id. {#s-tclcd8 <m-p5u7hb@920f72c} A target that does
   not resolve has no current content hash, so a pass recorded while it
@@ -74,23 +55,28 @@ unchecked ones in front of him.
 * {#s-32o5r7 <m-58bbc0@97f6bed} **Rewording resets a check.** Rewording an `i` line
   changes its hash, so a pass recorded before any rewording leaves the
   check `stale` and puts it back on the worklist (The worklist, below).
-* {#s-g8r0ur <m-p5u7hb@920f72c} **Implementation content hashes.** Each implementation file linked to an `i` line has
+* {#s-g8r0ur <m-p5u7hb@920f72c,m-2xr2e6@7e323df} **Implementation content hashes.** Each implementation file linked to an `i` line has
   a content hash, the first seven lowercase hexadecimal characters of the
-  SHA-1 of the UTF-8 bytes of its normalised file content.
-* {#s-zcb6gq <arch} **Code normalisation.** The normalised text of an implementation file is its source with
+  SHA-1 of the UTF-8 bytes of the normalized contents of source regions
+  whose effective `@checks` set names that `i` line. A header `@checks`
+  reference contributes the whole file. For a file-wide `@checks` read through
+  a `.concord` sidecar, Concord uses the artifact's raw-byte hash. If several
+  source regions in one file name the check, Concord hashes their normalized
+  source text in source order.
+* {#s-zcb6gq <arch,m-2xr2e6@7e323df} **Code normalisation.** The normalized text of a checked source region is its source with
   every comment removed (`//` line comments and `/* */` block comments in
   JavaScript, `/* */` comments in CSS), outside string, template and
   regular-expression literals, then every run of whitespace outside those
   literals removed, except a run lying between two characters each a
   letter, a digit, `_` or `$`, which becomes one space. {#s-3bftr3 <arch} The
-  normalised text of any other file is its text with every run of
+  normalised text of any other region is its text with every run of
   whitespace collapsed to one space and both ends trimmed. {#s-wp3dpp <arch} So a
-  change to a covered file or function that only adds, removes or edits
+  change to a checked region that only adds, removes or edits
   comments, or only changes whitespace outside literals, keeps its content
   hash and leaves every check covering it as it was; any other change to
   its text changes the hash and makes a passed check covering it `stale`.
-* {#s-m5inu7 <arch} **Implementation links.** A check's related implementation
-  files come from their `@checks` references; it has no outgoing file or
+* {#s-m5inu7 <arch,m-2xr2e6@7e323df} **Implementation links.** A check's related implementation
+  regions come from their `@checks` references; it has no outgoing file or
   function target. {#s-ocpfpw <arch} Beside the other lists Concord reports (28)
   each `i` line that has a target list or no resolving `@checks` reference,
   naming the spec, line and id, under the heading `interactive checks with
@@ -167,14 +153,6 @@ unchecked ones in front of him.
   {#s-21250a <arch} When the file is not such an array, or any answer names an
   id that is no `i` line held by exactly one marker, it names the problem
   on stderr, appends nothing and exits non-zero; otherwise it exits 0.
-* {#g-afsx02 <arch for=fixer via=prompt} A fixer that fixes the problem a hand check's
-  record reported runs `npm run spec-map -- --reopen <id>` on that check,
-  so it returns to the CEO's worklist.
-* {#g-r5k8fw <m-p5u7hb@920f72c for=main via=prompt} After every commit the main thread runs
-  `--worklist` with the paths the work changed as `--work`, and republishes
-  the page to the same artifact URL, so the open page stays the CEO's
-  standing queue; when the page's comment arrives it saves the comment's
-  array to a file under `tmp/` and runs `--answers` on it.
 
 ## Dependencies
 

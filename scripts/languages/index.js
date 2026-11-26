@@ -1,5 +1,4 @@
 // @implements s-p54hx2@dfa5570
-// @implements s-k9xdwy@eb62f8a
 // @tested-by test/language-readings.test.js
 "use strict";
 

@@ -1,23 +1,9 @@
-// @implements s-sywry8@9ecbcbb
-// @implements s-4pq89a@7127ba0
-// @implements s-4jegoj@05acd9f
-// @implements s-zrgt7e@a066ef0
-// @implements s-pa182t@8008053
-// @implements s-k77gwh@280fec1
-// @implements s-c4ht17@d637c42
-// @implements s-toq51s@2181080
-// @implements s-xd7yc0@45836a2
-// @implements s-q18fnp@16fcb05
-// @implements s-sy3erx@af25b4e
-// @implements s-qmobm8@0f37080
-// @implements s-aw1u7o@b1c984b
-// @implements s-vn5mcf@35ccc16
-// @implements s-gcvkc4@7dd2be9
-// @implements s-kmdwax@72be12e
-// @implements s-m9434k@ce26ae6
-// @implements s-nk7r14@3eaebff
-// @implements s-bbd75g@9d2bf8c
 // @tested-by test/spec-coverage.test.js
+// @implements s-k77gwh@280fec1
+// @implements s-toq51s@2181080
+// @implements s-aw1u7o@b1c984b
+// @implements s-lhwdqe@03f70a8
+// @implements s-nk7r14@3eaebff
 "use strict";
 
 const fs = require( "fs" );
@@ -48,6 +34,8 @@ const faMapForRoot = ( aCtx, aMeasurement ) => faMapJoined({
   aLinks: new LinkReader( aCtx.sDirRoot, aCtx.aConfig ).faLinks()
 });
 
+// @implements s-xd7yc0@45836a2
+// @implements s-vn5mcf@35ccc16
 const fzReport = ( aCtx, aMeasurement ) => {
   const aMap = faMapForRoot( aCtx, aMeasurement );
   const sPathReview = aCtx.aCoverage.sPathReview;
@@ -67,6 +55,7 @@ const fsProblemForId = ( sId, cMarker ) => (
     : "spec-coverage: " + sId + " is marked at " + cMarker + " places\n"
 );
 
+// @implements s-q18fnp@16fcb05
 const fzSid = ( aCtx, aMeasurement, sId ) => {
   const aMap = faMapForRoot( aCtx, aMeasurement );
   const vaMarker = aMap.aLinks.aModel.avaMarkerForId.get( sId ) || [];
@@ -82,6 +71,9 @@ const fsScopeShown = ( vsDirSource ) => vsDirSource
   .map(( sDir ) => sDir.replace( /\/*$/, "/" ))
   .join( ", " );
 
+// @implements s-kmdwax@72be12e
+// @implements s-sy3erx@af25b4e
+// @implements s-m9434k@ce26ae6
 const fzFile = ( aCtx, aMeasurement, sArg ) => {
   const vsDirSource = aCtx.aCoverage.vsDirSource;
   const sPath = fsPosix( path.relative(
@@ -102,6 +94,11 @@ const afzQueryForFlag = {
   "--file": ( aCtx, aMeasurement, sArg ) => fzFile( aCtx, aMeasurement, sArg )
 };
 
+// @implements s-xd7yc0@45836a2
+// @implements s-xd7yc0@45836a2
+// @implements s-q18fnp@16fcb05
+// @implements s-qmobm8@0f37080
+// @implements s-bbd75g@9d2bf8c
 const fzQuery = ( aCtx, vsArg ) => {
   const aMeasurement = fxJsonRead( fsPathMeasurement( aCtx.sDirRoot ));
   if( aMeasurement === null ){
@@ -112,6 +109,10 @@ const fzQuery = ( aCtx, vsArg ) => {
   return afzQueryForFlag[ vsArg[ 0 ]]( aCtx, aMeasurement, vsArg[ 1 ]);
 };
 
+// @implements s-c4ht17@d637c42
+// @implements s-sywry8@9ecbcbb
+// @implements s-vn5mcf@35ccc16
+// @implements s-bbd75g@9d2bf8c
 const fzMeasureAndReport = ( aCtx ) => {
   fs.mkdirSync( fsDirOut( aCtx.sDirRoot ), { recursive: true });
   const zMeasure = fzMeasure( aCtx );
@@ -126,6 +127,11 @@ const fsProblemForConfig = ( aRead ) => {
     : null;
 };
 
+// @implements s-sywry8@9ecbcbb
+// @implements s-pa182t@8008053
+// @implements s-4jegoj@05acd9f
+// @implements s-xd7yc0@45836a2
+// @implements s-bbd75g@9d2bf8c
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps ) => {
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   const sProblem = fsProblemForConfig( aRead );

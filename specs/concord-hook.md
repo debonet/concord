@@ -30,13 +30,10 @@ pre-commit hook kept under version control that runs the Concord gate.
 * {#s-auxyb0 <arch,s-s4l32i@b41f304} **The hook file.** The hook is the file
   `.githooks/pre-commit` at the project root, which the project commits as
   it commits any file, so every clone carries it.
-* {#m-0wj07d <arch} The hook calls `concord spec-map` itself, not the project's
-  `spec-map` target: a target passes its arguments to that command unchanged
-  (`specs/concord-process.md`, Targets call the commands), so the result is
-  the same, and one hook text serves every build tool, `make` among them,
-  which passes no `--gate` through a target unaided.
 * {#s-w7hypm <arch,s-nlm91d@4f76fd6,m-0wj07d@0e9aaa0} **The gate line.** A hook file's gate line is
-  a whole line exactly `concord spec-map --gate || exit 1`.
+  a whole line exactly `if [ -x bin/concord ] && [ -f scripts/spec-map.js ]; then bin/concord spec-map --gate || exit 1; else concord spec-map --gate || exit 1; fi`.
+  This uses the checkout's own Concord in Concord's source tree and the
+  master command in an adopting project.
   {#s-f15bz3 <arch,m-0wj07d@0e9aaa0} The hook file `install` writes is exactly two lines,
   `#!/bin/sh` and then the gate line, each ending in a newline, with mode
   `0755`.

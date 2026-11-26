@@ -1,11 +1,4 @@
 // @implements s-gw6o7i@4c98f1e
-// @implements s-etnggy@3444b25
-// @implements s-w83alg@dde527f
-// @implements s-pcodyd@5016f26
-// @implements s-n7r3dl@2e6c5ca
-// @implements s-7wq05d@8da6561
-// @implements s-opw47h@9740a63
-// @implements s-gb47zx@a41b9a3
 // @tested-by test/spec-map-cache.test.js
 "use strict";
 
@@ -14,7 +7,7 @@ const fs = require( "fs" );
 const path = require( "path" );
 const v8 = require( "v8" );
 
-const nCacheVersion = 3;
+const nCacheVersion = 4;
 
 const fsDigest = ( xData ) => crypto.createHash( "sha256" )
   .update( xData )
@@ -37,12 +30,14 @@ const fClearCache = ( sDirRoot ) => fs.rmSync(
   fsPathCache( sDirRoot ), { recursive: true, force: true }
 );
 
+// @implements s-n7r3dl@2e6c5ca
 const fsPathEntry = ( sPathCache, sFingerprint, sKind, sKey ) => path.join(
   sPathCache,
   sFingerprint,
   fsDigest( sKind + "\0" + sKey ) + ".bin"
 );
 
+// @implements s-7wq05d@8da6561
 const fxReadEntry = ( sPath, sFingerprint, sKind, sKey ) => {
   try{
     const aEntryData = fs.readFileSync( sPath );
@@ -72,6 +67,8 @@ const fxReadEntry = ( sPath, sFingerprint, sKind, sKey ) => {
   }
 };
 
+// @implements s-7wq05d@8da6561
+// @implements s-opw47h@9740a63
 const fWriteEntry = (
   sPathCache, sFingerprint, sKind, sKey, aValue
 ) => {
@@ -107,6 +104,7 @@ const fWriteEntry = (
   }
 };
 
+// @implements s-gb47zx@a41b9a3
 class ParseCache {
   constructor( sDirRoot, sFingerprint ){
     this.sPath = fsPathCache( sDirRoot );
@@ -114,6 +112,9 @@ class ParseCache {
     this.bCheckContent = false;
   }
 
+  // @implements s-etnggy@3444b25
+  // @implements s-w83alg@dde527f
+  // @implements s-pcodyd@5016f26
   fxParse( sKind, aFile, fxParse ){
     const sKey = fsPosix( aFile.sPath );
     const sPathEntry = fsPathEntry( this.sPath, this.sFingerprint, sKind, sKey );

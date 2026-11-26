@@ -1,0 +1,6 @@
+--- a/bin/concord
++++ b/bin/concord
+@@ -0,0 +1,3 @@
++@implements s-c744tt@ebf0776
++@implements s-4pq89a@7127ba0
++@tested-by test/concord-settings.test.js#tu-5075fb9e

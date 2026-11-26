@@ -1,66 +1,26 @@
-// @implements s-1o8t4f@0a2987d
-// @implements s-32qvc5@b756ab8
-// @implements s-37a70o@fd48021
-// @implements s-3qdzw2@f9d8f24
-// @implements s-432gno@4a3e738
-// @implements s-490dus@bed4927
-// @implements s-5holqh@f911567
-// @implements s-5mgaed@94f4323
-// @implements s-9zm2bs@bb16fa3
-// @implements s-a5663z@b17746a
-// @implements s-szig7f@2053627
-// @implements s-w1y11l@e42db74
-// @implements s-tiu5mc@5061d9b
-// @implements s-w3u13c@1f1013b
+// @tested-by test/spec-conflicts.test.js
+// @implements s-xrmdr0@5803a25
+// @implements s-c6h4x1@77b4ace
+// @implements s-vh5m1r@2739781
+// @implements s-hp3m8v@bfec02c
+// @implements s-k4z0bs@e3c8f5e
+// @implements s-v7ca4r@403c0f3
+// @implements s-uw4f3x@b5190fe
+// @implements s-nc4c5e@50edcb3
+// @implements s-hr7p9x@ac3b457
+// @implements s-1oc3uc@ccf72fb
+// @implements s-9a4t7g@7ad74c8
+// @implements s-u5605f@d947cd4
+// @implements s-oacf60@4479a31
 // @implements s-adm6xl@3131120
 // @implements s-8utq9p@2aa3077
 // @implements s-nz8p2n@bcf0bd3
-// @implements s-e0aj7e@393ccd5
-// @implements s-namloz@75976c7
-// @implements s-s1tiy9@c8cf9e3
-// @implements s-6j3n2p@f716218
-// @implements s-a7d2ke@9dbc467
-// @implements s-7kf4xq@50a7265
-// @implements s-hp3m8v@bfec02c
-// @implements s-k4z0bs@e3c8f5e
-// @implements s-6zq3hc@6004ec4
-// @implements s-v7ca4r@403c0f3
-// @implements s-9tz7a2@cb492ec
-// @implements s-c6h4x1@77b4ace
-// @implements s-4phc2k@abbaaf8
-// @implements s-vh5m1r@2739781
-// @implements s-j5m8r0@d0d3d6c
-// @implements s-uw4f3x@b5190fe
-// @implements s-ogk3jb@8fa2e26
-// @implements s-9a4t7g@7ad74c8
-// @implements s-u5605f@d947cd4
-// @implements s-49pthq@660fcd0
-// @implements s-1oc3uc@ccf72fb
-// @implements s-nc4c5e@50edcb3
-// @implements s-hr7p9x@ac3b457
-// @implements s-auhz9l@5187048
-// @implements s-b97pxb@a56c6b2
-// @implements s-g0vx2v@a2e1989
-// @implements s-iib1an@2174339
-// @implements s-iixdd3@05f8734
-// @implements s-j84nl9@3646653
-// @implements s-jizeit@d73f506
 // @implements s-jorvck@057c853
-// @implements s-k28ggu@d0b23b6
-// @implements s-l1ejuq@74290c0
-// @implements s-mdie6i@20387f2
-// @implements s-o3lq0h@8b8de27
-// @implements s-o7y7jj@8aa8ddb
-// @implements s-oacf60@4479a31
-// @implements s-of7uc3@d1614af
-// @implements s-q61vzh@596af51
-// @implements s-rh8mff@322b7f7
 // @implements s-run5j3@4f313fd
-// @implements s-vf9dot@ee01a4a
-// @implements s-wroxli@a1038eb
 // @implements s-x5iowz@1df7600
+// @implements s-rh8mff@322b7f7
+// @implements s-of7uc3@d1614af
 // @implements s-y6b91m@5d7f2ee
-// @tested-by test/spec-conflicts.test.js
 "use strict";
 
 const crypto = require( "crypto" );
@@ -68,18 +28,25 @@ const childProcess = require( "child_process" );
 const fs = require( "fs" );
 const path = require( "path" );
 
+// @implements s-o7y7jj@8aa8ddb
 const asStatus = new Set([ "new", "open", "resolved", "incorrect" ]);
 const asReportableStatus = new Set([ "new", "open" ]);
+// @implements s-iixdd3@05f8734
+// @implements s-b97pxb@a56c6b2
 const cClaimTokenFrequencyMax = 64;
+// @implements s-b97pxb@a56c6b2
 const cPairForClaimMax = 8;
 const cReportDefault = 100;
+// @implements s-o3lq0h@8b8de27
 const cReportMax = 1000;
 const cSharedTermMax = 8;
+// @implements s-auhz9l@5187048
 const sReviewFile = "spec-conflicts.json";
 const sReviewMessage = "The following is a list of potential specification conflicts. Examine each pair in depth, compare its scope, conditions, and required outcomes, and raise any likely conflict with the human operator.";
 const sReviewInstructions = "Use `review_dispatch` as a coordinator loop: while `concord spec-conflicts --count` is greater than zero, launch as many conflict-reviewer agents in parallel as the harness allows, then wait for their results, record verdicts with --mark, and repeat. Each reviewer must get its candidate by running `concord spec-conflicts --nextreview` as its first review action. Unanswered candidates become available again after the --since cooldown. The score ranks shared wording and does not establish a contradiction.";
 const sNextReviewInstructions = "This candidate was handed out to you. Examine it in the current project context and return one verdict to the coordinator. Do not mark it or request another candidate. If you do not return, the candidate becomes available again after the --since cooldown.";
 const sNextOpenInstructions = "Run the named `conflict-reviewer` agent for this candidate using the harness in a fresh context and branch. If it confirms a conflict, start the architect/fixer process to correct the owning specifications and mark it resolved only after the correction is integrated. If review establishes that there is no conflict, mark it incorrect. If it remains unresolved, mark it open again to record that review, raise it with the human operator, and then run the response's `next_command` to review the next open conflict.";
+// @implements s-6zq3hc@6004ec4
 const aReviewDispatch = {
   required: true,
   agent: "conflict-reviewer",
@@ -120,6 +87,7 @@ const fnCompareIdentity = ( aA, aB ) => (
   fnCompare( aA.sId, aB.sId ) || fnCompare( aA.sText, aB.sText )
 );
 
+// @implements s-g0vx2v@a2e1989
 const fvsToken = ( sText ) => Array.from(
   new Set(
     sText.replace( reCamelBoundary, "$1 $2" )
@@ -130,12 +98,15 @@ const fvsToken = ( sText ) => Array.from(
 
 const fsPairKey = ( nFirst, nSecond ) => nFirst + ":" + nSecond;
 
+// @implements s-vf9dot@ee01a4a
 const fnComparePair = ( aA, aB ) => (
   aB.nScore - aA.nScore
   || fnCompareClaim( aA.aFirst, aB.aFirst )
   || fnCompareClaim( aA.aSecond, aB.aSecond )
 );
 
+// @implements s-490dus@bed4927
+// @implements s-9zm2bs@bb16fa3
 const faCandidatePairs = ( vaClaimInput ) => {
   const vaClaim = vaClaimInput.map(( aClaim ) => ({
     ...aClaim,
@@ -221,6 +192,9 @@ const faCandidatePairs = ( vaClaimInput ) => {
     .sort( fnComparePair );
 };
 
+// @implements s-3qdzw2@f9d8f24
+// @implements s-5holqh@f911567
+// @implements s-w3u13c@1f1013b
 const faOptions = ( vsArg ) => {
   if([ "--nextreview", "--nextopen", "--count" ].includes( vsArg[ 0 ])){
     if( vsArg[ 0 ] === "--nextopen" ){ return vsArg.length === 1 ? { sNext: "open" } : null; }
@@ -257,6 +231,7 @@ const faOptions = ( vsArg ) => {
   return { nLimit, bHuman };
 };
 
+// @implements s-49pthq@660fcd0
 const fnDurationMs = ( sDuration ) => {
   const aMatch = /^(\d+)(s|m|h|d)$/.exec( sDuration );
   if( sDuration === "0" ){ return 0; }
@@ -271,6 +246,11 @@ const fsClaimForMarker = ( aMarker ) => (
     ? aMarker.sText : aMarker.sTextIncluded
 );
 
+// @implements s-q61vzh@596af51
+// @implements s-mdie6i@630e05a
+// @implements s-l1ejuq@74290c0
+// @implements s-iib1an@2174339
+// @implements s-432gno@4a3e738
 const fvaClaimForModel = ( aModel ) => aModel.vaMarker
   .filter(( aMarker ) => aMarker.sType === "s" )
   .map(( aMarker ) => ({
@@ -294,6 +274,8 @@ const fvaClaimForModel = ( aModel ) => aModel.vaMarker
     return aClaim;
   }).filter(( aClaim ) => aClaim.asAnchor.length > 0 );
 
+// @implements s-j84nl9@3646653
+// @implements s-32qvc5@b756ab8
 const fsConflictId = ( aPair ) => {
   const vaIdentity = [ aPair.aFirst, aPair.aSecond ]
     .slice().sort( fnCompareIdentity )
@@ -310,12 +292,15 @@ const faPublicClaim = ( aClaim ) => ({
   text: aClaim.sText
 });
 
+// @implements s-vf9dot@ee01a4a
 const fsPossibleIssue = ( aPair ) => (
   `The claims share implementation or test anchors (${aPair.asAnchor.join( ", " )}) `
   + `and indexed terms (${aPair.asSharedTerms.join( ", " )}). Compare scope and `
   + "conditions to determine whether both claims can be true."
 );
 
+// @implements s-432gno@4a3e738
+// @implements s-vf9dot@ee01a4a
 const faPublicAnchors = ( aPair ) => ({
   implementation_files: aPair.asAnchor.filter(( sAnchor ) => sAnchor.startsWith( "code:" ))
     .map(( sAnchor ) => sAnchor.slice( 5 )),
@@ -327,6 +312,7 @@ const faPublicAnchors = ( aPair ) => ({
     })
 });
 
+// @implements s-vf9dot@ee01a4a
 const faRecordFromPair = ( aPair, sStatus = "new" ) => ({
   id: fsConflictId( aPair ),
   status: sStatus,
@@ -357,6 +343,7 @@ const fnCompareLastReviewed = ( aA, aB ) => {
 
 const bARecordScore = ( aRecord ) => Number( aRecord.score ) || 0;
 
+// @implements s-namloz@75976c7
 const fbValidRecord = ( aRecord ) => (
   aRecord !== null && typeof aRecord === "object"
   && reConflictId.test( aRecord.id ) && asStatus.has( aRecord.status )
@@ -390,6 +377,8 @@ const fbValidRecord = ( aRecord ) => (
   ))
 );
 
+// @implements s-5mgaed@94f4323
+// @implements s-auhz9l@5187048
 const faReadReview = ( sDirRoot ) => {
   const sPath = path.join( sDirRoot, sReviewFile );
   if( !fs.existsSync( sPath )){ return { sProblem: null, aReview: { version: 1, conflicts: [] }};}
@@ -411,6 +400,7 @@ const faReadReview = ( sDirRoot ) => {
   return { sProblem: null, aReview };
 };
 
+// @implements s-auhz9l@5187048
 const fzWriteReview = ( sDirRoot, aReview ) => {
   const sPath = path.join( sDirRoot, sReviewFile );
   const sTempPath = sPath + ".tmp-" + process.pid;
@@ -424,6 +414,9 @@ const fzWriteReview = ( sDirRoot, aReview ) => {
   }
 };
 
+// @implements s-37a70o@fd48021
+// @implements s-5mgaed@94f4323
+// @implements s-s1tiy9@c8cf9e3
 const faMergeCandidates = ( aReview, vaPair ) => {
   const maRecord = new Map( aReview.conflicts.map(( aRecord ) => [ aRecord.id, aRecord ]));
   const vaDetected = vaPair.slice( 0, cReportMax );
@@ -448,6 +441,11 @@ const faMergeCandidates = ( aReview, vaPair ) => {
   return { aUpdated, vaReport, nDetected: vaDetected.length };
 };
 
+// @implements s-vf9dot@ee01a4a
+// @implements s-k28ggu@d0b23b6
+// @implements s-jizeit@d73f506
+// @implements s-490dus@bed4927
+// @implements s-5holqh@f911567
 const fsReportHuman = ( vaRecord, nLimit, aSummary = {} ) => {
   const vaReport = vaRecord.slice( 0, nLimit );
   const sHeader = sReviewMessage + "\n" + sReviewInstructions + "\n"
@@ -469,8 +467,15 @@ const fsReportHuman = ( vaRecord, nLimit, aSummary = {} ) => {
   ].join( "\n" )).join( "\n\n" ) + "\n";
 };
 
+// @implements s-a5663z@b17746a
+// @implements s-j5m8r0@d0d3d6c
 const fsReportCount = ( nAvailable ) => String( nAvailable ) + "\n";
 
+// @implements s-vf9dot@ee01a4a
+// @implements s-szig7f@2053627
+// @implements s-w1y11l@e42db74
+// @implements s-tiu5mc@5061d9b
+// @implements s-7kf4xq@50a7265
 const fsNextJson = ( aReview, sStatus ) => {
   const aCandidate = aReview.conflicts.filter(( aRecord ) => aRecord.status === sStatus )
     .sort( sStatus === "open" ? fnCompareLastReviewed : fnCompareRecord )[ 0 ] || null;
@@ -488,6 +493,7 @@ const fsNextJson = ( aReview, sStatus ) => {
   }, null, 2 ) + "\n";
 };
 
+// @implements s-ogk3jb@8fa2e26
 const fsClaimStorePath = ( sDirRoot ) => {
   if( !fs.existsSync( path.join( sDirRoot, ".git" ))){
     return path.join( sDirRoot, "tmp", "concord-spec-conflict-claims.json" );
@@ -535,6 +541,9 @@ const fzWriteClaims = ( sPath, aClaims ) => {
   fs.renameSync( sTempPath, sPath );
 };
 
+// @implements s-szig7f@2053627
+// @implements s-tiu5mc@5061d9b
+// @implements s-7kf4xq@50a7265
 const fzClaimNext = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
   const sClaimPath = fsClaimStorePath( sDirRoot );
   try {
@@ -573,6 +582,9 @@ const fzClaimNext = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
   }
 };
 
+// @implements s-a5663z@b17746a
+// @implements s-9tz7a2@cb492ec
+// @implements s-6j3n2p@f716218
 const fzCount = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
   try {
     const cAvailable = fnCountAvailable( sDirRoot, aReview, nSince );
@@ -584,6 +596,7 @@ const fzCount = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
   }
 };
 
+// @implements s-4phc2k@abbaaf8
 const fnCountAvailable = ( sDirRoot, aReview, nSince ) => {
   const sClaimPath = fsClaimStorePath( sDirRoot );
   return fzWithClaimLock( sClaimPath, () => {
@@ -601,6 +614,8 @@ const sUsage = "usage: concord spec-conflicts [--human] [--limit <n>]\n"
   + "       duration: nonnegative integer with s, m, h or d suffix; default 1h\n"
   + "       concord spec-conflicts --mark <id> <new|open|resolved|incorrect>\n";
 
+// @implements s-3qdzw2@f9d8f24
+// @implements s-e0aj7e@393ccd5
 const fzMark = ( aMark, sDirRoot, fWrite, fWriteErr ) => {
   if( !reConflictId.test( aMark.sId )){
     fWriteErr( "spec-conflicts: invalid conflict id\n" );
@@ -631,6 +646,12 @@ const fzMark = ( aMark, sDirRoot, fWrite, fWriteErr ) => {
   return 0;
 };
 
+// @implements s-w3u13c@1f1013b
+// @implements s-wroxli@a1038eb
+// @implements s-k28ggu@d0b23b6
+// @implements s-6j3n2p@f716218
+// @implements s-a7d2ke@9dbc467
+// @implements s-1o8t4f@0a2987d
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   const fWriteError = fWriteErr || fWrite;
   const aOptions = faOptions( vsArg );

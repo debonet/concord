@@ -119,7 +119,7 @@ describe( "spec-map — the checks a change touches", () => {
   const sTextFunc = "function fOne(){ return 1;}\nfunction fTwo(){ return 1;}\n";
   const sTextCheck = "**Do:** open it. **Look for:** a box.";
 
-  // @proves s-lgrhug@dcbf12a
+  // @proves s-lgrhug@02a57ce
   test( "the worklist resets checks linked from changed implementation "
     + "files, PAIRED with an untouched file and a reworded spec statement, "
     + "which do not reset the checks", () => {

@@ -1,16 +1,3 @@
-// @implements s-qpkoc3@605c600
-// @implements s-xoq4ak@39497ea
-// @implements s-itmj4d@a1e8c28
-// @implements s-vhve0l@16601c0
-// @implements s-mrpnyc@03b594d
-// @implements s-9prjr2@1a46cc4
-// @implements s-tn2pd8@020e25c
-// @implements s-1cabsl@c392ae5
-// @implements s-qqyciz@cfdb477
-// @implements s-ghfwp5@412ccc7
-// @implements s-1lktaq@64cbd78
-// @implements s-dokd3g@edd7c92
-// @tested-by test/spec-coverage.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -76,6 +63,8 @@ const fxRootDirExpanded = ( x, sDirSuite ) => {
   ]));
 };
 
+// @implements s-1lktaq@64cbd78
+// @tested-by test/spec-coverage.test.js
 const fsEnvironmentResolved = ( sEnvConfig, sDirSuite ) => {
   const sEnv = sEnvConfig === undefined ? "node" : sEnvConfig;
   if( path.isAbsolute( sEnv )){ return sEnv;}
@@ -108,6 +97,10 @@ const faTransformGuarded = ( aTransform, sDirSuite, sPathTransform ) => ({
   }]
 });
 
+// @implements s-qpkoc3@605c600
+// @implements s-xoq4ak@39497ea
+// @implements s-dokd3g@edd7c92
+// @tested-by test/spec-coverage.test.js
 const faConfigForSuite = ({
   aConfig,
   sDirSuite,
@@ -141,6 +134,8 @@ const faConfigForSuite = ({
   };
 };
 
+// @implements s-qqyciz@cfdb477
+// @tested-by test/spec-coverage-bash.test.js
 const fvnLineExecutable = ( sText, sPath ) => fCreateBash.fbCanReadPath(
   sPath, sText
 )
@@ -244,6 +239,9 @@ const fvaRegionForFile = ( sPath, sText, aasnUnit ) => {
   }));
 };
 
+// @implements s-itmj4d@a1e8c28
+// @implements s-vhve0l@16601c0
+// @tested-by test/spec-coverage.test.js
 const faMeasurementForRecords = ({
   vaRecord, avsTextForPath, aSuite, aGit, sTime
 }) => {
@@ -302,6 +300,8 @@ class SuiteRunner {
     return aPackage.jest || {};
   }
 
+  // @implements s-mrpnyc@03b594d
+  // @tested-by test/spec-coverage.test.js
   faRunSuite( aSuite, sDirRun ){
     if( aSuite.sRunner === "bash" ){
       return this.faRunBash( aSuite, sDirRun );
@@ -344,6 +344,10 @@ class SuiteRunner {
     };
   }
 
+// @implements s-tn2pd8@020e25c
+// @implements s-1cabsl@c392ae5
+// @implements s-ghfwp5@412ccc7
+// @tested-by test/spec-coverage-bash.test.js
   faRunBash( aSuite, sDirRun ){
     const sDirSuite = path.resolve( this.sDirRoot, aSuite.sDirRel );
     const vsPathTest = fs.readdirSync( sDirSuite, { recursive: true })
@@ -438,6 +442,8 @@ class SuiteRunner {
   }
 }
 
+// @implements s-9prjr2@1a46cc4
+// @tested-by test/spec-coverage.test.js
 const fsWhyIncomplete = ( aRun ) => {
   const aSummary = aRun.aSummary;
   if( aSummary === null ){ return "jest exited " + aRun.xStatus;}
@@ -472,6 +478,8 @@ const fsDirRunForSuite = ( sDirRoot, aSuite ) => path.join(
   fsDirOut( sDirRoot ), "run", aSuite.sSuite
 );
 
+// @implements s-dokd3g@edd7c92
+// @tested-by test/spec-coverage.test.js
 const fzMeasure = ({ sDirRoot, aCoverage, runner, fWriteErr, fsTime }) => {
   fs.rmSync( path.join( fsDirOut( sDirRoot ), "run" ), {
     recursive: true, force: true

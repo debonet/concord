@@ -411,7 +411,7 @@ describe( "gate — guard lines", () => {
     ]);
     const sReport = faRun([]).sStdout;
     expect( fvsLineInSection( sReport, "unbacked guard lines" )).toEqual(
-      [ "test/t.test.js:8  guard 2  s-gag002  specs/a.md" ]
+      [ "test/t.test.js:8  lines 9-9  s-gag002  specs/a.md" ]
     );
     const aRun = faRun([ "--gate" ]);
     expect( aRun.cExit ).toBe( 1 );
@@ -421,14 +421,14 @@ describe( "gate — guard lines", () => {
       /^\(8\) test\/t\.test\.js:6 .*s-zzz996.* guard +\(no such statement\)$/
     );
     expect( vsGate[ 1 ]).toMatch(
-      /^\(9\) test\/t\.test\.js:4 +guard 0 +s-gag001 guard +recorded 0000000/
+      /^\(9\) test\/t\.test\.js:4 +lines 5-5 +s-gag001 guard +recorded 0000000/
     );
     expect( vsGate[ 2 ]).toBe( "Gate: refused, 2 entries" );
     expect( aRun.sStdout ).not.toContain( "s-gag002" );
   });
 
-  test( "PAIRED: a tree whose only guard lines are unbacked or misplaced "
-    + "passes", () => {
+  test( "PAIRED: an unbacked guard does not refuse, but a stale guard does",
+  () => {
     fWriteGuarded([
       "// @guards s-gag002@" + fsHash( vsText[ 1 ]),
       "// @guards s-gag001@0000000\n"
@@ -436,11 +436,13 @@ describe( "gate — guard lines", () => {
     const sReport = faRun([]).sStdout;
     expect( fvsLineInSection( sReport, "unbacked guard lines" ))
       .toHaveLength( 1 );
-    expect( fvsLineInSection( sReport, "link lines that do not resolve" )
-      .join( "\n" )).toMatch( /misplaced/ );
+    expect( fvsLineInSection( sReport, "link lines that do not resolve" ))
+      .toEqual( [] );
+    expect( fvsLineInSection( sReport, "stale links" )).toHaveLength( 1 );
     const aRun = faRun([ "--gate" ]);
-    expect( aRun.sStdout ).toBe( "Gate: pass\n" );
-    expect( aRun.cExit ).toBe( 0 );
+    expect( aRun.sStdout ).toMatch( /^\(9\) test\/t\.test\.js:6/m );
+    expect( aRun.sStdout ).toContain( "Gate: refused, 1 entries" );
+    expect( aRun.cExit ).toBe( 1 );
   });
 });
 

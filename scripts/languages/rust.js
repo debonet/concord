@@ -1,8 +1,15 @@
 // @implements s-3fzgrr@cc19c25
 // @implements s-rh750h@cc70238
-// @implements s-p54hx2@dfa5570
-// @implements s-k9xdwy@eb62f8a
+// @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
+// @implements s-jqqjjj@cfe7b54
+// @implements s-rdpnaf@0033647
+// @implements s-z6r8qu@bc64f8c
+// @implements s-p069rs@d53d867
+// @implements s-wut129@714b56a
+// @implements s-n4r9dw@4bcc808
+// @implements s-zrjuk3@760428d
+// @implements s-k6leed@80135a4
 "use strict";
 
 const ftMaskRust = ( sText ) => {
@@ -127,7 +134,6 @@ const fvaCodeReferenceForRust = ( aFile, f ) => {
   ];
   return vnLineComment.flatMap(( nComment ) => {
     const nLine = f.fnLineAt( vnLineStart, nComment );
-    if( nLine >= nLineCode ){ return [];}
     const sLine = vsLine[ nLine ];
     const sAfter = sLine.slice( nComment - vnLineStart[ nLine ] + 2 );
     return vaDirective.flatMap(([ sKind, reText, reLoose, reWell ]) => {

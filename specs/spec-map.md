@@ -10,21 +10,9 @@ code implements, which tests are declared to verify each implementation
 file, which spec owns each test, and how every other type of spec line
 (`specs/spec-map-line-types.md`) is satisfied.
 
-> {#m-ulzcp5} USER 2026-10-28: "So spec pointing to tests and code seems broken. The spec files should stand alone, and not depend on anything else."
 
-> {#m-r3llz8} USER 2026-10-28: "It should be:
->
-> spec <-- test
-> spec <-- code
-> test <-- code"
 
-> {#m-6pxcni} USER 2026-10-28: "Then there should a tool that makes sure:
->
-> * every spec is convered by tests
-> * every spec is covered by code
-> * every code is covered by tests"
 
-> {#m-cujcht} USER 2026-11-02: "support for \"not-yet-implemented\" --> things which are spec'd but have not yet been built, but which should be allowed to be committed"
 
 ## API
 
@@ -70,16 +58,13 @@ file, which spec owns each test, and how every other type of spec line
   `--worklist`, and writes the worklist page only under `--worklist`, at
   the path it is given; it is a command, not a suite, so a project's rule
   that no suite reads the spec directory does not reach it.
+* {#s-ky5glg <m-oxym3o@90bf233} `spec-map` scans Markdown under both `spec_directories` and `intent_directories`; motive markers in either location participate in the same id and root-reference index, so existing motives in spec files remain valid during migration.
+* {#s-omlrtx <m-kq3ywd@720f773} `spec-map` scans Markdown under `spec_directories`, `intent_directories` and `guidance_directories` and indexes spec (`s`), motive (`m`) and guidance (`g`) markers in one project-wide marker and reference index; existing `g` markers under spec directories remain valid during migration.
 
 ## Persistent cache
 
-> {#m-sjv9gw} USER 2026-11-09: "You should provide a mechanism for clearing the spec-map cache."
 
-> {#m-01zr2l} USER 2026-11-06: "In our case skip the checksum, and just assume the fast check, with a flag to always examine every file. We'll never need it, since LLMs actually touch files very slowly because of the model-api latency"
 
-> {#m-r7qm94} USER 2026-11-06: "I timed a full checker run just now: about 31 seconds of one core and 560 MB. It reads every spec, test and code file and recomputes every statement's hash, about 28,000 statements; it caches nothing between runs."
->
-> "The obvious one is caching file parses between runs, so a run after a one-file edit costs seconds instead of 31."
 
 * {#s-gw6o7i <m-r7qm94@16a88ce} **Cache reuse.** `spec-map` retains parsed file data and statement hashes between separate invocations, and reuses them when their inputs remain current.
 * {#s-etnggy <arch,m-r7qm94@16a88ce} **Current inputs.** Every invocation discovers the current files and reads the current project settings; a cached parse is reusable only when the file's recorded size and modification time, the applicable language reading and the checker's parsing rules match those used to create it. In the default fast check, size and modification time are assumed to establish that the contents are unchanged.
@@ -99,13 +84,13 @@ file, which spec owns each test, and how every other type of spec line
 
 ## Test names
 
-* {#s-ns2gme <s-62b8ec@c221937} **Names carry nothing.** The name of a test or a
+* {#s-ns2gme <s-62b8ec@2fda7eb} **Names carry nothing.** The name of a test or a
   `describe` (`test`, `it`, `describe`, and their `.each`, `.only` and
   `.skip` forms) is free text: the command reads it only to name the test in
   its output and to match terms in `--candidates`, and no list, count or
   exit code of any run depends on what a name holds, whatever kebab-case
   token, backtick span or comma-separated run it opens with.
-* {#s-l9g0ah <s-62b8ec@c221937} **No name lists.** No run's output holds a list or a count
+* {#s-l9g0ah <s-62b8ec@2fda7eb} **No name lists.** No run's output holds a list or a count
   about test names: none of ids no test carries, of orphan names, or of
   unlisted kebab-case names.
 * {#s-dpoj4a <arch} **How a name is read.** A name is read as written in the
@@ -127,7 +112,7 @@ file, which spec owns each test, and how every other type of spec line
   {#s-8xr9d5 <arch} In that file a call to the declared identifier whose first
   argument is a string literal, or string literals joined by `+`, is a
   `test` call wherever this spec reads one: that argument is its name, it
-  is owned and linked as a `test` is, and an owner or link line directly
+  is owned and linked as a `test` is, and an owner line directly
   above it sits above a test. {#s-0nmcwv <arch} A call to an
   undeclared identifier is never a test call, whatever it calls, and a
   wrapper line binds only the file it sits in.
@@ -159,8 +144,7 @@ file, which spec owns each test, and how every other type of spec line
   opens with a jest docblock (`/** @jest-environment … */`), the owner
   lines sit after that docblock, which must stay the first thing in the
   file for jest to read it. A block-level owner line sits in a run of one
-  or more consecutive owner lines, link lines (Test links, below)
-  allowed among them, whose next line, with no blank line
+  or more consecutive owner lines whose next line, with no blank line
   between, opens a `describe`, `test` or `it` call (their `.each`,
   `.only` and `.skip` forms included), below the header. An owner line in
   the header is file-level even when the header's next line opens such a
@@ -180,7 +164,7 @@ file, which spec owns each test, and how every other type of spec line
   misplaced. With no argument it reports both over the whole tree and
   exits 0. With a spec path it reports (3) and (4) over the test files
   that name that spec in an owner line, file-level or block-level, or
-  hold a link line naming one of its statements (that spec's test
+  hold a proof region naming one of its statements (that spec's test
   files), and exits non-zero when (4) holds an entry in one of those
   files, whichever spec that entry names;
   (3) alone does not change the exit code. Entries in other files are
@@ -256,35 +240,11 @@ file, which spec owns each test, and how every other type of spec line
 * {#s-mijuu3} **Duplicate ids.** An id marked at two or more places, in
   one spec or in several, is a duplicate: every place is reported, and a
   link or a query naming it resolves to none of them.
-* {#s-eawgvu} **Test links.** A test proves a statement through a link
-  line: a `//` line comment whose whole text, after optional leading
-  whitespace, is `// @proves s-xxxxxx@hhhhhhh`, with one or more spaces
-  after `@proves`, then the statement id, `@`, and the seven lowercase
-  hexadecimal characters of the statement's hash as the link's author
-  recorded it, and nothing after but trailing whitespace. One line links
-  one statement. Any `//` line comment whose text begins `@proves` is
-  read as a link line, well formed or not; `@proves` inside a `/* */`
-  comment or a string or template literal is not.
-* {#s-tw3l62} **Where a link sits.** A link line sits in a run of
-  consecutive lines, each a link line or an owner line, whose next line,
-  with no blank line between, opens a `describe`, `test` or `it` call
-  (their `.each`, `.only` and `.skip` forms included). Owner lines in
-  such a run keep the placement rules above, so in a file's header they
-  stay file-level. A link line anywhere else is misplaced.
-* {#s-jcgn2k} **What a link covers.** A link above a `test` or `it`
-  covers that test; a link above a `describe` covers every test nested
-  inside it, at any depth. A test proves the union of the statements
-  named by its own links and by the links of every `describe` enclosing
-  it. A link resolves when it is well formed, well placed, and names an
-  id marked at exactly one place.
-* {#s-s7wgz7} **Derived owners.** A test file is fully linked when it
-  holds at least one `test` or `it` and every one proves at least one
-  statement through a link that resolves. In a fully linked file a
-  test's owners are the specs holding the statements it proves, and the
-  file's owner lines do not change them; in every other file the owner lines decide
-  as above. {#s-n7deu7} A fully linked file is never reported as having
-  no owner line, and each of its owner lines, file-level or block-level,
-  is reported as removable.
+* {#s-eawgvu <arch,m-154s6w@bb3a5e5} **Test links.** A test file may contain `@proves s-xxxxxx@hhhhhhh` directive comments. The statement id and seven-character lowercase hexadecimal hash name one specification statement. One directive names one statement. Any supported comment whose text begins `@proves` is read as a link, well formed or not; text inside strings, literals or comments the language reader does not accept is not a directive.
+* {#s-tw3l62 <arch,m-qu5x9t@d66daae,m-154s6w@bb3a5e5} **Test regions.** Test `@proves` groups use indentation-scoped source regions (`specs/spec-map-line-types.md`, Code references). Group ownership is independent of test declarations and test-framework names. A test file source line is linked to the union of active groups; a new group at the same or lesser indentation replaces the group at that level and closes deeper groups.
+* {#s-jcgn2k <arch,m-154s6w@bb3a5e5} A test region proves each statement in its effective `@proves` set. Repeating a statement id in another group is valid and creates another region link. A reference resolves when it is well formed and names an id marked at exactly one place.
+* {#s-s7wgz7 <arch,m-154s6w@bb3a5e5} A test file's derived owners are the specs holding statements proved by test calls overlapping resolving `@proves` regions. Its explicit owner lines remain valid for files without proof-derived owners; when proof regions derive every test's owners, file-level owner lines do not change them and are reported as removable. {#s-n7deu7 <arch} A test file whose test calls all have proof-derived owners is never reported as having no owner line, and each of its owner lines is reported as removable.
+* {#s-xsusri <arch,m-154s6w@bb3a5e5} A discovered test call proves the union of resolving `@proves` groups whose owned source ranges overlap its body. Test-framework nesting does not extend a group's range or add inherited links.
 * {#s-tv24sx} **Completeness.** A spec is complete when the first
   non-blank line after its `#` title is exactly `Statement ids:
   complete`. In a complete spec a block is statement-shaped when it is a
@@ -308,8 +268,8 @@ file, which spec owns each test, and how every other type of spec line
   no test proves and that is no root (Statement roots, below), naming the spec, the id and the line; (8) each link
   line that does not resolve, naming the file, the line and the text;
   (9) each stale link, one whose recorded hash differs from its
-  statement's current hash, naming the file, the line, the test or
-  `describe` it sits above, the id and both hashes; (10) the
+  statement's current hash, naming the file, the directive line, its owned
+  source range, the id and both hashes; (10) the
   completeness failures of each complete spec; (11) each removable
   owner line, naming the file and the line; and (12) each placeholder,
   naming the spec, the line and its statement's opening words. Missing
@@ -327,34 +287,26 @@ file, which spec owns each test, and how every other type of spec line
   and fails a run only through a complete spec's completeness failures.
   {#s-5vv5ht <arch} With a spec path it also reports, under its own heading,
   (19) each stale link in one of that spec's test files that names
-  another spec's statement, naming the file, the line, the test or
-  `describe` it sits above, the id, the spec marking it and both hashes.
+  another spec's statement, naming the file, directive line, owned source
+  range, the id, the spec marking it and both hashes.
   {#s-nudxy0 <arch} (19) never changes the exit code, so a stale link fails
   only the run with the path of the spec whose statement it names.
-* {#s-i6rjuw <arch,m-6pxcni@29fc8b1} The command reports (31) each statement with no resolving `@implements` reference, (32) each implementation file with no resolving `@implements` reference or no resolving `@tested-by` reference, and (33) each malformed, unresolved or stale code reference, naming its implementation file, line and target. A (31) entry for a `not-yet-implemented` statement is identified as intentional.
+* {#s-i6rjuw <arch,m-6pxcni@29fc8b1,m-2xr2e6@7e323df} The command reports (31) each statement with no resolving `@implements` region or file-wide reference, (32) each implementation file with no resolving implementation reference or no resolving `@tested-by` reference, and (33) each malformed, unresolved or stale code reference, naming its implementation file, target line range where applicable, directive location and target. A (31) entry for a `not-yet-implemented` statement is identified as intentional.
 * {#s-22a0wo <m-sjwtwk@fe2b2dc} A file read through an eligible `.concord` sidecar is an implementation file for (31), (32), statement queries and implementation coverage; the implementation target is the file beside the sidecar, and the sidecar path and line locate its directives.
-* {#s-8qhv2d <m-sjwtwk@fe2b2dc} List (38) reports each discovered `.concord` sidecar that is not read because its target is absent, not a regular file, recognized as a comment-capable implementation file or test file, or is itself a sidecar. It names the sidecar and reason. With no argument it reports all such sidecars; a run with a spec path does not report (38).
+* {#s-8qhv2d <m-sjwtwk@fe2b2dc} List (38) reports each discovered `.concord` sidecar that is not read because its target is absent, not a regular file, recognized as a comment-capable implementation file or test file, is itself a sidecar, or has a malformed, stale, ambiguous or modifying diff. It names the sidecar and reason. With no argument it reports all such sidecars; a run with a spec path does not report (38).
 * {#s-r95w4f <m-sjwtwk@fe2b2dc} A nonempty (38) refuses the commit gate.
 * {#s-tdw4gj <arch,m-6pxcni@29fc8b1} With no argument it reports (31), (32), (33) and (36) over the whole tree and exits 0; with a spec path it reports (31) and (36) for that spec's statements, (32) over implementation files naming those statements and (33) for references naming that spec's statements, exiting non-zero on (33) or (36), on (31) when the spec is complete and the statement is not marked `not-yet-implemented`, and on (32) when the implementation file names a statement in a complete spec.
-* {#s-yyl1i0 <arch,m-6pxcni@29fc8b1} A `@tested-by` reference resolves only when its test file has at least one test that proves a statement implemented by the referring file.
-* {#s-tvuwev <arch} **Unlinked tests.** Beside the other lists the command
-  reports (21) the unlinked tests: each `test` or `it` that proves no
-  statement through a resolving link, counted once whatever its owners. (21) gives one line per test
-  file holding any, naming the file and how many of its tests are
-  unlinked, the file with the most first, then one line
-  `Unlinked tests: <n> of <m>`, where `<m>` is the number of tests read.
-  {#s-ggaonb <arch} With no argument it reports (21) over the whole tree; with a
-  spec path, over that spec's test files; (21) never changes the exit
-  code. {#s-zvzlp8 <arch} A test owned by several complete specs and proving
-  statements of only one of them is still named in (10) for each other
-  owner, and is not unlinked.
+* {#s-yyl1i0 <arch,m-6pxcni@29fc8b1,m-2xr2e6@7e323df} A legacy path-only `@tested-by` reference resolves only when its test file has a resolving `@proves` region for at least one statement implemented by the reference's effective source region. A test-unit reference resolves only when that exact test call's effective `@proves` links prove at least one statement implemented by the reference's effective source region.
+* {#s-s5f1o3 <arch,m-z2a132@26e4243} The report includes an informational `legacy file-only tested-by links` section for every resolving path-only `@tested-by` reference, naming its code file, directive line, owned source range and test file. This section never changes the exit code. A reference naming a test unit is not included.
+* {#s-gonvvk <arch,m-z2a132@26e4243} The report includes an informational `implementation regions without a specific test-unit link` section for each resolving `@implements` reference that has no resolving test-unit `@tested-by` reference in an overlapping code region whose named test call proves that same statement. It never changes the exit code; legacy file-only references do not satisfy this check.
+* {#s-tvuwev <arch,m-154s6w@bb3a5e5} **Unlinked tests.** Beside the other lists the command reports (21) each discovered test call whose source range intersects no resolving `@proves` region. It reports one count per test file and an overall count. Link regions are determined only from directive groups and indentation; test declarations are used only to identify a test call intersecting the region.
+  {#s-ggaonb <arch} With no argument it reports (21) over the whole tree; with a spec path, over that spec's test files; (21) never changes the exit code. {#s-zvzlp8 <arch} A test call in overlapping proof regions receives the union of their effective statements and is unlinked only if that union is empty.
 * {#s-eel840} **Query forms.** `--hash <id>` prints the statement's
   current hash alone on one line and exits 0. {#s-6gfnun} `--sid <id>`
   prints the spec and line where the id is marked, including its marker
   flags, then one line per
-  test link and implementation reference naming the id, giving the file,
-  the line and the recorded hash and whether it is stale; for test links it
-  also gives the name of the call they cover; when
+  test-region link and implementation reference naming the id, giving the file,
+  the marker line, the owned source line range when applicable, the recorded hash and whether it is stale; when
   none names it, it says so; it exits 0. {#s-wrdbhk} `--candidates <id>`
   ranks the statement's spec's tests that its links do not already
   cover. A test scores 1 for each distinctive term of the statement found,
@@ -402,18 +354,8 @@ one. A conclusion that no recorded words of his support names `arch`
 instead, a decision made on his behalf; one that his words support only
 in part names `arch` beside the references to them.
 
-> {#m-2bla2f} RULING (CEO) 2026-10-09, on statement ids: "I wonder if each
-> of my "guiding statements" should be the "root" of a series of simpler
-> "conclusion statements" that you generate, each of which is linked to
-> tests"
 
-> {#m-qqzdr9} RULING (CEO) 2026-10-09, told that not every statement has a
-> root: "How can this be: ... Ultimately everything stems from something I
-> said"
 
-> {#m-ert2k3} RULING (CEO) 2026-10-09, asked to adopt roots that are each
-> a recorded ruling, a recorded goal, or "architect decision", the last
-> listed for him to ratify: "Only on a go-forward basis"
 
 * {#s-l2muht <m-2bla2f@3d7894c,m-qqzdr9@0d0a742} **Root lists.** A marker may carry a root list
   naming what its statement stems from: after the marker's id part, one
@@ -445,9 +387,6 @@ in part names `arch` beside the references to them.
 * {#s-8haq5h <m-ert2k3@07303b1} **Roots are optional.** A statement with no root
   list, a placeholder included, is never reported for lacking one, in any
   list or any run, in a complete spec as in any other.
-* {#m-3l97ra} RULING (CEO) 2026-10-09, on exempting quoted rulings from
-  statement coverage: "No, quotes are statements about what things should
-  be/do. Those are exaclty the kinds of things that require tests".
 * {#s-gg0pvt <m-3l97ra@46b2bd6,m-k55xs4@88cd8e4} **A quoted ruling requires tests through the
   lines derived from it.** A ruling of the CEO's quoted verbatim is a motive
   (`specs/spec-map-line-types.md`, Motives): it is satisfied only when at
@@ -516,32 +455,7 @@ in part names `arch` beside the references to them.
 
 ## Derived statements
 
-> {#m-5err3p} RULING (CEO) 2026-10-31, answering q183 (whether a code file
-> can name which half it builds of a rule written once for the terminal
-> and the browser) with none of its options: "Seems like there should be
-> a spec tree:
-> s-1: everything should do X
-> s-2: {s-1} applied to the browser
-> s-3: {s-1} applied to the terminal"
 
-> {#m-4til6h} RULING (CEO) 2026-11-04, q195, asked: "Should Concord notice a
-> surface whose rule was never written? A ConcordSTC question, following
-> your spec-tree answer (q183). A rule for both clients becomes s-1, with
-> s-2 '{s-1} applied to the browser' and s-3 '{s-1} applied to the
-> terminal'. If nobody ever writes s-3, nothing records that a terminal
-> version was meant, so the checker cannot tell a browser-only rule from
-> one whose terminal version was forgotten. Example: 'a permission question
-> is drawn as plain text, never as markup' gets its browser statement, and
-> its terminal statement is never written.
-> A) s-1 lists its surfaces (terminal, browser) and each derived statement
-> names its surface; the checker reports a listed surface with no derived
-> statement, and a derived statement for a surface s-1 doesn't list.
-> B) Nothing is listed; the surface is only in the wording ('applied to the
-> browser'). A forgotten one is caught only by a reader.
-> C) Each derived statement names its surface, s-1 lists nothing; the
-> checker shows which surfaces each rule has but reports no missing one."
-> He answered: "C", with the note: "How is that different from any other
-> spec that goes missing?"
 
 {#d-h7ovzy <m-5err3p@9ccd8ca} **Derived statement** — a statement whose text includes another line, its
 parent, by an inclusion, and states the parent's rule for one surface or
@@ -568,9 +482,6 @@ rule once, and each derived statement is proved and implemented whole.
 * {#s-nktt4y <m-4til6h@ded9713} **No missing surface is reported.** No list, no exit code
   and no gate entry names a parent for a surface that no statement derived
   from it carries, or names a derived statement for its surface.
-* {#g-blha4b <m-4til6h@ded9713 for=architect via=prompt} **Name the surface.** A derived
-  statement that states its parent's rule for one surface carries that
-  surface in a surface flag.
 * {#s-ixasv4 <m-5err3p@9ccd8ca} **Inclusions.** A statement's text may include another line
   by an inclusion: `{`, that line's id, and `}`, written anywhere in the
   text, as in `{s-xxxxxx} applied to the browser`. {#s-3vhy40 <arch,m-5err3p@9ccd8ca} The
@@ -696,14 +607,8 @@ Such a test names the statement whose proof it guards.
   {#s-4o88k8 <arch} Any `//` line comment whose text begins `@guards` is read as
   a guard line, well formed or not; `@guards` inside a `/* */` comment or
   a string or template literal is not.
-* {#s-cs9i6p <arch} **Where a guard sits and what it covers.** A guard line sits,
-  is misplaced and covers tests as a link line does (Where a link sits,
-  What a link covers); wherever a rule reads a run of owner and link
-  lines, in any language, guard lines may stand in it. {#s-p6dv3k <arch} A test
-  guards the union of the statements named by its own guard lines and by
-  the guard lines of every `describe` enclosing it.
-* {#s-i6cch2 <arch} **When a guard resolves.** A guard line resolves when it is
-  well formed, well placed and names an id marked at exactly one place.
+* {#s-cs9i6p <arch} **Guard regions.** `@guards` groups use the same indentation-scoped region rules as `@proves`; test-framework nesting does not extend their scope. {#s-p6dv3k <arch} A test is guarded by the union of resolving guard groups whose owned source ranges overlap its body.
+* {#s-i6cch2 <arch} **When a guard resolves.** A guard line resolves when it is well formed and names an id marked at exactly one place.
   {#s-3klfsj <arch} A guard line
   is a test link wherever `specs/spec-map-line-types.md` reads one
   (Retyped references).
@@ -723,9 +628,7 @@ Such a test names the statement whose proof it guards.
   its statements, and nowhere else. {#s-0e75fk <arch} An unbacked guard line
   counts for none of these, so the test it covers is unlinked unless
   something else links it.
-* {#s-0yoabr <arch} **Unbacked guards.** Beside the other lists the command
-  reports (30) each unbacked guard line, naming the file, the line, the
-  test or `describe` it sits above, the id and the spec marking it.
+* {#s-0yoabr <arch} **Unbacked guards.** Beside the other lists the command reports (30) each unbacked guard region, naming the file, directive line, owned source range, id and spec marking it.
   {#s-fsp1a2 <arch} With no argument it reports (30) over the whole tree; with a
   spec path, for guard lines naming that spec's statements wherever they
   sit; (30) never changes the exit code.
@@ -738,9 +641,7 @@ Such a test names the statement whose proof it guards.
 * {#s-aku8n2 <arch} **A spec's test files.** A test file holding a guard line
   naming one of a spec's statements is one of that spec's test files.
 * {#s-qr72mj <arch} **Queries.** `--sid <id>` lists, after the link lines, one
-  line per guard line naming the id, giving the file, the line, the name of
-  the call it sits above, the recorded hash, whether it is stale, and the
-  word `guard`. {#s-nc5n19 <arch} `--candidates <id>` omits no test for guarding
+  line per guard group naming the id, giving the file, directive line, owned source range, recorded hash, whether it is stale, and the word `guard`. {#s-nc5n19 <arch} `--candidates <id>` omits no test for guarding
   the statement.
 
 ## Probe flags
@@ -794,11 +695,11 @@ tests prove one.
 * {#s-vjgnay <arch,m-ulzcp5@41ae8af,m-tpuy30@018a42c} A spec's `p` pointers resolve to spec files, spec headings or marked lines in the same project, or declare a project-collection target (`specs/spec-map-line-types.md`, Pointers); a pointer to a test or implementation file is reported as an invalid target. A project-collection target discovers child project spec paths only: it does not merge child statements or resolve their links in the parent. An `i` line has no target list; implementation files name it with `@checks` references.
 * {#s-2l6ys1 <arch,m-r3llz8@7fee9b6} An implementation file is a non-test code file in a directory and language the project declares for reading (`specs/concord-process.md`, The settings file).
 * {#s-m4fr78 <m-sjwtwk@fe2b2dc} A regular non-test file under a configured `read_directories` that no configured language reading recognizes as an implementation file is an implementation artifact when it has an eligible `<path>.concord` sidecar; its sidecar's valid references count for the artifact as implementation references.
-* {#s-01nsp8 <arch,m-r3llz8@7fee9b6} Each `@implements` reference in an implementation file names one statement that the file implements.
-* {#s-23wmhe <arch,m-r3llz8@7fee9b6} Each `@tested-by` reference in an implementation file names a test file that verifies code in that implementation file.
-* {#s-3m6dwj <arch,m-r3llz8@7fee9b6} Each `@checks` reference in an implementation file names an interactive check that the implementation file supports.
+* {#s-01nsp8 <arch,m-qu5x9t@d66daae} Each `@implements` group names statements implemented by the source region it owns, except that a group in the implementation file's header names statements implemented by the whole file.
+* {#s-23wmhe <arch,m-r3llz8@7fee9b6,m-2xr2e6@7e323df} A modern `@tested-by` reference in an implementation file names one test unit that verifies code in the reference's owned source region. A legacy path-only reference names a test file and remains accepted for backward compatibility, but is reported in (39); either reference's owned source region is the whole file when the directive is in the header.
+* {#s-3m6dwj <arch,m-r3llz8@7fee9b6,m-2xr2e6@7e323df} Each `@checks` reference in an implementation file names an interactive check supported by the reference's owned source region, or the whole file when it is in the header.
 * {#s-gpqy5p <arch,m-6pxcni@29fc8b1} The command reports each statement with no resolving test link and each statement with no resolving `@implements` reference.
-* {#s-4hsltb <arch,m-6pxcni@29fc8b1} The command reports each implementation file with no resolving `@tested-by` reference, and each `@tested-by` reference whose test file proves none of the statements that file implements.
+* {#s-4hsltb <arch,m-6pxcni@29fc8b1,m-2xr2e6@7e323df} The command reports each implementation file with no resolving `@tested-by` reference, and each `@tested-by` reference whose named test file or test unit proves none of the statements implemented by that reference's source region.
 * {#s-2vgnq6 <arch,m-cujcht@53617af} **Status conflicts.** List (36) reports each statement marked
   `not-yet-implemented` that has a resolving implementation reference, naming
   the spec, statement id and implementing file. With no argument it reports
@@ -809,39 +710,16 @@ tests prove one.
 
 ## Statements that describe a test
 
-> {#m-e58y5d} RULING (CEO) 2026-10-29, on spec statements that describe a
-> test case, which no implementation file implements (AIOS questions page,
-> q149): "If the spec is spec'ing a test (strange, why are we doing this?)
-> then it is the test code that needs an @implements in addition to a
-> @proves"
 
 * {#d-5oba7n <m-e58y5d@459984e} **Test statement** — a statement that describes a test
   case rather than what the code does, as "a held form whose turn an
   interrupt ended, then a restart, makes one continuation; paired, the same
   block moved past makes none": the test that is that case carries it out,
   and no implementation file does.
-* {#s-fiabr2 <m-e58y5d@459984e} **Implementation by a test.** A test file may carry
-  `@implements s-xxxxxx@hhhhhhh`, written as an implementation reference is
-  (`specs/spec-map-line-types.md`, Code references), naming a test
-  statement that a test in it carries out; such a line is a
-  test-implementation reference. {#s-k3nucf <arch,m-e58y5d@459984e} Test-implementation
-  references are read in every test file, whether or not its directory is
-  one the project declares for reading code.
-* {#s-obz7rg <arch,m-e58y5d@459984e} **At the test, not the header.** A test-implementation
-  reference sits, is misplaced and covers tests as a link line does (Where
-  a link sits, What a link covers), and applies to the tests it covers, not
-  to the whole file. {#s-9ho983 <arch,m-e58y5d@459984e} Wherever a rule reads a run of owner
-  and link lines, in any language, test-implementation references may stand
-  in it.
-* {#s-nlzsly <m-e58y5d@459984e} **With a proof.** A test-implementation reference resolves
-  when it would resolve as an implementation reference in an implementation
-  file and at least one test it covers proves its statement through a
-  resolving link.
-* {#s-ljxzt6 <m-e58y5d@459984e} **One test, both links.** A test may both prove and
-  implement one statement, by a link line and a test-implementation
-  reference naming the same id in the run above the same call, as
-  `// @proves s-xxxxxx@hhhhhhh` then `// @implements s-xxxxxx@hhhhhhh`
-  directly above a `test` call; both resolve.
+* {#s-fiabr2 <m-e58y5d@459984e} **Implementation by a test.** A test file may carry `@implements s-xxxxxx@hhhhhhh` groups, using the same indentation-scoped region rules as `@proves`, to name test statements carried out by the regions they own; such links are test-implementation references. {#s-k3nucf <arch,m-e58y5d@459984e} Test-implementation references are read in every test file, whether or not its directory is one the project declares for reading code.
+* {#s-obz7rg <arch,m-e58y5d@459984e} **Region scope.** A test-implementation group applies to its owned source region, not to a test declaration or the whole file. {#s-9ho983 <arch,m-e58y5d@459984e} Test-implementation groups use the same indentation rules as other source-region links.
+* {#s-nlzsly <m-e58y5d@459984e} **With a proof.** A test-implementation group resolves when it names a valid statement and at least one discovered test call intersecting its region proves that statement through a resolving `@proves` group.
+* {#s-ljxzt6 <m-e58y5d@459984e} A test region may both prove and implement one statement, when its effective `@proves` and `@implements` sets name the same id.
 * {#s-0n3sm5 <arch,m-e58y5d@459984e} **Counted as an implementation.** A resolving
   test-implementation reference counts for its statement in (31) as a
   resolving `@implements` reference in an implementation file does, so a
@@ -850,20 +728,13 @@ tests prove one.
 * {#s-9wbr29 <arch,m-e58y5d@459984e} **Never a proof.** A test-implementation reference
   proves nothing and links no test: it counts for no derived owner, no
   unlinked test (21) and no completeness failure.
-* {#s-w4wun2 <arch,m-e58y5d@459984e} **Reported in (33).** A malformed, misplaced,
-  unresolved or stale test-implementation reference is an entry of (33),
-  naming the test file, the line, the test or `describe` it sits above and
-  the id; {#s-dssqhc <arch,m-e58y5d@459984e} one that would resolve but that no test it
-  covers proves its statement says so.
+* {#s-w4wun2 <arch,m-e58y5d@459984e} **Reported in (33).** A malformed, misplaced, unresolved or stale test-implementation group is an entry of (33), naming the test file, directive line, owned source range and id; {#s-dssqhc <arch,m-e58y5d@459984e} a group whose region contains no test call that proves its statement says so.
 * {#s-sg7zoy <arch,m-e58y5d@459984e} **No `@tested-by` from a test file.** A test file is
   never an implementation file, whatever references it carries, so (32)
   never names it and no `@tested-by` reference is required of it.
 * {#s-sy7274 <arch} A `@tested-by` or `@checks` directive in a test file is
   misplaced, an entry of (33) naming the file and the line.
-* {#s-e6bz23 <arch} `--sid <id>` lists each test-implementation reference naming
-  the id among the implementation references, giving the file, the line,
-  the name of the call it sits above, the recorded hash, whether it is
-  stale, and the word `test`.
+* {#s-e6bz23 <arch} `--sid <id>` lists each test-implementation group naming the id among the implementation references, giving the file, directive line, owned source range, recorded hash, whether it is stale, and the word `test`.
 
 ## Dependencies
 

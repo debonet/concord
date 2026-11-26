@@ -1,428 +1,21 @@
-// @implements s-5i9gec@e31c13c
-// @implements s-fbqdbv@367a944
-// @implements s-lm68rf@abb02d5
-// @implements s-bw4530@bd1f9d9
-// @implements s-0hg5qn@087947b
-// @implements s-c744tt@ebf0776
+// @implements s-5i9gec@d5e5ed3
 // @implements s-4jegoj@05acd9f
 // @implements s-zrgt7e@a066ef0
-// @implements s-pa182t@8008053
-// @implements s-4pq89a@7127ba0
-// @implements s-yurmkw@ee703cc
-// @implements s-a40yzg@5e808cd
-// @implements s-l0wfl7@c6ad1b2
-// @implements s-h5caok@17c696d
-// @implements s-p79bim@05302e1
-// @implements s-jt2a2g@6926fb1
-// @implements s-89dowx@1de93c2
-// @implements s-0w4rbg@75d948e
-// @implements s-f8jiyg@08812ac
-// @implements s-gk0bmt@68c8bf5
 // @implements s-u1vl7x@393921b
-// @implements s-j8ahje@91cc810
-// @implements s-y86kt5@2649010
-// @implements s-ol2dmr@37d4979
-// @implements s-t8un02@9839058
-// @implements s-1u8bef@fa85be2
-// @implements s-nlm91d@4f76fd6
-// @implements s-nw4u9n@3b57e9b
-// @implements s-kkql92@90bba2d
-// @implements s-i2ip58@b70be7c
-// @implements s-s4l32i@b41f304
-// @implements s-ug5kvq@0033049
-// @implements s-qvdtqg@16f3fb4
-// @implements s-tlkzzq@39b39e7
-// @implements s-eltyao@a23e292
-// @implements s-rkd937@6d33bc3
-// @implements s-u88ict@b5a6934
-// @implements s-uffk6s@99fde62
-// @implements s-mrxt8t@4a0c235
-// @implements s-62b8ec@c221937
-// @implements s-rapf8f@dd2cbd3
-// @implements s-n7ky2n@7cec1a6
-// @implements s-6rfqdf@00eba76
-// @implements s-m4jorm@da16eb4
-// @implements s-jmslkk@be3cc50
-// @implements s-k6leed@80135a4
-// @implements s-3oxidy@1ccac2e
-// @implements s-nrp172@56b8541
-// @implements s-iz8176@bb80e0d
-// @implements s-wthfms@d2c5ecd
-// @implements s-dnog08@dde78ed
-// @implements s-lwbls1@62d3bb8
-// @implements s-z7g07z@6db8f99
-// @implements s-9guyrl@067706f
-// @implements s-rolffo@1dccf9b
-// @implements s-nachij@b9de24b
-// @implements s-uhmyhr@5d69172
-// @implements s-tn4ty4@2ce57be
-// @implements s-1j5z4y@58afac8
-// @implements s-2jld9b@f37640f
-// @implements s-zney60@13f1359
-// @implements s-qb233y@6930374
-// @implements s-zsxa7g@af4b09e
-// @implements s-0eydbi@db338e8
-// @implements s-zac0m4@4b07675
-// @implements s-vhci8f@cf04778
-// @implements s-m544u1@eee094d
-// @implements s-lgrhug@dcbf12a
-// @implements s-khw3hm@18fc4f5
-// @implements s-ggobif@5312bb8
-// @implements s-j0u6oi@c752acc
-// @implements s-oy6kxo@66e62d5
-// @implements s-tclcd8@3d6d619
-// @implements s-31cdr2@9bb914f
-// @implements s-32o5r7@1ced769
-// @implements s-g8r0ur@13a27c5
-// @implements s-zcb6gq@2302e9b
-// @implements s-3bftr3@5507835
-// @implements s-1fwxnq@6500111
-// @implements s-ins4p7@19e76c1
-// @implements s-wp3dpp@abede2f
-// @implements s-m5inu7@1f5b447
-// @implements s-ocpfpw@c6adf07
-// @implements s-bxs0rr@4c0a68e
-// @implements s-ddsepn@99dbc98
-// @implements s-s8an6z@bb4aac8
-// @implements s-xsbw7s@7a18f8e
-// @implements s-rypq7c@adb23df
-// @implements s-khy3o7@2aa742c
-// @implements s-ikjpbw@fc0cb7c
-// @implements s-d0p52k@8a9d95e
-// @implements s-b0mknl@02d4cb5
-// @implements s-pclybh@b87b7b1
-// @implements s-yu6zet@bb44414
-// @implements s-z7gbzu@ab3b738
-// @implements s-97jgxt@53268fc
-// @implements s-5406e5@0bad222
-// @implements s-i5r6dl@fd54b50
-// @implements s-3m5iin@4d4e26f
-// @implements s-g8h2jz@c4623dc
-// @implements s-4kpjgj@804210f
-// @implements s-6zslo8@0373285
+// @implements s-l9g0ah@33e01a9
+// @implements s-nktt4y@2747a61
+// @implements s-p54hx2@dfa5570
+// @implements s-akhzjv@81fd58b
+// @tested-by test/spec-map.test.js
+// @implements s-lgrhug@02a57ce
 // @implements s-kglaz5@2c93058
-// @implements s-ezm2c1@86313be
-// @implements s-hiu3ve@27db7b5
-// @implements s-1r46le@6aec157
-// @implements s-21250a@9a79a7a
-// @implements s-fc5ccj@7849554
-// @implements s-8yzzoh@8f6ed41
-// @implements s-eab7vh@300a074
-// @implements s-7llevg@6c2799e
-// @implements s-n10cb0@01b16a4
-// @implements s-41v1mp@51d6eb2
 // @implements s-rmpj20@c3531c2
-// @implements s-psysjj@03eca21
-// @implements s-j8bplx@3ec574d
-// @implements s-wakfil@7deeb77
-// @implements s-xt2qjj@ce601a5
-// @implements s-1jdhhf@941303a
-// @implements s-7h4j0s@512c0f5
-// @implements s-en1xk7@b19ecef
-// @implements s-m176ue@c40015e
-// @implements s-dhs2hx@db209fb
-// @implements s-w75973@e58d191
-// @implements s-50dzy6@2129482
-// @implements s-bqioq5@e78161a
-// @implements s-7tlfzo@3813b5e
-// @implements s-rv4wbq@86ed5ff
-// @implements s-tghouh@f811aec
-// @implements s-gueyj8@dcbe6bc
-// @implements s-6ls2oh@b278617
-// @implements s-bmgkci@7568101
-// @implements s-fgmj0s@836cdf0
-// @implements s-irjox3@ac44757
-// @implements s-atk0wi@ffaf3bb
-// @implements s-ly5nn3@190736f
-// @implements s-m5k9wy@4aaa864
-// @implements s-c05xna@89aded1
-// @implements s-jvsu3w@dc81311
-// @implements s-cid631@c71dd26
-// @implements s-kgnjaq@cedcec8
-// @implements s-je03s2@6b1aa0b
-// @implements s-3k6zj0@6b700e3
-// @implements s-nb9o4b@6b81b96
-// @implements s-erendz@999c6cc
-// @implements s-f1np35@35d6720
-// @implements s-wc98ss@69659c7
-// @implements s-72fjkw@d78bae0
-// @implements s-263wnp@68719c6
-// @implements s-dila0o@c18103b
-// @implements s-m4hujx@1ae0005
-// @implements s-w2zn7d@ea7e5d0
-// @implements s-johg6m@f4b11b4
-// @implements s-yyli5x@c1ccada
-// @implements s-trjdbr@93aa3fd
-// @implements s-k4mfcb@f02be14
-// @implements s-y1fknl@991055d
-// @implements s-5ljuu2@60dd002
-// @implements s-aw5cvb@d8a5949
-// @implements s-z28ucn@585ecdf
-// @implements s-b05h80@16440fe
-// @implements s-bmkxya@6780e68
-// @implements s-8xfzz3@6999bd7
-// @implements s-mbcxy1@de2395f
-// @implements s-1xpgsb@4b63213
-// @implements s-3g9qus@2aa742c
-// @implements s-v5vfac@ccc50fe
+// @implements s-hs7ffw@b031efa
+// @implements s-d4b5k9@e6a8c7a
 // @implements s-zi228u@46140ad
 // @implements s-zx5mcq@5669484
-// @implements s-aphyp7@1f4c6b6
-// @implements s-kz8d46@36aef0d
-// @implements s-1igmuk@d454589
-// @implements s-xuw25u@ed827df
-// @implements s-mp16u6@a924b32
-// @implements s-rkzefi@94d4b4a
-// @implements s-6umdw1@f9827d2
-// @implements s-ukzm8a@7dde6e2
-// @implements s-rzwovs@5b76e45
-// @implements s-6zo013@7dde6e2
-// @implements s-ns2gme@9b9beb2
-// @implements s-l9g0ah@33e01a9
-// @implements s-dpoj4a@064704f
-// @implements s-b1flmr@52ccc3c
-// @implements s-pjx54j@88fdbba
-// @implements s-8xr9d5@2a15ba6
-// @implements s-0nmcwv@fcc34b4
-// @implements s-te9wza@59881f7
-// @implements s-0abyvp@9e5dd00
-// @implements s-98jxk4@d886f7c
-// @implements s-i6rjuw@e83d07a
-// @implements s-tdw4gj@8d6d23d
-// @implements s-bnkk62@d702f3b
-// @implements s-pslzjw@bb3ff6d
-// @implements s-3pkw1n@e23773f
-// @implements s-cwbb50@b1fa155
-// @implements s-k9c32y@39fbb4e
-// @implements s-gry2es@de73667
-// @implements s-ar1i87@b6009f5
-// @implements s-ilmml1@de70889
-// @implements s-w2msh4@29d36fe
-// @implements s-jg7ill@f9c0b61
-// @implements s-ytmdql@7d7407c
-// @implements s-pwxuov@536babd
-// @implements s-mm67bx@fb5e980
-// @implements s-du4nns@bbb6351
-// @implements s-cov7pg@e6a079b
-// @implements s-vcpu9h@6d6ac07
-// @implements s-qln1ta@564522c
-// @implements s-mijuu3@eb255fe
-// @implements s-eawgvu@e029ecf
-// @implements s-tw3l62@fa30747
-// @implements s-jcgn2k@220009d
-// @implements s-s7wgz7@eae0eef
-// @implements s-n7deu7@edc83ae
-// @implements s-tv24sx@df2c2d6
-// @implements s-u2lhta@c6845db
-// @implements s-emmdvh@4dffcdc
-// @implements s-e287lm@a1b403a
-// @implements s-b8vvpd@9e72e40
-// @implements s-5vv5ht@bdd521d
-// @implements s-nudxy0@3495135
-// @implements s-i6rjuw@e83d07a
-// @implements s-tdw4gj@8d6d23d
-// @implements s-yyl1i0@2a9826b
-// @implements s-tvuwev@e251ade
-// @implements s-ggaonb@b8526d7
-// @implements s-zvzlp8@2e63bdc
-// @implements s-eel840@1bbc17a
-// @implements s-6gfnun@f467b05
-// @implements s-wrdbhk@01b46ef
-// @implements s-kzyb2a@f30bbf3
-// @implements s-kyro7r@3064fa5
-// @implements s-95ao2f@9b59968
-// @implements s-i63o6a@6dbc87e
-// @implements s-2deigh@58b055c
-// @implements s-taoc14@2518951
-// @implements s-6dpng1@58d403a
-// @implements s-yurmkw@ee703cc
-// @implements s-j8ahje@91cc810
-// @implements s-t8un02@9839058
-// @implements s-7h4j0s@512c0f5
-// @implements s-n7ky2n@7cec1a6
-// @implements s-n1ztut@75bf716
-// @implements s-8g5yno@c3ea2a8
-// @implements s-mn5and@058eb96
-// @implements s-2vgnq6@8323fcb
-// @implements s-dhs2hx@db209fb
-// @implements s-9zllrl@4304abd
-// @implements s-x1kbkj@fff57a4
-// @implements s-1igmuk@d454589
-// @implements s-vjgnay@5c0f583
-// @implements s-pe5j7a@8fee8c2
-// @implements s-l2muht@e9fb34f
-// @implements s-s0vyhy@802fc2f
-// @implements s-v20yz5@b63123d
-// @implements s-y462l3@3b6cea9
-// @implements s-gymqyq@6187733
-// @implements s-6p2zp4@94323aa
-// @implements s-5i1owy@cb86673
-// @implements s-8haq5h@4d22c53
-// @implements s-gg0pvt@84345af
-// @implements s-cp0cte@9e6f9c2
-// @implements s-6or7az@00097e5
-// @implements s-gq9hu3@a2edb9f
-// @implements s-lkfk0g@47ba420
-// @implements s-jie6z5@09cd30a
-// @implements s-fm2sqk@135c61a
-// @implements s-sfuntg@4b5ec33
-// @implements s-hgk19s@2c0c557
-// @implements s-n8uc4k@a405885
-// @implements s-1f2z8r@e38b9ea
-// @implements s-8wn2ou@c5e7984
-// @implements s-jhjrqa@2306326
-// @implements s-n7yhjf@0cf1206
-// @implements s-wqdxix@ceec0e2
-// @implements s-tzxhy9@09c0d8a
-// @implements s-s0x8ie@f630543
-// @implements s-m3nvmc@4ea2a37
-// @implements s-ni7ark@e934261
-// @implements s-xo5d9n@08c26fd
-// @implements s-qmf2lg@5795cc1
-// @implements s-nktt4y@2747a61
-// @implements s-ixasv4@f731c6a
-// @implements s-3vhy40@92707b8
-// @implements s-8ej89k@ad53a57
-// @implements s-yallh6@309b54b
-// @implements s-13qcjo@38e295c
-// @implements s-bbaxpr@4e51c3f
-// @implements s-ickx1f@508799a
-// @implements s-fc4ubx@3f16155
-// @implements s-83mryk@52401d8
-// @implements s-dglucu@bd4c60b
-// @implements s-lqyq1i@946e8b2
-// @implements s-53ztk4@703b57d
-// @implements s-ihqgan@de8037f
-// @implements s-df84cf@66e21c8
-// @implements s-2vyccd@d9ef2de
-// @implements s-4qpk97@7e4bb82
-// @implements s-lf00bp@0ec752e
-// @implements s-ol3soy@d2da0a6
-// @implements s-gjk5r1@9d6e18f
-// @implements s-5fldjm@514a40a
-// @implements s-m69cme@f4c0170
-// @implements s-6ujq8d@696a8e1
-// @implements s-rn2itq@10cc3ef
-// @implements s-3rhim7@92937b7
-// @implements s-4y7ukm@b763556
-// @implements s-9bzl8i@64430ba
-// @implements s-efoflb@3670587
-// @implements s-y5buk6@917c800
-// @implements s-iwko4c@581c6c6
-// @implements s-gy5mqc@76d7988
-// @implements s-880seq@40723b9
-// @implements s-zybg31@316483b
-// @implements s-b21zr4@c4562be
-// @implements s-9eix2j@0585aaf
-// @implements s-4o88k8@e467b6b
-// @implements s-cs9i6p@5d38c13
-// @implements s-p6dv3k@447ea6b
-// @implements s-i6cch2@70c8796
-// @implements s-3klfsj@d4d9f32
-// @implements s-uny6ly@83363ca
-// @implements s-1yuomz@b828506
-// @implements s-svtfjm@7ad3935
-// @implements s-8usccv@c0cc953
-// @implements s-0e75fk@780e493
-// @implements s-0yoabr@be8d70d
-// @implements s-fsp1a2@02fcf0a
-// @implements s-ctbylk@c20e0f1
-// @implements s-yltboo@95a3db6
-// @implements s-3fzgrr@cc19c25
-// @implements s-rh750h@cc70238
-// @implements s-p54hx2@dfa5570
-// @implements s-k9xdwy@eb62f8a
-// @implements s-aku8n2@4ffc4f1
-// @implements s-qr72mj@9691d37
-// @implements s-nc5n19@aee9454
-// @implements s-ptc52y@20ab416
-// @implements s-r1opde@e6a3bd1
-// @implements s-vwf1wr@af28dcd
-// @implements s-0ovkpr@5b8beb1
-// @implements s-nksahd@2aa742c
-// @implements s-vjgnay@5c0f583
-// @implements s-2l6ys1@d966d32
-// @implements s-01nsp8@60401fe
-// @implements s-23wmhe@fec8ae0
-// @implements s-3m6dwj@187ed85
-// @implements s-gpqy5p@7ed12de
-// @implements s-4hsltb@35856a9
-// @implements s-jqqjjj@cfe7b54
-// @implements s-rdpnaf@0033647
-// @implements s-z6r8qu@bc64f8c
-// @implements s-m7xrlq@a850adb
-// @implements s-trdu1m@34986f1
-// @implements s-wut129@714b56a
-// @implements s-846yjd@fa50804
-// @implements s-n4r9dw@4bcc808
-// @implements s-8tx2ob@cc1c510
-// @implements s-op9bak@37c9f3e
-// @implements s-rv4wbq@86ed5ff
-// @implements s-2l6ys1@d966d32
-// @implements s-01nsp8@60401fe
-// @implements s-23wmhe@fec8ae0
-// @implements s-3m6dwj@187ed85
-// @implements s-qap8tu@38172ce
-// @implements s-3mnehj@681e132
-// @implements s-qkq11z@1273ca2
-// @implements s-me9dys@227966a
-// @implements s-1a9ecj@2117295
-// @implements s-zrjuk3@760428d
-// @implements s-p069rs@d53d867
-// @implements s-5un01z@b74caaa
-// @implements s-rkbz86@59f60c9
-// @implements s-bqioq5@e78161a
-// @implements s-tghouh@f811aec
-// @implements s-qap8tu@38172ce
-// @implements s-3mnehj@681e132
-// @implements s-qkq11z@1273ca2
-// @implements s-me9dys@227966a
-// @implements s-fiabr2@b77174a
-// @implements s-k3nucf@c0c7bf2
-// @implements s-obz7rg@010c79a
-// @implements s-9ho983@b227496
-// @implements s-nlzsly@d954de6
-// @implements s-ljxzt6@b06ab69
-// @implements s-0n3sm5@d016ebd
-// @implements s-9wbr29@0f680c4
-// @implements s-w4wun2@5ac8202
-// @implements s-dssqhc@404c3ff
-// @implements s-sg7zoy@216a1b0
-// @implements s-sy7274@b9a1e14
-// @implements s-e6bz23@e35e7ac
-// @implements s-zhg7ac@f7ba2b1
-// @implements s-akhzjv@81fd58b
-// @implements s-w83alg@dde527f
-// @implements s-pcodyd@5016f26
-// @implements s-4kencv@f2a5fe1
-// @implements s-69o630@92fe218
-// @implements s-tot8yl@9c5630f
-// @implements s-8ydtei@83a4ba4
-// @implements s-h8i6xs@8462414
-// @implements s-pkmrq7@79d0e81
-// @implements s-zpv3y7@dc2aae2
-// @implements s-yecw0i@8c774c9
-// @implements s-7zyx83@70bc71a
-// @implements s-v7ww36@641e899
-// @implements s-h9tc2m@919d17b
-// @implements s-m9jtjo@3366616
-// @implements s-k3sml3@9ef30dd
-// @implements s-22a0wo@13886ff
-// @implements s-8qhv2d@fe58484
-// @implements s-r95w4f@6a28bae
-// @implements s-m4fr78@238c65f
-// @implements s-y0zs35@09f15af
-// @implements s-7bh252@a30b098
-// @tested-by test/concord.test.js
-// @tested-by test/spec-map.test.js
-// @tested-by test/project-coverage.test.js
-// @tested-by test/concord-settings.test.js
-// @tested-by test/language-readings.test.js
-// @tested-by test/spec-map-source.test.js
-// @tested-by test/observations.test.js
-// @tested-by test/gate.test.js
-// @tested-by test/side-files.test.js
-// @tested-by test/context.test.js
+// @implements s-s5f1o3@53edadf
+// @implements s-gonvvk@70d8432
 "use strict";
 
 const fs = require( "fs" );
@@ -430,6 +23,7 @@ const path = require( "path" );
 const crypto = require( "crypto" );
 const babelParser = require( "@babel/parser" );
 const { ParseCache } = require( "./spec-map-cache.js" );
+const { faOverlay } = require( "./concord-overlay.js" );
 const {
   faReaders, asLanguageName, faProgramForPath, ftMaskRust, fnRustBlockEnd
 } = require( "./languages" );
@@ -453,8 +47,11 @@ const {
 } = require( "./spec-map-observations.js" );
 
 const reHeading = /^(#{1,6})\s/;
+// @implements s-5un01z@b74caaa
 const reOwnerText = /^\s*@spec/;
 const reOwnerLine = /^\s*\/\/ @spec +(\S+\.md)\s*$/;
+// @implements s-eawgvu@a59ff64
+// @implements s-5un01z@b74caaa
 const reLinkText = /^\s*@proves/;
 const reLinkLine = new RegExp(
   "^\\s*// @proves +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\\s*$"
@@ -467,17 +64,25 @@ const sReasonPartLink = (
 const sReasonPartList = (
   "part list: --split-parts splits it into derived statements"
 );
+// @implements s-9eix2j@0585aaf
+// @implements s-4o88k8@e467b6b
+// @implements s-5un01z@b74caaa
 const reGuardText = /^\s*@guards/;
 const reGuardLine = new RegExp(
   "^\\s*// @guards +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\\s*$"
 );
 const reGuardLoose = /@guards\s+([a-z]-[a-z0-9]*)@?(\S*)/;
+// @implements s-eawgvu@a59ff64
+// @implements s-5un01z@b74caaa
 const aFormLink = {
   reText: reLinkText, reLine: reLinkLine, reLoose: reLinkLoose, bGuard: false
 };
+// @implements s-4o88k8@e467b6b
+// @implements s-5un01z@b74caaa
 const aFormGuard = {
   reText: reGuardText, reLine: reGuardLine, reLoose: reGuardLoose, bGuard: true
 };
+// @implements s-5un01z@b74caaa
 const reFollowsText = /^\s*@follows/;
 const reFollowsLine = new RegExp(
   "^\\s*// @follows +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\\s*$"
@@ -486,13 +91,17 @@ const reFollowsBlock = new RegExp(
   "^\\s*/\\* *@follows +([a-z]-[a-z0-9]{6})@([0-9a-f]{7}) *\\*/\\s*$"
 );
 const reFollowsLoose = /@follows\s+([a-z]-[a-z0-9]*)@?([0-9a-f]*)/;
+// @implements s-5un01z@b74caaa
 const reImplementsText = /^\s*@implements/;
 const reImplementsLine = /^\s*\/\/ @implements +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\s*$/;
 const reImplementsLoose = /@implements\s+([a-z]-[a-z0-9]*)@?([0-9a-f]*)/;
+// @implements s-5un01z@b74caaa
 const reTestedByText = /^\s*@tested-by/;
 const reTestedByLine = /^\s*\/\/ @tested-by +(\S+)\s*$/;
 const reTestedByBlock = /^\s*\/\* *@tested-by +(\S+) *\*\/\s*$/;
 const reTestedByLoose = /@tested-by\s+(\S+)/;
+// @implements s-bqioq5@e78161a
+// @implements s-5un01z@b74caaa
 const reChecksText = /^\s*@checks/;
 const reChecksLine = /^\s*\/\/ @checks +([a-z]-[a-z0-9]{6})@([0-9a-f]{7})\s*$/;
 const reChecksBlock = /^\s*\/\* *@checks +([a-z]-[a-z0-9]{6})@([0-9a-f]{7}) *\*\/\s*$/;
@@ -513,6 +122,11 @@ const reRunLine = /^\s*\/\/\s*@(?:spec|proves|guards|implements)/;
 const reSpacePlus = /\s*\+\s*/y;
 const reSpace = /\s*/y;
 const reMarkerOpen = /\{#[a-z]-/g;
+// @implements s-w2zn7d@ea7e5d0
+// @implements s-eab7vh@300a074
+// @implements s-l2muht@e9fb34f
+// @implements s-s0x8ie@f630543
+// @implements s-ptc52y@20ab416
 const reMarkerToken = new RegExp(
   "\\{#([a-z]-[^}\\s{]*)"
   + "(?: <((?:(?! >| parts=| surface=| via=| for=| probe(?: |\\})| not-yet-implemented\\})[^}{\\n])*))?"
@@ -532,10 +146,14 @@ const reInclusionOpen = /\{[a-z]-/g;
 const reInclusionToken = /\{([a-z]-[^}\s{]*)(\})?/y;
 const reInclusionId = /^[a-z]-(?:[a-z0-9]{6}|\?[a-z0-9]+)$/;
 const reIdPartWell = /^([a-z])-(?:([a-z0-9]{6})|\?([a-z0-9]*))$/;
+// @implements s-v20yz5@b63123d
 const reRefId = /^([a-z]-[a-z0-9]{6})(?:@([0-9a-f]{7}))?$/;
+// @implements s-wakfil@7deeb77
+// @implements s-v20yz5@b63123d
 const reRefLabel = /^([a-z])-\?([a-z0-9]+)$/;
 const sArch = "arch";
 const reBodyAny = /[a-z]-([a-z0-9]{6})/g;
+// @implements s-fc5ccj@7849554
 const sTypeLine = "spdmig";
 const sTypeRoot = "sm";
 const sTypeTargeted = "p";
@@ -565,11 +183,13 @@ const asVerdictForFlag = {
   "--pass": "pass", "--fail": "fail", "--unable": "unable", "--reopen": "reopen"
 };
 const asFlagNote = new Set([ "--pass", "--fail", "--unable" ]);
+// @implements s-yu6zet@bb44414
 const asVerdictReset = new Set([ "reset", "reopen", "unable" ]);
 const asKeyAnswer = new Set([ "pass", "fail", "unable" ]);
 const asEntityForChar = {
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
 };
+// @implements s-g8h2jz@c4623dc
 const asWhyForReason = {
   reworded: "Reworded since its pass on ",
   code: "The code it checks changed since its pass on "
@@ -578,12 +198,14 @@ const sTitleNoCode = "interactive checks with no implementation link";
 const sTitleProblem = "interactive checks with an open problem";
 const reSlugGap = /[^\p{L}\p{N}]+/gu;
 const reSlugEdge = /^-+|-+$/g;
+// @implements s-fgmj0s@836cdf0
 const reTermBold = /^\*\*(.*?)\*\*/;
 const reTermEnd = /[.:]$/;
 const reMeaningLead = /^[\s\p{P}]+/u;
 const reEscape = /[.*+?^${}()|[\]\\]/g;
 const sLabelDo = "**Do:**";
 const sLabelLook = "**Look for:**";
+// @implements s-jmslkk@be3cc50
 const reRuling = /RULING \((?:CEO|architect)\)/g;
 const reRulingWhole = /^RULING \((?:CEO|architect)\)$/;
 const reRulingLead = /^[*\s]*/;
@@ -591,6 +213,7 @@ const sRulingArch = "RULING (architect)";
 const sTitleRuling = "rulings outside motives";
 const sViaPrompt = "prompt";
 const reArticleLead = /^(?:the|an|a)\s+/i;
+// @implements s-w2msh4@29d36fe
 const reFenceOpen = /^\s*(`{3,}|~{3,})/;
 const reFenceClose = /^\s*(`{3,}|~{3,})\s*$/;
 const reTableRow = /^\s*\|/;
@@ -616,8 +239,13 @@ const fnLevelHeading = ( sLine ) => {
   return vsGroup === null ? Infinity : vsGroup[ 1 ].length;
 };
 
+// @implements s-3bftr3@3529be7
+// @implements s-qln1ta@564522c
 const fsNormal = ( sText ) => sText.replace( /\s+/g, " " ).trim();
 
+// @implements s-rapf8f@dd2cbd3
+// @implements s-g8r0ur@f2d68ec
+// @implements s-qln1ta@564522c
 const fsHashForText = ( sText ) => (
   crypto.createHash( "sha1" ).update( sText, "utf8" ).digest( "hex" )
     .slice( 0, 7 )
@@ -631,6 +259,7 @@ const fsWords = ( sText ) => (
   sText.split( " " ).slice( 0, cWordOpening ).join( " " )
 );
 
+// @implements s-jg7ill@f9c0b61
 const fsFenceAfter = ( sLine, sFence ) => {
   if( sFence === null ){
     const vsGroup = sLine.match( reFenceOpen );
@@ -645,6 +274,7 @@ const fsFenceAfter = ( sLine, sFence ) => {
   return bClose ? null : sFence;
 };
 
+// @implements s-b1flmr@52ccc3c
 const fsKindForLine = ( sLine, sFence ) => {
   if( sFence !== null || reFenceOpen.test( sLine )){ return "fence";}
   if( sLine.trim() === "" ){ return "blank";}
@@ -660,6 +290,8 @@ const fbBlockEnds = ( sLine ) => (
   || reBlockBullet.test( sLine )
 );
 
+// @implements s-pwxuov@536babd
+// @implements s-ytmdql@7d7407c
 const fbLineInSpan = ( vsOpen, vsLine, nLine ) => {
   const nEnd = vsLine.findIndex(( sLine, n ) => (
     n > nLine && fbBlockEnds( sLine )
@@ -677,6 +309,10 @@ const fvsOpenAfter = ( vsOpen, sKind, sLine ) => {
   return vsOpen === null ? [ sLine ] : vsOpen.concat( sLine );
 };
 
+// @implements s-jg7ill@f9c0b61
+// @implements s-pwxuov@536babd
+// @implements s-ilmml1@de70889
+// @implements s-ytmdql@7d7407c
 const fvsKindForLines = ( vsLine ) => {
   let sFence = null;
   let vsOpen = null;
@@ -694,6 +330,7 @@ const fvsKindForLines = ( vsLine ) => {
   });
 };
 
+// @implements s-ilmml1@de70889
 const fvaBlockForKind = ( vsKind ) => {
   const vaBlock = [];
   let aOpen = null;
@@ -720,6 +357,7 @@ const fnColForLine = ( sLine, bBullet ) => {
   );
 };
 
+// @implements s-ilmml1@de70889
 const faTextForBlock = ( aBlock, vsLine ) => {
   const vaSeg = [];
   let sText = "";
@@ -734,6 +372,8 @@ const faTextForBlock = ( aBlock, vsLine ) => {
   return { ...aBlock, sText, vaSeg };
 };
 
+// @implements s-ytmdql@7d7407c
+// @implements s-mm67bx@fb5e980
 const fvtSpanForText = ( sText ) => {
   const vtRun = Array.from(
     sText.matchAll( reTickRun ), ( vs ) => [ vs.index, vs[ 0 ].length ]
@@ -758,6 +398,9 @@ const fvsSpanContent = ( sText ) => fvtSpanForText( sText ).map(( tSpan ) => (
   sText.slice( tSpan[ 0 ] + tSpan[ 2 ], tSpan[ 1 ]).trim()
 ));
 
+// @implements s-8yzzoh@8f6ed41
+// @implements s-gry2es@de73667
+// @implements s-i63o6a@6dbc87e
 const fvnMarkerForText = ( sText ) => {
   const vtSpan = fvtSpanForText( sText );
   return Array.from( sText.matchAll( reMarkerOpen ), ( vs ) => vs.index )
@@ -768,6 +411,28 @@ const fsGroup = ( vsGroup, n ) => (
   vsGroup[ n ] === undefined ? null : vsGroup[ n ]
 );
 
+// @implements s-eab7vh@300a074
+// @implements s-7llevg@6c2799e
+// @implements s-41v1mp@51d6eb2
+// @implements s-fc5ccj@7849554
+// @implements s-8yzzoh@8f6ed41
+// @implements s-n10cb0@01b16a4
+// @implements s-m176ue@c40015e
+// @implements s-7h4j0s@512c0f5
+// @implements s-y1fknl@991055d
+// @implements s-w2zn7d@ea7e5d0
+// @implements s-k4mfcb@f02be14
+// @implements s-gry2es@de73667
+// @implements s-ar1i87@b6009f5
+// @implements s-6dpng1@58d403a
+// @implements s-m3nvmc@4ea2a37
+// @implements s-s0vyhy@802fc2f
+// @implements s-y462l3@3b6cea9
+// @implements s-n1ztut@75bf716
+// @implements s-l2muht@e9fb34f
+// @implements s-s0x8ie@f630543
+// @implements s-ptc52y@20ab416
+// @implements s-vwf1wr@af28dcd
 const faTokenAt = ( sText, nPos ) => {
   reMarkerToken.lastIndex = nPos;
   const vsGroup = reMarkerToken.exec( sText );
@@ -794,6 +459,7 @@ const faTokenAt = ( sText, nPos ) => {
   };
 };
 
+// @implements s-fc5ccj@7849554
 const fsTypeLine = ( sType ) => (
   ( asNameForType[ sType ] || "unknown" ) + " (" + sType + ")"
 );
@@ -802,6 +468,8 @@ const fsOnType = ( sWhat, sType ) => (
   sWhat + " on a line of type " + fsTypeLine( sType )
 );
 
+// @implements s-en1xk7@b19ecef
+// @implements s-dhs2hx@db209fb
 const fsKindForTarget = ( sTarget ) => {
   if( reTargetId.test( sTarget )){ return "id";}
   if( reTargetSlug.test( sTarget )){ return "slug";}
@@ -820,10 +488,16 @@ const fbCodeTarget = ( sTarget, sPathSpecs = sDirSpecs ) => {
   return sPath !== sPathSpecs && !sPath.startsWith( sPathSpecs + "/" );
 };
 
+// @implements s-7h4j0s@512c0f5
+// @tested-by test/spec-map-source.test.js
 const fvsTargetForMarker = ( aMarker ) => (
   aMarker.sTargets === null ? [] : aMarker.sTargets.split( "," )
 );
 
+// @implements s-en1xk7@b19ecef
+// @implements s-dhs2hx@db209fb
+// @implements s-7h4j0s@512c0f5
+// @tested-by test/spec-map-source.test.js
 const fsReasonForTargetForm = ( sTarget ) => {
   if( sTarget === "" ){ return "empty target";}
   return fsKindForTarget( sTarget ) === null
@@ -831,6 +505,9 @@ const fsReasonForTargetForm = ( sTarget ) => {
     : null;
 };
 
+// @implements s-7h4j0s@512c0f5
+// @implements s-w75973@e58d191
+// @implements s-vjgnay@5c0f583
 const fvsReasonForTargets = ( aToken ) => {
   if( !sTypeTargeted.includes( aToken.sType )){
     return aToken.sTargets === null
@@ -845,6 +522,7 @@ const fvsReasonForTargets = ( aToken ) => {
     .filter( Boolean );
 };
 
+// @implements s-johg6m@f4b11b4
 const fsReasonForAudienceLabels = ( vsLabel ) => {
   if( vsLabel.includes( "" )){ return "audience list holds an empty label";}
   if( !vsLabel.every(( sLabel ) => rePartLabel.test( sLabel ))){
@@ -855,6 +533,7 @@ const fsReasonForAudienceLabels = ( vsLabel ) => {
     : null;
 };
 
+// @implements s-johg6m@f4b11b4
 const fvsReasonForAudience = ( aToken ) => {
   if( aToken.sType !== "g" ){
     return aToken.sFor === null
@@ -866,6 +545,7 @@ const fvsReasonForAudience = ( aToken ) => {
   return sReason === null ? [] : [ sReason ];
 };
 
+// @implements s-5ljuu2@60dd002
 const fsReasonForVia = ( aToken ) => {
   if( aToken.sVia === null ){ return null;}
   if( aToken.sType !== "g" ){ return fsOnType( "via= flag", aToken.sType );}
@@ -877,10 +557,14 @@ const fsReasonForVia = ( aToken ) => {
     : null;
 };
 
+// @implements s-k4mfcb@f02be14
 const fbViaPrompt = ( aToken ) => (
   aToken.sVia !== null && fsReasonForVia( aToken ) === null
 );
 
+// @implements s-s0x8ie@f630543
+// @implements s-ni7ark@e934261
+// @implements s-xo5d9n@08c26fd
 const fsReasonForSurface = ( aToken, cInclusion ) => {
   if( aToken.sSurface === null ){ return null;}
   if( aToken.sType !== "s" ){ return fsOnType( "surface flag", aToken.sType );}
@@ -896,6 +580,12 @@ const fsReasonForSurface = ( aToken, cInclusion ) => {
     : null;
 };
 
+// @implements s-7llevg@6c2799e
+// @implements s-johg6m@f4b11b4
+// @implements s-6dpng1@58d403a
+// @implements s-ni7ark@e934261
+// @implements s-xo5d9n@08c26fd
+// @implements s-4qpk97@7e4bb82
 const fvsReasonForAttr = ( aToken, cInclusion ) => [
   aToken.sParts === null ? null : sReasonPartList,
   fsReasonForSurface( aToken, cInclusion ),
@@ -914,6 +604,9 @@ const fvsReasonForAttr = ( aToken, cInclusion ) => [
   fvsReasonForAudience( aToken )
 );
 
+// @implements s-7llevg@6c2799e
+// @implements s-w75973@e58d191
+// @implements s-gry2es@de73667
 const fsReasonMalformed = ( aToken, aBlock, sText ) => {
   if( !aToken.bWell && !sTypeLine.includes( aToken.sType )){
     return "malformed: no line type " + aToken.sType;
@@ -954,6 +647,10 @@ const fnOffsetAt = ( aCtx, aBlock, nPos ) => {
   return aCtx.vnLineStart[ aSeg.nLine ] + aSeg.nCol + nPos - aSeg.nStart;
 };
 
+// @implements s-bbaxpr@4e51c3f
+// @implements s-ixasv4@f731c6a
+// @implements s-lqyq1i@946e8b2
+// @implements s-ickx1f@508799a
 const faInclusionAt = ( aCtx, aBlock, nPos, nStart ) => {
   reInclusionToken.lastIndex = nPos;
   const vsGroup = reInclusionToken.exec( aBlock.sText );
@@ -969,6 +666,10 @@ const faInclusionAt = ( aCtx, aBlock, nPos, nStart ) => {
   };
 };
 
+// @implements s-yallh6@309b54b
+// @implements s-ixasv4@f731c6a
+// @implements s-8ej89k@ad53a57
+// @implements s-lqyq1i@946e8b2
 const fvaInclusionForText = ( aCtx, aBlock, nStart, nEnd ) => {
   const vtSpan = fvtSpanForText( aBlock.sText );
   return Array.from(
@@ -979,6 +680,26 @@ const fvaInclusionForText = ( aCtx, aBlock, nStart, nEnd ) => {
     .map(( nPos ) => faInclusionAt( aCtx, aBlock, nPos, nStart ));
 };
 
+// @implements s-eab7vh@300a074
+// @implements s-7llevg@6c2799e
+// @implements s-41v1mp@51d6eb2
+// @implements s-m176ue@c40015e
+// @implements s-yyli5x@c1ccada
+// @implements s-k4mfcb@f02be14
+// @implements s-gry2es@de73667
+// @implements s-ar1i87@b6009f5
+// @implements s-ilmml1@de70889
+// @implements s-6dpng1@58d403a
+// @implements s-m3nvmc@4ea2a37
+// @implements s-yallh6@309b54b
+// @implements s-s0vyhy@802fc2f
+// @implements s-y462l3@3b6cea9
+// @implements s-ni7ark@e934261
+// @implements s-xo5d9n@08c26fd
+// @implements s-ixasv4@f731c6a
+// @implements s-r1opde@e6a3bd1
+// @implements s-8ej89k@ad53a57
+// @implements s-vwf1wr@af28dcd
 const faMarkerAt = ( aCtx, aBlock, vnMarker, nMarker ) => {
   const nPos = vnMarker[ nMarker ];
   const aToken = faTokenAt( aBlock.sText, nPos );
@@ -1016,6 +737,9 @@ const faMarkerAt = ( aCtx, aBlock, vnMarker, nMarker ) => {
   };
 };
 
+// @implements s-eab7vh@300a074
+// @implements s-8yzzoh@8f6ed41
+// @implements s-ilmml1@de70889
 const fvaMarkerForBlock = ( aCtx, aBlock ) => {
   const vnMarker = fvnMarkerForText( aBlock.sText );
   return vnMarker.map(( nPos, nMarker ) => (
@@ -1040,6 +764,7 @@ const fvxH2ForLine = ( vsLine, vsKind ) => {
   });
 };
 
+// @implements s-tv24sx@df2c2d6
 const fbCompleteForLines = ( vsLine ) => {
   const nTitle = vsLine.findIndex(( sLine ) => reTitle.test( sLine ));
   if( nTitle < 0 ){ return false;}
@@ -1048,6 +773,8 @@ const fbCompleteForLines = ( vsLine ) => {
   return sNext !== undefined && sNext.trimEnd() === sLineComplete;
 };
 
+// @implements s-b1flmr@52ccc3c
+// @implements s-tv24sx@df2c2d6
 const fbShaped = ( aCtx, aBlock, sLead ) => {
   const nFirst = aBlock.vnLine[ 0 ];
   const sH2 = aCtx.vxH2[ nFirst ];
@@ -1060,6 +787,7 @@ const fbShaped = ( aCtx, aBlock, sLead ) => {
   );
 };
 
+// @implements s-tv24sx@df2c2d6
 const fvaUnmarkedForBlocks = ( aCtx, vaBlock ) => (
   vaBlock
     .map(( aBlock ) => ({ aBlock, sLead: fsLeadForBlock( aBlock ) }))
@@ -1071,6 +799,8 @@ const fvaUnmarkedForBlocks = ( aCtx, vaBlock ) => (
     }))
 );
 
+// @implements s-du4nns@bbb6351
+// @implements s-vcpu9h@6d6ac07
 const fvaFenceUnclosed = ( sPath, vsLine, vsKind ) => {
   let sFence = null;
   let nOpen = -1;
@@ -1084,12 +814,14 @@ const fvaFenceUnclosed = ( sPath, vsLine, vsKind ) => {
     : [{ sPath, nLine: nOpen + 1, sText: vsLine[ nOpen ].trimEnd() }];
 };
 
+// @implements s-en1xk7@b19ecef
 const fsSlugForHeading = ( sLine ) => (
   sLine.replace( reHeading, "" ).toLowerCase()
     .replace( reSlugGap, "-" )
     .replace( reSlugEdge, "" )
 );
 
+// @implements s-tv24sx@df2c2d6
 const faParseSpec = ( aSpec ) => {
   const vsLine = aSpec.sText.split( "\n" );
   const vsKind = fvsKindForLines( vsLine );
@@ -1118,6 +850,7 @@ const faParseSpec = ( aSpec ) => {
   };
 };
 
+// @implements s-k9c32y@39fbb4e
 const fnAfterGroup = ( sText, nOpen ) => {
   let cDepth = 0;
   let chQuote = null;
@@ -1136,6 +869,7 @@ const fnAfterGroup = ( sText, nOpen ) => {
   return sText.length;
 };
 
+// @tested-by test/spec-map-source.test.js
 const fnAfterTemplate = ( sText, nOpen ) => {
   for( let n = nOpen + 1; n < sText.length; n++ ){
     if( sText[ n ] === "\\" ){ n++;}
@@ -1144,6 +878,7 @@ const fnAfterTemplate = ( sText, nOpen ) => {
   return sText.length;
 };
 
+// @implements s-k9c32y@39fbb4e
 const fnAfterTable = ( sText, nOpen ) => (
   sText[ nOpen ] === "`"
     ? fnAfterTemplate( sText, nOpen )
@@ -1155,6 +890,7 @@ const fnAfterSticky = ( re, sText, n ) => {
   return re.test( sText ) ? re.lastIndex : -1;
 };
 
+// @implements s-cwbb50@b1fa155
 const ftLiteralAt = ( sText, nOpen ) => {
   const chQuote = sText[ nOpen ];
   if( chQuote !== "\"" && chQuote !== "'" && chQuote !== "`" ){ return null;}
@@ -1167,6 +903,10 @@ const ftLiteralAt = ( sText, nOpen ) => {
   return null;
 };
 
+// @implements s-dpoj4a@064704f
+// @implements s-ns2gme@9b9beb2
+// @implements s-cwbb50@b1fa155
+// @tested-by test/spec-map-source.test.js
 const fsNameAt = ( sText, nOpen ) => {
   let tLiteral = ftLiteralAt( sText, nOpen );
   if( tLiteral === null ){ return null;}
@@ -1179,6 +919,9 @@ const fsNameAt = ( sText, nOpen ) => {
   }
 };
 
+// @implements s-m7xrlq@a850adb
+// @implements s-4o88k8@e467b6b
+// @implements s-rv4wbq@86ed5ff
 const ftMaskForPath = ( sText, sPath ) => {
   const aLanguage = faLanguageForPath( sPath, sText );
   if( aLanguage === null ){ return [ sText, new Set() ];}
@@ -1214,6 +957,13 @@ const fsCodeNormal = ( sText, vsClass ) => {
   return sOut;
 };
 
+// @implements s-g8r0ur@f2d68ec
+// @implements s-zcb6gq@fdaa5bb
+// @implements s-3bftr3@3529be7
+// @implements s-wp3dpp@040ef82
+// @implements s-me9dys@227966a
+// @implements s-1a9ecj@2117295
+// @tested-by test/spec-map-source.test.js
 const fsNormalForFile = ( sPath, sText ) => {
   const aLanguage = faLanguageForPath( sPath, sText );
   return aLanguage === null ? fsNormal( sText )
@@ -1247,6 +997,7 @@ const fnLineAt = ( vnLineStart, nOffset ) => {
   return nLow;
 };
 
+// @implements s-k9c32y@39fbb4e
 const fnOpenForCall = ( sMasked, vsGroup ) => {
   const nAfterCall = vsGroup.index + vsGroup[ 0 ].length;
   const nArg = vsGroup[ 2 ] === undefined
@@ -1255,6 +1006,11 @@ const fnOpenForCall = ( sMasked, vsGroup ) => {
   return fnAfterSticky( reSpace, sMasked, nArg );
 };
 
+// @implements s-62b8ec@2fda7eb
+// @implements s-8xr9d5@2d59ba6
+// @implements s-ns2gme@9b9beb2
+// @implements s-0nmcwv@fcc34b4
+// @implements s-cwbb50@b1fa155
 const faCallForMatch = ( aSource, vsGroup, bWrapper ) => {
   const nOpen = fnOpenForCall( aSource.sMasked, vsGroup );
   if( aSource.sMasked[ nOpen ] !== "(" ){ return null;}
@@ -1280,15 +1036,25 @@ const fvaCallForRe = ( aSource, re, bWrapper ) => (
   ).filter( Boolean )
 );
 
+// @implements s-62b8ec@2fda7eb
+// @implements s-8xr9d5@2d59ba6
+// @implements s-0nmcwv@fcc34b4
+// @implements s-846yjd@fa50804
+// @implements s-qkq11z@1273ca2
+// @implements s-rkbz86@59f60c9
+// @tested-by test/language-readings.test.js
 const fvaCallForSource = ( aSource ) => {
   const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
   return aLanguage === null ? [] : aLanguage.fvaTestUnit( aSource );
 };
 
+// @implements s-bnkk62@2b3da81
 const fbLineInHeader = ( aHeader, nLine ) => (
   nLine < aHeader.nLineCode && nLine >= aHeader.nLineDoc
 );
 
+// @implements s-0nmcwv@fcc34b4
+// @implements s-m7xrlq@a850adb
 const faSourceForText = ( sText, sPath ) => {
   const [ sMasked, asnComment ] = ftMaskForPath( sText, sPath );
   const vsLine = sText.split( "\n" );
@@ -1313,6 +1079,7 @@ const faSourceForText = ( sText, sPath ) => {
   };
 };
 
+// @implements s-8tx2ob@ba817e4
 const fbLineRunWhole = ( aSource, nLine ) => {
   const sLine = aSource.vsLine[ nLine ] || "";
   const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
@@ -1328,6 +1095,8 @@ const fbLineRunWhole = ( aSource, nLine ) => {
     && aSource.vsLineMasked[ nLine ].trim() === "";
 };
 
+// @implements s-bnkk62@2b3da81
+// @implements s-8tx2ob@ba817e4
 const faCallBelowRun = ( aSource, vaCall, nLine ) => {
   let nNext = nLine + 1;
   while( fbLineRunWhole( aSource, nNext )
@@ -1352,6 +1121,11 @@ const ftCommentAt = ( aSource, nComment ) => {
   return [ nLine, sLine, sDirective.slice( nCol + 2 ) ];
 };
 
+// @implements s-98jxk4@d886f7c
+// @implements s-bnkk62@2b3da81
+// @implements s-8tx2ob@ba817e4
+// @implements s-op9bak@ecaff86
+// @implements s-5un01z@b74caaa
 const faOwnerForComment = ( aSource, vaCall, aHeader, nComment ) => {
   const [ nLine, sLine, sAfter ] = ftCommentAt( aSource, nComment );
   if( !reOwnerText.test( sAfter )){ return null;}
@@ -1375,12 +1149,17 @@ const faOwnerForComment = ( aSource, vaCall, aHeader, nComment ) => {
   };
 };
 
+// @implements s-lf00bp@0ec752e
 const fsPartForLine = ( sLine ) => {
   const vsGroup = sLine.match( reLinkPart );
   return vsGroup === null ? null : vsGroup[ 3 ];
 };
 
-const faLinkForComment = ( aSource, vaCall, nComment, aForm ) => {
+// @implements s-eawgvu@a59ff64
+// @implements s-lf00bp@0ec752e
+// @implements s-trdu1m@34986f1
+// @implements s-5un01z@b74caaa
+const faLinkForComment = ( aSource, nComment, aForm ) => {
   const [ nLine, sLine, sAfter ] = ftCommentAt( aSource, nComment );
   if( !aForm.reText.test( sAfter )){ return null;}
   const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
@@ -1397,17 +1176,26 @@ const faLinkForComment = ( aSource, vaCall, nComment, aForm ) => {
     sHash: vsLoose === null ? "" : vsLoose[ 2 ],
     sPart: fsPartForLine( sDirective ),
     bWell: vsWell !== null,
-    bGuard: aForm.bGuard,
-    aCall: fbLineRunWhole( aSource, nLine )
-      ? faCallBelowRun( aSource, vaCall, nLine )
-      : null
+    bGuard: aForm.bGuard
   };
 };
 
-const fvaLinkForForm = ( aSource, vaCall, vnComment, aForm ) => vnComment
-  .map(( nComment ) => faLinkForComment( aSource, vaCall, nComment, aForm ))
+const fvaLinkForForm = ( aSource, vnComment, aForm ) => vnComment
+  .map(( nComment ) => faLinkForComment( aSource, nComment, aForm ))
   .filter( Boolean );
 
+// @implements s-62b8ec@2fda7eb
+// @implements s-tw3l62@a42577f
+// @implements s-eawgvu@a59ff64
+// @implements s-cs9i6p@1cf2293
+// @implements s-4o88k8@e467b6b
+// @implements s-3klfsj@d4d9f32
+// @implements s-rkbz86@59f60c9
+// @implements s-fiabr2@965e4cb
+// @implements s-obz7rg@4fcc16d
+// @implements s-9ho983@29e4110
+// @implements s-k3nucf@c0c7bf2
+// @implements s-sy7274@b9a1e14
 const faParseTest = ( aFile ) => {
   const aSource = faSourceForText( aFile.sText, aFile.sPath );
   const vaCall = fvaCallForSource( aSource );
@@ -1415,22 +1203,29 @@ const faParseTest = ( aFile ) => {
   const vnComment = Array.from( aSource.asnComment );
   return {
     sPath: fsPosix( aFile.sPath ),
+    sText: aFile.sText,
     vaCall,
     vaOwner: vnComment
       .map(( nComment ) => (
         faOwnerForComment( aSource, vaCall, aHeader, nComment )
       ))
       .filter( Boolean ),
-    vaLink: fvaLinkForForm( aSource, vaCall, vnComment, aFormLink ),
-    vaGuard: fvaLinkForForm( aSource, vaCall, vnComment, aFormGuard ),
-    vaImplements: fvaLinkForForm(
-      aSource, vaCall, vnComment, aFormImplements
+    vaLink: fvaRegionScope(
+      fvaLinkForForm( aSource, vnComment, aFormLink ), aFile.sText
+    ),
+    vaGuard: fvaRegionScope(
+      fvaLinkForForm( aSource, vnComment, aFormGuard ), aFile.sText
+    ),
+    vaImplements: fvaRegionScope(
+      fvaLinkForForm( aSource, vnComment, aFormImplements ),
+      aFile.sText
     ),
     vaRefMisplaced: vnComment
       .flatMap(( nComment ) => fvaRefMisplacedForComment( aSource, nComment ))
   };
 };
 
+// @implements s-sy7274@b9a1e14
 const fvaRefMisplacedForComment = ( aSource, nComment ) => {
   const [ nLine, sLine, sAfter ] = ftCommentAt( aSource, nComment );
   return vtKindMisplacedInTest
@@ -1453,9 +1248,13 @@ const fvaRefMisplacedForComment = ( aSource, nComment ) => {
     });
 };
 
+// @implements s-nlzsly@c19be98
+// @implements s-w4wun2@53dab89
+// @implements s-fiabr2@965e4cb
+// @implements s-ljxzt6@18e05e4
+// @implements s-dssqhc@47c722c
 const fsReasonForImplementsInTest = ( aImpl, aFound, vaCall ) => {
   if( !aImpl.bWell ){ return "malformed";}
-  if( aImpl.aCall === null ){ return "misplaced";}
   const sReason = fsReasonForFound(
     aFound, "no such statement", "duplicate id"
   );
@@ -1466,17 +1265,26 @@ const fsReasonForImplementsInTest = ( aImpl, aFound, vaCall ) => {
   if( aFound.aLine.sHash !== aImpl.sHash ){ return "stale hash";}
   const bProved = vaCall.some(( aCall ) => (
     aCall.sKind === "test"
-    && fbEncloses( aImpl.aCall, aCall )
+    && aImpl.nRegionStart < aCall.nEnd
+    && aImpl.nRegionEnd > aCall.nStart
     && fbCallCoveredBy( aCall, aFound.aLine )
   ));
   return bProved ? null : "no test it covers proves the statement";
 };
 
+// @implements s-nlzsly@c19be98
+// @implements s-fiabr2@965e4cb
+// @implements s-ljxzt6@18e05e4
+// @implements s-dssqhc@47c722c
 const faImplementsInTest = ( aImpl, sPath, aIndex, vaCall ) => {
   const aFound = aImpl.bWell ? faLineForId( aIndex, aImpl.sId ) : null;
   return {
     sPath,
     nLine: aImpl.nLine,
+    nRegionStart: aImpl.nRegionStart,
+    nRegionEnd: aImpl.nRegionEnd,
+    nSourceStartLine: aImpl.nSourceStartLine,
+    nSourceEndLine: aImpl.nSourceEndLine,
     sKind: "implements",
     sTarget: aImpl.sId === null ? "" : aImpl.sId,
     sStamp: aImpl.sHash,
@@ -1485,7 +1293,7 @@ const faImplementsInTest = ( aImpl, sPath, aIndex, vaCall ) => {
     sReason: fsReasonForImplementsInTest( aImpl, aFound, vaCall ),
     sId: aFound === null || aFound.aLine === null ? null : aFound.aLine.sId,
     bTest: true,
-    sNameCall: aImpl.aCall === null ? null : aImpl.aCall.sName
+    sNameCall: null
   };
 };
 
@@ -1501,6 +1309,8 @@ const fbEncloses = ( aOuter, aInner ) => (
   aOuter.nStart <= aInner.nStart && aOuter.nEnd >= aInner.nEnd
 );
 
+// @implements s-pslzjw@bb3ff6d
+// @implements s-op9bak@ecaff86
 const fasOwnerForCall = ( aTest, aCall ) => {
   const vaBlock = aTest.vaOwner.filter(( aOwner ) => (
     aOwner.sPlace === "block" && fbEncloses( aOwner.aCall, aCall )
@@ -1518,6 +1328,8 @@ const fasOwnerForCall = ( aTest, aCall ) => {
   )));
 };
 
+// @implements s-mijuu3@eb255fe
+// @implements s-j8ahje@91cc810
 const faLineForId = ( aIndex, sId ) => {
   const vaPlace = aIndex.avaMarkerForId.get( sId ) || [];
   const vaBody = aIndex.avaMarkerForBody.get( sId.slice( 2 )) || [];
@@ -1537,6 +1349,7 @@ const fsReasonRetyped = ( sIdRetyped ) => (
   + fsTypeLine( sIdRetyped[ 0 ])
 );
 
+// @implements s-mijuu3@eb255fe
 const fsReasonForFound = ( aFound, sNone, sTwice ) => {
   if( aFound.cPlace > 1 ){ return sTwice;}
   if( aFound.sIdRetyped !== null ){
@@ -1545,13 +1358,17 @@ const fsReasonForFound = ( aFound, sNone, sTwice ) => {
   return aFound.aLine === null ? sNone : null;
 };
 
+// @implements s-vhci8f@cf04778
+// @implements s-xt2qjj@ce601a5
+// @implements s-kkql92@90bba2d
+// @implements s-lf00bp@0ec752e
+// @implements s-i6cch2@0fa308d
 const fsReasonForLink = ( aLink, aIndex ) => {
   if( !aLink.bWell ){
     return aLink.sPart !== null && !aLink.bGuard
       ? sReasonPartLink
       : "malformed";
   }
-  if( aLink.aCall === null ){ return "misplaced";}
   const aFound = faLineForId( aIndex, aLink.sId );
   const sReason = fsReasonForFound(
     aFound, "no such statement", "duplicate id"
@@ -1564,6 +1381,13 @@ const fsReasonForLink = ( aLink, aIndex ) => {
   return null;
 };
 
+// @implements s-jcgn2k@507b789
+// @implements s-nw4u9n@3b57e9b
+// @implements s-kkql92@90bba2d
+// @implements s-83mryk@52401d8
+// @implements s-i6cch2@0fa308d
+// @implements s-yltboo@95a3db6
+// @implements s-ctbylk@c20e0f1
 const faLinkResolved = ( aLink, sPath, aIndex ) => {
   const sReason = fsReasonForLink( aLink, aIndex );
   const aStmt = sReason === null
@@ -1584,12 +1408,26 @@ const fvaStmtUnique = ( vaStmt ) => Array.from(
   new Map( vaStmt.map(( aStmt ) => [ aStmt.sId, aStmt ])).values()
 );
 
+const fsTestUnitId = ( sPath, aCall, nOccurrence ) => {
+  const sRange = `L${aCall.nFirstLine}-L${aCall.nLastLine}:${nOccurrence}`;
+  return "tu-" + crypto.createHash( "sha256" )
+    .update( `${sPath}:${sRange}`, "utf8" ).digest( "hex" ).slice( 0, 8 );
+};
+
+// @implements s-tvuwev@04539c9
+// @implements s-tw3l62@a42577f
+// @implements s-zvzlp8@dcfec4e
+// @implements s-uny6ly@83363ca
+// @implements s-1yuomz@b828506
+// @implements s-xsusri@1f880bb
 const faCallProved = ( aCall, vaCallAll, vaLink ) => {
   const vaEnclosing = vaCallAll.filter(( aOuter ) => (
     fbEncloses( aOuter, aCall )
   ));
   const vaCover = vaLink.filter(( aLink ) => (
-    aLink.aStmtNamed !== null && fbEncloses( aLink.aCall, aCall )
+    aLink.aStmtNamed !== null
+    && aLink.nRegionStart < aCall.nEnd
+    && aLink.nRegionEnd > aCall.nStart
   ));
   return {
     ...aCall,
@@ -1601,18 +1439,43 @@ const faCallProved = ( aCall, vaCallAll, vaLink ) => {
   };
 };
 
+// @implements s-s7wgz7@8b913ab
+// @implements s-8usccv@c0cc953
 const fasOwnerDerived = ( aCall ) => new Set(
   aCall.vaStmtCounted.map(( aStmt ) => aStmt.sPath )
 );
 
+// @implements s-62b8ec@2fda7eb
+// @implements s-8xr9d5@2d59ba6
+// @implements s-jcgn2k@507b789
+// @implements s-i6cch2@0fa308d
+// @implements s-nlzsly@c19be98
+// @implements s-ctbylk@c20e0f1
+// @implements s-9wbr29@0f680c4
+// @implements s-fiabr2@965e4cb
 const faTestLinked = ( aTest, aIndex ) => {
   const fvaResolved = ( vaLink ) => vaLink.map(( aLink ) => (
     faLinkResolved( aLink, aTest.sPath, aIndex )
   ));
   const vaLink = fvaResolved( aTest.vaLink );
-  const vaCall = aTest.vaCall.map(( aCall ) => (
-    faCallProved( aCall, aTest.vaCall, vaLink )
-  ));
+  const maOccurrence = new Map();
+  const vaCall = aTest.vaCall.map(( aCall ) => {
+    const nFirstLine = aCall.nLine + 1;
+    const nLastLine = aTest.sText.slice(
+      0, Math.max( aCall.nStart, aCall.nEnd - 1 )
+    ).split( "\n" ).length;
+    const sRange = `${nFirstLine}:${nLastLine}`;
+    const nOccurrence = aCall.sKind === "test"
+      ? ( maOccurrence.get( sRange ) || 0 ) + 1 : 0;
+    if( aCall.sKind === "test" ){ maOccurrence.set( sRange, nOccurrence );}
+    return {
+      ...faCallProved( aCall, aTest.vaCall, vaLink ),
+      nFirstLine, nLastLine,
+      sUnitId: aCall.sKind === "test"
+        ? fsTestUnitId( aTest.sPath, { nFirstLine, nLastLine }, nOccurrence )
+        : null
+    };
+  });
   return {
     ...aTest,
     vaLink,
@@ -1624,6 +1487,8 @@ const faTestLinked = ( aTest, aIndex ) => {
   };
 };
 
+// @implements s-0e75fk@780e493
+// @implements s-svtfjm@7ad3935
 const fasIdBacked = ( vaTestLinked ) => new Set(
   vaTestLinked.flatMap(( aTest ) => aTest.vaCall
     .filter(( aCall ) => aCall.sKind === "test" )
@@ -1631,9 +1496,15 @@ const fasIdBacked = ( vaTestLinked ) => new Set(
     .map(( aStmt ) => aStmt.sId )
 );
 
+// @implements s-0e75fk@780e493
+// @implements s-p6dv3k@0fbbb2e
+// @implements s-uny6ly@83363ca
+// @implements s-8usccv@c0cc953
 const faCallGuarded = ( aCall, vaGuard ) => {
   const vaStmtGuard = fvaStmtUnique( vaGuard
-    .filter(( aGuard ) => aGuard.bBacked && fbEncloses( aGuard.aCall, aCall ))
+    .filter(( aGuard ) => aGuard.bBacked
+      && aGuard.nRegionStart < aCall.nEnd
+      && aGuard.nRegionEnd > aCall.nStart )
     .map(( aGuard ) => aGuard.aStmt ));
   return {
     ...aCall,
@@ -1642,6 +1513,15 @@ const faCallGuarded = ( aCall, vaGuard ) => {
   };
 };
 
+// @implements s-62b8ec@2fda7eb
+// @implements s-pslzjw@bb3ff6d
+// @implements s-s7wgz7@8b913ab
+// @implements s-n7deu7@e5afae0
+// @implements s-0e75fk@780e493
+// @implements s-p6dv3k@0fbbb2e
+// @implements s-svtfjm@7ad3935
+// @implements s-8usccv@c0cc953
+// @implements s-9wbr29@0f680c4
 const faTestOwned = ( aTest, asIdBacked ) => {
   const vaGuard = aTest.vaGuard.map(( aGuard ) => ({
     ...aGuard,
@@ -1680,9 +1560,16 @@ const fvaTestResolved = ( vaTest, aIndex, aParseCache ) => {
   return vaTestLinked.map(( aTest ) => faTestOwned( aTest, asIdBacked ));
 };
 
+// @implements s-3klfsj@d4d9f32
+// @implements s-yltboo@95a3db6
+// @implements s-ctbylk@c20e0f1
+// @implements s-9wbr29@0f680c4
+// @implements s-aku8n2@4ffc4f1
 const fvaLinkAny = ( aTest ) => aTest.vaLink.concat( aTest.vaGuard )
   .sort(( aA, aB ) => aA.nLine - aB.nLine );
 
+// @implements s-98jxk4@d886f7c
+// @implements s-j8ahje@91cc810
 const fsReasonForOwner = ( aOwner, asPathSpec ) => {
   if( aOwner.sPathOwner === null ){ return "malformed";}
   if( !asPathSpec.has( aOwner.sPathOwner )){ return "no such spec";}
@@ -1700,6 +1587,8 @@ const fvaUnresolvedForTest = ( aTest, asPathSpec ) => (
     .filter(( aEntry ) => aEntry.sReason !== null )
 );
 
+// @implements s-s7wgz7@8b913ab
+// @implements s-n7deu7@e5afae0
 const fvaRemovableForTest = ( aTest ) => (
   !aTest.bFull
     ? []
@@ -1719,6 +1608,7 @@ const favxGrouped = ( vaEntry, fsKey, fxValue ) => {
   return avxForKey;
 };
 
+// @implements s-n10cb0@01b16a4
 const favaMarkerForBody = ( vaMarker ) => favxGrouped(
   vaMarker.filter(( aMarker ) => (
     aMarker.sId !== null && !aMarker.bMalformed
@@ -1727,6 +1617,8 @@ const favaMarkerForBody = ( vaMarker ) => favxGrouped(
   ( aMarker ) => aMarker
 );
 
+// @implements s-n10cb0@01b16a4
+// @implements s-mijuu3@eb255fe
 const faIndexForMarkers = ( vaMarker ) => {
   const avaMarkerForBody = favaMarkerForBody( vaMarker );
   return {
@@ -1739,6 +1631,9 @@ const faIndexForMarkers = ( vaMarker ) => {
   };
 };
 
+// @implements s-98jxk4@d886f7c
+// @implements s-3pkw1n@721f8a3
+// @implements s-n7deu7@e5afae0
 const faOwnership = ( vaTestParsed, asPathSpec ) => ({
   vsPathNoOwner: vaTestParsed
     .filter(( aTest ) => !aTest.bFull && !aTest.vaOwner.some(( aOwner ) => (
@@ -1756,7 +1651,8 @@ const aFilesNone = {
   fsTextAt: () => null,
   fvsPathFile: () => [],
   fbPathInSpec: ( sPath ) => sPath === sDirSpecs
-    || sPath.startsWith( sDirSpecs + "/" ),
+    || sPath.startsWith( sDirSpecs + "/" )
+    || sPath === "intent" || sPath.startsWith( "intent/" ),
   fvaSpecCollection: () => ({ vsPath: [], sReason: "no collection reader" })
 };
 
@@ -1764,6 +1660,10 @@ const aObsInputNone = {
   sPathObs: null, sTextObs: null, vaRules: [], vaCode: []
 };
 
+// @implements s-qln1ta@564522c
+// @implements s-fc4ubx@3f16155
+// @implements s-dglucu@bd4c60b
+// @implements s-zhg7ac@f7ba2b1
 const ffsTextIncluded = ( vaInclusion ) => {
   const avaInclusionForMarker = favxGrouped(
     vaInclusion.filter(( aIncl ) => aIncl.sReason === null ),
@@ -1787,6 +1687,9 @@ const ffsTextIncluded = ( vaInclusion ) => {
   return fsText;
 };
 
+// @implements s-qln1ta@564522c
+// @implements s-fc4ubx@3f16155
+// @implements s-zhg7ac@f7ba2b1
 const fvaSpecIncluded = ( vaSpecRaw, aParseCache ) => {
   const vaMarkerRaw = vaSpecRaw.flatMap(( aSpec ) => aSpec.vaMarker );
   const fsText = ffsTextIncluded( faRootRefs({
@@ -1808,6 +1711,7 @@ const fvaSpecIncluded = ( vaSpecRaw, aParseCache ) => {
   }));
 };
 
+// @tested-by test/spec-map-source.test.js
 const faModel = ({
   vaSpec, vaTest, vaCiter, vaGuided, vaSideBad, vaRecord, fbExists, aFiles, aObsInput,
   aParseCache
@@ -1864,6 +1768,11 @@ const faBadForMarker = ( aMarker, sReason ) => ({
   sId: null
 });
 
+// @implements s-7llevg@6c2799e
+// @implements s-n10cb0@01b16a4
+// @implements s-johg6m@f4b11b4
+// @implements s-mijuu3@eb255fe
+// @implements s-4qpk97@7e4bb82
 const fvaMarkerBad = ( aModel ) => (
   aModel.vaMarker
     .filter(( aMarker ) => aMarker.bMalformed )
@@ -1893,10 +1802,12 @@ const fvaLineWell = ( aModel ) => aModel.vaMarker.filter(( aMarker ) => (
   !aMarker.bMalformed
 ));
 
+// @implements s-jvsu3w@dc81311
 const fvaLineOfType = ( aModel, sType ) => fvaLineWell( aModel ).filter((
   aMarker
 ) => aMarker.sType === sType );
 
+// @implements s-ar1i87@b6009f5
 const fvaStmtForModel = ( aModel ) => (
   aModel.vaMarker.filter(( aMarker ) => (
     aMarker.sId !== null
@@ -1906,6 +1817,9 @@ const fvaStmtForModel = ( aModel ) => (
   ))
 );
 
+// @implements s-bmgkci@7568101
+// @implements s-irjox3@ac44757
+// @implements s-fgmj0s@836cdf0
 const faTermForText = ( sText ) => {
   const vsGroup = sText.match( reTermBold );
   if( vsGroup === null ){
@@ -1925,6 +1839,7 @@ const fsBlanked = ( sText, nStart, nEnd ) => (
   sText.slice( 0, nStart ) + " ".repeat( nEnd - nStart ) + sText.slice( nEnd )
 );
 
+// @implements s-ly5nn3@190736f
 const fsTextForUse = ( aBlock, aMarkerOwn, aModel ) => {
   if( aMarkerOwn === null && aModel.aUseTextForBlock.has( aBlock )){
     return aModel.aUseTextForBlock.get( aBlock );
@@ -1941,12 +1856,14 @@ const fsTextForUse = ( aBlock, aMarkerOwn, aModel ) => {
   return sTextUse;
 };
 
+// @implements s-ly5nn3@190736f
 const freForTerm = ( sTerm ) => new RegExp(
   "(?<![\\p{L}\\p{N}])" + sTerm.replace( reEscape, "\\$&" )
   + "s?(?![\\p{L}\\p{N}])",
   "iu"
 );
 
+// @implements s-ly5nn3@190736f
 const fvaUseForTerm = ( aModel, aMarker, sTerm ) => {
   const reTerm = freForTerm( sTerm );
   return aModel.vaSpecParsed.flatMap(( aSpec ) => aSpec.vaBlock
@@ -1961,6 +1878,7 @@ const fvaUseForTerm = ( aModel, aMarker, sTerm ) => {
   );
 };
 
+// @implements s-atk0wi@ffaf3bb
 const fsReasonForDuplicateTerm = ( aEntry, vaSame ) => {
   const vaOther = vaSame.filter(( aOther ) => aOther !== aEntry );
   return vaOther.length === 0
@@ -1969,10 +1887,13 @@ const fsReasonForDuplicateTerm = ( aEntry, vaSame ) => {
       + vaOther.map(( aOther ) => fsPlace( aOther.aMarker )).join( ", " );
 };
 
+// @implements s-atk0wi@ffaf3bb
 const fsKeyForTerm = ( sTerm ) => (
   sTerm.replace( reArticleLead, "" ).toLowerCase()
 );
 
+// @implements s-c05xna@89aded1
+// @implements s-atk0wi@ffaf3bb
 const fvaDefinitionForModel = ( aModel ) => {
   const vaEntry = fvaLineOfType( aModel, "d" ).map(( aMarker ) => ({
     aMarker, ...faTermForText( aMarker.sText )
@@ -2017,6 +1938,7 @@ const fsTextForSlug = ( aModel, sTarget ) => {
     .join( "\n" );
 };
 
+// @tested-by test/spec-map-source.test.js
 class TargetHasher {
   constructor( aModel, aEnv ){
     this.aModel = aModel;
@@ -2064,6 +1986,8 @@ class TargetHasher {
       : this.fsHashForDir( fsPathClean( sTarget ));
   }
 
+  // @implements s-h9tc2m@919d17b
+  // @tested-by test/side-files.test.js
   fsHashForFile( sPath ){
     return this.fsMemo( "file " + sPath, () => {
       const aSide = ( this.aModel.vaCode || [] ).find(( aFile ) => (
@@ -2077,6 +2001,48 @@ class TargetHasher {
     });
   }
 
+  // @implements s-oy6kxo@4b8acb4
+  // @implements s-tclcd8@3d6d619
+  // @implements s-g8r0ur@f2d68ec
+  // @implements s-zcb6gq@fdaa5bb
+  // @implements s-3bftr3@3529be7
+  // @implements s-wp3dpp@040ef82
+  // @tested-by test/side-files.test.js
+  fsHashForCheckTarget( sPath, sId ){
+    return this.fsMemo( "check target " + sPath + " " + sId, () => {
+      const aFile = ( this.aModel.vaCode || []).find(( aEntry ) => (
+        aEntry.sPath === sPath
+      ));
+      if( aFile === undefined ){ return null;}
+      const vaCheckRef = this.aModel.vaCodeRef
+        .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
+          && aRef.sId === sId && ( aRef.sPathCode || aRef.sPath ) === sPath );
+      // Preserve the raw-byte hash for legacy file-wide sidecar references.
+      // A diff sidecar's body groups can hash just their mapped source lines.
+      if( aFile.bSide && vaCheckRef.every(( aRef ) => aRef.bFileWide )){
+        return this.fsHashForFile( sPath );
+      }
+      const vaRange = vaCheckRef
+        .map(( aRef ) => [ aRef.nSourceStartLine, aRef.nSourceEndLine ])
+        .sort(( aA, aB ) => aA[ 0 ] - aB[ 0 ]);
+      if( vaRange.length === 0 ){ return null;}
+      const vaMerged = [];
+      vaRange.forEach(([ nStart, nEnd ]) => {
+        const aLast = vaMerged[ vaMerged.length - 1 ];
+        if( aLast !== undefined && nStart <= aLast[ 1 ] ){
+          aLast[ 1 ] = Math.max( aLast[ 1 ], nEnd );
+        }
+        else { vaMerged.push([ nStart, nEnd ]);}
+      });
+      const sSource = aFile.bSide ? aFile.sTextTarget : aFile.sText;
+      const vsLine = sSource.split( "\n" );
+      const sNormalized = vaMerged.map(([ nStart, nEnd ]) => (
+        fsNormalForFile( sPath, vsLine.slice( nStart - 1, nEnd - 1 ).join( "\n" ))
+      )).join( "" );
+      return fsHashForText( sNormalized );
+    });
+  }
+
   fsHashForDir( sDir ){
     return fsHashForText( this.aEnv.aFiles.fvsPathFile( sDir )
       .map(( sPath ) => (
@@ -2086,6 +2052,11 @@ class TargetHasher {
   }
 }
 
+// @implements s-en1xk7@b19ecef
+// @implements s-j8ahje@91cc810
+// @implements s-t8un02@9839058
+// @implements s-dhs2hx@db209fb
+// @implements s-vjgnay@5c0f583
 const fsReasonForTargetFound = ( aModel, aEnv, sTarget ) => {
   const sKind = fsKindForTarget( sTarget );
   if( sKind === "id" ){
@@ -2124,6 +2095,14 @@ const fsReasonForTargetFound = ( aModel, aEnv, sTarget ) => {
   return aSpec.asSlug.has( vsGroup[ 2 ]) ? null : "no heading with that slug";
 };
 
+// @implements s-en1xk7@b19ecef
+// @implements s-7h4j0s@512c0f5
+// @implements s-gueyj8@dcbe6bc
+// @implements s-j8ahje@91cc810
+// @implements s-t8un02@9839058
+// @implements s-dhs2hx@db209fb
+// @implements s-vjgnay@5c0f583
+// @implements s-9zllrl@4304abd
 const faTargetResolved = ( aModel, aEnv, aMarker, sTarget ) => {
   const bForm = fsReasonForTargetForm( sTarget ) === null;
   const sKind = fsKindForTarget( sTarget );
@@ -2145,6 +2124,7 @@ const faTargetResolved = ( aModel, aEnv, aMarker, sTarget ) => {
   };
 };
 
+// @implements s-7h4j0s@512c0f5
 const fvaTargetForModel = ( aModel, aEnv ) => fvaLineWell( aModel )
   .filter(( aMarker ) => (
     sTypeTargeted.includes( aMarker.sType ) && aMarker.sTargets !== null
@@ -2153,6 +2133,8 @@ const fvaTargetForModel = ( aModel, aEnv ) => fvaLineWell( aModel )
     faTargetResolved( aModel, aEnv, aMarker, sTarget )
   )));
 
+// @implements s-0eydbi@db338e8
+// @implements s-zac0m4@4b07675
 const faCheckForText = ( sText ) => {
   const nDo = sText.indexOf( sLabelDo );
   const nLook = sText.indexOf( sLabelLook );
@@ -2177,22 +2159,30 @@ const fasHashForRecord = ( aRecord ) => (
     : {}
 );
 
+// @implements s-oy6kxo@4b8acb4
+// @implements s-tclcd8@3d6d619
+// @implements s-wp3dpp@040ef82
 const fbRecordCurrent = ( aRecord, aMarker, hasher ) => {
   const asHash = fasHashForRecord( aRecord );
   const vsTarget = hasher.aModel.vaCodeRef
     .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
       && aRef.sId === aMarker.sId )
     .map(( aRef ) => aRef.sPathCode || aRef.sPath );
+  const vsUniqueTarget = Array.from( new Set( vsTarget )).sort();
   return aRecord.sHash === aMarker.sHash
-    && Object.keys( asHash ).sort().join( "\n" ) === vsTarget.slice().sort().join( "\n" )
-    && vsTarget.every(( sTarget ) => {
-      const sHash = hasher.fsHash( sTarget );
+    && Object.keys( asHash ).sort().join( "\n" ) === vsUniqueTarget.join( "\n" )
+    && vsUniqueTarget.every(( sTarget ) => {
+      const sHash = hasher.fsHashForCheckTarget( sTarget, aMarker.sId );
       return sHash !== null
         && Object.hasOwn( asHash, sTarget )
         && asHash[ sTarget ] === sHash;
     });
 };
 
+// @implements s-oy6kxo@4b8acb4
+// @implements s-32o5r7@1ced769
+// @implements s-wp3dpp@040ef82
+// @implements s-ikjpbw@fc0cb7c
 const fsStatusForRecord = ( aRecord, aMarker, hasher ) => {
   if( aRecord === null ){ return "unchecked";}
   if( aRecord.sVerdict === "pass" ){
@@ -2201,6 +2191,8 @@ const fsStatusForRecord = ( aRecord, aMarker, hasher ) => {
   return aRecord.sVerdict === "fail" ? "failed" : "unchecked";
 };
 
+// @implements s-vhci8f@cf04778
+// @implements s-oy6kxo@4b8acb4
 const faCheckForMarker = ( aMarker, vaRecord, hasher ) => {
   const vaRecordNamed = aMarker.sId === null
     ? []
@@ -2224,6 +2216,7 @@ const fsNoteForRecord = ( aRecord ) => (
   typeof aRecord.sNote === "string" ? aRecord.sNote : ""
 );
 
+// @implements s-ddsepn@99dbc98
 const faProblemForCheck = ( aCheck ) => {
   const aRecord = aCheck.vaRecord
     .filter(( aRecordNamed ) => aRecordNamed.sVerdict !== "reset" )
@@ -2236,20 +2229,175 @@ const faProblemForCheck = ( aCheck ) => {
   return bOpen ? { ...aCheck, aRecord } : null;
 };
 
+// @implements s-zac0m4@4b07675
+// @implements s-ddsepn@99dbc98
 const fvaProblemForChecks = ( vaCheck ) => (
   vaCheck.map( faProblemForCheck ).filter( Boolean )
 );
 
+// @implements s-vhci8f@cf04778
+// @implements s-m544u1@462f4f1
+// @implements s-m5inu7@1c00f9a
+// @implements s-ocpfpw@c6adf07
+// @implements s-ol2dmr@37d4979
+// @implements s-vjgnay@5c0f583
 const fvaNoCodeForChecks = ( vaCheck, vaChecks ) => vaCheck.filter(( aCheck ) => (
   !vaChecks.some(( aRef ) => aRef.sId === aCheck.aMarker.sId )
 ));
 
-const fvaCodeReferenceForFile = ( aFile ) => aFile.bSide
-  ? fvaCodeReferenceForSide( aFile )
-  : ( faLanguageForPath( aFile.sPath, aFile.sText ) || { fvaCodeReference: () => [] })
-    .fvaCodeReference( aFile );
+const faRegionIndent = ( aRef, vsLine ) => {
+  const nLine = aRef.nRegionLine || aRef.nLine;
+  const sLine = vsLine[ nLine - 1 ] || aRef.sText || "";
+  let nCol = 0;
+  for( const ch of sLine.match( /^\s*/ )?.[ 0 ] || "" ){
+    nCol = ch === "\t" ? nCol + 8 - nCol % 8 : nCol + 1;
+  }
+  return nCol;
+};
+
+// @implements s-fbqdbv@9e37ea5
+// @implements s-lm68rf@a7ce036
+// @implements s-0hg5qn@087947b
+// @implements s-7tlfzo@6deec61
+// @implements s-jcgn2k@507b789
+// @implements s-tw3l62@a42577f
+// @implements s-3m6dwj@e7b4c8e
+// @implements s-cs9i6p@1cf2293
+// @implements s-01nsp8@5e482e6
+// @implements s-k9xdwy@ccaee82
+// @implements s-obz7rg@4fcc16d
+// @implements s-9ho983@29e4110
+const fvaRegionScope = (
+  vaRef, sText, bFileWideHeader = false, vaHeaderRef = vaRef
+) => {
+  const vsLine = sText.split( "\n" );
+  const nLineCount = vsLine.length - ( sText.endsWith( "\n" ) ? 1 : 0 );
+  const vnLineStart = fvnLineStart( vsLine );
+  // Only an uninterrupted directive group at the physical start of a file is
+  // the file-wide header. A blank or ordinary comment closes it; subsequent
+  // directives are source-region groups, even before the first code line.
+  const asHeaderLine = new Set();
+  for( let n = 0; n < vsLine.length; n++ ){
+    const sTrim = vsLine[ n ].trim();
+    if( n === 0 && sTrim.startsWith( "#!" ) ){ continue;}
+    const vaAtLine = vaHeaderRef.filter(( aRef ) => (
+      ( aRef.nRegionLine || aRef.nLine ) === n + 1
+    ));
+    if( vaAtLine.length > 0 && vaAtLine.every(( aRef ) => (
+      aRef.sKind === "implements" || aRef.sKind === "tested-by"
+        || aRef.sKind === "checks"
+    ))){
+      asHeaderLine.add( n + 1 );
+      continue;
+    }
+    break;
+  }
+  const vaScoped = vaRef.map(( aRef ) => ({
+    ...aRef,
+    nScopeLine: aRef.nRegionLine || aRef.nLine,
+    nIndent: faRegionIndent( aRef, vsLine )
+  }));
+  const vaGroup = [];
+  vaScoped.sort(( aA, aB ) => aA.nScopeLine - aB.nScopeLine).forEach(( aRef ) => {
+    let aGroup = vaGroup[ vaGroup.length - 1 ];
+    const bGapBlank = aGroup !== undefined
+      && vsLine.slice( aGroup.nLastLine, aRef.nScopeLine - 1 )
+        .every(( sLine ) => sLine.trim() === "");
+    if( aGroup === undefined || aGroup.nIndent !== aRef.nIndent
+      || !bGapBlank
+    ){
+      aGroup = { nIndent: aRef.nIndent, nFirstLine: aRef.nScopeLine,
+        nLastLine: aRef.nScopeLine, vaRef: [] };
+      vaGroup.push( aGroup );
+    }
+    aGroup.nLastLine = aRef.nScopeLine;
+    aGroup.vaRef.push( aRef );
+  });
+  const maGroup = new Map();
+  vaGroup.forEach(( aGroup, n ) => {
+    const nEndLine = vaGroup.slice( n + 1 )
+      .find(( aNext ) => aNext.nIndent <= aGroup.nIndent )?.nFirstLine
+      || nLineCount + 1;
+    maGroup.set( aGroup, {
+      nSourceStartLine: aGroup.nLastLine + 1,
+      nSourceEndLine: nEndLine,
+      nRegionStart: vnLineStart[ Math.min( aGroup.nLastLine, vsLine.length ) ],
+      nRegionEnd: vnLineStart[ Math.min( nEndLine - 1, vsLine.length ) ]
+        ?? sText.length,
+      bFileWide: false
+    });
+  });
+  return vaScoped.flatMap(( aRef ) => {
+    const aGroup = vaGroup.find(( aEntry ) => aEntry.vaRef.includes( aRef ));
+    if( bFileWideHeader && asHeaderLine.has( aRef.nScopeLine ) ){
+      return [{ ...aRef, nSourceStartLine: 1,
+        nSourceEndLine: nLineCount + 1, nRegionStart: 0,
+        nRegionEnd: sText.length, bFileWide: true }];
+    }
+    return [{ ...aRef, ...( maGroup.get( aGroup ) || {}) }];
+  });
+};
+
+// @implements s-nrp172@56b8541
+// @implements s-m544u1@462f4f1
+// @implements s-m5inu7@1c00f9a
+// @implements s-rv4wbq@86ed5ff
+// @implements s-3m6dwj@e7b4c8e
+// @implements s-trdu1m@34986f1
+// @implements s-01nsp8@5e482e6
+// @implements s-k9xdwy@ccaee82
+// @implements s-23wmhe@454713f
+// @implements s-5un01z@b74caaa
+// @implements s-bqioq5@e78161a
+// @implements s-wt7bpq@73556cf
+// @implements s-dkjdl0@511a833
+// @implements s-gkhfa4@3deac5b
+const fvaCodeReferenceForFile = ( aFile ) => {
+  const vaRef = aFile.bSide
+    ? fvaCodeReferenceForSide( aFile )
+    : ( faLanguageForPath( aFile.sPath, aFile.sText ) || { fvaCodeReference: () => [] })
+      .fvaCodeReference( aFile );
+  const vaMapped = [ "implements", "tested-by", "checks" ].flatMap(( sKind ) => {
+    const vaKind = vaRef.filter(( aRef ) => aRef.sKind === sKind );
+    const vaScoped = fvaRegionScope(
+      vaKind, aFile.sText, true, vaRef
+    );
+    return aFile.bSide
+      ? vaScoped.map(( aRef ) => {
+      const vnTargetLine = aFile.vnLineMap.slice(
+        aRef.nSourceStartLine - 1, aRef.nSourceEndLine - 1
+      ).filter(( nLine ) => nLine !== null );
+      if( vnTargetLine.length === 0 ){
+        const vnVirtualLine = aFile.vnLineMap.slice(
+          aRef.nSourceStartLine - 1, aRef.nSourceEndLine - 1
+        );
+        const nNext = vnVirtualLine.find(( nLine ) => nLine !== null );
+        const nPrevious = vnVirtualLine.slice().reverse()
+          .find(( nLine ) => nLine !== null );
+        const nAnchor = nNext ?? ( nPrevious === undefined ? 1 : nPrevious + 1 );
+        return {
+          ...aRef,
+          bSourceTargetRange: true,
+          nSourceStartLine: nAnchor,
+          nSourceEndLine: nAnchor
+        };
+      }
+      return {
+        ...aRef,
+        bSourceTargetRange: true,
+        nSourceStartLine: Math.min( ...vnTargetLine ),
+        nSourceEndLine: Math.max( ...vnTargetLine ) + 1
+      };
+      })
+      : vaScoped;
+  });
+  return vaMapped.concat( vaRef.filter(( aRef ) => (
+    ![ "implements", "tested-by", "checks" ].includes( aRef.sKind )
+  )));
+};
 
 const vtKindCodeReference = [
+// @implements s-bqioq5@e78161a
   [ "implements", reImplementsText, reImplementsLoose ],
   [ "tested-by", reTestedByText, reTestedByLoose ],
   [ "checks", reChecksText, reChecksLoose ]
@@ -2274,14 +2422,18 @@ const aSidecarDirective = {
   }
 };
 const vsSidecarMisplaced = [ "spec", "proves", "guards", "test-wrapper" ];
-const fvaSidecarLine = ( aFile ) => aFile.sText.split( "\n" )
-  .map(( sRaw, n ) => ({
-    sText: sRaw.trim(),
+// @implements s-nrp172@56b8541
+// @implements s-yecw0i@c83eff2
+// @implements s-22a0wo@13886ff
+// @tested-by test/side-files.test.js
+const fvaSidecarLine = ( aFile ) => ( aFile.vaOverlayDirective || [])
+  .map(( aOverlay ) => ({
+    sText: aOverlay.sText.trim(),
     sPath: aFile.sPathSidecar,
     sPathCode: fsPosix( aFile.sPath ),
-    nLine: n + 1
+    nLine: aOverlay.nSidecarLine,
+    nRegionLine: aOverlay.nVirtualLine
   }))
-  .filter(( aLine ) => aLine.sText !== "" )
   .map(( aLine ) => {
     const sKind = Object.keys( aSidecarDirective ).concat(
       vsSidecarMisplaced
@@ -2299,6 +2451,11 @@ const fvaSidecarLine = ( aFile ) => aFile.sText.split( "\n" )
     };
   });
 
+// @implements s-nrp172@56b8541
+// @implements s-22a0wo@13886ff
+// @tested-by test/side-files.test.js
+// @implements s-k3sml3@9ef30dd
+// @implements s-wt7bpq@73556cf
 const fvaCodeReferenceForSide = ( aFile ) => fvaSidecarLine( aFile )
   .filter(( aLine ) => aLine.sKind !== "follows" )
   .map(( aLine ) => ({
@@ -2306,8 +2463,11 @@ const fvaCodeReferenceForSide = ( aFile ) => fvaSidecarLine( aFile )
     bMisplaced: aLine.bMisplaced || aLine.sKind === "none"
   }));
 
-const faRefMisplacedAt = ( aFile, vsLine, nLine, sAfter ) => (
-  vtKindCodeReference
+const faRefMisplacedAt = ( aFile, vsLine, nLine, sAfter, nComment ) => {
+  const nLineStart = fvnLineStart( vsLine )[ nLine ];
+  const sBefore = vsLine[ nLine ].slice( 0, nComment - nLineStart );
+  if( sBefore.trim() === "" ){ return [];}
+  return vtKindCodeReference
     .filter(([ , reText ]) => reText.test( sAfter ))
     .map(([ sKind, , reLoose ]) => {
       const vsLoose = sAfter.match( reLoose );
@@ -2321,8 +2481,8 @@ const faRefMisplacedAt = ( aFile, vsLine, nLine, sAfter ) => (
         bMisplaced: true,
         sText: vsLine[ nLine ].trim()
       };
-    })
-);
+    });
+};
 
 const fvaMisplacedForFile = ( aFile, nLineHeaderEnd ) => {
   const vsLine = aFile.sText.split( "\n" );
@@ -2334,11 +2494,30 @@ const fvaMisplacedForFile = ( aFile, nLineHeaderEnd ) => {
       if( nLine < nLineHeaderEnd ){ return [];}
       const sAfter = vsLine[ nLine ]
         .slice( nComment - vnLineStart[ nLine ] + 2 );
-      return faRefMisplacedAt( aFile, vsLine, nLine, sAfter );
+      return faRefMisplacedAt( aFile, vsLine, nLine, sAfter, nComment );
     })
     .sort(( aA, aB ) => aA.nLine - aB.nLine );
 };
 
+// @implements s-bw4530@acfa706
+// @implements s-m544u1@462f4f1
+// @implements s-m5inu7@1c00f9a
+// @implements s-50dzy6@3c05a41
+// @implements s-bqioq5@e78161a
+// @implements s-yyl1i0@0abeae1
+// @implements s-j8ahje@91cc810
+// @implements s-vjgnay@5c0f583
+// @implements s-83mryk@52401d8
+// @implements s-0n3sm5@d016ebd
+// @implements s-w4wun2@53dab89
+// @implements s-23wmhe@454713f
+// @implements s-4hsltb@ebe272b
+// @implements s-tghouh@f811aec
+// @implements s-k3nucf@c0c7bf2
+// @implements s-sy7274@b9a1e14
+// @implements s-k3sml3@9ef30dd
+// @implements s-dkjdl0@511a833
+// @implements s-gkhfa4@3deac5b
 const fvaCodeReferenceResolved = ( aModel ) => {
   const vaTestPath = new Set( aModel.vaTestParsed.map(( aTest ) => aTest.sPath ));
   const aResolvedForRef = new Map();
@@ -2349,7 +2528,9 @@ const fvaCodeReferenceResolved = ( aModel ) => {
         "code", aFile, ( aInput ) => fvaCodeReferenceForFile({
           ...aInput,
           bSide: aFile.bSide,
-          sPathSidecar: aFile.sPathSidecar
+          sPathSidecar: aFile.sPathSidecar,
+          vaOverlayDirective: aFile.vaOverlayDirective,
+          vnLineMap: aFile.vnLineMap
         })
       )
   ));
@@ -2371,14 +2552,6 @@ const fvaCodeReferenceResolved = ( aModel ) => {
       aResolvedForRef.set( aRef, aResolved );
       return aResolved;
     });
-  const aasImplForPath = new Map();
-  aModel.vaCodeRef.forEach(( aImpl ) => {
-    if( aImpl.sReason !== null ){ return;}
-    const sPathCode = aImpl.sPathCode || aImpl.sPath;
-    const asImpl = aasImplForPath.get( sPathCode ) || new Set();
-    asImpl.add( aImpl.sId );
-    aasImplForPath.set( sPathCode, asImpl );
-  });
   return vaRef.map(( aRef ) => {
     if( aRef.sKind === "implements" ){
       return aResolvedForRef.get( aRef );
@@ -2390,20 +2563,63 @@ const fvaCodeReferenceResolved = ( aModel ) => {
     let sReason = null;
     let aLine = null;
     let aTest = null;
+    let sTestPath = null;
+    let sTestUnitId = null;
     if( aRef.bMisplaced ){ sReason = "misplaced";}
     else if( !aRef.bWell ){ sReason = "malformed";}
     else if( aRef.sKind === "tested-by" ){
-      const sPath = aRef.sTarget;
+      const vsUnitTarget = /^(.+)#(tu-[0-9a-f]{8})$/.exec( aRef.sTarget );
+      if( vsUnitTarget === null && aRef.sTarget.includes( "#" )){
+        sReason = "malformed test-unit target";
+      }
+      const sPath = vsUnitTarget === null
+        ? aRef.sTarget : vsUnitTarget[ 1 ];
+      sTestPath = sPath;
+      sTestUnitId = vsUnitTarget === null ? null : vsUnitTarget[ 2 ];
       aTest = aModel.vaTestParsed.find(( aEntry ) => aEntry.sPath === sPath );
-      if( !vaTestPath.has( sPath )){ sReason = "no such declared test file";}
-      else {
-        const asImpl = aasImplForPath.get(
-          aRef.sPathCode || aRef.sPath
-        ) || new Set();
-        const bOverlap = aTest.vaLink.some(( aLink ) => (
-          aLink.sReason === null && asImpl.has( aLink.sId )
-        ));
-        if( !bOverlap ){ sReason = "test proves no statement implemented here";}
+      if( sReason === null && !vaTestPath.has( sPath )){
+        sReason = "no such declared test file";
+      }
+      else if( sReason === null ){
+        const sPathCode = aRef.sPathCode || aRef.sPath;
+        const asImpl = new Set( aModel.vaCodeRef
+          .filter(( aImpl ) => aImpl.sReason === null
+            && ( aImpl.sPathCode || aImpl.sPath ) === sPathCode
+            && aImpl.nSourceStartLine < aRef.nSourceEndLine
+            && aImpl.nSourceEndLine > aRef.nSourceStartLine )
+          .map(( aImpl ) => aImpl.sId ));
+        let vaProof;
+        if( vsUnitTarget === null ){
+          vaProof = aTest.vaLink.filter(( aLink ) => aLink.sReason === null );
+        }
+        else {
+          const vaCall = aTest.vaCall.filter(( aCall ) => (
+            aCall.sKind === "test" && aCall.sUnitId === vsUnitTarget[ 2 ]
+          ));
+          if( vaCall.length !== 1 ){
+            sReason = vaCall.length === 0
+              ? "no test unit has that id" : "test unit id is ambiguous";
+          }
+          vaProof = vaCall.flatMap(( aCall ) => aTest.vaLink
+            .filter(( aLink ) => aLink.sReason === null
+              && aLink.nRegionStart < aCall.nEnd
+              && aLink.nRegionEnd > aCall.nStart )
+            .map(( aLink ) => aLink.aStmt ));
+        }
+        if( sReason === null && !vaProof.some(( aStmt ) => asImpl.has( aStmt.sId )) ){
+          sReason = vsUnitTarget === null
+            ? "test proves no statement implemented in this region"
+            : "named test unit proves no statement implemented in this region";
+        }
+        else if( sReason === null && vsUnitTarget !== null
+          && aRef.bFileWide
+          && Array.from( asImpl ).some(( sId ) => !vaProof.some(( aStmt ) => (
+            aStmt.sId === sId
+          )))
+        ){
+          sReason = "named test unit does not prove every statement implemented by this file";
+        }
+        aRef.bLegacyTestFile = vsUnitTarget === null;
       }
     }
     else {
@@ -2420,7 +2636,8 @@ const fvaCodeReferenceResolved = ( aModel ) => {
         else if( aLine.sHash !== vsStamped[ 2 ]){ sReason = "stale hash";}
       }
     }
-    return { ...aRef, sReason, sId: aLine === null ? null : aLine.sId };
+    return { ...aRef, sReason, sId: aLine === null ? null : aLine.sId,
+      sTestPath, sTestUnitId };
   }).concat( aModel.vaTestParsed.flatMap(( aTest ) => (
     aTest.vaImplements.concat( aTest.vaRefMisplaced )
   )));
@@ -2431,6 +2648,8 @@ const ftCommentsForCiter = ( aFile ) => {
   return aLanguage === null ? [ [], [] ] : aLanguage.ftComments( aFile );
 };
 
+// @implements s-aw5cvb@d8a5949
+// @implements s-5un01z@b74caaa
 const faFollowsAt = ( aFile, vnLineStart, nComment, bBlock ) => {
   const nLine = fnLineAt( vnLineStart, nComment );
   const sLine = aFile.sText.slice(
@@ -2457,6 +2676,10 @@ const faFollowsAt = ( aFile, vnLineStart, nComment, bBlock ) => {
   };
 };
 
+// @implements s-f8jiyg@08812ac
+// @implements s-gk0bmt@68c8bf5
+// @implements s-aw5cvb@d8a5949
+// @implements s-z28ucn@585ecdf
 const fvaFollowsForFile = ( aFile ) => aFile.bSide
   ? fvaSidecarLine( aFile )
     .filter(( aLine ) => aLine.sKind === "follows" )
@@ -2471,6 +2694,8 @@ const fvaFollowsForFile = ( aFile ) => aFile.bSide
   : ( faLanguageForPath( aFile.sPath, aFile.sText ) || { fvaFollows: () => [] })
     .fvaFollows( aFile );
 
+// @implements s-aw5cvb@d8a5949
+// @implements s-z28ucn@585ecdf
 const fvaFollowsForScript = ( aFile ) => {
   const vnLineStart = fvnLineStart( aFile.sText.split( "\n" ));
   const [ vnLine, vnBlock ] = ftCommentsForCiter( aFile );
@@ -2481,6 +2706,11 @@ const fvaFollowsForScript = ( aFile ) => {
     .sort(( aA, aB ) => aA.nLine - aB.nLine );
 };
 
+// @implements s-rh750h@cc70238
+// @implements s-3fzgrr@cc19c25
+// @implements s-k9xdwy@ccaee82
+// @implements s-rv4wbq@86ed5ff
+// @tested-by test/language-readings.test.js
 const maLanguage = faReaders({
   fsNormal,
   fsCodeNormal,
@@ -2496,6 +2726,15 @@ const maLanguage = faReaders({
   fvaFollowsForCommentReader: ( aFile ) => fvaFollowsForScript( aFile )
 });
 
+// @implements s-z28ucn@585ecdf
+// @implements s-rh750h@cc70238
+// @implements s-3fzgrr@cc19c25
+// @implements s-k9xdwy@ccaee82
+// @implements s-rv4wbq@86ed5ff
+// @implements s-3mnehj@681e132
+// @implements s-qkq11z@1273ca2
+// @implements s-rkbz86@59f60c9
+// @tested-by test/language-readings.test.js
 const faLanguageForPath = ( sPath, sText = "" ) => Array.from( maLanguage.values() )
   .find(( aLanguage ) => (
     typeof aLanguage.fbCanReadPath === "function"
@@ -2503,6 +2742,12 @@ const faLanguageForPath = ( sPath, sText = "" ) => Array.from( maLanguage.values
       : aLanguage.vsExtension.some(( sExt ) => sPath.endsWith( sExt ))
   )) || null;
 
+// @implements s-3oxidy@1ccac2e
+// @implements s-te9wza@59881f7
+// @implements s-0abyvp@9e5dd00
+// @implements s-2l6ys1@d966d32
+// @implements s-k9xdwy@ccaee82
+// @tested-by test/language-readings.test.js
 const fbTestPathForLanguage = ( aLanguage, sPath ) => (
   typeof aLanguage.fbIsTestPath === "function"
     ? aLanguage.fbIsTestPath( sPath )
@@ -2510,6 +2755,10 @@ const fbTestPathForLanguage = ( aLanguage, sPath ) => (
       .test( sPath )
 );
 
+// @implements s-b05h80@16440fe
+// @implements s-bmkxya@6780e68
+// @implements s-j8ahje@91cc810
+// @implements s-kkql92@90bba2d
 const faFollowsResolved = ( aModel, aFollows ) => {
   const aFound = aFollows.bWell
     ? faLineForId( aModel, aFollows.sId )
@@ -2531,6 +2780,7 @@ const faFollowsResolved = ( aModel, aFollows ) => {
   };
 };
 
+// @implements s-3k6zj0@6b700e3
 const fasMarkerSatisfiedOwn = ( aModel, aLines ) => new Set(
   fvaLineWell( aModel )
     .filter(( aMarker ) => aMarker.vsReasonAttr.length === 0 )
@@ -2548,6 +2798,14 @@ const fasMarkerSatisfiedOwn = ( aModel, aLines ) => new Set(
     )
 );
 
+// @implements s-z28ucn@585ecdf
+// @implements s-i6rjuw@32c89fd
+// @implements s-8g5yno@c3ea2a8
+// @implements s-mn5and@058eb96
+// @implements s-n1ztut@75bf716
+// @implements s-2vgnq6@8323fcb
+// @implements s-4hsltb@ebe272b
+// @implements s-tghouh@f811aec
 const faLines = ( aModel, aEnv ) => {
   const hasher = new TargetHasher( aModel, aEnv );
   aModel.vaCodeRef = fvaCodeReferenceResolved( aModel );
@@ -2566,7 +2824,9 @@ const faLines = ( aModel, aEnv ) => {
             "follows", aFile, ( aInput ) => fvaFollowsForFile({
               ...aInput,
               bSide: aFile.bSide,
-              sPathSidecar: aFile.sPathSidecar
+              sPathSidecar: aFile.sPathSidecar,
+              vaOverlayDirective: aFile.vaOverlayDirective,
+              vnLineMap: aFile.vnLineMap
             })
           )
       ))
@@ -2609,9 +2869,30 @@ const faLines = ( aModel, aEnv ) => {
       vaRef: avaImplementsForId.get( aStmt.sId ) || []
     }))
     .filter(( aEntry ) => aEntry.vaRef.length > 0);
+  // @implements s-sg7zoy@216a1b0
   aLines.vaNoTestedBy = aModel.vaCode.filter(( aFile ) => (
     !asTestedByPath.has( fsPosix( aFile.sPath ))
   ));
+  aLines.vaLegacyTestedBy = aLines.vaTestedBy.filter(( aRef ) => (
+    aRef.bLegacyTestFile
+  ));
+  aLines.vaNoTestUnit = aLines.vaImplements.filter(( aImpl ) => {
+    const sPathCode = aImpl.sPathCode || aImpl.sPath;
+    return !aLines.vaTestedBy.some(( aRef ) => {
+      if( aRef.bLegacyTestFile || aRef.sTestUnitId === null
+        || ( aRef.sPathCode || aRef.sPath ) !== sPathCode
+        || aRef.nSourceStartLine >= aImpl.nSourceEndLine
+        || aRef.nSourceEndLine <= aImpl.nSourceStartLine
+      ){ return false;}
+      const aTest = aModel.vaTestParsed.find(( aEntry ) => (
+        aEntry.sPath === aRef.sTestPath
+      ));
+      return aTest !== undefined && aTest.vaCall.some(( aCall ) => (
+        aCall.sUnitId === aRef.sTestUnitId
+        && aCall.vaStmt.some(( aStmt ) => aStmt.sId === aImpl.sId )
+      ));
+    });
+  });
   aLines.vaNoChecks = fvaLineOfType( aModel, "i" ).filter(( aCheck ) => (
     !asCheckedId.has( aCheck.sId )
   ));
@@ -2620,6 +2901,7 @@ const faLines = ( aModel, aEnv ) => {
   };
 };
 
+// @implements s-ns2gme@9b9beb2
 const fsLineForCall = ( aCall, sLabel ) => (
   aCall.sPath + ":" + ( aCall.nLine + 1 ) + "  " + sLabel + aCall.sName
 );
@@ -2628,6 +2910,8 @@ const faIncomplete = ( sPath, nLine, sWhat ) => ({
   sPath, nLine, sLine: sPath + ":" + nLine + "  " + sWhat
 });
 
+// @implements s-ns2gme@9b9beb2
+// @implements s-8usccv@c0cc953
 const fvaUnprovingForSpec = ( aModel, aSpec ) => aModel.vaCallTest
   .filter(( aCall ) => aCall.asOwner.has( aSpec.sPath ))
   .filter(( aCall ) => !aCall.vaStmtCounted.some(( aStmt ) => (
@@ -2637,6 +2921,7 @@ const fvaUnprovingForSpec = ( aModel, aSpec ) => aModel.vaCallTest
     aCall.sPath, aCall.nLine + 1, "proves nothing: " + aCall.sName
   ));
 
+// @implements s-u2lhta@c6845db
 const fvaIncompleteForSpec = ( aModel, aSpec ) => (
   aSpec.vaUnmarked
     .map(( aEntry ) => faIncomplete(
@@ -2649,10 +2934,15 @@ const fvaIncompleteForSpec = ( aModel, aSpec ) => (
     .concat( fvaUnprovingForSpec( aModel, aSpec ))
 );
 
+// @implements s-ar1i87@b6009f5
 const fvaPlaceholderForMarker = ( vaMarker ) => vaMarker.filter(( aMarker ) => (
   aMarker.bPlaceholder && !aMarker.bMalformed
 ));
 
+// @implements s-wakfil@7deeb77
+// @implements s-3vhy40@92707b8
+// @implements s-y462l3@3b6cea9
+// @implements s-v20yz5@b63123d
 const faRefParsed = ( sRef ) => {
   const vsId = sRef.match( reRefId );
   if( vsId !== null ){
@@ -2676,6 +2966,9 @@ const fsKeyLabel = ( sPath, sType, sLabel ) => (
   sPath + "\n" + sType + "-" + sLabel
 );
 
+// @implements s-wakfil@7deeb77
+// @implements s-y462l3@3b6cea9
+// @implements s-gq9hu3@a2edb9f
 const favaMarkerForLabel = ( vaMarker ) => favxGrouped(
   vaMarker.filter(( aMarker ) => (
     aMarker.bPlaceholder && !aMarker.bMalformed && aMarker.sLabel !== ""
@@ -2684,6 +2977,11 @@ const favaMarkerForLabel = ( vaMarker ) => favxGrouped(
   ( aMarker ) => aMarker
 );
 
+// @implements s-wakfil@7deeb77
+// @implements s-3vhy40@92707b8
+// @implements s-y462l3@3b6cea9
+// @implements s-v20yz5@b63123d
+// @implements s-gq9hu3@a2edb9f
 const faTargetForLabel = ( aRef, aMarker, aCtx ) => {
   const vaTarget = aCtx.avaMarkerForLabel.get(
     fsKeyLabel( aMarker.sPath, aRef.sType, aRef.sLabel )
@@ -2697,6 +2995,7 @@ const faTargetForLabel = ( aRef, aMarker, aCtx ) => {
   };
 };
 
+// @implements s-v20yz5@b63123d
 const faTargetForRefId = ( aRef, aCtx ) => {
   const aFound = faLineForId( aCtx, aRef.sId );
   return {
@@ -2708,6 +3007,10 @@ const faTargetForRefId = ( aRef, aCtx ) => {
   };
 };
 
+// @implements s-je03s2@6b1aa0b
+// @implements s-kkql92@90bba2d
+// @implements s-6or7az@00097e5
+// @implements s-3vhy40@92707b8
 const faTargetForRef = ( aRef, aMarker, aCtx ) => {
   const aFound = aRef.sId === null
     ? faTargetForLabel( aRef, aMarker, aCtx )
@@ -2722,6 +3025,8 @@ const faTargetForRef = ( aRef, aMarker, aCtx ) => {
   };
 };
 
+// @implements s-6or7az@00097e5
+// @implements s-l2muht@e9fb34f
 const fsReasonForForm = ( vsEntry ) => {
   if( vsEntry.filter(( sEntry ) => sEntry === sArch ).length > 1 ){
     return "arch written twice";
@@ -2733,6 +3038,7 @@ const fsReasonForForm = ( vsEntry ) => {
     : "not a root list";
 };
 
+// @implements s-6or7az@00097e5
 const fsReasonForRefs = ( vaRef, aMarker ) => {
   const aRefBad = vaRef.find(( aRef ) => aRef.sReason !== null );
   if( aRefBad !== undefined ){ return aRefBad.sReason;}
@@ -2750,6 +3056,11 @@ const fsReasonRetypedForRefs = ( vaRef ) => {
     : "names " + aRef.sId + ", " + fsReasonRetyped( aRef.sIdRetyped );
 };
 
+// @implements s-kgnjaq@cedcec8
+// @implements s-je03s2@6b1aa0b
+// @implements s-cp0cte@9e6f9c2
+// @implements s-l2muht@e9fb34f
+// @implements s-lkfk0g@47ba420
 const faListForMarker = ( aMarker, aCtx ) => {
   const vsEntry = aMarker.sList.split( "," );
   const nArch = vsEntry.indexOf( sArch );
@@ -2876,6 +3187,8 @@ const faCycleIndexForGraph = ( avaNext ) => {
   return { aComponentForNode, asCycleNode };
 };
 
+// @implements s-6or7az@00097e5
+// @implements s-bbaxpr@4e51c3f
 const faRootRefsCycleMarked = ( vaList, vaInclusion ) => {
   const avaNext = favaNextForRefs( vaList, vaInclusion );
   const aCycles = faCycleIndexForGraph( avaNext );
@@ -2904,6 +3217,11 @@ const fsReasonForInclusion = ( aFound, aMarker, asTargetList ) => {
     : null;
 };
 
+// @implements s-13qcjo@38e295c
+// @implements s-bbaxpr@4e51c3f
+// @implements s-ixasv4@f731c6a
+// @implements s-lqyq1i@946e8b2
+// @implements s-ickx1f@508799a
 const faInclusionResolved = ( aIncl, aMarker, aCtx, asTargetList ) => {
   const aFound = aIncl.aRef === null
     ? { aTarget: null, sReason: sReasonInclusionForm }
@@ -2919,6 +3237,8 @@ const faInclusionResolved = ( aIncl, aMarker, aCtx, asTargetList ) => {
   };
 };
 
+// @implements s-13qcjo@38e295c
+// @implements s-fc4ubx@3f16155
 const fvaInclusionForMarker = ( aMarker, aCtx, aList ) => {
   const asTargetList = new Set(( aList === undefined ? [] : aList.vaRef )
     .map(( aRef ) => aRef.aTarget )
@@ -2928,6 +3248,10 @@ const fvaInclusionForMarker = ( aMarker, aCtx, aList ) => {
   ));
 };
 
+// @implements s-cid631@c71dd26
+// @implements s-gymqyq@6187733
+// @implements s-lkfk0g@47ba420
+// @implements s-ixasv4@f731c6a
 const faRootRefs = ( aModel ) => {
   const aCtx = {
     avaMarkerForId: aModel.avaMarkerForId,
@@ -2948,6 +3272,9 @@ const faRootRefs = ( aModel ) => {
   )));
 };
 
+// @implements s-cid631@c71dd26
+// @implements s-gymqyq@6187733
+// @implements s-13qcjo@38e295c
 const favaConclusionForRefs = ( vaRefEntry, vaInclusion ) => {
   const avaConclusionForRoot = favxGrouped(
     vaRefEntry
@@ -2963,11 +3290,14 @@ const favaConclusionForRefs = ( vaRefEntry, vaInclusion ) => {
   ]));
 };
 
+// @implements s-df84cf@66e21c8
+// @implements s-2vyccd@d9ef2de
 const fasMarkerRoot = ( aRootRefs ) => new Set( favaConclusionForRefs(
   fvaRefEntry( aRootRefs.vaList.filter(( aList ) => aList.sReason === null )),
   aRootRefs.vaInclusion
 ).keys());
 
+// @implements s-gq9hu3@a2edb9f
 const fvaLabelTwice = ( vaMarker ) => (
   Array.from( favaMarkerForLabel( vaMarker ).values())
     .filter(( vaPlace ) => vaPlace.length > 1 )
@@ -2981,6 +3311,14 @@ const fvaLabelTwice = ( vaMarker ) => (
     }))
 );
 
+// @implements s-je03s2@6b1aa0b
+// @implements s-8haq5h@4d22c53
+// @implements s-6or7az@00097e5
+// @implements s-bbaxpr@4e51c3f
+// @implements s-gq9hu3@a2edb9f
+// @implements s-lkfk0g@47ba420
+// @implements s-ickx1f@508799a
+// @implements s-880seq@40723b9
 const fvaRootBad = ( aRootRefs, vaMarker ) => (
   aRootRefs.vaList
     .filter(( aList ) => aList.sReason !== null )
@@ -3006,6 +3344,10 @@ const fvaRootBad = ( aRootRefs, vaMarker ) => (
     ))
 );
 
+// @implements s-3k6zj0@6b700e3
+// @implements s-6p2zp4@94323aa
+// @implements s-gg0pvt@84345af
+// @implements s-1yuomz@b828506
 const fabSatisfiedForMarker = ( avaConclusionForRoot, asIdProved, asOwn ) => {
   const abSatisfied = new Map();
   const fbSatisfied = ( aMarker ) => {
@@ -3022,12 +3364,15 @@ const fabSatisfiedForMarker = ( avaConclusionForRoot, asIdProved, asOwn ) => {
   return fbSatisfied;
 };
 
+// @implements s-lkfk0g@47ba420
 const fvaRefEntry = ( vaListValid ) => vaListValid.flatMap(( aList ) => (
   aList.vaRef.map(( aRef ) => ({
     sPath: aList.aMarker.sPath, aMarker: aList.aMarker, aRef
   }))
 ));
 
+// @implements s-6p2zp4@94323aa
+// @implements s-gg0pvt@84345af
 const faRootForMarker = ( aMarker, avaConclusionForRoot, fbSatisfied ) => {
   const vaConclusion = avaConclusionForRoot.get( aMarker ).map((
     aConclusion
@@ -3042,6 +3387,19 @@ const faRootForMarker = ( aMarker, avaConclusionForRoot, fbSatisfied ) => {
   };
 };
 
+// @implements s-jvsu3w@dc81311
+// @implements s-cid631@c71dd26
+// @implements s-3k6zj0@6b700e3
+// @implements s-kgnjaq@cedcec8
+// @implements s-kkql92@90bba2d
+// @implements s-gymqyq@6187733
+// @implements s-6p2zp4@94323aa
+// @implements s-8haq5h@4d22c53
+// @implements s-jie6z5@09cd30a
+// @implements s-13qcjo@38e295c
+// @implements s-5i1owy@cb86673
+// @implements s-cp0cte@9e6f9c2
+// @implements s-lqyq1i@946e8b2
 const faRoots = ( aModel, asIdProved ) => {
   const aRootRefs = aModel.aRootRefs || faRootRefs( aModel );
   const vaList = aRootRefs.vaList;
@@ -3087,11 +3445,15 @@ const faRoots = ( aModel, asIdProved ) => {
   };
 };
 
+// @implements s-6p2zp4@94323aa
+// @implements s-uny6ly@83363ca
+// @implements s-1yuomz@b828506
 const fasIdProved = ( aModel ) => new Set(
   aModel.vaCallTest
     .flatMap(( aCall ) => aCall.vaStmt.map(( aStmt ) => aStmt.sId ))
 );
 
+// @implements s-jmslkk@be3cc50
 const fvaRulingForText = ( sText, nEnd ) => {
   const vtSpan = fvtSpanForText( sText );
   const nLead = sText.match( reRulingLead )[ 0 ].length;
@@ -3109,6 +3471,8 @@ const fvaRulingForText = ( sText, nEnd ) => {
   ))).map(( aRuling ) => ({ ...aRuling, bOpening: aRuling.n === nLead }));
 };
 
+// @implements s-jmslkk@be3cc50
+// @implements s-263wnp@68719c6
 const fsRulingForMarker = ( aMarker ) => {
   const vaRuling = fvaRulingForText( aMarker.sText, Infinity );
   if( aMarker.sType !== "m" && vaRuling.length === 0 ){ return null;}
@@ -3121,6 +3485,8 @@ const fsRulingForMarker = ( aMarker ) => {
   )) ? "root list lacks arch" : null;
 };
 
+// @implements s-wc98ss@69659c7
+// @implements s-263wnp@68719c6
 const fvaRulingForMarkers = ( aModel ) => fvaLineWell( aModel )
   .map(( aMarker ) => ({ aMarker, sRuling: fsRulingForMarker( aMarker ) }))
   .filter(( aEntry ) => aEntry.sRuling !== null )
@@ -3130,6 +3496,7 @@ const fvaRulingForMarkers = ( aModel ) => fvaLineWell( aModel )
     sWhat: fsIdShown( aEntry.aMarker ) + "  " + aEntry.sRuling
   }));
 
+// @implements s-72fjkw@d78bae0
 const fvaRulingForBlocks = ( aModel ) => aModel.vaSpecParsed.flatMap((
   aSpec
 ) => aSpec.vaBlock
@@ -3142,12 +3509,26 @@ const fvaRulingForBlocks = ( aModel ) => aModel.vaSpecParsed.flatMap((
     sPath: aSpec.sPath, nLine: aBlock.vnLine[ 0 ] + 1, sWhat: "unmarked"
   })));
 
+// @implements s-wc98ss@69659c7
 const fvaRulingForModel = ( aModel ) => fvaRulingForMarkers( aModel )
   .concat( fvaRulingForBlocks( aModel ))
   .sort(( aA, aB ) => (
     aA.sPath.localeCompare( aB.sPath ) || aA.nLine - aB.nLine
   ));
 
+// @implements s-erendz@999c6cc
+// @implements s-gueyj8@dcbe6bc
+// @implements s-f1np35@35d6720
+// @implements s-wc98ss@69659c7
+// @implements s-263wnp@68719c6
+// @implements s-k4mfcb@f02be14
+// @implements s-bmkxya@6780e68
+// @implements s-i6rjuw@32c89fd
+// @implements s-df84cf@66e21c8
+// @implements s-2vyccd@d9ef2de
+// @implements s-2vgnq6@8323fcb
+// @implements s-gpqy5p@7ed12de
+// @implements s-0n3sm5@d016ebd
 const faTypeLists = ( aModel, aRoots ) => {
   const aLines = aModel.aLines;
   return {
@@ -3175,6 +3556,8 @@ const faTypeLists = ( aModel, aRoots ) => {
     vaNoImplementation: aLines.vaNoImplementation,
     vaStatusConflict: aLines.vaStatusConflict,
     vaNoTestedBy: aLines.vaNoTestedBy,
+    vaNoTestUnit: aLines.vaNoTestUnit,
+    vaLegacyTestedBy: aLines.vaLegacyTestedBy,
     vaCodeRefBad: aLines.vaCodeRefBad,
     vaSideBad: aModel.vaSideBad,
     vaImplements: aLines.vaImplements,
@@ -3182,6 +3565,9 @@ const faTypeLists = ( aModel, aRoots ) => {
   };
 };
 
+// @implements s-erendz@999c6cc
+// @implements s-xuw25u@ed827df
+// @implements s-gg0pvt@84345af
 const fvaIncompleteForTypes = ( aTypes, sPathSpec ) => (
   aTypes.vaUnused
     .filter(( aEntry ) => aEntry.sPath === sPathSpec )
@@ -3197,6 +3583,17 @@ const fvaIncompleteForTypes = ( aTypes, sPathSpec ) => (
       )))
 );
 
+// @implements s-nb9o4b@6b81b96
+// @implements s-xuw25u@ed827df
+// @implements s-8g5yno@c3ea2a8
+// @implements s-2vyccd@d9ef2de
+// @implements s-5i1owy@cb86673
+// @implements s-gg0pvt@84345af
+// @implements s-cp0cte@9e6f9c2
+// @implements s-gpqy5p@7ed12de
+// @implements s-1yuomz@b828506
+// @implements s-fsp1a2@02fcf0a
+// @implements s-ctbylk@c20e0f1
 const faStatements = ( aModel ) => {
   const asIdProved = fasIdProved( aModel );
   const aRoots = faRoots( aModel, asIdProved );
@@ -3217,6 +3614,7 @@ const faStatements = ( aModel ) => {
     )),
     vaLinkBad: aModel.vaLinkAny.filter(( aLink ) => aLink.sReason !== null ),
     vaStale: aModel.vaLinkAny.filter(( aLink ) => aLink.bStale ),
+    // @implements s-0yoabr@659a105
     vaUnbacked: aModel.vaGuard.filter(( aGuard ) => (
       aGuard.sReason === null && !aGuard.bBacked
     )),
@@ -3235,7 +3633,16 @@ const faStatements = ( aModel ) => {
   };
 };
 
-const faStatementsScoped = ( aStmtList, aScope ) => {
+// @implements s-f1np35@35d6720
+// @implements s-wc98ss@69659c7
+// @implements s-263wnp@68719c6
+// @implements s-bmkxya@6780e68
+// @implements s-mbcxy1@de2395f
+// @implements s-nudxy0@3495135
+// @implements s-2vgnq6@8323fcb
+// @implements s-hgk19s@2c0c557
+// @implements s-fsp1a2@02fcf0a
+const faStatementsScoped = ( aStmtList, aScope, aModel ) => {
   if( aScope === null ){ return aStmtList;}
   const fbSpec = ( aEntry ) => aEntry.sPath === aScope.sPathSpec;
   const fbSpecMarker = ( aEntry ) => fbSpec( aEntry.aMarker );
@@ -3258,6 +3665,7 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
       aScope.asPathTest.has( aEntry.sPath )
     )),
     vaStale: aStmtList.vaStale.filter(( aEntry ) => fbSpec( aEntry.aStmt )),
+    // @implements s-0yoabr@659a105
     vaUnbacked: aStmtList.vaUnbacked.filter(( aEntry ) => (
       fbSpec( aEntry.aStmt )
     )),
@@ -3281,9 +3689,20 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
     vaNoImplementation: aStmtList.vaNoImplementation.filter( fbSpec ),
     vaStatusConflict: aStmtList.vaStatusConflict.filter( fbSpecMarker ),
     vaNoTestedBy: aStmtList.vaNoTestedBy.filter(( aFile ) => (
-      aStmtList.vaImplements.some(( aRef ) => (
+      aModel.aLines.vaImplements.some(( aRef ) => (
         ( aRef.sPathCode || aRef.sPath ) === fsPosix( aFile.sPath )
         && aScope.asIdStmt.has( aRef.sId )
+      ))
+    )),
+    vaNoTestUnit: aStmtList.vaNoTestUnit.filter(( aImpl ) => (
+      aScope.asIdStmt.has( aImpl.sId )
+    )),
+    vaLegacyTestedBy: aStmtList.vaLegacyTestedBy.filter(( aRef ) => (
+      aModel.aLines.vaImplements.some(( aImpl ) => (
+        aImpl.sId !== null && aScope.asIdStmt.has( aImpl.sId )
+        && ( aImpl.sPathCode || aImpl.sPath ) === ( aRef.sPathCode || aRef.sPath )
+        && aImpl.nSourceStartLine < aRef.nSourceEndLine
+        && aImpl.nSourceEndLine > aRef.nSourceStartLine
       ))
     )),
     vaSideBad: [],
@@ -3294,10 +3713,16 @@ const faStatementsScoped = ( aStmtList, aScope ) => {
   };
 };
 
+// @implements s-tvuwev@04539c9
+// @implements s-zvzlp8@dcfec4e
+// @implements s-8usccv@c0cc953
 const fbCallUnlinked = ( aCall ) => (
   aCall.vaStmt.length === 0 && aCall.vaStmtGuard.length === 0
 );
 
+// @implements s-tvuwev@04539c9
+// @implements s-ggaonb@b8526d7
+// @implements s-8usccv@c0cc953
 const faUnlinkedForCalls = ( vaCallTest ) => {
   const vaCallUnlinked = vaCallTest.filter( fbCallUnlinked );
   return {
@@ -3321,12 +3746,14 @@ const fasPathNaming = ( vaTestParsed, sPathSpec ) => new Set(
     .map(( aTest ) => aTest.sPath )
 );
 
+// @implements s-aku8n2@4ffc4f1
 const fasPathLinking = ( vaLink, asIdStmt ) => new Set(
   vaLink
     .filter(( aLink ) => asIdStmt.has( aLink.sId ))
     .map(( aLink ) => aLink.sPath )
 );
 
+// @implements s-3pkw1n@721f8a3
 const faOwnershipScoped = ( aOwnership, asPathScope ) => ({
   vsPathNoOwner: aOwnership.vsPathNoOwner.filter(( sPath ) => (
     fbInScope( asPathScope, { sPath })
@@ -3359,6 +3786,7 @@ const faAnalysis = ( aModel ) => ({
   aStmtList: faStatements( aModel )
 });
 
+// @implements s-bxs0rr@4c0a68e
 const faMap = ( aInput ) => {
   const aModel = faModel( aInput );
   return faMapForModel( aModel, faAnalysis( aModel ), aInput.sPathSpec );
@@ -3412,6 +3840,17 @@ const faObsLists = ( aModel, aAnalysis, sPathSpec ) => (
     : aObsListsNone
 );
 
+// @implements s-tdw4gj@8d6d23d
+// @implements s-8xfzz3@6999bd7
+// @implements s-du4nns@bbb6351
+// @implements s-u2lhta@c6845db
+// @implements s-b8vvpd@9e72e40
+// @implements s-5vv5ht@dd2760b
+// @implements s-tvuwev@04539c9
+// @implements s-vcpu9h@6d6ac07
+// @implements s-ggaonb@b8526d7
+// @implements s-n8uc4k@a405885
+// @implements s-hgk19s@2c0c557
 const faMapForModel = ( aModel, aAnalysis, sPathSpec ) => {
   const vaTestParsed = aModel.vaTestParsed;
   const asIdStmt = sPathSpec === undefined
@@ -3427,7 +3866,8 @@ const faMapForModel = ( aModel, aAnalysis, sPathSpec ) => {
     aAnalysis.aStmtList,
     sPathSpec === undefined
       ? null
-      : { sPathSpec, asIdStmt, asPathTest: asPathOwnScope }
+      : { sPathSpec, asIdStmt, asPathTest: asPathOwnScope },
+    aModel
   );
   return {
     ...faOwnershipScoped( aAnalysis.aOwnership, asPathOwnScope ),
@@ -3448,7 +3888,14 @@ const fsSection = ( sTitle, vsLine, c ) => (
 );
 
 const fsPlace = ( aEntry ) => aEntry.sPath + ":" + aEntry.nLine;
+const fsRegion = ( aEntry ) => (
+  aEntry.nSourceStartLine === undefined ? ""
+    : "  lines " + aEntry.nSourceStartLine + "-"
+      + Math.max( aEntry.nSourceStartLine, aEntry.nSourceEndLine - 1 )
+);
 
+// @implements s-tvuwev@04539c9
+// @implements s-ggaonb@b8526d7
 const fvsSectionUnlinked = ( aMap ) => [
   fsSection(
     "test files with unlinked tests",
@@ -3459,16 +3906,24 @@ const fvsSectionUnlinked = ( aMap ) => [
 
 const fsGuardWord = ( aEntry ) => aEntry.bGuard ? " guard" : "";
 
+// @implements s-7llevg@6c2799e
+// @implements s-n10cb0@01b16a4
+// @implements s-ctbylk@c20e0f1
 const fsLineForBad = ( aEntry ) => (
-  fsPlace( aEntry ) + "  " + aEntry.sText + " " + fsGuardWord( aEntry )
+  fsPlace( aEntry ) + fsRegion( aEntry ) + "  "
+  + aEntry.sText + " " + fsGuardWord( aEntry )
   + " (" + aEntry.sReason + ")"
 );
 
+// @implements s-0yoabr@659a105
+// @implements s-fsp1a2@02fcf0a
 const fsLineForUnbacked = ( aGuard ) => (
-  fsPlace( aGuard ) + "  " + fsNameForLink( aGuard ) + "  " + aGuard.sId
+  fsPlace( aGuard ) + fsRegion( aGuard ) + "  " + aGuard.sId
   + "  " + aGuard.aStmt.sPath
 );
 
+// @implements s-8g5yno@c3ea2a8
+// @implements s-emmdvh@25164e5
 const fsLineForUnproved = ( aStmt ) => (
   aStmt.sId + ( aStmt.bNotImplemented ? "  not-yet-implemented" : "" )
   + "  " + fsPlace( aStmt )
@@ -3478,6 +3933,7 @@ const fsLineForIncomplete = ( aEntry ) => aEntry.sLine;
 
 const fsLineForFence = ( aEntry ) => fsPlace( aEntry ) + "  " + aEntry.sText;
 
+// @implements s-3pkw1n@721f8a3
 const fvsSectionOwner = ( aMap ) => [
   fsSection( "test files with no owner line", aMap.vsPathNoOwner ),
   fsSection(
@@ -3485,19 +3941,24 @@ const fvsSectionOwner = ( aMap ) => [
   )
 ];
 
+// @implements s-ctbylk@c20e0f1
 const fsLineStaleWith = ( aLink, sSpec ) => (
   fsPlace( aLink ) + "  "
-  + ( aLink.aCall === null ? "" : aLink.aCall.sName ) + "  "
+  + fsRegion( aLink ) + "  "
   + fsIdForLink( aLink ) + sSpec + "  recorded " + aLink.sHash
   + "  current " + aLink.aStmt.sHash
 );
 
 const fsLineStale = ( aLink ) => fsLineStaleWith( aLink, "" );
 
+// @implements s-5vv5ht@dd2760b
 const fsLineStaleSibling = ( aLink ) => (
   fsLineStaleWith( aLink, "  " + aLink.aStmt.sPath )
 );
 
+// @implements s-5vv5ht@dd2760b
+// @implements s-nudxy0@3495135
+// @implements s-ctbylk@c20e0f1
 const fvsSectionStaleSibling = ( aMap ) => (
   aMap.bScoped
     ? [
@@ -3509,11 +3970,15 @@ const fvsSectionStaleSibling = ( aMap ) => (
     : []
 );
 
+// @implements s-xuw25u@ed827df
+// @implements s-n7deu7@e5afae0
+// @implements s-emmdvh@25164e5
 const fvsSectionStmt = ( aMap ) => [
   fsSection(
     "malformed markers and duplicate ids", aMap.vaMarkerBad.map( fsLineForBad )
   ),
   fsSection(
+    // @implements s-gpqy5p@7ed12de
     "statements no test proves", aMap.vaUnproved.map( fsLineForUnproved )
   ),
   fsSection(
@@ -3535,24 +4000,25 @@ const fvsSectionStmt = ( aMap ) => [
   ),
   fsSection( "unclosed fences", aMap.vaFenceUnclosed.map( fsLineForFence )),
   fsSection(
+    // @implements s-0yoabr@659a105
     "unbacked guard lines", aMap.vaUnbacked.map( fsLineForUnbacked )
   )
 ];
-
-const fsNameForLink = ( aLink ) => (
-  aLink.aCall === null ? "(no call)" : aLink.aCall.sName
-);
 
 const fsIdForLink = ( aLink ) => aLink.sId + fsGuardWord( aLink );
 
 const fsIdShown = ( aMarker ) => aMarker.sId || "placeholder";
 
+// @implements s-efoflb@3670587
 const fsSurfaceShown = ( aMarker ) => (
   aMarker.sSurface !== null && rePartLabel.test( aMarker.sSurface )
     ? "  surface=" + aMarker.sSurface
     : ""
 );
 
+// @implements s-fm2sqk@135c61a
+// @implements s-qmf2lg@5795cc1
+// @implements s-efoflb@3670587
 const fvsLineForRoot = ( aRoot ) => (
   [ fsPlace( aRoot.aMarker ) + "  " + fsIdShown( aRoot.aMarker ) ]
     .concat( aRoot.vaConclusion.map(( aC ) => (
@@ -3567,12 +4033,16 @@ const fvsLineForRoot = ( aRoot ) => (
     )])
 );
 
+// @implements s-fm2sqk@135c61a
 const fvsLineForArch = ( vaArch ) => fvsLineGrouped( vaArch, ( aArch ) => [
   "  " + aArch.aMarker.nLine + "  " + fsIdShown( aArch.aMarker ) + "  "
   + fsWords( aArch.aMarker.sText )
   + ( aArch.vsRef.length === 0 ? "" : "  beside " + aArch.vsRef.join( ", " ))
 ]);
 
+// @implements s-kgnjaq@cedcec8
+// @implements s-fm2sqk@135c61a
+// @implements s-8wn2ou@c5e7984
 const fsSectionArch = ( vaArch ) => fsSection(
   "statements rooted in arch", fvsLineForArch( vaArch ), vaArch.length
 );
@@ -3582,11 +4052,19 @@ const fsLineForRefEntry = ( aEntry ) => (
   + ( aEntry.aRef.sId || aEntry.aRef.sRef )
 );
 
+// @implements s-fm2sqk@135c61a
 const fsLineForRederive = ( aEntry ) => (
   fsLineForRefEntry( aEntry ) + "  recorded " + aEntry.aRef.sStamp
   + "  current " + aEntry.aRef.aTarget.sHash
 );
 
+// @implements s-cid631@c71dd26
+// @implements s-je03s2@6b1aa0b
+// @implements s-jie6z5@09cd30a
+// @implements s-fm2sqk@135c61a
+// @implements s-sfuntg@4b5ec33
+// @implements s-qmf2lg@5795cc1
+// @implements s-ickx1f@508799a
 const fvsSectionRoot = ( aMap ) => [
   fsSection( "malformed root lists", aMap.vaRootBad.map( fsLineForBad )),
   fsSection(
@@ -3601,6 +4079,7 @@ const fvsSectionRoot = ( aMap ) => [
   )
 ];
 
+// @implements s-bmkxya@6780e68
 const fsLineForFollows = ( aFollows ) => (
   fsPlace( aFollows ) + "  " + aFollows.sId + "  " + (
     aFollows.sReason === null
@@ -3610,24 +4089,47 @@ const fsLineForFollows = ( aFollows ) => (
   )
 );
 
+// @implements s-8g5yno@c3ea2a8
+// @implements s-emmdvh@25164e5
 const fsLineForMarker = ( aMarker ) => (
   fsPlace( aMarker ) + "  " + fsIdShown( aMarker )
   + ( aMarker.bNotImplemented ? "  not-yet-implemented" : "" )
 );
 
+// @implements s-gueyj8@dcbe6bc
 const fsLineForDangling = ( aTarget ) => (
   fsLineForMarker( aTarget.aMarker ) + " " + aTarget.sTarget + "  ("
   + aTarget.sReason + ")"
 );
 
+// @implements s-ocpfpw@c6adf07
 const fsLineForNoCode = ( aCheck ) => fsLineForMarker( aCheck.aMarker );
+// @implements s-tghouh@f811aec
+// @implements s-bqioq5@e78161a
+// @implements s-w4wun2@53dab89
+// @implements s-k3sml3@9ef30dd
 const fsLineForCodeRef = ( aRef ) => (
-  fsPlace( aRef ) + "  "
-  + ( aRef.sNameCall ? aRef.sNameCall + "  " : "" )
+  fsPlace( aRef ) + fsRegion( aRef ) + "  "
   + aRef.sText + " (" + aRef.sReason + ")"
 );
+// @implements s-8qhv2d@478dcee
 const fsLineForSide = ( aSide ) => aSide.sPath + "  (" + aSide.sState + ")";
 
+// @implements s-m5k9wy@4aaa864
+// @implements s-tghouh@f811aec
+// @implements s-erendz@999c6cc
+// @implements s-gueyj8@dcbe6bc
+// @implements s-f1np35@35d6720
+// @implements s-wc98ss@69659c7
+// @implements s-263wnp@68719c6
+// @implements s-bmkxya@6780e68
+// @implements s-8xfzz3@6999bd7
+// @implements s-mbcxy1@de2395f
+// @implements s-i6rjuw@32c89fd
+// @implements s-cov7pg@e6a079b
+// @implements s-mn5and@058eb96
+// @implements s-emmdvh@25164e5
+// @implements s-2vgnq6@8323fcb
 const fvsSectionLines = ( aMap ) => [
   fsSection( "dangling targets", aMap.vaDangling.map( fsLineForDangling )),
   fsSection( "unused definitions", aMap.vaUnused.map(( aEntry ) => (
@@ -3648,6 +4150,7 @@ const fvsSectionLines = ( aMap ) => [
     "guidance no reference names", aMap.vaUncited.map( fsLineForMarker )
   ),
   fsSection( sTitleNoCode, aMap.vaNoCode.map( fsLineForNoCode )),
+  // @implements s-gpqy5p@7ed12de
   fsSection( "statements with no implementation link", aMap.vaNoImplementation.map( fsLineForMarker )),
   fsSection( "not-yet-implemented status conflicts", aMap.vaStatusConflict.map(( aEntry ) => (
     fsLineForMarker( aEntry.aMarker ) + "  implemented by "
@@ -3656,11 +4159,23 @@ const fvsSectionLines = ( aMap ) => [
     )))).join( ", " )
   ))),
   fsSection( "implementation files with no test link", aMap.vaNoTestedBy.map(( aFile ) => aFile.sPath )),
+  fsSection(
+    "implementation regions without a specific test-unit link",
+    aMap.vaNoTestUnit.map(( aRef ) => fsPlace( aRef ) + fsRegion( aRef )
+      + "  @implements " + aRef.sId )
+  ),
+  fsSection(
+    "legacy file-only tested-by links",
+    aMap.vaLegacyTestedBy.map(( aRef ) => fsPlace( aRef ) + fsRegion( aRef )
+      + "  @tested-by " + aRef.sTestPath )
+  ),
   fsSection( "malformed, unresolved or stale code references", aMap.vaCodeRefBad.map( fsLineForCodeRef )),
+  // @implements s-v7ww36@641e899
   fsSection( "side files that are not read", aMap.vaSideBad.map( fsLineForSide )),
   fsSectionProblem( aMap.vaProblem )
 ];
 
+// @implements s-s8an6z@bb4aac8
 const fsLineForProblem = ( aProblem ) => {
   const sNote = fsNoteForRecord( aProblem.aRecord );
   return fsLineForMarker( aProblem.aMarker ) + "  "
@@ -3668,6 +4183,7 @@ const fsLineForProblem = ( aProblem ) => {
     + ( sNote === "" ? "" : "  " + sNote );
 };
 
+// @implements s-s8an6z@bb4aac8
 const fsSectionProblem = ( vaProblem ) => fsSection(
   sTitleProblem, vaProblem.map( fsLineForProblem )
 );
@@ -3693,6 +4209,17 @@ const fvsSectionObs = ( aMap ) => (
     : []
 );
 
+// @implements s-ocpfpw@c6adf07
+// @implements s-s8an6z@bb4aac8
+// @implements s-7llevg@6c2799e
+// @implements s-n10cb0@01b16a4
+// @implements s-tdw4gj@8d6d23d
+// @implements s-du4nns@bbb6351
+// @implements s-u2lhta@c6845db
+// @implements s-b8vvpd@9e72e40
+// @implements s-e287lm@a1b403a
+// @implements s-sfuntg@4b5ec33
+// @implements s-4hsltb@ebe272b
 const fsReport = ( aMap ) => fvsSectionOwner( aMap ).concat(
   fvsSectionStmt( aMap ),
   fvsSectionStaleSibling( aMap ),
@@ -3711,12 +4238,14 @@ const faMarkerOf = ( aEntry ) => aEntry.aMarker;
 const aListUnresolved = {
   nList: 4, sKey: "vaUnresolved", fsLine: fsLineForBad
 };
+// @implements s-w75973@e58d191
 const aListMarkerBad = { nList: 6, sKey: "vaMarkerBad", fsLine: fsLineForBad };
 const aListUnproved = {
   nList: 7, sKey: "vaUnproved", fsLine: fsLineForUnproved, bComplete: true
 };
 const aListLinkBad = { nList: 8, sKey: "vaLinkBad", fsLine: fsLineForBad };
 const aListStale = { nList: 9, sKey: "vaStale", fsLine: fsLineStale };
+// @implements s-xuw25u@ed827df
 const aListIncomplete = {
   nList: 10, sKey: "vaIncomplete", fsLine: fsLineForIncomplete, bComplete: true
 };
@@ -3724,6 +4253,7 @@ const aListRootBad = { nList: 13, sKey: "vaRootBad", fsLine: fsLineForBad };
 const aListRederive = {
   nList: 16, sKey: "vaRederive", fsLine: fsLineForRederive, faPlace: faMarkerOf
 };
+// @implements s-cov7pg@e6a079b
 const aListFence = {
   nList: 18, sKey: "vaFenceUnclosed", fsLine: fsLineForFence
 };
@@ -3736,10 +4266,12 @@ const aListFollowsBad = {
 const aListNoCode = {
   nList: 28, sKey: "vaNoCode", fsLine: fsLineForNoCode, faPlace: faMarkerOf
 };
+// @implements s-i6rjuw@32c89fd
 const aListNoImplementation = {
   nList: 31, sKey: "vaNoImplementation", fsLine: fsLineForMarker,
   bComplete: true, faPlace: faMarkerOf
 };
+// @implements s-2vgnq6@8323fcb
 const aListStatusConflict = {
   nList: 36, sKey: "vaStatusConflict", fsLine: ( aEntry ) => (
     fsLineForMarker( aEntry.aMarker ) + "  implemented by "
@@ -3749,14 +4281,20 @@ const aListStatusConflict = {
   ),
   faPlace: ( aEntry ) => aEntry.aMarker
 };
+// @implements s-i6rjuw@32c89fd
 const aListNoTestedBy = {
   nList: 32, sKey: "vaNoTestedBy", fsLine: ( aFile ) => aFile.sPath,
   bComplete: true, faPlace: ( aFile ) => ({ sPath: aFile.sPath, nLine: 1 })
 };
+// @implements s-bqioq5@e78161a
+// @implements s-i6rjuw@32c89fd
+// @implements s-tghouh@f811aec
+// @implements s-sy7274@b9a1e14
 const aListCodeRefBad = {
   nList: 33, sKey: "vaCodeRefBad", fsLine: fsLineForCodeRef,
   faPlace: ( aRef ) => aRef
 };
+// @implements s-8qhv2d@478dcee
 const aListSideBad = {
   nList: 38, sKey: "vaSideBad", fsLine: fsLineForSide,
   faPlace: ( aSide ) => ({ sPath: aSide.sPath, nLine: 1 })
@@ -3767,6 +4305,12 @@ const aListCitationDangling = {
   nList: 35, sKey: "vaCitationDangling", fsLine: fsLineOf
 };
 
+// @implements s-ins4p7@19e76c1
+// @implements s-dila0o@c18103b
+// @implements s-mbcxy1@de2395f
+// @implements s-y86kt5@2649010
+// @implements s-ug5kvq@0033049
+// @implements s-2vgnq6@8323fcb
 const vaListFence = [
   aListUnresolved, aListMarkerBad, aListUnproved, aListLinkBad, aListStale,
   aListIncomplete, aListRootBad, aListFence, aListDangling, aListFollowsBad,
@@ -3778,6 +4322,14 @@ const fbAlways = () => true;
 
 const fbIdAbsent = ( aEntry ) => aEntry.bIdAbsent;
 
+// @implements s-dila0o@c18103b
+// @implements s-t8un02@9839058
+// @implements s-nlm91d@4f76fd6
+// @implements s-nw4u9n@3b57e9b
+// @implements s-y86kt5@2649010
+// @implements s-ug5kvq@0033049
+// @implements s-880seq@40723b9
+// @implements s-tghouh@f811aec
 const vtListRefusing = [
   [ aListLinkBad, fbIdAbsent ],
   [ aListStale, fbAlways ],
@@ -3787,15 +4339,34 @@ const vtListRefusing = [
   , [ aListNoCode, fbAlways ], [ aListCodeRefBad, fbAlways ],
   [ aListDangling, fbAlways ],
   [ aListObsBad, fbAlways ], [ aListCitationDangling, fbAlways ],
-  [ aListStatusConflict, fbAlways ], [ aListSideBad, fbAlways ]
+  [ aListStatusConflict, fbAlways ],
+  // @implements s-r95w4f@6a28bae
+  [ aListSideBad, fbAlways ]
 ];
 
+// @implements s-xuw25u@ed827df
 const fbListCounts = ( aMap, aList ) => !aList.bComplete || aMap.bComplete;
 
+// @implements s-dila0o@c18103b
+// @implements s-mbcxy1@de2395f
+// @implements s-b8vvpd@9e72e40
+// @implements s-ug5kvq@0033049
+// @implements s-n8uc4k@a405885
+// @implements s-fsp1a2@02fcf0a
 const fbClean = ( aMap ) => vaListFence.every(( aList ) => (
   !fbListCounts( aMap, aList ) || aMap[ aList.sKey ].length === 0
 ));
 
+// @implements s-rkd937@6d33bc3
+// @implements s-ins4p7@19e76c1
+// @implements s-nlm91d@4f76fd6
+// @implements s-y86kt5@2649010
+// @implements s-ug5kvq@0033049
+// @implements s-8g5yno@c3ea2a8
+// @implements s-mn5and@058eb96
+// @implements s-jie6z5@09cd30a
+// @implements s-n1ztut@75bf716
+// @tested-by test/gate.test.js
 const fvaGateForList = ( aMap, aList, fbRefuses ) => aMap[ aList.sKey ]
   .filter(( aEntry ) => !(
     ( aList === aListUnproved || aList === aListNoImplementation )
@@ -3808,6 +4379,7 @@ const fvaGateForList = ( aMap, aList, fbRefuses ) => aMap[ aList.sKey ]
     sLine: "(" + aList.nList + ") " + aList.fsLine( aEntry )
   }));
 
+// @implements s-rkd937@6d33bc3
 const fzCompareGate = ( aA, aB ) => (
   aA.nList - aB.nList
   || Number(( aA.aPlace || {}).sPath > ( aB.aPlace || {}).sPath )
@@ -3815,6 +4387,13 @@ const fzCompareGate = ( aA, aB ) => (
   || (( aA.aPlace || {}).nLine || 0 ) - (( aB.aPlace || {}).nLine || 0 )
 );
 
+// @implements s-rkd937@6d33bc3
+// @implements s-dila0o@c18103b
+// @implements s-ol2dmr@37d4979
+// @implements s-nlm91d@4f76fd6
+// @implements s-y86kt5@2649010
+// @implements s-kkql92@90bba2d
+// @implements s-ug5kvq@0033049
 const fvsLineGate = ( aMapTree, vaMapComplete ) => Array.from( new Map(
   vtListRefusing
     .flatMap(( tList ) => fvaGateForList( aMapTree, tList[ 0 ], tList[ 1 ]))
@@ -3826,18 +4405,21 @@ const fvsLineGate = ( aMapTree, vaMapComplete ) => Array.from( new Map(
   .sort( fzCompareGate )
   .map(( aGate ) => aGate.sLine );
 
+// @implements s-6gfnun@a16b6c1
+// @implements s-qr72mj@d922238
+// @implements s-e6bz23@1c07937
 const fsSid = ( aModel, aStmt ) => {
   const vaLink = aModel.vaLink.filter(( aLink ) => aLink.sId === aStmt.sId );
   const vsLink = vaLink.length === 0
     ? [ "no link names " + aStmt.sId ]
     : vaLink.map(( aLink ) => (
-      fsPlace( aLink ) + "  " + fsNameForLink( aLink ) + "  "
+      fsPlace( aLink ) + fsRegion( aLink ) + "  "
       + aLink.sHash + "  " + fsStateForLink( aLink )
     ));
   const vsGuard = aModel.vaGuard
     .filter(( aGuard ) => aGuard.sId === aStmt.sId )
     .map(( aGuard ) => (
-      fsPlace( aGuard ) + "  " + fsNameForLink( aGuard ) + "  "
+      fsPlace( aGuard ) + fsRegion( aGuard ) + "  "
       + aGuard.sHash + "  " + fsStateForLink( aGuard ) + "  guard"
     ));
   const vsImplements = aModel.aLines.vaCodeRef
@@ -3858,9 +4440,10 @@ const fsStateForCodeRef = ( aRef ) => {
   return aRef.sReason === "stale hash" ? "stale" : aRef.sReason;
 };
 
+// @implements s-6gfnun@a16b6c1
+// @implements s-e6bz23@1c07937
 const fsLineSidImplements = ( aRef ) => (
-  fsPlace( aRef ) + "  "
-  + ( aRef.bTest ? ( aRef.sNameCall || "" ) + "  " : "" )
+  fsPlace( aRef ) + fsRegion( aRef ) + "  "
   + aRef.sStamp + "  " + fsStateForCodeRef( aRef )
   + ( aRef.bTest ? "  test" : "" )
 );
@@ -3870,6 +4453,8 @@ const fsStateForLink = ( aLink ) => {
   return aLink.bStale ? "stale" : "current";
 };
 
+// @implements s-b21zr4@c4562be
+// @implements s-zybg31@316483b
 const fsSuiteForPath = ( vaSuite, sPath ) => {
   const vsPart = sPath.split( "/" );
   const aSuite = vaSuite.find(( aSuiteT ) => aSuiteT.vsDir.some(( sDir ) => (
@@ -3878,10 +4463,20 @@ const fsSuiteForPath = ( vaSuite, sPath ) => {
   return aSuite === undefined ? "" : aSuite.sName;
 };
 
+const fbRegionOverlapsCall = ( aRegion, aCall ) => (
+  aRegion.nRegionStart < aCall.nEnd && aRegion.nRegionEnd > aCall.nStart
+);
+
+// @implements s-b21zr4@c4562be
+// @implements s-zybg31@316483b
 const fbLinkCoversTest = ( aModel, aLink ) => aModel.vaCallTest.some((
   aCall
-) => aCall.sPath === aLink.sPath && fbEncloses( aLink.aCall, aCall ));
+) => aCall.sPath === aLink.sPath && fbRegionOverlapsCall( aLink, aCall ));
 
+// @implements s-3oxidy@1ccac2e
+// @implements s-b21zr4@c4562be
+// @implements s-zybg31@316483b
+// @implements s-1yuomz@b828506
 const fsCrossSuite = ( aModel, vsArg, aConfig ) => fvaStmtForModel( aModel )
   .map(( aStmt ) => ({
     aStmt,
@@ -3902,6 +4497,11 @@ const fsCrossSuite = ( aModel, vsArg, aConfig ) => fvaStmtForModel( aModel )
 
 const fbCallCoveredBy = ( aCall, aStmt ) => aCall.vaStmt.includes( aStmt );
 
+// @implements s-mp16u6@a924b32
+// @implements s-ptc52y@20ab416
+// @implements s-0ovkpr@5b8beb1
+// @implements s-1yuomz@b828506
+// @implements s-nksahd@2aa742c
 const fsProbes = ( aModel ) => fvaStmtForModel( aModel )
   .filter(( aStmt ) => aStmt.bProbe )
   .map(( aStmt ) => [ fsPlace( aStmt ) + "  " + aStmt.sId ]
@@ -3911,22 +4511,30 @@ const fsProbes = ( aModel ) => fvaStmtForModel( aModel )
     .join( "\n" ) + "\n" )
   .join( "" );
 
+// @implements s-wrdbhk@01b46ef
+// @implements s-ihqgan@de8037f
 const fvsTermForText = ( sText ) => Array.from( new Set(
   fvsSpanContent( sText ).concat( fvsMatch( reQuoted, sText ))
 )).filter(( sTerm ) => sTerm.length >= cTermMin );
 
+// @implements s-ns2gme@9b9beb2
+// @implements s-wrdbhk@01b46ef
 const faScoreForCall = ( aCall, vsTermStmt ) => {
   const sHay = aCall.vsNameEnclosing.concat( aCall.sBody ).join( "\n" );
   const vsTerm = vsTermStmt.filter(( sTerm ) => sHay.includes( sTerm ));
   return { aCall, vsTerm, zScore: vsTerm.length };
 };
 
+// @implements s-wrdbhk@01b46ef
 const fzCompareScore = ( aA, aB ) => (
   aB.zScore - aA.zScore
   || aA.aCall.sPath.localeCompare( aB.aCall.sPath )
   || aA.aCall.nLine - aB.aCall.nLine
 );
 
+// @implements s-wrdbhk@01b46ef
+// @implements s-ihqgan@de8037f
+// @implements s-nc5n19@aee9454
 const fsCandidates = ( aModel, aStmt ) => {
   const vsTermStmt = fvsTermForText( aStmt.sTextIncluded );
   return aModel.vaCallTest
@@ -3944,6 +4552,9 @@ const fsCandidates = ( aModel, aStmt ) => {
     .join( "" );
 };
 
+// @implements s-cid631@c71dd26
+// @implements s-1f2z8r@e38b9ea
+// @implements s-qmf2lg@5795cc1
 const fsRoot = ( aModel, aStmt ) => {
   const aRoot = faRoots( aModel, fasIdProved( aModel )).vaRoot
     .find(( aRootT ) => aRootT.aMarker === aStmt );
@@ -3968,6 +4579,7 @@ const fsLineForRecord = ( aRecord ) => (
   + ( aRecord.sNote ? "  " + aRecord.sNote : "" )
 );
 
+// @implements s-1igmuk@d454589
 const afvsSidForType = {
   p: ( aModel, aMarker ) => aModel.aLines.vaTarget
     .filter(( aTarget ) => aTarget.aMarker === aMarker )
@@ -3990,6 +4602,7 @@ const afvsSidForType = {
   ) => fsPlace( aFollows ) + "  " + fsStateForFollows( aFollows ))
 };
 
+// @implements s-1igmuk@d454589
 const fsSidAny = ( aModel, aMarker ) => {
   if( aMarker.sType === "s" ){ return fsSid( aModel, aMarker );}
   return [
@@ -4003,6 +4616,8 @@ const fsSidAny = ( aModel, aMarker ) => {
     .join( "\n" ) + "\n";
 };
 
+// @implements s-eel840@1bbc17a
+// @implements s-wrdbhk@01b46ef
 const afsQueryForFlag = {
   "--hash": ( aModel, aStmt ) => aStmt.sHash + "\n",
   "--sid": fsSidAny,
@@ -4010,17 +4625,21 @@ const afsQueryForFlag = {
   "--root": fsRoot
 };
 
+// @implements s-kzyb2a@f30bbf3
 const fsProblemForId = ( sId, cMarker ) => (
   cMarker === 0
     ? "spec-map: no spec marks " + sId + "\n"
     : "spec-map: " + sId + " is marked at " + cMarker + " places\n"
 );
 
+// @implements s-taoc14@2518951
+// @implements s-2deigh@58b055c
 class IdMinter {
   constructor( asBodyTaken ){
     this.asBodyTaken = asBodyTaken;
   }
 
+  // @implements s-m69cme@f4c0170
   fsId( sType ){
     for(;;){
       const sBody = Array.from(
@@ -4033,6 +4652,8 @@ class IdMinter {
   }}}
 }
 
+// @implements s-i63o6a@6dbc87e
+// @implements s-53ztk4@703b57d
 const fsTextReplaced = ( sText, vaReplace ) => (
   vaReplace
     .slice()
@@ -4049,6 +4670,9 @@ const faReplaceForEdit = ( aEdit ) => ({
   sText: aEdit.sToken
 });
 
+// @implements s-jhjrqa@2306326
+// @implements s-53ztk4@703b57d
+// @implements s-dglucu@bd4c60b
 const fvaReplaceForInclusions = ( vaInclusion, sPath, asIdNewForMarker ) => (
   vaInclusion
     .filter(( aIncl ) => (
@@ -4064,6 +4688,8 @@ const fvaReplaceForInclusions = ( vaInclusion, sPath, asIdNewForMarker ) => (
     }))
 );
 
+// @implements s-jhjrqa@2306326
+// @implements s-n7yhjf@0cf1206
 const fsRefStamped = ( aRef, asIdNewForMarker ) => {
   if( aRef.sIdRetyped !== null ){ return null;}
   if( aRef.sLabel !== null ){
@@ -4091,6 +4717,7 @@ const fsViaToken = ( aMarker ) => (
   aMarker.sVia === null ? "" : " via=" + aMarker.sVia
 );
 
+// @implements s-41v1mp@51d6eb2
 const fsTokenAssigned = ( aMarker, sId, sList, sTargets ) => (
   "{#" + sId
   + ( sList === null ? "" : " <" + sList )
@@ -4110,6 +4737,15 @@ const fsListWithArch = ( aList, vsRef ) => (
     : vsRef.slice( 0, aList.nArch ).concat( sArch, vsRef.slice( aList.nArch ))
 ).join( "," );
 
+// @implements s-41v1mp@51d6eb2
+// @implements s-psysjj@03eca21
+// @implements s-i63o6a@6dbc87e
+// @implements s-taoc14@2518951
+// @implements s-jhjrqa@2306326
+// @implements s-n7yhjf@0cf1206
+// @implements s-tzxhy9@09c0d8a
+// @implements s-s0vyhy@802fc2f
+// @implements s-wqdxix@ceec0e2
 const faEditForMarker = (
   aMarker, aList, asIdNewForMarker, vaTargetRetyped
 ) => {
@@ -4142,6 +4778,10 @@ const faEditForMarker = (
   };
 };
 
+// @implements s-psysjj@03eca21
+// @implements s-i63o6a@6dbc87e
+// @implements s-s0vyhy@802fc2f
+// @implements s-wqdxix@ceec0e2
 const fvaEditForSpec = ( aModel, vaMarker, aRoots, asIdNewForMarker ) => (
   vaMarker
     .map(( aMarker ) => faEditForMarker(
@@ -4162,6 +4802,7 @@ const fvaEditForSpec = ( aModel, vaMarker, aRoots, asIdNewForMarker ) => (
 const fbPathIgnored = ( sPath, vsDirIgnored ) => sPath.split( path.sep )
   .some(( sPart ) => vsDirIgnored.includes( sPart ));
 
+// @implements s-2l6ys1@d966d32
 const fbFileForLanguages = ( sPath, vsLanguage, sDirRoot ) => {
   const vaLanguage = vsLanguage.map(( sLanguage ) => maLanguage.get( sLanguage ))
     .filter( Boolean );
@@ -4243,20 +4884,43 @@ class TreeReader {
     };
   }
 
+  // @implements s-n7ky2n@7cec1a6
+  // @implements s-6rfqdf@00eba76
+  // @implements s-yurmkw@ee703cc
+  // @implements s-x1kbkj@fff57a4
+  // @implements s-ky5glg@98fd470
+  // @implements s-omlrtx@0e5e677
   fvaSpec(){
     const vsDirSpecs = this.fvsDirExpanded( this.aConfig.dirs_specs || [
       sDirSpecs
     ]);
-    const vsPath = Array.from( new Set( vsDirSpecs.flatMap(( sDir ) => (
+    const vsDirIntents = this.fvsDirExpanded(
+      this.aConfig.dirs_intents || []
+    );
+    const vsDirGuidance = this.fvsDirExpanded(
+      this.aConfig.dirs_guidance || []
+    );
+    const vsPath = Array.from( new Set(
+      vsDirSpecs.concat( vsDirIntents, vsDirGuidance )
+      .flatMap(( sDir ) => (
       this.fvsPathUnder( sDir, ( sPath ) => sPath.endsWith( ".md" ))
     )).filter(( sPath ) => !this.fbUnderChildProject( sPath )).values()));
     return this.fvaFile( vsPath );
   }
 
+  // @implements s-n7ky2n@7cec1a6
+  // @implements s-6rfqdf@00eba76
+  // @implements s-ky5glg@98fd470
   fbPathInSpec( sPath ){
     const sPathClean = fsPathClean( sPath );
     return !this.fbUnderChildProject( sPathClean )
-      && this.fvsDirExpanded( this.aConfig.dirs_specs || [ sDirSpecs ])
+      && this.fvsDirExpanded(
+        ( this.aConfig.dirs_specs || [ sDirSpecs ]).concat(
+          this.aConfig.dirs_intents || []
+        ).concat(
+          this.aConfig.dirs_guidance || []
+        )
+      )
       .some(( sDir ) => {
         const sDirClean = fsPathClean( sDir );
         return sPathClean === sDirClean
@@ -4264,6 +4928,7 @@ class TreeReader {
       });
   }
 
+  // @implements s-n7ky2n@7cec1a6
   fbUnderChildProject( sPath ){
     const vsSegment = fsPathClean( sPath ).split( "/" );
     return vsSegment.slice( 1 ).some(( _, n ) => {
@@ -4274,6 +4939,11 @@ class TreeReader {
     });
   }
 
+  // @implements s-n7ky2n@7cec1a6
+  // @implements s-j8ahje@91cc810
+  // @implements s-dhs2hx@db209fb
+  // @implements s-9zllrl@4304abd
+  // @implements s-x1kbkj@fff57a4
   fvaSpecCollection( sTarget ){
     const vsTarget = sTarget.split( "/" ).filter( Boolean );
     const sDirSpecsChild = vsTarget.at( -1 );
@@ -4332,6 +5002,11 @@ class TreeReader {
     ));
   }
 
+// @implements s-3oxidy@1ccac2e
+  // @implements s-50dzy6@3c05a41
+  // @implements s-te9wza@59881f7
+  // @implements s-2l6ys1@d966d32
+  // @implements s-k3nucf@c0c7bf2
   fvaTest(){
     const bTestLanguage = this.aConfig.vsLanguage.some(( sLanguage ) => (
       ( maLanguage.get( sLanguage ) || { fbHasTestFiles: () => false })
@@ -4380,6 +5055,11 @@ class TreeReader {
       : null;
   }
 
+  // @implements s-yecw0i@c83eff2
+  // @implements s-m4fr78@238c65f
+  // @implements s-pkmrq7@79d0e81
+  // @implements s-hux5ev@ce910fd
+  // @implements s-wt7bpq@73556cf
   faSidecars( vsPath, fbFileRead, vsTestPath ){
     const vaSide = [];
     const vaSideBad = [];
@@ -4389,16 +5069,27 @@ class TreeReader {
       const sPath = fsPosix( sPathSidecar );
       const sPathFile = sPath.slice( 0, -".concord".length );
       const sKind = this.fsKind( sPathFile );
+      // @implements s-zpv3y7@dc2aae2
       const sState = sKind === null ? "absent"
         : sKind !== "file" ? "not a regular file"
         : sPathFile.endsWith( ".concord" ) ? "side file"
           : vsTestPath.has( sPathFile ) ? "test file"
             : fbFileRead( sPathFile ) ? "commentable" : "read";
       if( sState !== "read" ){
+        // @implements s-v7ww36@641e899
         vaSideBad.push({ sPath, sState });
         return;
       }
       const aSide = this.faFile( sPath );
+      const sTargetText = this.fsTextAt( sPathFile );
+      // @implements s-i13kgq@b2a9854
+      const aOverlay = faOverlay(
+        sTargetText, sPathFile, sPath, aSide.sText
+      );
+      if( !aOverlay.bOk ){
+        vaSideBad.push({ sPath, sState: aOverlay.sReason });
+        return;
+      }
       const stat = fs.statSync(
         path.join( this.sDirRoot, sPathSidecar ), { bigint: true }
       );
@@ -4408,7 +5099,11 @@ class TreeReader {
         sPathSidecar: sPath,
         nSize: stat.size.toString(),
         sMtimeNs: stat.mtimeNs.toString(),
-        sText: aSide.sText
+        sText: aOverlay.sText,
+        sTextSidecar: aSide.sText,
+        sTextTarget: sTargetText,
+        vaOverlayDirective: aOverlay.vaDirective,
+        vnLineMap: aOverlay.vnLineMap
       });
     });
     return { vaSide, vaSideBad };
@@ -4418,12 +5113,15 @@ class TreeReader {
     return this.fvsPathWalk( sDirRel ).map( fsPosix ).sort();
   }
 
+  // @implements s-b0mknl@02d4cb5
   fWriteAt( sPath, sText ){
     const sPathFull = path.resolve( this.sDirRoot, sPath );
     fs.mkdirSync( path.dirname( sPathFull ), { recursive: true });
     fs.writeFileSync( sPathFull, sText );
   }
 
+  // @implements s-nrp172@56b8541
+  // @implements s-pkmrq7@79d0e81
   fvsPathWalk( sDirRel ){
     const sDir = path.join( this.sDirRoot, sDirRel );
     if( !fs.existsSync( sDir )){ return [];}
@@ -4436,6 +5134,11 @@ class TreeReader {
       });
   }
 
+  // @implements s-nrp172@56b8541
+  // @implements s-z28ucn@585ecdf
+  // @implements s-2l6ys1@d966d32
+  // @implements s-m4fr78@238c65f
+  // @implements s-pkmrq7@79d0e81
   faFilesRead(){
     const vsDirSuite = this.fvsDirExpanded(
       this.aConfig.vaSuite.flatMap(( aSuite ) => aSuite.vsDir )
@@ -4480,6 +5183,9 @@ class TreeReader {
     )).sort()).map(( aFile ) => this.faFile( fsPosix( aFile.sPath )));
   }
 
+  // @implements s-jt2a2g@6926fb1
+  // @implements s-89dowx@1de93c2
+  // @tested-by test/observations.test.js
   faObservationFile(){
     const sPath = this.aConfig.sPathObservations;
     if( sPath === undefined ){ return null;}
@@ -4487,6 +5193,8 @@ class TreeReader {
     return sText === null ? null : { sPath, sText };
   }
 
+  // @implements s-0w4rbg@75d948e
+  // @tested-by test/observations.test.js
   faObservationInput(){
     const aFile = this.faObservationFile();
     return {
@@ -4537,6 +5245,8 @@ const faModelForReader = ( reader, bTest ) => faModel({
   aParseCache: reader.aParseCache
 });
 
+// @implements s-7bh252@2251185
+// @tested-by test/context.test.js
 const faContextModel = ( sDirRoot ) => {
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   if( aRead.sProblem !== null ){ return { sProblem: aRead.sProblem };}
@@ -4559,6 +5269,8 @@ const faContextModel = ( sDirRoot ) => {
   };
 };
 
+// @implements s-taoc14@2518951
+// @implements s-2deigh@58b055c
 const fasBodyTaken = ( vaSpec, aModel ) => new Set(
   vaSpec
     .flatMap(( aSpec ) => Array.from(
@@ -4581,8 +5293,10 @@ const fvsLineAssignObservations = ( reader, aModel, minter ) => {
   return aAssign.vsLine;
 };
 
+// @implements s-j8bplx@3ec574d
 const vsKindRetypableCode = [ "implements", "checks" ];
 
+// @implements s-m9jtjo@3366616
 const fvaCodeReferenceRetyped = ( aModel, aFile ) => (
   fvaCodeReferenceForFile( aFile )
     .filter(( aRef ) => aRef.bWell
@@ -4594,6 +5308,7 @@ const fvaCodeReferenceRetyped = ( aModel, aFile ) => (
     .filter(( aRef ) => aRef.sIdRetyped !== null )
 );
 
+// @implements s-m9jtjo@3366616
 const fsCodeTextRetyped = ( sText, vaRef ) => sText.split( "\n" )
   .map(( sLine, n ) => vaRef
     .filter(( aRef ) => aRef.nLine === n + 1 )
@@ -4603,6 +5318,10 @@ const fsCodeTextRetyped = ( sText, vaRef ) => sText.split( "\n" )
     ), sLine ))
   .join( "\n" );
 
+// @implements s-j8bplx@3ec574d
+// @implements s-i63o6a@6dbc87e
+// @implements s-m9jtjo@3366616
+// @tested-by test/side-files.test.js
 const fvsLineAssignCode = ( reader, aModel ) => {
   const aRead = reader.faFilesRead();
   return aRead.vaCiter
@@ -4616,13 +5335,31 @@ const fvsLineAssignCode = ( reader, aModel ) => {
       const vaRef = fvaCodeReferenceRetyped( aModel, aFile );
       if( vaRef.length === 0 ){ return [];}
       const sPath = aFile.bSide ? aFile.sPathSidecar : aFile.sPath;
-      reader.fWriteText( sPath, fsCodeTextRetyped( aFile.sText, vaRef ));
+      reader.fWriteText( sPath, fsCodeTextRetyped(
+        aFile.bSide ? aFile.sTextSidecar : aFile.sText, vaRef
+      ));
       return vaRef.map(( aRef ) => fsRewritten(
         aRef.sPath, aRef.nLine, aRef.sTarget, aRef.sIdRetyped
       ));
     });
 };
 
+// @implements s-a40yzg@5e808cd
+// @implements s-h5caok@17c696d
+// @implements s-yurmkw@ee703cc
+// @implements s-rapf8f@dd2cbd3
+// @implements s-psysjj@03eca21
+// @implements s-j8bplx@3ec574d
+// @implements s-ar1i87@b6009f5
+// @implements s-i63o6a@6dbc87e
+// @implements s-taoc14@2518951
+// @implements s-jhjrqa@2306326
+// @implements s-n7yhjf@0cf1206
+// @implements s-tzxhy9@09c0d8a
+// @implements s-2deigh@58b055c
+// @implements s-pe5j7a@8fee8c2
+// @implements s-wqdxix@ceec0e2
+// @tested-by test/observations.test.js
 const fzAssign = ( reader, fWrite ) => {
   const vaSpec = reader.fvaSpec();
   const aRead = reader.faFilesRead();
@@ -4675,6 +5412,8 @@ const fsHashDerivedFor = ( aMarker, sLabel ) => fsHashForText( fsNormal(
   aMarker.sTextIncluded + " applied to the " + sLabel + "."
 ));
 
+// @implements s-5fldjm@514a40a
+// @implements s-iwko4c@581c6c6
 const fbSplittable = ( aModel, aMarker ) => (
   aMarker.sType === "s"
   && !aMarker.bMalformed
@@ -4683,6 +5422,7 @@ const fbSplittable = ( aModel, aMarker ) => (
   && fvsPartForMarker( aMarker ) !== null
 );
 
+// @implements s-5fldjm@514a40a
 const faSplitForMarker = ( aMarker, minter ) => ({
   aMarker,
   vtLabel: fvsPartForMarker( aMarker ).map(( sLabel ) => [
@@ -4698,6 +5438,7 @@ const fsBulletForBlock = ( aBlock, sLine ) => {
   return "*-+".includes( sBullet ) ? sBullet : "*";
 };
 
+// @implements s-5fldjm@514a40a
 const fvsLineForSplit = ( aSpec, aSplit ) => {
   const aBlock = aSpec.vaBlock[ aSplit.aMarker.nBlock ];
   const sFirst = aSpec.vsLine[ aBlock.vnLine[ 0 ]];
@@ -4710,6 +5451,7 @@ const fvsLineForSplit = ( aSpec, aSplit ) => {
   ));
 };
 
+// @implements s-5fldjm@514a40a
 const fvsLineSplit = ( aSpec, vaSplit ) => {
   const vnLineStart = fvnLineStart( aSpec.vsLine );
   const vvsLine = aSpec.vsLine.map(( sLine ) => [ sLine ]);
@@ -4732,6 +5474,7 @@ const fvsLineSplit = ( aSpec, vaSplit ) => {
   return vvsLine.flat();
 };
 
+// @implements s-y5buk6@917c800
 const fvsOutForSpecSplit = ( aSpec, vaSplit, vsLine ) => vaSplit.flatMap((
   aSplit
 ) => aSplit.vtLabel.map(([ sLabel, sId ]) => (
@@ -4740,33 +5483,41 @@ const fvsOutForSpecSplit = ( aSpec, vaSplit, vsLine ) => vaSplit.flatMap((
   + "  " + sId + "  " + aSplit.aMarker.sId + "  " + sLabel + "\n"
 )));
 
+// @implements s-4y7ukm@b763556
 const fsByHand = ( sPath, nLine, sId ) => (
   sPath + ":" + nLine + "  " + sId + "  by hand\n"
 );
 
+// @implements s-y5buk6@917c800
 const fsRewritten = ( sPath, nLine, sIdOld, sIdNew ) => (
   sPath + ":" + nLine + "  " + sIdOld + " -> " + sIdNew + "\n"
 );
 
+// @implements s-6ujq8d@696a8e1
+// @implements s-rn2itq@10cc3ef
 const fsHashSplit = ( aSplit, sLabel, sHashRecorded ) => (
   sHashRecorded === aSplit.aMarker.sHash
     ? fsHashDerivedFor( aSplit.aMarker, sLabel )
     : sHashRecorded
 );
 
+// @implements s-6ujq8d@696a8e1
+// @implements s-rn2itq@10cc3ef
 const fsIdForLabel = ( aSplit, sLabel ) => {
   const tLabel = aSplit.vtLabel.find(( t ) => t[ 0 ] === sLabel );
   return tLabel === undefined ? null : tLabel[ 1 ];
 };
 
-const fbCallsShared = ( vaCall, aOuterA, aOuterB ) => vaCall.some((
+// @implements s-rn2itq@10cc3ef
+const fbCallsShareRegion = ( vaCall, aRegionA, aRegionB ) => vaCall.some((
   aCall
 ) => (
   aCall.sKind === "test"
-  && aOuterA !== null && aOuterB !== null
-  && fbEncloses( aOuterA, aCall ) && fbEncloses( aOuterB, aCall )
+  && fbRegionOverlapsCall( aRegionA, aCall )
+  && fbRegionOverlapsCall( aRegionB, aCall )
 ));
 
+// @implements s-3rhim7@92937b7
 class TestSplitter {
   constructor( aFile, asplitForId ){
     this.aTest = faParseTest( aFile );
@@ -4778,6 +5529,8 @@ class TestSplitter {
     this.bChanged = false;
   }
 
+  // @implements s-4y7ukm@b763556
+  // @implements s-6ujq8d@696a8e1
   fLink( aLink ){
     if( aLink.sPart === null ){ return;}
     const aSplit = this.asplitForId.get( aLink.sId );
@@ -4796,19 +5549,23 @@ class TestSplitter {
     this.vsOut.push( fsRewritten( this.sPath, aLink.nLine, aLink.sId, sIdNew ));
   }
 
+  // @implements s-4y7ukm@b763556
   fGuard( aGuard ){
     if( this.asplitForId.has( aGuard.sId ) || aGuard.sPart !== null ){
       this.vsByHand.push( fsByHand( this.sPath, aGuard.nLine, aGuard.sId ));
     }
   }
 
+  // @implements s-4y7ukm@b763556
+  // @implements s-rn2itq@10cc3ef
+  // @implements s-9bzl8i@64430ba
   fImplements( aImpl ){
     const aSplit = this.asplitForId.get( aImpl.sId );
     if( aSplit === undefined ){ return;}
     const vsLabel = aSplit.vtLabel.map(( t ) => t[ 0 ]).filter(( sLabel ) => (
       this.aTest.vaLink.some(( aLink ) => (
         aLink.sId === aImpl.sId && aLink.sPart === sLabel
-        && fbCallsShared( this.aTest.vaCall, aLink.aCall, aImpl.aCall )
+        && fbCallsShareRegion( this.aTest.vaCall, aLink, aImpl )
       ))
     ));
     if( !aImpl.bWell || vsLabel.length === 0 ){
@@ -4844,6 +5601,7 @@ class TestSplitter {
   }
 }
 
+// @implements s-iwko4c@581c6c6
 const fsErrForPartList = ( aMarker ) => (
   "spec-map: " + fsPlace( aMarker ) + "  " + aMarker.sToken
   + "  part list left as written: "
@@ -4853,6 +5611,16 @@ const fsErrForPartList = ( aMarker ) => (
   + "\n"
 );
 
+// @implements s-yurmkw@ee703cc
+// @implements s-2deigh@58b055c
+// @implements s-4y7ukm@b763556
+// @implements s-5fldjm@514a40a
+// @implements s-4qpk97@7e4bb82
+// @implements s-ol3soy@d2da0a6
+// @implements s-9bzl8i@64430ba
+// @implements s-iwko4c@581c6c6
+// @implements s-y5buk6@917c800
+// @implements s-gy5mqc@76d7988
 const fzSplitParts = ( reader, fWrite, fWriteErr ) => {
   const vaSpec = reader.fvaSpec();
   const aInput = faInputForReader( reader, vaSpec );
@@ -4910,6 +5678,8 @@ const fsProblemForType = ( sId, sType ) => (
 
 const reIdObservation = /^o-/;
 
+// @implements s-p79bim@05302e1
+// @tested-by test/observations.test.js
 const fzSidObservation = ( reader, sId, fWrite, fWriteErr ) => {
   const aModel = faModelForReader( reader, true );
   const fbSatisfied = faRoots( aModel, fasIdProved( aModel )).fbSatisfied;
@@ -4926,6 +5696,13 @@ const fzSidObservation = ( reader, sId, fWrite, fWriteErr ) => {
   return 0;
 };
 
+// @implements s-1jdhhf@941303a
+// @implements s-kz8d46@36aef0d
+// @implements s-1igmuk@d454589
+// @implements s-6gfnun@a16b6c1
+// @implements s-eel840@1bbc17a
+// @implements s-kzyb2a@f30bbf3
+// @implements s-1f2z8r@e38b9ea
 const fzQuery = ( reader, vsArg, fWrite, fWriteErr ) => {
   if( vsArg[ 0 ] === "--sid" && reIdObservation.test( vsArg[ 1 ] || "" )){
     return fzSidObservation( reader, vsArg[ 1 ], fWrite, fWriteErr );
@@ -4950,6 +5727,7 @@ const fzQuery = ( reader, vsArg, fWrite, fWriteErr ) => {
   return 0;
 };
 
+// @implements s-trjdbr@93aa3fd
 const fvsLineGrouped = ( vaEntry, fvsLine ) => vaEntry.flatMap((
   aEntry, n
 ) => (
@@ -4963,6 +5741,12 @@ const fvsLineForCheck = ( aCheck ) => [
   + "  Do: " + aCheck.sDo + "  Look for: " + aCheck.sLook
 ];
 
+// @implements s-31cdr2@9bb914f
+// @implements s-s8an6z@bb4aac8
+// @implements s-xsbw7s@7a18f8e
+// @implements s-rypq7c@adb23df
+// @implements s-khy3o7@2aa742c
+// @implements s-6umdw1@f9827d2
 const fsInteractive = ( aModel ) => {
   const vaCheck = aModel.aLines.vaCheck.map(( aCheck ) => ({
     ...aCheck, sPath: aCheck.aMarker.sPath
@@ -4977,6 +5761,8 @@ const fsInteractive = ( aModel ) => {
     .join( "\n" ) + "\n";
 };
 
+// @implements s-v5vfac@ccc50fe
+// @implements s-k4mfcb@f02be14
 const fsViaShown = ( aMarker ) => (
   aMarker.bViaPrompt ? " via=" + sViaPrompt : ""
 );
@@ -4985,6 +5771,12 @@ const fbForAudience = ( aMarker, sFor ) => (
   ( aMarker.sFor || "" ).split( "," ).includes( sFor )
 );
 
+// @implements s-m4hujx@1ae0005
+// @implements s-trjdbr@93aa3fd
+// @implements s-3g9qus@2aa742c
+// @implements s-1xpgsb@4b63213
+// @implements s-6umdw1@f9827d2
+// @implements s-k4mfcb@f02be14
 const fsGuidance = ( aModel, vsArg ) => fvsLineGrouped(
   fvaLineOfType( aModel, "g" ).filter(( aMarker ) => (
     vsArg.length < 3 || fbForAudience( aMarker, vsArg[ 2 ])
@@ -5000,13 +5792,19 @@ const fsGuidance = ( aModel, vsArg ) => fvsLineGrouped(
   )))
 ).map(( sLine ) => sLine + "\n" ).join( "" );
 
+// @implements s-zybg31@316483b
 const afsListForFlag = {
   "--cross-suite": fsCrossSuite,
+  // @implements s-0ovkpr@5b8beb1
   "--probes": fsProbes,
   "--interactive": fsInteractive,
   "--guidance": fsGuidance
 };
 
+// @implements s-31cdr2@9bb914f
+// @implements s-rypq7c@adb23df
+// @implements s-khy3o7@2aa742c
+// @implements s-nksahd@2aa742c
 const fzList = ( reader, vsArg, fWrite ) => {
   fWrite( afsListForFlag[ vsArg[ 0 ]](
     faModelForReader( reader, true ), vsArg, reader.aConfig
@@ -5026,6 +5824,7 @@ const faModelForRecord = ( reader ) => faModel({
   aParseCache: reader.aParseCache
 });
 
+// @implements s-j0u6oi@c752acc
 const fsProblemForCheckId = ( aModel, sId ) => {
   const vaMarker = aModel.avaMarkerForId.get( sId ) || [];
   if( vaMarker.length !== 1 ){ return fsProblemForId( sId, vaMarker.length );}
@@ -5034,15 +5833,19 @@ const fsProblemForCheckId = ( aModel, sId ) => {
     : fsProblemForType( sId, vaMarker[ 0 ].sType );
 };
 
+// @implements s-khw3hm@18fc4f5
 const fasHashForTargets = ( aMarker, hasher ) => Object.fromEntries(
-  hasher.aModel.vaCodeRef
+  Array.from( new Set( hasher.aModel.vaCodeRef
     .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
       && aRef.sId === aMarker.sId )
-    .map(( aRef ) => aRef.sPathCode || aRef.sPath ).map(( sTarget ) => [
-    sTarget, hasher.fsHash( sTarget )
-  ])
+    .map(( aRef ) => aRef.sPathCode || aRef.sPath )))
+    .map(( sTarget ) => [
+      sTarget, hasher.fsHashForCheckTarget( sTarget, aMarker.sId )
+    ])
 );
 
+// @implements s-khw3hm@18fc4f5
+// @implements s-ggobif@5312bb8
 const faRecordFor = ( aMarker, hasher, sVerdict, sNote ) => ({
   sId: aMarker.sId,
   sHash: aMarker.sHash,
@@ -5052,6 +5855,13 @@ const faRecordFor = ( aMarker, hasher, sVerdict, sNote ) => ({
   asHashForTarget: fasHashForTargets( aMarker, hasher )
 });
 
+// @implements s-yurmkw@ee703cc
+// @implements s-iz8176@bb80e0d
+// @implements s-khw3hm@18fc4f5
+// @implements s-ggobif@5312bb8
+// @implements s-j0u6oi@c752acc
+// @implements s-6umdw1@f9827d2
+// @implements s-rzwovs@5b76e45
 const fzRecord = ( reader, vsArg, fWriteErr ) => {
   const aModel = faModelForRecord( reader );
   const sProblem = fsProblemForCheckId( aModel, vsArg[ 1 ]);
@@ -5092,6 +5902,7 @@ const fvaAnswerForText = ( sText ) => {
   }
 };
 
+// @implements s-21250a@9a79a7a
 const fsProblemForAnswers = ( sPathArg, sText, aModel ) => {
   if( sText === null ){ return "spec-map: no file at " + sPathArg + "\n";}
   const vaAnswer = fvaAnswerForText( sText );
@@ -5104,6 +5915,7 @@ const fsProblemForAnswers = ( sPathArg, sText, aModel ) => {
     .join( "" ) || null;
 };
 
+// @implements s-hiu3ve@27db7b5
 const faRecordForAnswer = ( aAnswer ) => ({
   sId: aAnswer.sId,
   sHash: aAnswer.sHash,
@@ -5113,6 +5925,11 @@ const faRecordForAnswer = ( aAnswer ) => ({
   asHashForTarget: aAnswer.asHashForTarget
 });
 
+// @implements s-yurmkw@ee703cc
+// @implements s-1r46le@6aec157
+// @implements s-hiu3ve@27db7b5
+// @implements s-21250a@9a79a7a
+// @implements s-rzwovs@5b76e45
 const fzAnswers = ( reader, sPathArg, fWrite, fWriteErr ) => {
   const sText = reader.fsTextAt( sPathArg );
   const aModel = faModelForRecord( reader );
@@ -5146,6 +5963,8 @@ const fvaCheckRecordable = ( aModel ) => aModel.aLines.vaCheck.filter((
   && aModel.avaMarkerForId.get( aCheck.aMarker.sId ).length === 1
 ));
 
+// @implements s-d0p52k@8a9d95e
+// @implements s-g8h2jz@c4623dc
 const fsReasonForReset = ( aCheck ) => {
   if( aCheck.aRecordLast === null ){ return "new";}
   return aCheck.aRecordLast.sHash === aCheck.aMarker.sHash
@@ -5153,6 +5972,9 @@ const fsReasonForReset = ( aCheck ) => {
     : "reworded";
 };
 
+// @implements s-32o5r7@1ced769
+// @implements s-d0p52k@8a9d95e
+// @implements s-pclybh@b87b7b1
 const fvaRecordReset = ( aModel ) => fvaCheckRecordable( aModel )
   .filter(( aCheck ) => (
     aCheck.sStatus === "stale" || aCheck.vaRecord.length === 0
@@ -5162,15 +5984,18 @@ const fvaRecordReset = ( aModel ) => fvaCheckRecordable( aModel )
     sReason: fsReasonForReset( aCheck )
   }));
 
+// @implements s-yu6zet@bb44414
 const fnRecordResetLast = ( vaRecord ) => vaRecord.findLastIndex((
   aRecord
 ) => asVerdictReset.has( aRecord.sVerdict ));
 
+// @implements s-yu6zet@bb44414
 const fsDateReset = ( aCheck ) => {
   const nReset = fnRecordResetLast( aCheck.vaRecord );
   return nReset < 0 ? "" : String( aCheck.vaRecord[ nReset ].sDate );
 };
 
+// @implements s-z7gbzu@ab3b738
 const fbCheckInWork = ( aModel, aCheck, vsWork ) => aModel.aLines.vaCodeRef
   .filter(( aRef ) => aRef.sKind === "checks" && aRef.sReason === null
     && aRef.sId === aCheck.aMarker.sId )
@@ -5178,6 +6003,7 @@ const fbCheckInWork = ( aModel, aCheck, vsWork ) => aModel.aLines.vaCodeRef
     sPath !== undefined && vsWork.includes( fsPathClean( sPath ))
   )));
 
+// @implements s-97jgxt@53268fc
 const fzCompareWorklist = ( aA, aB ) => (
   Number( aB.bWork ) - Number( aA.bWork )
   || aA.sDateReset.localeCompare( aB.sDateReset )
@@ -5185,6 +6011,11 @@ const fzCompareWorklist = ( aA, aB ) => (
   || aA.aMarker.nLine - aB.aMarker.nLine
 );
 
+// @implements s-32o5r7@1ced769
+// @implements s-ikjpbw@fc0cb7c
+// @implements s-z7gbzu@ab3b738
+// @implements s-97jgxt@53268fc
+// @implements s-i5r6dl@fd54b50
 const fvaCheckWorklist = ( aModel, vsWork ) => fvaCheckRecordable( aModel )
   .filter(( aCheck ) => (
     aCheck.sStatus === "unchecked" || aCheck.sStatus === "stale"
@@ -5196,10 +6027,13 @@ const fvaCheckWorklist = ( aModel, vsWork ) => fvaCheckRecordable( aModel )
   }))
   .sort( fzCompareWorklist );
 
+// @implements s-4kpjgj@804210f
 const fsHtmlEscaped = ( sText ) => String( sText ).replace(
   /[&<>"']/g, ( ch ) => asEntityForChar[ ch ]
 );
 
+// @implements s-3m5iin@4d4e26f
+// @implements s-4kpjgj@804210f
 const fsPlainForSpec = ( sText ) => {
   const vtSpan = fvtSpanForText( sText );
   const asnDelimiter = new Set( vtSpan.flatMap(( tSpan ) => [
@@ -5217,6 +6051,7 @@ const fsPlainForSpec = ( sText ) => {
   return sPlain.split( "**" ).join( "" );
 };
 
+// @implements s-g8h2jz@c4623dc
 const fsWhyForCheck = ( aCheck ) => {
   const nReset = fnRecordResetLast( aCheck.vaRecord );
   const aReset = nReset < 0 ? null : aCheck.vaRecord[ nReset ];
@@ -5230,11 +6065,14 @@ const fsWhyForCheck = ( aCheck ) => {
     : sWhy + aPass.sDate + ".";
 };
 
+// @implements s-3m5iin@4d4e26f
 const fsOptionHtml = ( sId, sKey, sHtml ) => (
   "<label class=\"opt\"><input type=\"radio\" name=\"" + sId + "\" value=\""
   + sKey + "\"><span>" + sHtml + "</span></label>"
 );
 
+// @implements s-3m5iin@4d4e26f
+// @implements s-4kpjgj@804210f
 const fsCardHtml = ( aCheck, n, c ) => {
   const sId = aCheck.aMarker.sId;
   const sWhy = fsWhyForCheck( aCheck );
@@ -5262,12 +6100,20 @@ const reCharScriptUnsafe = new RegExp(
   "[<" + String.fromCharCode( 0x2028, 0x2029 ) + "]", "g"
 );
 
+// @tested-by test/spec-map-source.test.js
 const fsJsonForScript = ( x ) => JSON.stringify( x ).replace(
   reCharScriptUnsafe,
   ( ch ) => "\\u" + ch.charCodeAt( 0 ).toString( 16 ).padStart( 4, "0" )
 );
 
 
+// @implements s-m4jorm@da16eb4
+// @implements s-iz8176@bb80e0d
+// @implements s-pclybh@b87b7b1
+// @implements s-5406e5@0bad222
+// @implements s-i5r6dl@fd54b50
+// @implements s-3m5iin@4d4e26f
+// @implements s-ezm2c1@86313be
 const fsPageForChecks = ( sTemplate, sName, vaCheck, hasher ) => {
   const sCards = vaCheck.length === 0
     ? "<p class=\"empty\">Nothing to check.</p>"
@@ -5289,6 +6135,16 @@ const fvsWorkForText = ( sText ) => sText.split( "\n" )
   .filter( Boolean )
   .map( fsPathClean );
 
+// @implements s-yurmkw@ee703cc
+// @implements s-m4jorm@da16eb4
+// @implements s-iz8176@bb80e0d
+// @implements s-ikjpbw@fc0cb7c
+// @implements s-d0p52k@8a9d95e
+// @implements s-b0mknl@02d4cb5
+// @implements s-pclybh@b87b7b1
+// @implements s-z7gbzu@ab3b738
+// @implements s-6zslo8@0373285
+// @implements s-rzwovs@5b76e45
 const fzWorklist = ( reader, vsArg, fWrite, fWriteErr ) => {
   const sPathWork = vsArg.length === 4 ? vsArg[ 3 ] : null;
   const sTextWork = sPathWork === null ? "" : reader.fsTextAt( sPathWork );
@@ -5313,12 +6169,15 @@ const fzWorklist = ( reader, vsArg, fWrite, fWriteErr ) => {
   return 0;
 };
 
+// @implements s-kyro7r@3064fa5
 const fzCompareMarkerPlace = ( aA, aB ) => (
   Number( aA.sPath > aB.sPath ) - Number( aA.sPath < aB.sPath )
   || aA.nLine - aB.nLine
   || aA.nOffset - aB.nOffset
 );
 
+// @implements s-kyro7r@3064fa5
+// @implements s-95ao2f@9b59968
 const fzHashes = ( reader, fWrite ) => {
   const aModel = faModel({
     vaSpec: reader.fvaSpec(),
@@ -5338,6 +6197,7 @@ const fzHashes = ( reader, fWrite ) => {
   return 0;
 };
 
+// @implements s-8wn2ou@c5e7984
 const fzArch = ( reader, fWrite ) => {
   const aModel = faModel({
     vaSpec: reader.fvaSpec(),
@@ -5348,6 +6208,7 @@ const fzArch = ( reader, fWrite ) => {
   return 0;
 };
 
+// @implements s-eltyao@a23e292
 const faInputForReader = ( reader, vaSpec ) => ({
   vaSpec,
   vaTest: reader.fvaTest(),
@@ -5359,6 +6220,29 @@ const faInputForReader = ( reader, vaSpec ) => ({
   aParseCache: reader.aParseCache
 });
 
+// @implements s-l0wfl7@c6ad1b2
+// @implements s-1fwxnq@6500111
+// @implements s-bxs0rr@4c0a68e
+// @implements s-6ls2oh@b278617
+// @implements s-f1np35@35d6720
+// @implements s-tdw4gj@8d6d23d
+// @implements s-3pkw1n@721f8a3
+// @implements s-8xfzz3@6999bd7
+// @implements s-du4nns@bbb6351
+// @implements s-mbcxy1@de2395f
+// @implements s-u2lhta@c6845db
+// @implements s-b8vvpd@9e72e40
+// @implements s-xuw25u@ed827df
+// @implements s-vcpu9h@6d6ac07
+// @implements s-ug5kvq@0033049
+// @implements s-cov7pg@e6a079b
+// @implements s-n8uc4k@a405885
+// @implements s-e287lm@a1b403a
+// @implements s-nudxy0@3495135
+// @implements s-2vgnq6@8323fcb
+// @implements s-sfuntg@4b5ec33
+// @implements s-hgk19s@2c0c557
+// @tested-by test/observations.test.js
 const fzReport = ( reader, sArg, fWrite ) => {
   const sDirRoot = reader.sDirRoot;
   const sPathSpec = sArg === undefined
@@ -5376,6 +6260,17 @@ const fzReport = ( reader, sArg, fWrite ) => {
   return sPathSpec === undefined || fbClean( aMap ) ? 0 : 1;
 };
 
+// @implements s-qvdtqg@16f3fb4
+// @implements s-tlkzzq@39b39e7
+// @implements s-eltyao@a23e292
+// @implements s-rkd937@6d33bc3
+// @implements s-u88ict@b5a6934
+// @implements s-ins4p7@19e76c1
+// @implements s-ol2dmr@37d4979
+// @implements s-nlm91d@4f76fd6
+// @implements s-nw4u9n@3b57e9b
+// @tested-by test/project-coverage.test.js
+// @tested-by test/gate.test.js
 const fzGate = ( reader, fWrite ) => {
   const aModel = faModel( faInputForReader( reader, reader.fvaSpec()));
   const aAnalysis = faAnalysis( aModel );
@@ -5402,6 +6297,14 @@ const sUsage = (
   + "| --hashes | --assign | --split-parts\n"
 );
 
+// @implements s-uffk6s@99fde62
+// @implements s-aphyp7@1f4c6b6
+// @implements s-6zo013@7dde6e2
+// @implements s-kyro7r@3064fa5
+
+// @implements s-ukzm8a@7dde6e2
+// @implements s-gjk5r1@9d6e18f
+// @implements s-ol3soy@d2da0a6
 const fbArgsValid = ( vsArg ) => {
   const sFlag = vsArg[ 0 ] || "";
   if( Object.hasOwn( afsQueryForFlag, sFlag )){ return vsArg.length <= 2;}
@@ -5424,8 +6327,19 @@ const fbArgsValid = ( vsArg ) => {
   return vsArg.length <= 1;
 };
 
+// @tested-by test/concord.test.js
+// @implements s-pa182t@8008053
+// @implements s-uffk6s@99fde62
+// @implements s-rkzefi@94d4b4a
+// @implements s-yurmkw@ee703cc
+// @implements s-gjk5r1@9d6e18f
+// @tested-by test/observations.test.js
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
+  // @implements s-tot8yl@9c5630f
+  // @implements s-4kencv@f2a5fe1
   if( vsArg.includes( "--clear-cache" )){
+    // @implements s-h8i6xs@8462414
+    // @implements s-69o630@92fe218
     if( vsArg.length !== 1 ){
       ( fWriteErr || fWrite )( sUsage );
       return 2;
@@ -5435,6 +6349,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
       fWrite( "spec-map: cache cleared\n" );
       return 0;
     }
+    // @implements s-8ydtei@83a4ba4
     catch( xError ){
       ( fWriteErr || fWrite )(
         "spec-map: unable to clear cache: " + xError.message + "\n"
@@ -5442,10 +6357,12 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
       return 1;
     }
   }
+  // @implements s-w83alg@dde527f
   const cCacheChecksum = vsArg.filter(( sArg ) => (
     sArg === "--cache-checksum"
   )).length;
   vsArg = vsArg.filter(( sArg ) => sArg !== "--cache-checksum" );
+  // @tested-by test/concord-settings.test.js
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   if( aRead.sProblem !== null ){
     ( fWriteErr || fWrite )( "spec-map: " + aRead.sProblem + "\n" );
@@ -5458,6 +6375,8 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   const aParseCache = new ParseCache(
     sDirRoot, fsFingerprintParser( aRead.aConfig )
   );
+  // @implements s-w83alg@dde527f
+  // @implements s-pcodyd@5016f26
   aParseCache.bCheckContent = cCacheChecksum === 1;
   const reader = new TreeReader( sDirRoot, aRead.aConfig, aParseCache );
   try{
@@ -5466,6 +6385,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
       return fzSplitParts( reader, fWrite, fWriteErr || fWrite );
     }
     if( vsArg[ 0 ] === "--hashes" ){ return fzHashes( reader, fWrite );}
+    // @tested-by test/gate.test.js
     if( vsArg[ 0 ] === "--gate" ){ return fzGate( reader, fWrite );}
     if( Object.hasOwn( asVerdictForFlag, vsArg[ 0 ])){
       return fzRecord( reader, vsArg, fWriteErr || fWrite );

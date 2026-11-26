@@ -1,0 +1,7 @@
+--- a/package.json
++++ b/package.json
+@@ -0,0 +1,4 @@
++@implements s-nur3h4@3793438
++@implements s-s6e3j6@4aad693
++@implements s-t99cvq@daf5b13
++@tested-by test/concord-cli.test.js#tu-edcaa4a7

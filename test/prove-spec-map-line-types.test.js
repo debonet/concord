@@ -167,24 +167,24 @@ const fvsMisplaced = ( aRun ) => (
 
 const sNoImplementation = /with no implementation link \(1\):\n\s+specs\/a\.md:\d+ {2}s-mpl001/;
 
-// @proves s-fbqdbv@367a944
-// @proves s-lm68rf@abb02d5
-// @proves s-bw4530@bd1f9d9
+// @proves s-fbqdbv@9e37ea5
+// @proves s-lm68rf@a7ce036
+// @proves s-dkjdl0@511a833
 describe( "spec-map-line-types: a code reference outside the header", () => {
-  test( "a mid-file @implements is an entry of (33) naming file, line, "
-    + "reference and misplaced, and its statement stays in (31); PAIRED "
-    + "with the same reference in the header, which resolves", () => {
+  test( "a mid-file @implements opens a source region, PAIRED with the "
+    + "same reference in the header, which applies file-wide", () => {
     const sRef = "// @implements s-mpl001@" + sHashMisplaced;
     fWriteMisplaced({
       "src/a.js": [
-        "// @tested-by test/a.test.js", "const a = 1;", sRef, ""
+        "// @tested-by test/a.test.js", "const a = 1;", sRef,
+        "const b = 2;", ""
       ].join( "\n" )
     });
     const aRun = faRun([]);
-    expect( fvsMisplaced( aRun )).toContain(
-      "src/a.js:3  " + sRef + " (misplaced)"
-    );
-    expect( aRun.sStdout ).toMatch( sNoImplementation );
+    expect( fvsMisplaced( aRun )).toEqual( [] );
+    expect( aRun.sStdout ).not.toMatch( sNoImplementation );
+    expect( faRun([ "--sid", "s-mpl001" ]).sStdout )
+      .toContain( "src/a.js:3  lines 4-4" );
     fWriteMisplaced({
       "src/a.js": [
         "// @tested-by test/a.test.js", sRef, "const a = 1;", ""
@@ -195,8 +195,10 @@ describe( "spec-map-line-types: a code reference outside the header", () => {
     expect( aControl.sStdout ).not.toMatch( sNoImplementation );
   });
 
-  test( "a mid-file @tested-by names no test file, so the file stays in "
-    + "(32); a mid-file @checks supports no check; each is in (33)", () => {
+  // @proves s-gkhfa4@3deac5b
+  // @proves s-bw4530@acfa706
+  test( "mid-file @tested-by and @checks links are read and checked "
+    + "against their region", () => {
     fWriteMisplaced({
       "src/a.js": [
         "const a = 1;",
@@ -207,8 +209,8 @@ describe( "spec-map-line-types: a code reference outside the header", () => {
     }, [ "* {#i-mpl002} Look at the page and see it drawn." ]);
     const aRun = faRun([]);
     expect( fvsMisplaced( aRun )).toEqual([
-      "src/a.js:2  // @tested-by test/a.test.js (misplaced)",
-      "src/a.js:3  // @checks i-mpl002@0000000 (misplaced)"
+      expect.stringContaining( "test proves no statement implemented in this region" ),
+      expect.stringContaining( "stale hash" )
     ]);
     expect( fvsLineInSection(
       aRun.sStdout, "implementation files with no test link"
@@ -235,8 +237,8 @@ describe( "spec-map-line-types: a code reference outside the header", () => {
     expect( fvsMisplaced( faRun([]))).toEqual([]);
   });
 
-  test( "--gate refuses a tree whose only defect is a misplaced "
-    + "implementation reference; PAIRED without it, which passes", () => {
+  test( "--gate accepts a header reference and a body region naming the "
+    + "same statement", () => {
     const sRef = "// @implements s-mpl001@" + sHashMisplaced;
     const vsHead = [ "// @tested-by test/a.test.js", sRef, "const a = 1;" ];
     fWriteMisplaced({ "src/a.js": vsHead.concat([ "" ]).join( "\n" ) });
@@ -245,15 +247,14 @@ describe( "spec-map-line-types: a code reference outside the header", () => {
       "src/a.js": vsHead.concat([ sRef, "" ]).join( "\n" )
     });
     const aGate = faRun([ "--gate" ]);
-    expect( aGate.cExit ).toBe( 1 );
-    expect( aGate.sStdout ).toContain( "(33) src/a.js:4" );
+    expect( aGate.cExit ).toBe( 0 );
+    expect( aGate.sStdout ).toBe( "Gate: pass\n" );
   });
 });
 
 // @proves s-0hg5qn@087947b
-test( "a #! first line of a JavaScript file is part of the header, so a "
-  + "reference on the second line resolves; PAIRED with a reference after "
-  + "code, which is misplaced", () => {
+test( "a #! first line of a JavaScript file is part of the header, and "
+  + "@implements after code opens a source region", () => {
   const sRef = "// @implements s-mpl001@" + sHashMisplaced;
   fWriteMisplaced({
     "src/a.js": [
@@ -266,8 +267,10 @@ test( "a #! first line of a JavaScript file is part of the header, so a "
   expect( aRun.sStdout ).not.toMatch( sNoImplementation );
   fWriteMisplaced({
     "src/a.js": [
-      "#!/usr/bin/env node", "const a = 1;", sRef, ""
+      "#!/usr/bin/env node", "const a = 1;", sRef, "const b = 2;", ""
     ].join( "\n" )
   });
-  expect( fvsMisplaced( faRun([])).length ).toBe( 1 );
+  expect( fvsMisplaced( faRun([]))).toEqual( [] );
+  expect( faRun([ "--sid", "s-mpl001" ]).sStdout )
+    .toContain( "src/a.js:3  lines 4-4" );
 });

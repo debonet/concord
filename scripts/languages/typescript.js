@@ -1,8 +1,12 @@
 // @implements s-3fzgrr@cc19c25
 // @implements s-rh750h@cc70238
 // @implements s-p54hx2@dfa5570
-// @implements s-k9xdwy@eb62f8a
+// @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
+// @implements s-qap8tu@38172ce
+// @implements s-lwbls1@62d3bb8
+// @implements s-z7g07z@6db8f99
+// @implements s-rolffo@1dccf9b
 "use strict";
 
 const babelParser = require( "@babel/parser" );

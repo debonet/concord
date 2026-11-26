@@ -193,13 +193,14 @@ test( "a project accepts the human-readable concord.json keys", () => {
   expect( aRun.sStderr ).toBe( "" );
 });
 
-// @proves s-tps44b@b7d58ca
+// @proves s-tps44b@b10f867
 // @proves s-ulp42m@25ec2c6
 test( "each legacy concord.json key warns with its canonical key and spec link", () => {
   fWriteTree({
     "concord.json": JSON.stringify({
       sName: "Fixture",
       dirs_specs: [ "specs" ],
+      dirs_guidance: [ "guidance" ],
       vaSuite: [ { sName: "root", vsDir: [ "test" ]} ],
       vsLanguage: [ "javascript", "css" ],
       vsDirRead: [ "src", "scripts", "test" ],
@@ -214,16 +215,23 @@ test( "each legacy concord.json key warns with its canonical key and spec link",
         sPathReview: "review.md"
       }
     }, null, 2 ) + "\n",
-    "specs/a.md": fsSpec( "A", [ "* {#s-cfg002} A rule." ])
+    "specs/a.md": fsSpec( "A", [ "* {#s-cfg002} A rule." ]),
+    "guidance/a.md": fsSpec( "Guidance", [
+      "* {#g-cfgg04 for=fixer} Follow this."
+    ])
   });
   const aRun = faRun([ "--assign" ]);
   const vsWarning = aRun.sStderr.split( "\n" ).filter(( sLine ) => (
     sLine.includes( " is deprecated; use " )
   ));
   expect( aRun.cExit ).toBe( 0 );
-  expect( vsWarning ).toHaveLength( 18 );
+  expect( vsWarning ).toHaveLength( 19 );
   expect( aRun.sStderr ).toContain(
     "dirs_specs is deprecated; use spec_directories "
+      + "(see specs/concord-process.md#the-settings-file)"
+  );
+  expect( aRun.sStderr ).toContain(
+    "dirs_guidance is deprecated; use guidance_directories "
       + "(see specs/concord-process.md#the-settings-file)"
   );
   expect( aRun.sStderr ).toContain(
@@ -241,6 +249,14 @@ const vaKeyAliasConflict = [
   [ "name", "sName", ( a ) => ( a.sName = a.name, a ) ],
   [ "spec_directories", "dirs_specs", ( a ) => (
     a.spec_directories = [ "specs" ], a.dirs_specs = a.spec_directories, a
+  ) ],
+  [ "intent_directories", "dirs_intents", ( a ) => (
+    a.intent_directories = [ "intent" ],
+    a.dirs_intents = a.intent_directories, a
+  ) ],
+  [ "guidance_directories", "dirs_guidance", ( a ) => (
+    a.guidance_directories = [ "guidance" ],
+    a.dirs_guidance = a.guidance_directories, a
   ) ],
   [ "suites", "vaSuite", ( a ) => ( a.vaSuite = a.suites, a ) ],
   [ "languages", "vsLanguage", ( a ) => (
@@ -316,6 +332,9 @@ const vtBad = [
   [ "an unknown member", fsConcordJson({ xOther: 1 }), "xOther" ],
   [ "a spec directory with a parent segment",
     fsConcordJson({ spec_directories: [ "../spec" ] }), "spec_directories" ],
+  [ "an intent directory with a parent segment",
+    fsConcordJson({ intent_directories: [ "../intent" ] }),
+    "intent_directories" ],
   [ "a spec directory with a wildcard",
     fsConcordJson({ spec_directories: [ "packages/p*" ] }),
     "spec_directories" ],
@@ -327,6 +346,12 @@ const vtBad = [
     fsConcordJson({ spec_directories: "specs" }), "spec_directories" ],
   [ "a declared spec directory naming no existing directory",
     fsConcordJson({ spec_directories: [ "nowhere" ] }), "spec_directories" ],
+  [ "a declared intent directory naming no existing directory",
+    fsConcordJson({ intent_directories: [ "intent" ] }),
+    "intent_directories" ],
+  [ "a declared guidance directory naming no existing directory",
+    fsConcordJson({ guidance_directories: [ "guidance" ] }),
+    "guidance_directories" ],
   [ "no suites", fsConcordJson({ suites: []}), "suites" ],
   [
     "a suite with no directory",
@@ -420,6 +445,61 @@ test( "a project reads specs from each configured directory pattern", () => {
   expect( aPointer.sStdout ).toContain( "packages/alpha/specs/alpha.md  resolves" );
 });
 
+// @proves s-jui3zn@efc964c
+// @proves s-ky5glg@98fd470
+test( "a project indexes separate intent files and still reads legacy motives in specs", () => {
+  const sIntent = "A human intent kept in its own file.";
+  const sLegacy = "A legacy motive left in a spec file.";
+  fWriteTree({
+    "concord.json": fsConcordJson({ intent_directories: [ "intent/*" ] }),
+    "intent/product/goals.md": "# Product intent\n\n* {#m-cfgm01} "
+      + sIntent + "\n",
+    "specs/product.md": fsSpec( "Product", [
+      "* {#s-cfgs08 <m-cfgm01@" + fsHash( sIntent ) + "} A rule."
+    ]),
+    "specs/legacy.md": fsSpec( "Legacy", [
+      "> {#m-cfgm02} " + sLegacy,
+      "* {#s-cfgs09 <m-cfgm02@" + fsHash( sLegacy ) + "} A legacy rule."
+    ])
+  });
+  const aIntent = faRun([ "--sid", "m-cfgm01" ]);
+  const aLegacy = faRun([ "--sid", "m-cfgm02" ]);
+  const aRule = faRun([ "--root", "m-cfgm01" ]);
+  expect( aIntent.cExit ).toBe( 0 );
+  expect( aIntent.sStdout ).toContain( "intent/product/goals.md" );
+  expect( aLegacy.cExit ).toBe( 0 );
+  expect( aLegacy.sStdout ).toContain( "specs/legacy.md" );
+  expect( aRule.sStdout ).toContain( "s-cfgs08" );
+});
+
+// @proves s-heb3sm@4ea5a39
+// @proves s-omlrtx@0e5e677
+test( "a project indexes guidance from configured directories and legacy specs", () => {
+  const sNew = "Guidance in its own directory.";
+  const sLegacy = "Guidance retained in a spec directory.";
+  fWriteTree({
+    "concord.json": fsConcordJson({
+      guidance_directories: [ "guidance/*" ]
+    }),
+    "guidance/team/agent.md": fsSpec( "Agent guidance", [
+      "* {#g-cfgg01 for=fixer} " + sNew
+    ]),
+    "specs/legacy.md": fsSpec( "Legacy guidance", [
+      "* {#g-cfgg02 for=fixer} " + sLegacy
+    ]),
+    "src/agent.js": "// @follows g-cfgg01@" + fsHash( sNew ) + "\n"
+  });
+  const aNew = faRun([ "--sid", "g-cfgg01" ]);
+  const aLegacy = faRun([ "--sid", "g-cfgg02" ]);
+  const aGuidance = faRun([ "--guidance", "--for", "fixer" ]);
+  expect( aNew.cExit ).toBe( 0 );
+  expect( aNew.sStdout ).toContain( "guidance/team/agent.md" );
+  expect( aLegacy.cExit ).toBe( 0 );
+  expect( aLegacy.sStdout ).toContain( "specs/legacy.md" );
+  expect( aGuidance.sStdout ).toContain( "g-cfgg01" );
+  expect( aGuidance.sStderr ).toBe( "" );
+});
+
 // @proves s-liocgl@6c02b38
 test( "a spec directory pattern may have no matches yet", () => {
   fWriteTree({
@@ -446,7 +526,39 @@ test( "the legacy dirs_specs key is accepted as spec_directories", () => {
   );
 });
 
-// @proves s-tps44b@b7d58ca
+// @proves s-jui3zn@efc964c
+test( "the legacy dirs_intents key is accepted with a canonical-key warning", () => {
+  fWriteTree({
+    "concord.json": fsConcordJson({ dirs_intents: [ "intent" ] }),
+    "intent/a.md": "# Intent\n\n* {#m-cfgm03} A legacy-configured motive.\n"
+  });
+  const aRun = faRun([ "--sid", "m-cfgm03" ]);
+  expect( aRun.cExit ).toBe( 0 );
+  expect( aRun.sStdout ).toContain( "intent/a.md" );
+  expect( aRun.sStderr ).toContain(
+    "concord.json: dirs_intents is deprecated; use intent_directories "
+      + "(see specs/concord-process.md#the-settings-file)"
+  );
+});
+
+// @proves s-heb3sm@4ea5a39
+test( "the legacy dirs_guidance key is accepted with a canonical-key warning", () => {
+  fWriteTree({
+    "concord.json": fsConcordJson({ dirs_guidance: [ "guidance" ] }),
+    "guidance/a.md": fsSpec( "Guidance", [
+      "* {#g-cfgg03 for=fixer} A legacy-configured guidance line."
+    ])
+  });
+  const aRun = faRun([ "--sid", "g-cfgg03" ]);
+  expect( aRun.cExit ).toBe( 0 );
+  expect( aRun.sStdout ).toContain( "guidance/a.md" );
+  expect( aRun.sStderr ).toContain(
+    "concord.json: dirs_guidance is deprecated; use guidance_directories "
+      + "(see specs/concord-process.md#the-settings-file)"
+  );
+});
+
+// @proves s-tps44b@b10f867
 test( "a bad legacy dirs_specs value is reported under its canonical name",
 () => {
   fWriteTree({
@@ -588,7 +700,7 @@ const vtBadObservations = [
   }, "rules_files" ]
 ];
 
-// @proves s-pwo03p@679e44b
+// @proves s-pwo03p@df815c0
 // @proves s-bqv6fu@d463477
 describe( "concord-settings — the observations file and the rules files",
 () => {
@@ -611,7 +723,7 @@ describe( "concord-settings — the observations file and the rules files",
     expect( vsTreeFile()).toEqual( vsBefore );
   });
 
-  // @proves s-pwo03p@679e44b
+  // @proves s-pwo03p@df815c0
   test( "the observations file cannot be under a secondary spec root", () => {
     fWriteTree({
       "concord.json": fsConcordJson({
@@ -727,9 +839,9 @@ describe( "concord-settings — test files lie under the declared suites",
     });
     expect( faRun([ "--sid", "s-cfg002" ]).sStdout ).toBe([
       "specs/a.md:5  s-cfg002  " + sTextRule,
-      "checks/unit/u.test.js:1  checks the rule  "
+      "checks/unit/u.test.js:1  lines 2-2  "
         + fsHash( sTextRule ) + "  current",
-      "more/flow/f.test.js:1  checks the rule  "
+      "more/flow/f.test.js:1  lines 2-2  "
         + fsHash( sTextRule ) + "  current",
       ""
     ].join( "\n" ));
@@ -866,10 +978,13 @@ test( "concord-settings — Concord's own settings file declares Concord's "
   + "suite, language, directories, record file and coverage", () => {
   expect( JSON.parse( fs.readFileSync( sPathConcord, "utf8" ))).toEqual({
     name: "Concord",
+    spec_directories: [ "specs" ],
+    intent_directories: [ "intent" ],
+    guidance_directories: [ "guidance" ],
     suites: [{ name: "root", directories: [ "test" ]}],
     languages: [ "javascript" ],
-    read_directories: [ "bin", "scripts", "test" ],
-    ignored_directories: [ "node_modules" ],
+    read_directories: [ ".", "bin", "scripts", "test" ],
+    ignored_directories: [ ".concord", ".git", "node_modules", "tmp" ],
     record_file: "test/interactive-passes.jsonl",
     observations_file: "observations.md",
     rules_files: [
@@ -900,8 +1015,15 @@ test( "concord-settings — Concord's npm helper scripts call the master command
     "spec-coverage": "bin/concord spec-coverage",
     "agents-sync": "bin/concord agents-sync",
     "hook-install": "bin/concord concord-hook install",
-    "link-propose": "bin/concord link-propose"
+    "link-propose": "bin/concord link-propose",
+    "link-refine": "bin/concord link-refine"
   });
+  expect( fsRepoText( "README.md" )).toContain(
+    "npm install --save-dev @debonet/concord --cache ./tmp/npm-cache"
+  );
+  expect( fsRepoText( "AGENTS.md" )).toContain(
+    "npm install --save-dev @debonet/concord --cache ./tmp/npm-cache"
+  );
   fAssertProjectGate();
 });
 
@@ -930,11 +1052,12 @@ const sDirBin = path.join( sDirRepo, "bin" );
 // @proves s-y7klju@10305b7
 test( "concord-settings — each command under bin is an executable file "
   + "with no extension opening with the node shebang", () => {
-  const vsName = fs.readdirSync( sDirBin ).sort();
+  const vsName = fs.readdirSync( sDirBin )
+    .filter(( sName ) => !sName.endsWith( ".concord" )).sort();
   expect( vsName ).toEqual([
     "agents-sync", "concord", "concord-hook", "concord-init", "concord-migrate",
-    "context", "link-propose", "spec-conflicts", "spec-coverage", "spec-map",
-    "tree"
+    "context", "link-propose", "link-refine", "spec-conflicts",
+    "spec-coverage", "spec-map", "tree"
   ]);
   vsName.forEach(( sName ) => {
     const sPath = path.join( sDirBin, sName );
@@ -1024,7 +1147,7 @@ test( "concord-settings — Concord's own commits are gated by its committed "
   const sPathHook = path.join( sDirRepo, ".githooks", "pre-commit" );
   expect( fs.statSync( sPathHook ).mode & 0o777 ).toBe( 0o755 );
   expect( fs.readFileSync( sPathHook, "utf8" )).toBe(
-    "#!/bin/sh\nconcord spec-map --gate || exit 1\n"
+    "#!/bin/sh\nif [ -x bin/concord ] && [ -f scripts/spec-map.js ]; then bin/concord spec-map --gate || exit 1; else concord spec-map --gate || exit 1; fi\n"
   );
 });
 

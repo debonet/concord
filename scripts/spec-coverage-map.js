@@ -1,24 +1,6 @@
-// @implements s-1ysu8b@22d704d
-// @implements s-e31j3s@8308811
-// @implements s-2ievqg@7a7a4e9
-// @implements s-4ppmq1@37f49d5
-// @implements s-5d2c66@ad124de
-// @implements s-g34sjl@00728c3
-// @implements s-a15jla@46efff6
-// @implements s-0295lu@4b88f3f
-// @implements s-lhwdqe@03f70a8
-// @implements s-kp5fav@f34662e
-// @implements s-8ixmxa@32915a9
-// @implements s-m0ujxb@03a5d5b
-// @implements s-vqckkr@0e48f69
-// @implements s-4ne8xs@f3e543e
-// @implements s-vwvdtj@26b11d4
-// @implements s-ba6b5c@a60801b
-// @implements s-jr9fxe@06e6843
-// @implements s-2ggdsa@c4eed56
-// @implements s-xk9tq1@fa0d181
-// @implements s-bbd75g@9d2bf8c
 // @tested-by test/spec-coverage.test.js
+// @implements s-ii54an@ee79563
+// @implements s-e31j3s@8308811
 "use strict";
 
 const fs = require( "fs" );
@@ -60,6 +42,7 @@ const asTitleForKind = {
 
 const fvsSortedUnique = ( vs ) => Array.from( new Set( vs )).sort();
 
+// @implements s-1ysu8b@22d704d
 const faTestIndex = ( aModel, vaTestText ) => {
   const avnLineStartForPath = new Map( vaTestText.map(( aFile ) => [
     fsPosix( aFile.sPath ), fvnLineStart( aFile.sText.split( "\n" ))
@@ -150,6 +133,7 @@ class LinkReader {
   }
 }
 
+// @implements s-5d2c66@ad124de
 const fbStaleFile = ( sDirRoot, sPath, aFile ) => {
   const sPathAbs = path.join( sDirRoot, sPath );
   return (
@@ -183,6 +167,7 @@ const ffaAttributionCached = ( vaUnit ) => {
   };
 };
 
+// @implements s-5d2c66@ad124de
 const faMapJoined = ({ sDirRoot, aMeasurement, aLinks }) => {
   const vaUnit = fvaUnitResolved( aMeasurement.vaUnit, aLinks.aTestIndex );
   const faAttribution = ffaAttributionCached( vaUnit );
@@ -206,6 +191,8 @@ const faMapJoined = ({ sDirRoot, aMeasurement, aLinks }) => {
   };
 };
 
+// @implements s-8ixmxa@32915a9
+// @implements s-m0ujxb@03a5d5b
 const faEntryForLine = ( sLine, nLine ) => {
   const vsGroup = sLine.match( reEntry );
   const bLead = reEntryLead.test( sLine );
@@ -233,6 +220,7 @@ const fvaEntryForReview = ( sText ) => (
     .filter( Boolean )
 );
 
+// @implements s-ba6b5c@a60801b
 const fnFirstForEntry = ( vsLine, aEntry ) => {
   const cLine = aEntry.nLast - aEntry.nFirst + 1;
   const fbAt = ( nFirst ) => (
@@ -258,12 +246,18 @@ const fbCovered = ( aRegion ) => aRegion.vnUnit.length > 0;
 
 const fbProving = ( aRegion ) => aRegion.vsIdStmt.length > 0;
 
+// @implements s-vqckkr@0e48f69
+// @implements s-2ggdsa@c4eed56
 const fbDischarging = ( aEntry, aRegion ) => (
   aEntry.sVerdict === sVerdictMissing
     ? fbCovered( aRegion )
     : fbProving( aRegion )
 );
 
+// @implements s-kp5fav@f34662e
+// @implements s-ba6b5c@a60801b
+// @implements s-jr9fxe@06e6843
+// @implements s-2ggdsa@c4eed56
 const faEntryResolved = ( aEntry, aMap ) => {
   const aFile = aMap.aMeasurement.aFile[ aEntry.sPath ];
   const nFirst = aFile === undefined
@@ -281,6 +275,8 @@ const faEntryResolved = ( aEntry, aMap ) => {
   return { ...aEntry, sState: bDischarged ? "discharged" : "live", vaRegion };
 };
 
+// @implements s-kp5fav@f34662e
+// @implements s-xk9tq1@fa0d181
 class ReviewReader {
   constructor( sDirRoot, sPathReview ){
     this.sPath = path.join( sDirRoot, sPathReview );
@@ -292,6 +288,7 @@ class ReviewReader {
   }
 }
 
+// @implements s-jr9fxe@06e6843
 const faReview = ( sText, aMap, sPathReview ) => {
   const vaEntry = sText === null ? [] : fvaEntryForReview( sText );
   const vaResolved = vaEntry
@@ -316,11 +313,13 @@ const faReview = ( sText, aMap, sPathReview ) => {
   };
 };
 
+// @implements s-vqckkr@0e48f69
 const fsVerdictFor = ( aReview, aRegion ) => {
   const aEntry = aReview.aentryForRegion.get( aRegion );
   return aEntry === undefined ? null : aEntry.sVerdict;
 };
 
+// @implements s-5d2c66@ad124de
 const fsMarkStale = ( aMap, sPath ) => (
   aMap.absStale.get( sPath ) === false ? "" : sMarkStale
 );
@@ -358,6 +357,10 @@ const fvsLineHeader = ( aMeasurement ) => [
   + tSuite[ 1 ].cFailed + " failed, " + tSuite[ 1 ].cSkipped + " skipped"
 )));
 
+// @implements s-vqckkr@0e48f69
+// @implements s-4ne8xs@f3e543e
+// @implements s-vwvdtj@26b11d4
+// @implements s-xk9tq1@fa0d181
 const fvsSectionUncovered = ( aMap, aReview ) => {
   const vaUncovered = aMap.vaRegion.filter(( aRegion ) => (
     !fbCovered( aRegion )
@@ -391,6 +394,8 @@ const fbUnspecifiedCovered = ( aRegion ) => (
   fbCovered( aRegion ) && !fbProving( aRegion )
 );
 
+// @implements s-4ne8xs@f3e543e
+// @implements s-xk9tq1@fa0d181
 const fvsSectionCoveredUnspecified = ( aMap ) => {
   const vaRegion = aMap.vaRegion.filter( fbUnspecifiedCovered );
   return [ fsHeading( "(b) Covered but unspecified", vaRegion.length )]
@@ -461,6 +466,8 @@ class Interner {
   }
 }
 
+// @implements s-2ievqg@7a7a4e9
+// @implements s-4ppmq1@37f49d5
 const faMapFile = ( aMap ) => {
   const internTest = new Interner();
   const internAttribution = new Interner();
@@ -487,6 +494,7 @@ const faMapFile = ( aMap ) => {
   };
 };
 
+// @implements s-2ievqg@7a7a4e9
 const fsFile = ( aMap, sPath ) => {
   const vaRegion = aMap.vaRegion.filter(( aRegion ) => (
     aRegion.sPath === sPath
@@ -503,6 +511,7 @@ const fsFile = ( aMap, sPath ) => {
   ].concat( fvsLineAttribution( aRegion, "    " )))).join( "\n" ) + "\n";
 };
 
+// @implements s-a15jla@46efff6
 const fvaMarkerBeneath = ( aModel, aMarker ) => {
   const vaRoot = faRoots( aModel, fasIdProved( aModel )).vaRoot;
   const avaConclusion = new Map( vaRoot.map(( aRoot ) => [
@@ -520,6 +529,8 @@ const fvaMarkerBeneath = ( aModel, aMarker ) => {
   return Array.from( asSeen );
 };
 
+// @implements s-g34sjl@00728c3
+// @implements s-a15jla@46efff6
 const fsSid = ( aMap, aMarker ) => {
   const aModel = aMap.aLinks.aModel;
   const vaMarker = fvaMarkerBeneath( aModel, aMarker );
@@ -540,9 +551,11 @@ const fsSid = ( aMap, aMarker ) => {
       .filter(( sId ) => sId !== aMarker.sId ).join( ", " )]
     : []
   );
+  // @implements s-0295lu@4b88f3f
   if( vaCall.length === 0 ){
     return vsLine.concat( "no test proves " + aMarker.sId ).join( "\n" ) + "\n";
   }
+  // @implements s-g34sjl@00728c3
   return vsLine
     .concat( fsHeading( "tests proving it", vaCall.length ))
     .concat( vaCall.map(( aCall ) => (

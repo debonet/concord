@@ -2,11 +2,6 @@
 
 Statement ids: complete
 
-> {#m-5449jo} USER 2026-11-10: "How could we detect those? seems like an n^2 problem on the face of it"
-> {#m-9pigsq} USER 2026-11-10: "Try making it"
-> {#m-vcbbyq} USER 2026-11-10: "agreed, but the challenge is how do we reduce the comparison set for each spec, so that we are looking at O(nm) instead of O(n^2) with m<<n"
-> {#m-0wens7} USER 2026-11-10: "ok, build this version. Then test it on this codebase and let's see how many hits we get."
-> {#m-5kab8v} USER 2026-11-10: "Add some structure by default that will help agents figure out what do to with that info, and a --human flag which makes it less structured.
 
 It would be useful to indicate what the tool thinks the problem might be.
 
@@ -15,18 +10,12 @@ Also consider wraping the response in something like: \"The following is a list 
 Also we need some sort of mechanism to remember that things you flagged as conflicts but which later analysis has determined are not conflicts can be recoreded as such so that you don't flag them on subsequent runs.
 
 One way might be to actually generate a conflicts file, give each conflict its own ID (conflict-<hash>), and give it a status, e.g. \"new, open, resolved, incorrect\", where the hash is deterministic so a subsequent detection will land in the same spot"
-> {#m-2875ig} USER 2026-11-11: "Right. Add that. And call it --nextreview. We should also provide a --nextopen so that the model can chug through all the open conflicts and resolve them. Then add documentation for all of this so agents know how to use it."
-> {#m-twjhsf} USER 2026-11-11: "This is less than ideal. We need some way to go on to the next one. Do we need to use dates? Show me the open one that was examined least recently?"
-> {#m-daisy1} USER 2026-11-12: "yes, that is right. But is there a way to encapsulate that loop so that we don't need to rely on the model to loop properly? Perhaps the tools should issue daisy-chain-like instructions, e.g.
 
 concord spec-conflicts returns \"found 250 conflicts, run `concord spec-conflicts --nextreview`\"
 
 then
 
 concord spec-conflicts --nextreview returns the conflict and then a version of your instructions in 2, followed by \"then rerun  run `concord spec-conflicts --nextreview`\""
-> {#m-brnch1} USER 2026-11-12: "But the launch of branches is controlled by the harness so we need to **advise** the model calling spec-conflicts to handle it that way"
-> {#m-rvw001} USER 2026-11-12: "Ok, so do it that way. Produce a conflict-reviewer agent and tell the model to run that agent for each conflict"
-> {#m-qloop1} USER 2026-11-12: "This is not working well.
 
 What should happen is we should provide a tight loop for the main model to run:
 
@@ -36,10 +25,8 @@ while spec-conflicts --count  > 0 {
 
 Then each conflit reviewer should run spec-conflicts --nextreview at its own start
 and --nextreview should automatically tag the conflict it has handed out to prevent the next agent from getting the same one"
-> {#m-hour01} USER 2026-11-12: "You've got to do something to handle agents that die without reponding.
 
 I think it would be much easier to simply update the timestamp when a conflict is handed out via --nextreveiew and only hand out conflicts that are open and haven't been reviewed in the last hour (and provide a --since option)"
-> {#m-docno1} USER 2026-11-12: "When you're done make sure there's a comprehensive set of docs for how to do a conflict review:
 
 1. run spec-conflicts
 2. while (spec-conflicts --count > 0) { launch parallel conflict-reviewers }
@@ -49,8 +36,6 @@ with some DO NOTS:
 * DO NOT example the conflicts file manually
 * DO NOT modify the conflicts file manually
 etc."
-> {#m-remn01} USER 2026-11-12: "we can do a little better than a while loop: --nextreview can return the remaining count and the conflict-reviewer can return that count to the calling model and say there are likely additional conflicts to review so launch me again, or not"
-> {#m-count1} USER 2026-11-12: "OOOOh. The report should not display anything but the count! We don't want to pollute the context!"
 
 ## Purpose
 
@@ -112,7 +97,7 @@ Find related specification claims that deserve a human or agent review for contr
 
 * {#s-iib1an <arch} The command considers marked `s` lines as claims. It does not consider other marker types, motives, pointers or unmarked prose.
 * {#s-l1ejuq <arch} A statement's implementation-file anchors are the implementation files holding a resolving `@implements` reference to it.
-* {#s-mdie6i <arch} A statement's test-unit anchors are the test units covered by a resolving `@proves` link to it, including units covered through an enclosing `describe` link.
+* {#s-mdie6i <arch} A statement's test-unit anchors are the test units whose source ranges overlap a resolving `@proves` region naming it; test-framework nesting does not extend a proof group's range.
 * {#s-q61vzh <arch} A statement is anchored when it has at least one implementation-file or test-unit anchor; a statement with no such anchor is not compared or reported.
 * {#s-run5j3 <arch} Candidate generation indexes each statement under its implementation-file and test-unit anchors and its indexed tokens; a pair is considered only when both statements share at least one anchor and at least one indexed token.
 * {#s-x5iowz <arch} The index key combines an anchor and a token, so unrelated claims that share wording but no implementation file or test unit are never compared.

@@ -1,11 +1,14 @@
 {
   "name": "Concord",
+  "spec_directories": [ "specs" ],
+  "intent_directories": [ "intent" ],
+  "guidance_directories": [ "guidance" ],
   "suites": [
     { "name": "root", "directories": [ "test" ] }
   ],
   "languages": [ "javascript" ],
-  "read_directories": [ "bin", "scripts", "test" ],
-  "ignored_directories": [ "node_modules" ],
+  "read_directories": [ ".", "bin", "scripts", "test" ],
+  "ignored_directories": [ ".concord", ".git", "node_modules", "tmp" ],
   "record_file": "test/interactive-passes.jsonl",
   "observations_file": "observations.md",
   "rules_files": [

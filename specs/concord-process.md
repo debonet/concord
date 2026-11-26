@@ -10,65 +10,24 @@ Concord where it stands.
 
 ## His words
 
-> {#m-yy30zw} RULING (CEO) 2026-10-21, on the Seed project, whose session he
-> had stopped: "When I wake it up, we should have a fully specified concord
-> process, and we can use that project as a test of "in situ" porting"
 
-> {#m-620fb7} RULING (CEO) 2026-10-11, on converting specs to statement
-> ids: "Overhaul an area we a NOT currently working on, and progressively do
-> the things we are working on currently. That way we can work in parallel."
 
-> {#m-u4pusr} RULING (CEO) 2026-10-21, on where the checker lives: "A | note:
-> we decided on ~/@concord would be its own project. All utilities should be
-> in ~/@concord/bin"
 
-> {#m-f75zwe} RULING (CEO) 2026-10-21, on named tests beside coded sentences:
-> "C"
 
-> {#m-1irlik} RULING (CEO) 2026-10-21, on how a Rust test names a case: "n/a.
-> See 86 above"
 
-> {#m-b2shvm} RULING (CEO) 2026-10-21, on what stops a commit: "B"
 
-> {#m-5cyvk4} RULING (CEO) 2026-10-21, on what else stops a commit: "A", with the note: "Basically all spec changes should run the spec-map validator to ensure that the stc linkages all remain valid"
 
-> {#m-c9ebz3} RULING (CEO) 2026-10-21, on whose rule book is the standard: "A"
 
-> {#m-asoxa8} RULING (CEO) 2026-10-22, on Concord and agent tools other
-> than Claude Code: "How do we make this more cross-model friendly (e.g. with
-> AGENTS.md in some commonly accessible place?)"
 
-> {#m-2794qp} RULING (CEO) 2026-10-22, on that plan: "Do it"
 
-> {#m-jz8p3b} USER 2026-10-23: "make concord also support typescript"
 
-> {#m-ith31r} USER 2026-11-02: "Importantly, the packages/modules are themselves self-contained concordstc projects, likely under their own, separate, git control"
 
-> {#m-fi6q34} USER 2026-11-02: "What are the other keys in concord.js? They should all be made huamn-reabable, not semantic Hungarian.
->
-> To keep things backward compatible, allow the old keys, but issue a warning when a tool reads the file with a pointer to the new spec.  Two keys (the human readable, and SH versions) that point to the same datum should be a hard error."
 
-> {#m-efrniq} USER 2026-11-09: "Refactor the code so that all of the support for a language can live in a single file. There should be one file for javascript support, then a different one for each language we add."
 
-> {#m-smey68} USER 2026-11-02: "That is weird. Concord.json should not use semantic hungarian tags. SH is really limited to code. Also, there should be more than one place it can look for specs, e.g.:
->
-> \"dirs_specs\" : [\"specs/*\",\"packages/*/specs\"]"
 
-> {#m-f9xsif} USER 2026-11-09: "Concord should work as an npm package. So a new project should be able to do something like
->
-> npm -g install @debonet/concord
-> concord init
->
-> (the commands might not be right)
->
-> and get back a series of instructions that get the project context set up for using concord
->
->
-> Also all the binaries should be called from a master `concord` program. So spec-map should be `concord spec-map` etc."
 
 ## Terms
 
-> {#m-la578k} USER 2026-11-14: "yeah, let's get rid of the \"STC\" everywhere and just use \"concord\" -- do it in a way that's backward compatible with old projects, but which updates them"
 
 * {#d-xhw3y4 <arch,m-yy30zw@60906a5,m-c2gwx4@a84e9f9} **Adopting project** — a project whose root
   `AGENTS.md` holds the Concord line, and whose specs, tests and code Concord
@@ -83,8 +42,9 @@ Concord where it stands.
   implementation, test-file and hand-check references, which comment
   and literal forms are masked so nothing inside them is read as a
   directive, which files are test files, the test units and the grouping
-  units that enclose them with their names and extents, which line a run of
-  directives must sit directly above, where a file's header ends, which
+  units that enclose them with their names and extents, how directive groups
+  define source regions by indentation, which owner lines must sit directly
+  above a test or grouping unit, where a file's header ends, which
   constructs define a test unit, and how a file is normalised for a content
   hash. A language in which a project writes code but no tests needs only
   the comment, literal and
@@ -103,7 +63,6 @@ Concord where it stands.
   `specs/spec-map-interactive.md`, in every adopting project as written,
   except where a section of this spec (What varies by project, Language
   readings) replaces a part of them that is AIOS's own or JavaScript's own.
-* {#g-6ev45j <m-c9ebz3@6ad3d71 for=main,architect,fixer via=prompt} **One rule book.** Follow Concord's own specs in every adopting project; do not follow another draft, including `~/@seed/docs/concord-spec.md`.
 * {#p-uovly3 >specs/spec-map-line-types.md#line-types} The six line types, their
   markers, placeholders, retyping and the satisfaction of each type.
 * {#p-gdbw3z >specs/spec-map.md#statement-ids,specs/spec-map.md#statement-roots,specs/spec-map.md#derived-statements}
@@ -124,42 +83,7 @@ Concord where it stands.
 
 ## Which projects use Concord
 
-> {#m-c2gwx4} RULING (CEO) 2026-11-04, q202. The question: "Is ConcordSTC used
-> by every project, or only by projects that say so? Your global Claude Code
-> instructions (~/.claude/CLAUDE.md, section "Every project uses ConcordSTC")
-> say every project uses ConcordSTC: in a project with no concord.json, the
-> next architect pass adds one, plus the spec-map and spec-coverage build
-> targets. For the questions page you have now chosen that each project says
-> for itself whether it uses it, "just like Concord"; today Concord does not
-> work that way.
->
-> Example: you open a session in a small scripts folder that has no
-> concord.json. Today the first architect pass there writes concord.json and
-> adds spec-map targets to its build.
-> A) Only projects that say so: a project uses ConcordSTC when its AGENTS.md
-> says it does (one line, as for the questions page). The global section
-> shrinks to that rule, and nothing is added to a project that has not opted
-> in.
-> B) Only projects that already have a concord.json use it; no AGENTS.md
-> line, and nothing is added to the others.
-> C) Every project, as today." His answer: A, with the note: "The global
-> claude should be set to ask if the user has not specified."
 
-* {#g-ho8w3d <m-c2gwx4@a84e9f9,m-f9xsif@e917ff9 for=main,architect via=prompt} **One line in AGENTS.md.** A
-  project uses Concord when its root `AGENTS.md` holds, on a line of its
-  own, `Read @<path>/AGENTS.md before any other work; this project uses
-  Concord.` The path is the path to the Concord package's `AGENTS.md`,
-  printed by `concord init`; the `@` path is written outside backticks, so a
-  tool that imports `@` paths loads the file and any other tool reads the
-  sentence as an instruction.
-* {#g-rxspq4 <m-c2gwx4@a84e9f9 for=main,architect,fixer via=prompt} **Nothing added unasked.** In a
-  project whose root `AGENTS.md` does not hold the Concord line, no agent
-  writes a `concord.json`, a Concord build target, a pre-commit gate, a
-  statement marker or a link line, and no agent follows Concord's rules
-  there.
-* {#g-gljrho <arch,m-c2gwx4@a84e9f9,m-la578k@404c7f8 for=main via=prompt} **The opt-out line.** A project that
-  does not use Concord records it with a line of its own in its root
-  `AGENTS.md`, exactly: `This project does not use Concord.`
 * {#s-ppyrc4 <arch,m-la578k@404c7f8} **Legacy adoption lines.** `concord init`
   recognizes as legacy markers a standalone line of the former adoption form
   `Read @<path>/AGENTS.md before any other work; this project uses ConcordSTC.`
@@ -178,32 +102,16 @@ Concord where it stands.
   the conflict and exits nonzero. If there is no `AGENTS.md` or no legacy
   marker, it makes no change and exits 0. A successful migration is
   idempotent. Arguments print usage to standard error and exit 2.
-* {#g-ulqj8h <m-c2gwx4@a84e9f9 for=main via=prompt} **Ask when unsaid.** When a session works
-  in a project whose root `AGENTS.md` holds neither the Concord line nor the
-  opt-out line, or that has no `AGENTS.md`, the main thread asks the human
-  whether the project uses Concord before any architect or fixer is
-  launched there, and writes the line his answer chooses into that
-  `AGENTS.md`, creating the file if it is absent.
-> {#m-cmifzx} USER 2026-11-09: "Seems like the harness should be told to run it"
-> {#m-8mr0ax} USER 2026-11-09: "I kind of want the flow to be: shell: start-harness (e.g. `claude` or `codex`) prompt: I want to use concordstc for this project model: let me look up concordstd. I see. Let me see if it is installed. npm install --global. concord init"
-* {#g-2frto4 <m-cmifzx@2e5194f,m-8mr0ax@8f398c7 for=main via=prompt} **Start setup inside the harness.** When the human asks to adopt Concord, the main thread checks whether the `concord` command is installed; if it is absent, it installs `@debonet/concord` globally with `npm install --global @debonet/concord`. It then runs `concord init` from the project root inside the harness, reviews the files it creates, resolves any reported conflicts or remaining setup steps, and only then launches an architect or fixer. This explicit request is the human's adoption decision, including when the project currently has an opt-out line; replace that line with the adoption line and do not ask again.
-* {#g-n9fysz <arch,m-c2gwx4@a84e9f9 for=architect via=prompt} **An architect that finds no line
-  asks.** An architect launched in a project whose root `AGENTS.md` holds
-  neither line writes no Concord file or marker and returns the question to
-  its caller in its report.
-* {#g-afghbn <m-c2gwx4@a84e9f9 for=main,architect via=prompt} **Never for every project at once.**
-  No instruction file that sessions in every project read, as a user's
-  global `~/.claude/CLAUDE.md`, says that every project uses Concord;
-  such a file holds at most the rule of this section and a pointer to it.
+
 
 ## Where Concord lives
 
-* {#g-5z4iuo <arch,m-u4pusr@2be69ad,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} **One source project.** Keep Concord's specs, build spec, tests and `README.md` in `~/@concord`; adopting projects install its public npm package and carry no duplicate checker or Concord utility.
 * {#s-4pq89a <m-u4pusr@2be69ad,m-f9xsif@e917ff9} **Utility commands.** Concord's utility implementations live under `~/@concord/bin`; agents and project build targets invoke them through the `concord` master command.
 * {#s-y7klju <m-2794qp@4644928,m-u4pusr@2be69ad} `agents-sync` and `concord-hook` are utility commands alongside `spec-map` and `spec-coverage`.
 * {#s-mo4ncx <arch} `spec-conflicts` is a utility command that ranks possible conflicting specification-claim pairs for review (`specs/spec-conflicts.md`).
 * {#s-hp433f <m-yzk3ge@48080f7} `context` is a utility command that builds a role-specific, budgeted context pack from the project's Concord graph (`specs/context.md`).
 * {#s-48tk0i <m-r665b1@2823062} `tree` is a utility command that creates a self-contained HTML browser for the project's Concord relationship graph (`specs/concord-tree.md`).
+* {#s-qwhv92 <arch} `link-refine` is a utility command that helps agents review file-wide implementation, test-file and hand-check references for narrower source-region links (`specs/link-refinement.md`).
 * {#s-t99cvq <arch,m-f9xsif@e917ff9} **npm package.** Publish Concord as the public npm package
   `@debonet/concord`, installable globally with `npm install --global
   @debonet/concord`.
@@ -218,9 +126,9 @@ Concord where it stands.
   its usage to standard error and exits 2. For a known utility, it passes all
   remaining arguments in order, preserves the working directory and standard
   streams, and exits with that utility's status.
-* {#m-31dbd9} USER 2026-11-15: "That's the wrong behavior. 'init' means initialize. It should get the project set up to use concord."
 * {#s-ualukl <arch,m-f9xsif@e917ff9,m-31dbd9@63bdd97} **Project initialization.** `concord init`, run from a project root without additional arguments, creates missing baseline Concord setup files, preserves existing project settings and build commands, reports each change and any remaining work, and attempts to install the pre-commit gate after setup. It exits 0 when setup and hook installation succeed, 1 when a conflict prevents a safe write or when the gate or hook installation needs attention, and 2 when arguments are invalid or the working directory is not a project directory.
 * {#s-qfk1yl <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Generated settings.** When `concord.json` is absent, `concord init` writes a valid settings file using the project name from `package.json` or the root directory name, an existing `test` or `tests` directory (creating `test` when neither exists), the languages it finds among configured language readers (defaulting to `javascript` when it finds none), the project root as the read directory, and standard ignored directories. It does not replace an existing settings file with these defaults.
+* {#s-jkgs4z <m-oxym3o@90bf233} When `concord init` creates `concord.json`, it declares `intent_directories: ["intent"]` and creates the `intent/` directory; when settings already exist, it preserves their intent-directory declaration.
 * {#s-1rrzwx <arch} When `concord init` finds Bash test scripts and Bash source files and the project has no coverage declaration, it adds a Bash coverage declaration. It creates one Bash coverage run for each configured suite directory containing a Bash test, and source directories for the discovered Bash implementation files. It preserves all existing settings.
 * {#s-s3xpz5 <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Build commands.** `concord init` adds `spec-map` and `spec-coverage` commands to `package.json` when it is the project's build file, or adds equivalent targets to a new `Makefile` when no supported build file exists. It preserves unrelated fields and commands, and never replaces an existing command that does not already invoke the matching Concord utility; it reports that conflict and exits 1.
 * {#s-tyykqo <s-ualukl@413cc4f,m-31dbd9@63bdd97} **Adoption and gate.** `concord init` writes the standalone adoption line to the root `AGENTS.md`, creating the file if needed, and replaces the standalone former opt-out or legacy adoption line. It leaves conflicting or hand-written adoption markers unchanged and reports them for resolution. Once the settings and build commands are valid, it runs `concord concord-hook install`; a gate refusal leaves the hook uninstalled, reports the gate output, and returns 1 so the project can fix its existing specification or coverage issues and rerun `concord init`.
@@ -232,7 +140,6 @@ Concord where it stands.
   Any utility Concord adds is invoked as another `concord <utility>` command.
 * {#p-v7e4l5 >specs/agents-sync.md#the-agent-file} `agents-sync` generates the
   supported tools' agent files from the role texts and their metadata.
-* {#g-njdhjd <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **JavaScript on Node.** Run Concord's JavaScript commands with the Node version declared in its build spec, regardless of the adopting project's language.
 * {#s-92u5vq <arch,m-u4pusr@2be69ad} **Run from the project root.** Every Concord command but
   `agents-sync` acts on the adopting project whose root is its working directory, and reads,
   writes and prints every project path relative to that root. `concord init` initializes the
@@ -242,8 +149,6 @@ Concord where it stands.
   root, which every Concord command reads; {#s-2fs4an <arch} a command that acts on
   a project, run where no `concord.json` is found, prints a line naming the missing file to stderr
   and exits 2.
-* {#g-q91vxm <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Targets call the commands.** In an adopting project's build spec, declare each Concord target as a call to the command of that name under `~/@concord/bin`, passing arguments through unchanged and in order.
-* {#g-isak36 <arch,m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Concord's specs live in Concord.** Keep these specs in `~/@concord/specs`; adopting projects do not keep copies.
 * {#s-j8ahje <arch,m-u4pusr@2be69ad,m-ith31r@c21f155} **Nothing resolves across projects.** A pointer target, a
   root, a test link, an implementation reference, a test-file reference,
   a hand-check reference and a guidance reference resolve only within the
@@ -253,59 +158,21 @@ Concord where it stands.
   cites a rule of Concord's in prose, by its path
   under `~/@concord/specs`, and a line of an adopting project whose rule is
   Concord's own lives in Concord's specs.
-* {#g-h1uulv <arch,m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **Concord's tests are Concord's.** Keep tests for Concord's specs in this project; adopting projects test only their own specs.
-* {#g-c5u386 <m-u4pusr@2be69ad for=main,architect,fixer via=prompt} **A carried checker retires.** When adopting Concord, retire the local checker and the scripts and tests that duplicate its work as build targets move to `~/@concord/bin`.
 
 ## Changing Concord
 
-> {#m-glaqic} RULING (CEO) 2026-10-30: "If you're changing @concord then
-> you also need to leave a migration note in its doc/ folder so that other
-> concord projects can move into compliance"
 
-* {#g-w4tk82 <m-glaqic@87d08c8 for=architect,main via=prompt} **A migration note with
-  every breaking change.** A change to Concord that requires an adopting
-  project to change anything, its `concord.json`, its specs, its tests, its
-  code or its rules files, leaves in the same change a migration note,
-  `docs/<subject>-migration.md` in the Concord project: a step-by-step
-  guide that brings an existing adopting project into compliance, opening
-  with the checker reports to save before any step and ending with the
-  runs that compare them after.
+
 
 ## Agent instructions
 
-> {#m-9iukym} USER 2026-11-09: "The concord should add explicit instructions to add into AGENTS.md a contravening instruction"
 
-* {#g-83u1i7 <m-9iukym@0c37cb0 for=main,architect,fixer via=prompt} **Full suite at fixer completion.** A fixer runs the project's full declared test suite after its final code or test change, fixes any failures, and does not report completion until the suite passes. This run is required even if nobody explicitly asks for tests; targeted runs during implementation do not replace it.
 
-* {#g-adp8mx <m-asoxa8@8f03701,m-2794qp@4644928 for=main,architect,fixer via=prompt} **One shared instruction file.** Keep `AGENTS.md` at the Concord project root as the instructions every coding agent follows, naming the Concord specs under `~/@concord/specs` and role texts under `~/@concord/roles`.
-* {#g-13efbo <m-asoxa8@8f03701,m-2794qp@4644928,m-mzt14m@7dbb5d4 for=main,architect,fixer via=prompt} **Role texts live in Concord.** Keep each role's text in `roles/<role>.md` and its tool metadata beside it.
 * {#s-gaewu5 <m-2794qp@4644928,m-mzt14m@7dbb5d4} **Tool agent files are generated.** `agents-sync` writes each
   supported tool's agent file for every role from the role text and that
   tool's metadata (`specs/agents-sync.md`).
-* {#g-43u63o <m-2794qp@4644928 for=main,architect,fixer via=prompt} **Edit the role, not
-  the agent file.** A change to a role is made in `roles/<role>.md` or one
-  of its tool metadata files in the Concord project, and then
-  `agents-sync` is run; nobody edits a generated agent file.
 
-> {#m-ckynhd} RULING (CEO) 2026-10-22, on who runs `agents-sync`: "No. The
-> individual AGENTS.md files for the different tools (Claude, Codex, etc)
-> should run the sync. And the sync should (if it doesn't already) work with
-> or like `make` so that no work is done if the files have not changed"
 
-* {#g-dv6in2 <m-ckynhd@8e6b53f for=main,architect,fixer via=prompt} **Which tools' files carry the sync.** In Concord's `AGENTS.md`, name every tool instruction file that tells its agent to run `~/@concord/bin/agents-sync` first, including Claude Code's and Codex's.
-* {#g-af16h1 <m-ckynhd@8e6b53f for=main via=prompt} **Sync first.** At the start of each
-  session, before any other work, the agent runs `~/@concord/bin/agents-sync`
-  with no argument; every tool's instruction file that Concord's `AGENTS.md`
-  names carries this instruction, and the main thread that finds one
-  lacking it adds it.
-* {#g-m2rkgt <arch,m-ckynhd@8e6b53f for=main via=prompt} **When the sync cannot finish.**
-  When `agents-sync` exits 3, a write it needed was denied: the agent quotes
-  its stderr line to the human and asks him to run
-  `~/@concord/bin/agents-sync` in his own shell. When it exits 2 naming
-  hand-edited agent files, the agent shows the human those lines and asks
-  whether to move the edits into the role or to run it with `--force`; no
-  agent passes `--force` on its own. Either way the session's other work
-  goes on with the agent files as they stand.
 * {#p-t6j1tx >specs/agents-sync.md#when-nothing-changed} An up-to-date run of
   `agents-sync` does no work and needs no write access.
 
@@ -316,71 +183,15 @@ Concord where it stands.
   `REQUIRED —` mark; every property a test must hold is a coded statement,
   and a test shows what it proves only by its link lines.
 * {#s-62b8ec <m-f75zwe@2a13a42,m-1irlik@971e186} **Names carry nothing.** The checker reads no case id
-  and no meaning in a test's name: it reports no id as untested and no test
-  name as an orphan, in a test file of any language.
-* {#g-qtevt7 <m-f75zwe@2a13a42 for=architect via=prompt} **Converting a named case.** A named
-  case whose property a coded statement of its spec already states is
-  folded: its bullet or mark is deleted and the tests that carried its name
-  are re-linked to that statement. Any other named case becomes a coded
-  statement in the section whose rule it checks, rooted as that rule is, and
-  its bullet or mark is deleted; a `## Required cases` heading left with no
-  bullet is deleted.
-* {#g-c4yffe <m-f75zwe@2a13a42 for=fixer via=prompt} **Re-linking a converted case.** Every
-  test that carried a converted case's name gains a link line to the
-  statement the case became or was folded into, stamped with the hash the
-  checker's hash query prints; no test is deleted or renamed for the
-  conversion.
-* {#g-hh1o48 <m-f75zwe@2a13a42 for=main via=prompt} **One sweep, measured.** The named lists
-  of every spec in a project are converted in one sweep of batches; before
-  the sweep, the main thread keeps the checker's whole-tree case report, and
-  a batch is done when its specs list no case id and every test that carried
-  one of their ids links the statement it became. The checker stops reading
-  case ids only after the last batch.
+  and no proof meaning in a test's name: it reports no id as untested and
+  no test name as an orphan, in a test file of any language. A test's proof
+  links come from the resolving `@proves` groups whose source regions overlap it.
 
 ## Guarding a proof
 
-* {#g-439vqk <arch for=fixer via=prompt} **Guard or link.** A test whose
-  assertions check what the code does links the statement that states it
-  with `@proves`. A test that checks only that another test's proof of a
-  statement is sound, a paired self-test planting the failure that proof
-  must catch, a guard against that proof's loop running over nothing, or a
-  guard that a source scan sees what it scans for, carries `@guards` for
-  that statement (`specs/spec-map.md`, Guard lines), stamped with the hash
-  the checker's hash query prints, and only when a test already proves
-  that statement or the fixer links one in the same pass.
-* {#g-y3m2uz <arch for=fixer via=prompt} **A guard is not a fix for a gap.** A
-  test that checks what the code does, where no marked statement states
-  it, is a spec gap: the fixer leaves it unlinked and reports the rule
-  under `Untagged behaviour`; it never marks such a test a guard to clear
-  the unlinked tests or a complete spec's completeness failures. A guard
-  whose statement no test proves, reported as unbacked, is a missing
-  proof: the fixer writes or links the proof, or reports the statement as
-  unproved; it never moves the guard to another statement.
-* {#g-m4816g <arch for=architect via=prompt} **Guards in a fixer's verdicts.**
-  When a fixer reports an unlinked test as guarding a proof, the
-  architect writes no statement for it; a statement is written only for
-  the rule of a test reported under `Untagged behaviour`.
 
 ## Linking an absence
 
-* {#g-i4w44d <arch,m-6pxcni@29fc8b1 for=fixer,architect via=prompt} **The code that
-  could break it implements it.** A statement that something never happens
-  or is absent, as "a draft is never journaled", is implemented by every
-  implementation file whose change could make it false: the journal writer
-  for "never journaled", each producer for "no producer infers Y", the file
-  holding the loop for "there is no bound on reroutes". Each such file
-  carries `@implements` for it, as for any other statement; no absence is
-  left unlinked because no line of code "does" it.
-* {#g-5h9255 <arch,m-6pxcni@29fc8b1 for=fixer via=prompt} **No such file is a
-  spec gap.** When a linking agent finds no implementation file whose change
-  could make an absence false, it leaves the statement unlinked and reports
-  it to the architect as a statement no module's behaviour bounds; it never
-  links an unrelated file to clear (31).
-* {#g-ckhixs <arch,m-6pxcni@29fc8b1 for=architect via=prompt} **Name the module in
-  the absence.** An architect writing an absence states it about the
-  behaviour of the module it constrains, as "the journal writer never
-  records a draft" rather than "a draft is never journaled", so the file
-  that implements it is plain from the sentence.
 
 ## What stops a commit
 
@@ -446,20 +257,6 @@ Concord where it stands.
   usage line to stderr and exits 2.
 * {#p-0ymdef >specs/concord-hook.md} The hook file, how it runs the gate, and
   how it is installed and checked in an adopting project.
-* {#g-gao8i0 <m-5cyvk4@ea2082e for=main via=prompt} **Check after every spec change.** After every
-  change to a spec, an architect pass or a direct edit, and before the commit
-  that holds it, the main thread runs the checker over the project (`spec-map`
-  with the changed spec's path, and `spec-map --gate`) and leaves no link line,
-  guidance reference or root it reports invalid; the gate then confirms it at
-  the commit.
-* {#g-8088lm <arch,m-b2shvm@ff5b09c for=main,fixer,architect via=prompt} **No bypass.** No
-  agent commits with `--no-verify` or in any other way that skips the
-  pre-commit hook.
-* {#g-tiondp <arch,m-b2shvm@ff5b09c,m-f75zwe@2a13a42 for=main via=prompt} **The gate goes live on a
-  clean tree.** A project's pre-commit hook is installed only after its
-  named-case sweep's last batch and once `spec-map --gate` exits 0 over its
-  tree, so the first commit it gates is refused only by what that commit
-  broke.
 
 ## What varies by project
 
@@ -512,41 +309,15 @@ Concord where it stands.
   the runs ends the measurement as a suite that fails to run does.
   {#s-c4ht17 <arch,m-u4pusr@2be69ad} The measurement writes under
   `tmp/spec-coverage/` at the project root, in every adopting project.
-* {#g-lrwos6 <arch,m-yy30zw@60906a5,m-f9xsif@e917ff9 for=main,architect,fixer via=prompt} **The checker targets.** Declare the adopting project's `spec-map` and `spec-coverage` targets to call `concord spec-map` and `concord spec-coverage`, respectively, passing arguments through unchanged and in order.
 * {#s-jmslkk <arch,m-yy30zw@60906a5} **The same ruling labels.** The ruling labels
   `RULING (CEO)` and `RULING (architect)` are the labels in every adopting
   project, the CEO being the person whose words are recorded.
 
 ## What a project declares
 
-* {#g-gte4js <arch,m-yy30zw@60906a5 for=architect via=prompt} An adopting project
-  declares, in its `concord.json`: the project's name; its suites, each a name
-  and the directories its test files lie under; the languages its tests and
-  code are written in, each read by a language reading this spec or a
-  sibling defines; the directories read for guidance references and code
-  targets, and the directories never read (generated and vendored ones such
-  as `node_modules` and `target`); the record file for hand-check
-  verdicts; and the path of its observations file and the paths of its
-  rules files (`specs/observations.md`). Its build spec declares its Concord targets and its pre-commit
-  hook (Where Concord lives, What stops a commit).
-* {#g-uz9eg6 <m-2794qp@4644928,m-f9xsif@e917ff9 for=architect via=prompt} An adopting project's build spec
-  declares a target that runs `concord concord-hook install`
-  (`specs/concord-hook.md`), run once in every clone, since the git setting
-  that makes git run a committed hook belongs to a clone and no commit
-  carries it.
-* {#g-zsom4k <m-asoxa8@8f03701,m-2794qp@4644928,m-c2gwx4@a84e9f9 for=architect,main via=prompt} **A project's
-  AGENTS.md.** An adopting project holds at its root an `AGENTS.md` that
-  opens with the Concord line (Which projects use Concord) and holds only
-  facts of that project: its build and test commands, its layout, its suites and its own
-  rules. The shared file is the authority: where the two disagree the shared
-  file governs, and a rule that binds every adopting project is written in
-  the shared file, never in a project's.
-* {#g-gd6e90 <arch,m-xjun0a@9dd245b for=architect via=prompt} The audience labels
-  `architect`, `fixer` and `main` mean the same roles in every adopting
-  project: the agents of those names and the top-level session that launches
-  them. A project may add labels of its own.
 
 ## The settings file
+
 
 * {#s-zstgty <s-jhtp93@4c4ca3c} **One JSON object.** `concord.json` holds one JSON object
   whose members are the declared values this section names, each required
@@ -568,6 +339,9 @@ Concord where it stands.
   directory is `specs`, and that default need not exist: a project with no
   `spec_directories` and no `specs` directory at its root has no specs, and
   no Concord command fails or reports a bad settings file for it.
+* {#s-jui3zn <m-oxym3o@90bf233} **Intent directories.** `intent_directories` is an optional array of project-relative directory patterns, using the same syntax and glob rules as `spec_directories`; Concord reads Markdown files under those directories for motive (`m`) markers. When absent, no additional intent directory is read. A project may keep legacy motive markers in its spec directories while migrating; marker ids share one project-wide namespace across both sets of directories.
+* {#s-heb3sm <m-kq3ywd@720f773} **Guidance directories.** `guidance_directories` is an optional array of project-relative directory patterns, using the same syntax and glob rules as `spec_directories`; Concord reads Markdown files under those directories for guidance (`g`) markers. When absent, no additional guidance directory is read. A project may keep legacy guidance markers in its spec directories while migrating; marker ids share one project-wide namespace across spec, intent and guidance directories.
+* {#s-dqyukb <m-kq3ywd@720f773} When `concord init` creates `concord.json`, it declares `guidance_directories: ["guidance"]` and creates `guidance/`; when settings already exist, it preserves their guidance-directory declaration.
 * {#s-am7qu4 <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Name.** `name` is a non-empty string, the project's
   name, as in `"name": "AIOS"`.
 * {#s-i0n88z <s-jhtp93@4c4ca3c,m-fi6q34@6b5ef4d} **Suites.** `suites` is a non-empty array of suites,
@@ -587,7 +361,7 @@ Concord where it stands.
   file for hand-check verdicts, relative to the project root.
 * {#s-pwo03p <arch,s-jhtp93@4c4ca3c,m-smey68@37cbb93,m-fi6q34@6b5ef4d} **Observations file.** `observations_file` is
   optional. When present it is the path, relative to the project root and
-  outside every matched spec directory, of the project's observations file
+  outside every matched spec, intent and guidance directory, of the project's observations file
   (`specs/observations.md`), as in `"observations_file": "observations.md"`.
   {#s-bf7qnq <arch,m-fi6q34@6b5ef4d} A project whose `concord.json` declares no
   `observations_file` holds no observations, so every observation citation
@@ -607,10 +381,11 @@ Concord where it stands.
   review file's path relative to the root.
 * {#s-tps44b <m-fi6q34@6b5ef4d} **Legacy key names.** At the project root,
   `sName`, `vaSuite`, `vsLanguage`, `vsDirRead`, `vsDirIgnored`,
-  `sPathRecord`, `sPathObservations`, `vsPathRules`, `aCoverage` and
-  `dirs_specs` are accepted as aliases for `name`, `suites`, `languages`,
+  `sPathRecord`, `sPathObservations`, `vsPathRules`, `aCoverage`,
+  `dirs_specs`, `dirs_intents` and `dirs_guidance` are accepted as aliases for `name`, `suites`, `languages`,
   `read_directories`, `ignored_directories`, `record_file`,
-  `observations_file`, `rules_files`, `coverage` and `spec_directories`,
+  `observations_file`, `rules_files`, `coverage`, `spec_directories`,
+  `intent_directories` and `guidance_directories`,
   respectively. Within a suite, `sName` and `vsDir` are accepted
   as aliases for `name` and `directories`. Within `coverage`, `vaRun`,
   `vsCommandBefore`, `vsDirSource` and `sPathReview` are accepted as aliases
@@ -640,24 +415,25 @@ Concord where it stands.
 
 ## Language readings
 
-* {#m-y2l3xm} USER 2026-11-15: "Looks like we need to add a bash support module"
 
 * {#s-3fzgrr <m-efrniq@9d737ed} The user asked for language support to live in one file per language.
 * {#s-rh750h <m-efrniq@9d737ed} **One module per language.** Concord keeps each language reading in one module under `scripts/languages/`, named for that language, such as `javascript.js`, `typescript.js`, `css.js`, `html.js` or `rust.js`. That module owns all behavior specific to reading that language: the files and test files it recognizes, comments and literals, directives and their placement, source classification, header boundaries, test and grouping units, and content normalization.
 * {#s-p54hx2 <m-efrniq@9d737ed} **Shared checker boundary.** The checker consumes language modules through one common reading interface. It owns project traversal, spec and link resolution, coverage, reporting and shared language-independent helpers; it does not select language behavior through extension lists or language-specific branches spread through the checker. Adding a language means adding its reading module and registering that module in one central language registry.
-* {#s-k9xdwy <m-efrniq@9d737ed} **Language module contract.** A reading module provides its language name and file extensions, test-file recognition, and the operations the checker needs to read source, find comments and directives, determine header and test/group units, and normalize content. A module may use shared language-independent helpers, but behavior that interprets a language belongs in that language's module.
+* {#s-k9xdwy <m-efrniq@9d737ed} **Language module contract.** A reading module provides its language name and file extensions, test-file recognition, and the operations the checker needs to read source, find comments and directives, determine test units, and normalize content. Shared Concord code determines directive header groups and indentation-scoped source groups from comment locations; language modules do not assign link ownership based on language or test-framework structure. A module may use shared language-independent helpers, but behavior that interprets a language belongs in that language's module.
 * {#s-ycwj4o <m-y2l3xm@91f2a22} **Bash reading.** Concord has a `bash` reading in `scripts/languages/bash.js`, registered in the central language registry. It reads `.sh` and `.bash` files and executable extensionless files whose first line has a Bash shebang. Bash recognition and interpretation live in that module.
-* {#s-9fk6j3 <s-ycwj4o@7836a5a,m-y2l3xm@91f2a22} **Bash comments and directives.** Bash comments begin with `#` where the shell grammar permits a comment, outside single-quoted, double-quoted, ANSI-C-quoted, escaped text, and here-document bodies. A full-line comment may carry the Bash directives `@spec`, `@proves`, `@guards`, `@follows`, `@implements`, `@tested-by`, or `@checks` using the same meanings and placement rules as other script languages; `#!` on the first line is a shebang, not a directive. A `#` in a literal, here-document body, or escaped word is not a comment.
-* {#s-g76ukd <s-k9xdwy@eb62f8a,s-ycwj4o@7836a5a,m-y2l3xm@91f2a22} **Bash source and tests.** The Bash reading preserves shell words and literals while removing comments for content normalization. A Bash test file is named `*.test.sh`, `*.test.bash`, `test_*.sh`, `*_test.sh`, or `run_tests.sh` under a declared suite directory. The whole Bash test file is one test unit named by its basename, because Bash has no common test-case syntax; a file-level `@proves` directive therefore links the suite as a whole. Bash files do not declare Concord test wrappers or grouping units.
+* {#s-9fk6j3 <s-ycwj4o@7836a5a,m-y2l3xm@91f2a22} **Bash comments and directives.** Bash comments begin with `#` where the shell grammar permits a comment, outside single-quoted, double-quoted, ANSI-C-quoted, escaped text, and here-document bodies. A full-line comment may carry the Bash directives `@spec`, `@proves`, `@guards`, `@follows`, `@implements`, `@tested-by`, or `@checks` using the same meanings and placement rules as other script languages; `#!` on the first line is a shebang, not a directive. A `#` in a literal, here-document body, or escaped word is not a comment. A here-string (`<<<`) supplies a word to its command and does not begin a here-document or hide subsequent lines from comment and directive reading.
+* {#s-g76ukd <s-k9xdwy@ccaee82,s-ycwj4o@7836a5a,m-y2l3xm@91f2a22} **Bash source and tests.** The Bash reading preserves shell words and literals while removing comments for content normalization. A Bash test file is named `*.test.sh`, `*.test.bash`, `test_*.sh`, `*_test.sh`, or `run_tests.sh` under a declared suite directory. The whole Bash test file is one test unit named by its basename, because Bash has no common test-case syntax; its source range overlaps proof regions to determine which statements it proves. Bash files do not declare Concord test wrappers or grouping units.
 
 * {#p-jczx2d >specs/spec-map.md#test-files-and-owner-lines,s-pjx54j,s-2l6ys1,specs/spec-map.md#statements-that-describe-a-test}
   The JavaScript reading is the one `specs/spec-map.md` and its siblings write
   out: `//` directives, `describe` groups and `test` and `it` units with their
   `.each`, `.only` and `.skip` forms, names read from string literals, the
   jest docblock pinned above the header, declared test wrappers and code
-  normalisation. Implementation files also read `@implements`, `@tested-by`
-  and `@checks` directives in their file headers, and test files read
-  `@implements` at their tests (`specs/spec-map.md`, Statements that
+  normalisation. Implementation files read `@implements`, `@tested-by` and
+  `@checks` groups throughout the file, with an initial contiguous header
+  group applying file-wide and later groups applying to their source regions
+  (`specs/spec-map-line-types.md`, Code references); test files read
+  `@implements` groups over source regions (`specs/spec-map.md`, Statements that
   describe a test). CSS has the comment,
   literal, implementation-directive and
   normalisation parts only, as Code normalisation gives them.
@@ -754,18 +530,19 @@ Concord where it stands.
   An inline module, `mod <identifier> {`, is a grouping unit named by its
   identifier, enclosing every item inside its braces; a module declared with
   no body, `mod a;`, is none.
-* {#s-8tx2ob <arch,m-yy30zw@60906a5} **What a run sits above.** A run of owner and link
-  lines sits directly above a test or grouping unit when every line between
-  the run's last line and the item's `fn` or `mod` line is an outer
-  attribute (`#[…]`) or a doc comment and no line from the run to the item
-  is blank, as with `// @proves s-xxxxxx@hhhhhhh`, then `#[test]`, then the
-  `fn` line.
+* {#s-8tx2ob <arch,m-yy30zw@60906a5} **Owner-line placement.** A run of Rust owner lines sits
+  directly above a test or grouping unit when every line between the run's
+  last line and the item's `fn` or `mod` line is an outer attribute (`#[…]`)
+  or a doc comment and no line from the run to the item is blank. `@proves`,
+  `@guards` and test `@implements` directives instead define source regions
+  by their indentation and do not need to sit above an item.
 * {#s-zrjuk3 <arch,m-yy30zw@60906a5} **Header.** A Rust file's header ends at its first
   line holding code once comments are masked; an inner attribute (`#![…]`)
   is code, and nothing is pinned above the header.
 * {#s-op9bak <arch,m-yy30zw@60906a5} **Test modules.** An owner line directly above a test
   module inside a source file is block-level and owns every test inside that
-  module.
+  module. Proof, guard and test-implementation groups do not inherit through
+  module nesting; a test uses the groups whose source ranges overlap it.
 * {#s-k6leed <arch,m-yy30zw@60906a5} **No wrappers.** Wrapper lines are read only in
   JavaScript files; in a Rust file a wrapper line is misplaced.
 * {#s-1a9ecj <arch,m-yy30zw@60906a5} **Normalisation.** The normalised text of a Rust file
@@ -776,76 +553,13 @@ Concord where it stands.
 
 ## Guidance delivery
 
-* {#g-iv6zk1 <arch,m-xjun0a@9dd245b for=main via=prompt} Before launching an agent, the
-  main thread runs the checker's guidance query for that agent's role
-  (`--guidance --for <label>`) and puts in the launch prompt the full text of
-  every `via=prompt` line it prints; at the start of a session it reads the
-  lines the query prints for `main`.
-* {#g-7ek9ei <arch,m-xjun0a@9dd245b for=architect via=prompt} The global agent
-  definitions teach how Concord lines are written and cited; a rule that
-  binds one project only is a `g` line in that project's specs, never a line
-  of a global agent definition.
 
 ## Porting a project in place
 
-* {#g-dscm4m <arch,m-yy30zw@60906a5 for=main via=prompt} **Measure before and after.**
-  Before porting changes a file, the main thread records, per test file, the
-  count of test units and of link lines, and keeps the whole report of the
-  project's own checker when it has one; after each porting batch it counts
-  again, and every decrease is a fold or a retirement the batch's brief
-  named.
-* {#g-uktpff <arch,m-yy30zw@60906a5 for=architect via=prompt} **Declare first.** The first
-  porting pass writes the build spec's declaration (What a project declares)
-  and the fixer task that makes the checker run over the whole tree; no
-  spec's lines change until a whole-tree run reports.
-* {#g-c0xxaw <arch,m-yy30zw@60906a5 for=main via=prompt} **Report before fence.** The first
-  whole-tree run of a ported project is a report, and no entry in it blocks
-  a porting batch.
-* {#g-uspnds <arch,m-yy30zw@60906a5 for=fixer via=prompt} **Existing ids keep their
-  bodies.** A marker already written as `{#s-xxxxxx}` keeps its id; a marker
-  in any other form is rewritten as a placeholder of its type, so only the
-  assign command mints ids.
-* {#g-69lseb <arch,m-yy30zw@60906a5 for=fixer via=prompt} **Re-stamping under the shared
-  hash.** When a project's links were stamped by a hash other than The text
-  hash, a fixer re-stamps, with the hash the checker's hash query prints,
-  exactly the links the project's own checker reported current, and leaves
-  every other link as written, so a link stale before porting stays stale
-  after it.
 * {#p-pfvicr >specs/spec-map-line-types.md#retyping-a-spec} A ported spec's lines
   are typed by the guidance of Retyping a spec, in whatever project they sit.
-* {#g-wpdaw8 <arch,m-k55xs4@88cd8e4 for=architect via=prompt} **His words, verbatim.** The
-  CEO's words found in a ported spec, a convention spec or the project's
-  instructions file become `m` lines quoting them verbatim in the spec that
-  owns their subject; a rule that restates them with no verbatim source is a
-  line rooted `arch`, listed for him to ratify.
-* {#g-v221r3 <arch,m-k55xs4@88cd8e4 for=architect via=prompt} **Instructions to
-  guidance.** Rules on how the project is built or worked on, held in its
-  instructions file (`CLAUDE.md`) or in a spec about specs, become `g` lines:
-  one module's in that module's spec, those across modules in a spec under
-  `specs/guidance/`, one spec per subject; the instructions file then points
-  at those specs, and a spec about specs left with no rule is deleted.
-* {#g-n3ddb0 <arch,m-k55xs4@88cd8e4,m-58bbc0@97f6bed for=architect via=prompt} **Procedures to hand
-  checks.** A procedure a person runs by hand becomes one `i` line per check,
-  each with its Do and Look for text and a target list naming the files or
-  functions whose change may change what it shows; the traps and reasons
-  around the procedure become `g` lines beside it.
-* {#g-n4tdu4 <arch,m-ert2k3@07303b1 for=architect via=prompt} **No roots backfilled.**
-  Porting adds no root list to a line that had none, except where Retyping a
-  spec splits a ruling out of a line and the rest names it.
-* {#g-tavwlp <m-620fb7@6512159 for=main via=prompt} **Order.** Porting converts one
-  area that no active work touches as a full batch at a time, and converts
-  the specs active work touches as that work touches them.
 * {#p-i5ffmn >g-qm3hj7} Every porting batch ends with the assign command and a
   fixer that re-stamps the links the batch left stale, as in AIOS.
-* {#g-6b8nfw <arch,m-yy30zw@60906a5 for=architect via=prompt} **Complete only when whole.**
-  A ported spec declares `Statement ids: complete` only in the pass that
-  marks and types its every statement-shaped block.
-* {#g-s9ftac <m-f75zwe@2a13a42 for=architect via=prompt} **Older names convert.** A ported
-  project's lists of required test names, and its tests named or tagged by
-  an older convention, convert in place as Converting a named case and
-  Re-linking a converted case give.
-* {#g-7yqvxh <m-c9ebz3@6ad3d71 for=architect via=prompt} **Only Concord's forms.** Porting
-  rewrites a spec only into the forms Concord's specs require.
 
 ## Dependencies
 

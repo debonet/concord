@@ -1,8 +1,3 @@
-// @implements s-qpkoc3@605c600
-// @implements s-bi8reu@bf16aef
-// @implements s-dokd3g@edd7c92
-// @tested-by test/spec-coverage-jest.test.js
-// @tested-by test/spec-coverage.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -23,11 +18,13 @@ const fxStateCircus = () => {
 };
 
 class TestWindows {
+  // @tested-by test/spec-coverage.test.js
   sDirRun;
   avzBefore = {};
   vaTest = [];
   sPathTest = null;
 
+  // @implements s-qpkoc3@605c600
   fOpen(){
     this.sPathTest = expect.getState().testPath;
     this.avzBefore = favzSnapshot( globalThis.__coverage__ );
@@ -48,6 +45,7 @@ class TestWindows {
     });
   }
 
+  // @implements s-dokd3g@edd7c92
   fWrite(){
     const sPathTest = this.sPathTest || expect.getState().testPath;
     fs.writeFileSync(
@@ -57,6 +55,8 @@ class TestWindows {
   }
 }
 
+// @implements s-qpkoc3@605c600
+// @tested-by test/spec-coverage-jest.test.js
 if( process.env[ sEnvRun ]){
   const windows = new TestWindows();
   windows.sDirRun = process.env[ sEnvRun ];

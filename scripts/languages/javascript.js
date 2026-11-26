@@ -1,8 +1,14 @@
 // @implements s-3fzgrr@cc19c25
 // @implements s-rh750h@cc70238
-// @implements s-p54hx2@dfa5570
-// @implements s-k9xdwy@eb62f8a
+// @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
+// @implements s-wthfms@d2c5ecd
+// @implements s-dnog08@dde78ed
+// @implements s-lwbls1@62d3bb8
+// @implements s-z7g07z@6db8f99
+// @implements s-9guyrl@067706f
+// @implements s-rolffo@1dccf9b
+// @implements s-pjx54j@88fdbba
 "use strict";
 
 const babelParser = require( "@babel/parser" );
@@ -251,7 +257,6 @@ const fvaCodeReferenceForJavaScript = ( aFile, f ) => {
         || sTrim.startsWith( "*/" ) || bShebang;
       if( !bComment ){ bHeader = false; nLineHeaderEnd = n;}
     }
-    if( !bHeader && !bBlock ){ return;}
     vaDirective.forEach(([ sKind, reText, reWell, reLoose ]) => {
       const sComment = sLine.replace( /^\s*(?:\/\/|\/\*|\*)\s?/, "" );
       if( !reText.test( sComment )){ return;}

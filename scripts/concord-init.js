@@ -1,10 +1,4 @@
-// @implements s-ualukl@413cc4f
-// @implements s-qfk1yl@7d3f9a7
 // @implements s-1rrzwx@2cfa4a7
-// @implements s-s3xpz5@265fff1
-// @implements s-tyykqo@a902908
-// @implements s-ppyrc4@814bce2
-// @tested-by test/concord-cli.test.js
 "use strict";
 
 const fs = require( "fs" );
@@ -146,6 +140,8 @@ const faPackageJson = ( sText ) => {
   }
 };
 
+// @implements s-tyykqo@a902908
+// @implements s-ppyrc4@814bce2
 const fasAdoptionUpdate = ( sText, sAdoptionLine ) => {
   const vsLine = sText.split( /\r?\n/ );
   const vaLegacy = vsLine.map(( sLine, n ) => ({ sLine, n })).filter(({ sLine }) => (
@@ -185,6 +181,7 @@ const fasAdoptionUpdate = ( sText, sAdoptionLine ) => {
   return { sText: sNext, bChanged: true, sProblem: null };
 };
 
+// @implements s-s3xpz5@265fff1
 const faBuildUpdate = ( sDirRoot, sPackageText, aPackage ) => {
   if( sPackageText !== null ){
     const aPackageJson = faPackageJson( sPackageText );
@@ -246,6 +243,8 @@ const faBuildUpdate = ( sDirRoot, sPackageText, aPackage ) => {
   };
 };
 
+// @implements s-ualukl@413cc4f
+// @tested-by test/concord-cli.test.js
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   const fExists = aDeps.existsSync || fs.existsSync;
   const fRead = aDeps.readFileSync || fs.readFileSync;
@@ -290,6 +289,11 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   let aConfig = null;
   let bConfigWrite = !fExists( sConfig );
   let sTestDirCreate = null;
+  let sIntentDirCreate = null;
+  // @implements s-dqyukb@c092efb
+  let sGuidanceDirCreate = null;
+  // @implements s-qfk1yl@7d3f9a7
+  // @implements s-jkgs4z@7642d8a
   if( !fExists( sConfig )){
     const sTestDir = [ "test", "tests" ].find(( sDir ) => (
       fExists( path.join( sRoot, sDir ))
@@ -298,12 +302,23 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
       sTestDirCreate = sTestDir;
       vsChange.push( "created " + sTestDir + "/" );
     }
+    if( !fExists( path.join( sRoot, "intent" ))){
+      sIntentDirCreate = "intent";
+      vsChange.push( "created intent/" );
+    }
+    if( !fExists( path.join( sRoot, "guidance" ))){
+      sGuidanceDirCreate = "guidance";
+      vsChange.push( "created guidance/" );
+    }
     const vaLanguage = faLanguagesForFiles( sRoot, vsPathFile );
     const sName = aPackage !== null && typeof aPackage.name === "string"
       && aPackage.name !== "" ? aPackage.name : path.basename( sRoot );
     aConfig = {
       name: sName,
       suites: [{ name: "root", directories: [ sTestDir ] }],
+      intent_directories: [ "intent" ],
+      // @implements s-dqyukb@c092efb
+      guidance_directories: [ "guidance" ],
       languages: vaLanguage,
       read_directories: [ "." ],
       ignored_directories: [ ".git", "node_modules", "tmp", "dist", "coverage" ],
@@ -315,6 +330,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
     catch( xError ){ vsProblem.push( "concord.json is not valid JSON" );}
   }
 
+  // @implements s-ualukl@413cc4f
   const aBashCoverage = faBashCoverageForProject(
     sRoot, vsPathFile, aConfig, fRead
   );
@@ -341,6 +357,13 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
     if( sTestDirCreate !== null ){
       fMkdir( path.join( sRoot, sTestDirCreate ), { recursive: true });
     }
+    if( sIntentDirCreate !== null ){
+      fMkdir( path.join( sRoot, sIntentDirCreate ), { recursive: true });
+    }
+    // @implements s-dqyukb@c092efb
+    if( sGuidanceDirCreate !== null ){
+      fMkdir( path.join( sRoot, sGuidanceDirCreate ), { recursive: true });
+    }
     if( bConfigWrite ){
       fWriteFile( sConfig, JSON.stringify( aConfig, null, 2 ) + "\n" );
     }
@@ -349,6 +372,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
         fWriteFile( path.join( sRoot, sPath ), sText )
       ));
     }
+    // @implements s-tyykqo@a902908
     if( aAdoption.bChanged || !fExists( sAgents )){
       const sAgentText = aAdoption.sText || ( "# Project instructions\n\n" + sAdoption + "\n" );
       fWriteFile( sAgents, sAgentText );
@@ -358,6 +382,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
     return 1;
   }
 
+  // @implements s-tyykqo@a902908
   if( aDeps.bSkipHookInstall ){
     fWrite( "Concord initialized in " + sRoot + "\n"
       + vsChange.map(( s ) => "  " + s).join( "\n" ) + "\n"

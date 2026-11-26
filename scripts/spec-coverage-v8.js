@@ -1,6 +1,3 @@
-// @implements s-l38b55@a9d4313
-// @implements s-yzz1r5@16c2353
-// @implements s-3afft9@1a50263
 // @tested-by test/spec-coverage-jest.test.js
 // @tested-by test/spec-coverage.test.js
 "use strict";
@@ -25,6 +22,7 @@ const {
 const sPrefixDump = "coverage-";
 const sSuffixDump = ".json";
 
+// @implements s-3afft9@1a50263
 const fsPathForUrl = ( sUrl ) => {
   if( typeof sUrl !== "string" || !sUrl.startsWith( "file://" )){
     return null;
@@ -82,6 +80,7 @@ const fvsPathDump = ( sDir ) => (
     : []
 );
 
+// @implements s-yzz1r5@16c2353
 const ffnUnitForKey = ( aRecord ) => {
   const anUnitForKey = new Map();
   aRecord.vaTest.forEach(( aTest, nTest ) => {
@@ -102,6 +101,8 @@ class ChildCoverage {
     this.index = index;
   }
 
+  // @implements s-l38b55@a9d4313
+  // @implements s-yzz1r5@16c2353
   faRecordMerged( aRecord ){
     const sPathTest = path.join( this.sDirRoot, aRecord.sPathTest );
     const aLog = fxJsonRead( fsPathSpawnLog( this.sDirRun, sPathTest ));
@@ -121,6 +122,7 @@ class ChildCoverage {
     };
   }
 
+  // @implements s-l38b55@a9d4313
   fAddSpawn( units, aSpawn, nUnit ){
     if( !aSpawn.bCarried ){
       units.fAddUnmeasured( "env", aSpawn.sCommand, [ nUnit ]);
@@ -152,6 +154,8 @@ class ChildCoverage {
     );
   }
 
+  // @implements s-l38b55@a9d4313
+  // @implements s-3afft9@1a50263
   fAddScript( units, aScript, nUnit ){
     const sPathAbs = fsPathForUrl( aScript.url );
     if( sPathAbs === null || !this.fbScriptWanted( sPathAbs )){ return;}

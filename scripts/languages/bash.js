@@ -1,8 +1,4 @@
 // @implements s-ycwj4o@7836a5a
-// @implements s-9fk6j3@cf4d322
-// @implements s-g76ukd@a8b4b44
-// @implements s-k3nfhj@45aa33f
-// @implements s-qqyciz@cfdb477
 // @tested-by test/language-readings.test.js
 "use strict";
 
@@ -11,6 +7,7 @@ const path = require( "path" );
 const reTestName = /^(?:.+\.test\.(?:sh|bash)|test_.+\.sh|.+_test\.sh|run_tests\.sh)$/;
 const fsLineComment = ( sLine ) => sLine.replace( /^\s*#\s?/, "" );
 
+// @implements s-9fk6j3@6bac58d
 const ftMaskBash = ( sText ) => {
   const vch = sText.split( "" );
   const vnComment = [];
@@ -84,7 +81,11 @@ const ftMaskBash = ( sText ) => {
       bWordStart = true;
       continue;
     }
-    if( ch === "<" && chNext === "<" && sText[ n + 2 ] !== "<" ){
+    if( ch === "<" && chNext === "<" && sText[ n + 2 ] === "<" ){
+      n += 2;
+      continue;
+    }
+    if( ch === "<" && chNext === "<" && sText[ n - 1 ] !== "<" ){
       const sRestLine = sText.slice( n + 2 ).match( /^[ \t]*(-?)[ \t]*(?:'([^'\n]*)'|"([^"\n]*)"|([^\s;|&<>]+))/ );
       if( sRestLine !== null ){
         vaHere.push({
@@ -150,6 +151,8 @@ const fvsClassBash = ( sText ) => {
   return vsClass;
 };
 
+// @implements s-g76ukd@d16beac
+// @implements s-qqyciz@cfdb477
 const fvnExecutableLineBash = ( sText ) => {
   const vsLine = ftMaskBash( sText )[ 0 ].split( "\n" );
   const vnExecutable = [];
@@ -184,6 +187,7 @@ const fvaTraceBash = ( sText, sDirCwd ) => {
   return aaLineForPath;
 };
 
+// @implements s-k3nfhj@45aa33f
 const fbBashShebang = ( sPath, sText ) => (
   path.extname( sPath ) === ""
   && typeof sText === "string"
@@ -192,6 +196,7 @@ const fbBashShebang = ( sPath, sText ) => (
   )
 );
 
+// @implements s-9fk6j3@6bac58d
 const fvaCodeReferenceForBash = ( aFile, f ) => {
   const vsLine = aFile.sText.split( "\n" );
   const vnComment = ftMaskBash( aFile.sText )[ 1 ];
@@ -212,7 +217,6 @@ const fvaCodeReferenceForBash = ( aFile, f ) => {
       bHeader = false;
       nLineCode = n;
     }
-    if( !bHeader ){ return;}
     const nComment = vnComment.find(( nAt ) => (
       f.fnLineAt( vnLineStart, nAt ) === n
     ));
@@ -233,6 +237,9 @@ const fvaCodeReferenceForBash = ( aFile, f ) => {
   return vaRef.concat( f.fvaMisplacedForFile( aFile, nLineCode ));
 };
 
+// @implements s-9fk6j3@6bac58d
+// @implements s-g76ukd@d16beac
+// @implements s-k3nfhj@45aa33f
 const fCreate = ( f ) => ({
   sName: "bash",
   vsExtension: [ ".sh", ".bash" ],

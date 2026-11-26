@@ -152,6 +152,7 @@ test( "concord dispatches migrate through the master command", () => {
 // @proves s-t99cvq@daf5b13
 // @proves s-nur3h4@3793438
 // @proves s-s6e3j6@4aad693
+// @proves s-qwhv92@cc699b1
 test( "the npm package exposes concord and routes helper scripts through it", () => {
   const aPackage = JSON.parse( fs.readFileSync(
     path.join( __dirname, "..", "package.json" ), "utf8"
@@ -159,13 +160,15 @@ test( "the npm package exposes concord and routes helper scripts through it", ()
   assert.deepStrictEqual( aPackage.bin, { concord: "bin/concord" });
   assert.strictEqual( aPackage.private, undefined );
   for( const sCommand of [
-    "spec-map", "spec-coverage", "agents-sync", "hook-install", "link-propose"
+    "spec-map", "spec-coverage", "agents-sync", "hook-install", "link-propose",
+    "link-refine"
   ]){
     assert.match( aPackage.scripts[ sCommand ], /^bin\/concord / );
   }
   for( const sPath of [
     "AGENTS.md", "README.md", "observations.md", "orchestration.md",
-    "bin/", "docs/", "roles/", "scripts/", "specs/"
+    "bin/", "docs/", "guidance/", "intent/", "roles/", "scripts/",
+    "specs/"
   ]){
     assert.ok( aPackage.files.includes( sPath ));
   }
@@ -173,6 +176,8 @@ test( "the npm package exposes concord and routes helper scripts through it", ()
 
 // @proves s-ualukl@413cc4f
 // @proves s-qfk1yl@7d3f9a7
+// @proves s-jkgs4z@7642d8a
+// @proves s-dqyukb@c092efb
 // @proves s-s3xpz5@265fff1
 // @proves s-tyykqo@a902908
 test( "concord init creates project settings, npm targets and adoption line, then installs the gate",
@@ -191,12 +196,18 @@ test( "concord init creates project settings, npm targets and adoption line, the
     assert.strictEqual( cExit, 0 );
     assert.strictEqual( sErr, "" );
     assert.match( sOut, /created concord\.json/ );
+    assert.match( sOut, /created intent\// );
+    assert.match( sOut, /created guidance\// );
     assert.match( sOut, /added npm script spec-map/ );
     assert.match( sOut, /added npm script spec-coverage/ );
     assert.match( sOut, /updated AGENTS\.md adoption line/ );
     assert.match( sOut, /already installed/ );
     const aConfig = JSON.parse( fs.readFileSync( path.join( sRoot, "concord.json" ), "utf8" ));
     assert.deepStrictEqual( aConfig.languages, [ "bash" ] );
+    assert.deepStrictEqual( aConfig.intent_directories, [ "intent" ] );
+    assert.deepStrictEqual( aConfig.guidance_directories, [ "guidance" ] );
+    assert.strictEqual( fs.statSync( path.join( sRoot, "intent" )).isDirectory(), true );
+    assert.strictEqual( fs.statSync( path.join( sRoot, "guidance" )).isDirectory(), true );
     assert.deepStrictEqual( aConfig.read_directories, [ "." ] );
     assert.deepStrictEqual( aConfig.coverage.runs, [
       { name: "bash-1", directory: "test", runner: "bash" }
@@ -318,6 +329,7 @@ test( "concord init creates a Makefile and missing test directory when needed", 
     const { cExit, sOut } = fInit( sRoot );
     assert.strictEqual( cExit, 0 );
     assert.match( sOut, /created test\// );
+    assert.match( sOut, /created intent\// );
     assert.match( sOut, /created Makefile/ );
     const sMakefile = fs.readFileSync( path.join( sRoot, "Makefile" ), "utf8" );
     assert.match( sMakefile, /^spec-map:\n\tconcord spec-map \$\(ARGS\)$/m );

@@ -1,7 +1,5 @@
 // @implements s-3fzgrr@cc19c25
 // @implements s-rh750h@cc70238
-// @implements s-p54hx2@dfa5570
-// @implements s-k9xdwy@eb62f8a
 // @tested-by test/language-readings.test.js
 "use strict";
 const fCreateJavaScript = require( "./javascript" );
@@ -66,6 +64,8 @@ const fvnCommentCss = ( sText ) => {
   ));
 };
 
+// @implements s-p54hx2@dfa5570
+// @implements s-k9xdwy@ccaee82
 const fCreate = ( f ) => {
   const aJavaScript = fCreateJavaScript( f );
   return {

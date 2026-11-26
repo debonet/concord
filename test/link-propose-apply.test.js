@@ -215,10 +215,8 @@ test( "link-propose — each added line is a directive comment of the file's "
 // @proves s-mfht72@18981bb
 // @proves s-0dezvq@81ba7b7
 // @proves s-97oh4r@a333fff
-test( "link-propose — a JavaScript file's #! line stays first and the lines "
-  + "go after it; a write spec-map would not read is refused and the file "
-  + "left as found, as a stylesheet's #! line; and a stylesheet opening with "
-  + "@charset has no header place", () => {
+test( "link-propose — JavaScript and CSS files accept links after a shebang, "
+  + "while a stylesheet opening with @charset has no header place", () => {
   const sBangCss = "#!/usr/bin/env node\n.a { color: red; }\n";
   const aRun = faApply([
     "y " + fsRefFor( "s-aaaaa1" ) + " src/bang.js",
@@ -227,13 +225,16 @@ test( "link-propose — a JavaScript file's #! line stays first and the lines "
   ], { "src/bang.css": sBangCss });
   expect( aRun.z ).toBe( 1 );
   expect( fvsOut( aRun )).toEqual([
-    "confirm.txt:2  refused: would not resolve",
+    "src/bang.css:2  + @implements " + fsRefFor( "s-aaaaa1" ),
+    "src/bang.css:3  + @tested-by test/one.test.js  unverified",
     "src/bang.js:2  + @implements " + fsRefFor( "s-aaaaa1" ),
     "src/bang.js:3  + @tested-by test/one.test.js  unverified",
     "confirm.txt:3  refused: no header place",
-    "Applied: 1 added, 0 re-stamped, 1 tested-by, 2 refused"
+    "Applied: 2 added, 0 re-stamped, 2 tested-by, 1 refused"
   ]);
-  expect( fsText( aRun.sDir, "src/bang.css" )).toBe( sBangCss );
+  expect( fsText( aRun.sDir, "src/bang.css" )).toContain(
+    "@implements " + fsRefFor( "s-aaaaa1" )
+  );
   expect( fsText( aRun.sDir, "src/bang.js" ).split( "\n" )[ 0 ])
     .toBe( "#!/usr/bin/env node" );
   expect( fsText( aRun.sDir, "src/charset.css" ))
@@ -417,7 +418,7 @@ test( "link-propose — writing runs change only implementation files, never "
     aAfter[ sPath ] !== aBefore[ sPath ]
   ));
   expect( vsChanged ).toEqual([
-    "src/beta.js", "src/doc.js", "src/stale.js", "src/sum.js"
+    "src/beta.js", "src/stale.js", "src/sum.js"
   ]);
   const reOther = /@(?:checks|proves|guards|spec|follows)\b/;
   vsChanged.forEach(( sPath ) => {

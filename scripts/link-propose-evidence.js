@@ -1,23 +1,3 @@
-// @implements s-hndu7a@6adee53
-// @implements s-g1tzs3@9be4fe5
-// @implements s-m58vba@88398a5
-// @implements s-i4ogyf@33bfa48
-// @implements s-aj3ymw@77e461d
-// @implements s-ozip2w@17a2822
-// @implements s-2e76bt@a0fb60a
-// @implements s-twarwp@16b596c
-// @implements s-50fqg8@d697296
-// @implements s-x6xwzh@4f3c2c3
-// @implements s-kbxici@7728efc
-// @implements s-qzz9rq@7fec6df
-// @implements s-qhnsu3@fbda5ed
-// @implements s-qzbfo6@440f4f1
-// @implements s-2f5c83@45e1d61
-// @implements s-gfqr47@50e2cc1
-// @implements s-kuxzw7@4e53af8
-// @implements s-wn8kvy@22ff217
-// @implements s-3iaiek@c173bfd
-// @implements s-fbr7pr@356ffee
 // @tested-by test/link-propose.test.js
 "use strict";
 
@@ -51,6 +31,7 @@ const vsKindTest = [ "loads", "reaches", "mentions" ];
 
 const frLog = ( c ) => Math.log( 1 + c );
 const frShared = ( c ) => 1 / ( 1 + Math.log( Math.max( 1, c )));
+// @implements s-fbr7pr@356ffee
 const fbPathSpaced = ( sPath ) => reSpace.test( sPath );
 
 const fsTermEncoded = ( sTerm ) => sTerm.replace( reEncoded, ( ch ) => (
@@ -68,6 +49,7 @@ class CoverageReader {
     this.sDirRoot = sDirRoot;
   }
 
+  // @implements s-i4ogyf@33bfa48
   faMeasurement(){
     try{
       const a = fxJsonRead( fsPathMeasurement( this.sDirRoot ));
@@ -136,6 +118,7 @@ class LoadGraph {
     return this.asPathForKey.get( sKey );
   }
 
+  // @implements s-ozip2w@17a2822
   fasLoad( sPath ){
     if( !this.aasLoadForPath.has( sPath )){
       const vsSpecifier = fbScript( sPath )
@@ -148,6 +131,7 @@ class LoadGraph {
     return this.aasLoadForPath.get( sPath );
   }
 
+  // @implements s-2e76bt@a0fb60a
   fasReach( sPath ){
     const asLoad = this.fasLoad( sPath );
     const asSeen = new Set([ sPath ]);
@@ -231,6 +215,8 @@ const fAddTo = ( aas, xKey, sValue ) => {
   aas.get( xKey ).add( sValue );
 };
 
+// @implements s-m58vba@88398a5
+// @implements s-i4ogyf@33bfa48
 const faExecution = ( aMeasurement, aModel, fsText, asPathImpl ) => {
   const aExecution = { aasPathForCall: new Map(), aasPathForTest: new Map() };
   if( aMeasurement === null ){ return aExecution;}
@@ -239,6 +225,7 @@ const faExecution = ( aMeasurement, aModel, fsText, asPathImpl ) => {
   ]));
   const vaUnit = aMeasurement.vaUnit;
   const vvaCall = fvvaCallForUnits( vaUnit, avaPlace );
+  // @implements s-aj3ymw@77e461d
   const fbFresh = ( sPath ) => (
     asPathImpl.has( sPath )
     && aMeasurement.aFile[ sPath ] !== undefined
@@ -327,6 +314,8 @@ const fvsEvidenceForCandidate = ( aCandidate ) => [].concat(
   aCandidate.cSibling > 0 ? [ "sibling=" + aCandidate.cSibling ] : []
 );
 
+// @implements s-qzz9rq@7fec6df
+// @implements s-qzbfo6@440f4f1
 const fzCompareCandidate = ( aA, aB ) => (
   Number( aB.sStale !== null ) - Number( aA.sStale !== null )
   || aB.rScore - aA.rScore
@@ -364,12 +353,14 @@ class EvidenceReader {
     )));
   }
 
+  // @implements s-twarwp@16b596c
   fsPathMentioned( sLiteral ){
     const sTail = sLiteral.replace( reLeadRelative, "" );
     if( this.asPathImpl.has( sTail )){ return sTail;}
     return this.asPathTail.get( sTail ) || null;
   }
 
+  // @implements s-twarwp@16b596c
   fasForTest( sKind, sPathTest ){
     return this.fasMemo( sKind + "\0" + sPathTest, () => {
       if( sKind === "loads" ){
@@ -480,6 +471,7 @@ class Proposer {
     return this.acStmtForPath.get( sPath ) || 0;
   }
 
+  // @implements s-50fqg8@d697296
   fIndexTerms( vaMarker ){
     const vsTerm = vaMarker.flatMap(( aMarker ) => (
       fvsTermForText( aMarker.sText )
@@ -499,12 +491,14 @@ class Proposer {
     return this.aasPathForTerm.get( sTerm ) || new Set();
   }
 
+  // @implements s-x6xwzh@4f3c2c3
   fvaSibling( aMarker ){
     const aSpec = this.aSpecForPath.get( aMarker.sPath );
     return ( this.avaSibling.get( fsKeyHeading( aSpec, aMarker.nLine )) || [])
       .filter(( aOther ) => aOther.sId !== aMarker.sId );
   }
 
+  // @implements s-m58vba@88398a5
   fAddCalls( faCandidate, vaCall ){
     vaCall.forEach(( aCall ) => {
       const asPath = this.evidence.fasExecCall( aCall );
@@ -516,6 +510,9 @@ class Proposer {
     });
   }
 
+  // @implements s-ozip2w@17a2822
+  // @implements s-2e76bt@a0fb60a
+  // @implements s-twarwp@16b596c
   fAddTests( faCandidate, vsPathTest ){
     vsPathTest.forEach(( sPathTest ) => {
       const cSpread = this.evidence.fcSpreadTest( sPathTest );
@@ -529,6 +526,7 @@ class Proposer {
     });
   }
 
+  // @implements s-50fqg8@d697296
   fAddTerms( faCandidate, aMarker ){
     fvsTermForText( aMarker.sText ).forEach(( sTerm ) => (
       this.fasPathForTerm( sTerm ).forEach(( sPath ) => {
@@ -540,12 +538,14 @@ class Proposer {
     ));
   }
 
+  // @implements s-x6xwzh@4f3c2c3
   fAddSiblings( faCandidate, aMarker ){
     this.fvaSibling( aMarker ).forEach(( aOther ) => (
       this.avsPathForId.get( aOther.sId ) || new Set()
     ).forEach(( sPath ) => { faCandidate( sPath ).cSibling++; }));
   }
 
+  // @implements s-kbxici@7728efc
   fAddStale( faCandidate, aMarker ){
     ( this.avaStaleForId.get( aMarker.sId ) || []).forEach(( aRef ) => {
       const aCandidate = faCandidate( aRef.sPath );
@@ -557,6 +557,12 @@ class Proposer {
     return frShared( this.fasPathForTerm( sTerm ).size );
   }
 
+  // @implements s-qhnsu3@fbda5ed
+  // @implements s-2f5c83@45e1d61
+  // @implements s-gfqr47@50e2cc1
+  // @implements s-kuxzw7@4e53af8
+  // @implements s-wn8kvy@22ff217
+  // @implements s-3iaiek@c173bfd
   frRaw( aCandidate ){
     const rShared = frShared( this.fcStmtForPath( aCandidate.sPath ));
     const rKind = Object.keys( aCandidate.acKind ).reduce(( r, sKind ) => {
@@ -574,12 +580,20 @@ class Proposer {
     return rKind + rTerm + aWeight.sibling * frLog( aCandidate.cSibling );
   }
 
+  // @implements s-qhnsu3@fbda5ed
+  // @implements s-2f5c83@45e1d61
   frScore( aCandidate ){
     return aCandidate.sStale === null
       ? 1 - Math.exp( -this.frRaw( aCandidate ))
       : 1;
   }
 
+  // @implements s-hndu7a@6adee53
+  // @implements s-g1tzs3@9be4fe5
+  // @implements s-qzz9rq@7fec6df
+  // @implements s-qhnsu3@fbda5ed
+  // @implements s-qzbfo6@440f4f1
+  // @implements s-fbr7pr@356ffee
   fvaCandidate( aMarker, bOwnAbsent ){
     const aaCandidate = new Map();
     const faCandidate = ( sPath ) => {

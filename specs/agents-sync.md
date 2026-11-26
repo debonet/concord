@@ -4,7 +4,6 @@ Statement ids: complete
 
 ## Purpose
 
-* {#m-mzt14m} Make this work properly with Codex in addition to claude
 
 `agents-sync` writes every agent-tool file Concord generates from its roles
 and writes nothing that is already current.
@@ -59,12 +58,6 @@ and writes nothing that is already current.
 
 ## When nothing changed
 
-* {#m-uk0okl <arch} **Content, not times.** Whether a file is current is
-  decided by comparing the bytes a run would write with the bytes the file
-  holds, not by modification times as `make` does: a role file touched but
-  unchanged then costs no write, and a wrong clock or a copy that keeps old
-  times cannot make a run skip a role whose text changed. An up-to-date run
-  costs only reading the role files, the agent files and the record file.
 * {#s-sjq95s <m-uk0okl@a350656,m-ckynhd@8e6b53f} **Up to date.** A run is up to date when every role's
   agent file in the target directory already holds the bytes the run would
   write it and the record file already holds the text the run would write
@@ -109,12 +102,6 @@ and writes nothing that is already current.
   SHA-256 differs from the hash the record file holds for its name, or the
   record file holds none; a file `agents-sync` wrote that nobody has
   changed since is not hand-edited.
-* {#m-32ur2f <arch} **Why a first run refuses.** An agent file that
-  predates the record file can hold edits made by hand that no role carries
-  yet, and overwriting it unasked would lose them with no trace; so the
-  first run after adoption, where such a file differs from the generated
-  bytes, refuses until the human has moved any edit worth keeping into the
-  role and runs it with `--force`.
 * {#s-kn4es1 <m-32ur2f@de576ec} **No record file.** A target directory with no record
   file is read as a record file with no entries: an existing agent file
   whose bytes differ from the bytes the run would write is hand-edited, and

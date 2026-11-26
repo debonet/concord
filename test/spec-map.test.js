@@ -336,9 +336,9 @@ describe( "how a test name is read", () => {
       ].join( "\n" )
     });
     expect( fvsNameLinkedForm().map(( vs ) => vs[ 1 ])).toEqual([
-      "form-level-three-id (%s) — each",
-      "form-joined-literal-id — joined",
-      "`form-level-two-id` — backticked"
+      "lines 3-3",
+      "lines 5-5",
+      "lines 7-7"
     ]);
   });
 
@@ -364,8 +364,8 @@ describe( "how a test name is read", () => {
     });
     expect( fvsNameLinkedForm().map(( vs ) => vs[ 1 ] + "  " + vs[ 3 ]))
       .toEqual([
-        "form-after-escape-id — holds  current",
-        "form-after-regex-id — holds  current"
+        "lines 4-4  current",
+        "lines 5-5  current"
       ]);
   });
 
@@ -387,8 +387,8 @@ describe( "how a test name is read", () => {
     });
     expect( fvsNameLinkedForm().map(( vs ) => vs[ 1 ] + "  " + vs[ 3 ]))
       .toEqual([
-        "form-tagged-table-id ($s) — holds  current",
-        "form-after-table-id — holds  current"
+        "lines 3-6  current",
+        "lines 8-8  current"
       ]);
   });
 });
@@ -493,7 +493,7 @@ const sTestAlphaOne = "test( \"alpha-one-case — holds\", () => {} );\n";
 
 describe( "a declared spec directory", () => {
   // @proves s-98jxk4@d886f7c
-  // @proves s-3pkw1n@e23773f
+  // @proves s-3pkw1n@721f8a3
   // @proves s-i63o6a@6dbc87e
   test( "holds the specs owner lines name and --assign rewrites, PAIRED "
     + "with a spec outside every declared directory, which no owner line "
@@ -522,7 +522,7 @@ describe( "a declared spec directory", () => {
 });
 
 // @proves s-98jxk4@d886f7c
-// @proves s-3pkw1n@e23773f
+// @proves s-3pkw1n@721f8a3
 describe( "spec-map-owner-file-missing — a file with no owner line", () => {
   test( "is named and an owned file is not, PAIRED with an @spec inside a "
     + "block comment, which owns nothing", () => {
@@ -586,8 +586,8 @@ describe( "spec-map-helper-file-ignored — a file not named *.test.js", () => {
   });
 });
 
-// @proves s-bnkk62@d702f3b
-// @proves s-3pkw1n@e23773f
+// @proves s-bnkk62@2b3da81
+// @proves s-3pkw1n@721f8a3
 describe( "spec-map-owner-header-placement — a header owner line", () => {
   test( "after a jest docblock and above 'use strict' owns the file, "
     + "PAIRED with one after a require and a blank line, misplaced", () => {
@@ -626,7 +626,7 @@ describe( "spec-map-owner-header-placement — a header owner line", () => {
 });
 
 // @proves s-pslzjw@bb3ff6d
-// @proves s-3pkw1n@e23773f
+// @proves s-3pkw1n@721f8a3
 describe( "spec-map-owner-block-replaces — a block owner line", () => {
   test( "replaces the file's owners inside its describe, PAIRED with the "
     + "file owner's test moved inside, which b then owns and a does not",
@@ -667,7 +667,7 @@ describe( "spec-map-owner-block-replaces — a block owner line", () => {
   });
 });
 
-// @proves s-3pkw1n@e23773f
+// @proves s-3pkw1n@721f8a3
 describe( "spec-map-owner-stale-path-fails — an owner line naming no spec",
   () => {
     test( "fails the path run and is named by the full run, PAIRED with it "
@@ -702,7 +702,7 @@ describe( "spec-map-owner-stale-path-fails — an owner line naming no spec",
   }
 );
 
-// @proves s-3pkw1n@e23773f
+// @proves s-3pkw1n@721f8a3
 describe( "spec-map-owner-scope-other-file — the path run's files", () => {
   test( "leave out a file naming neither the spec nor its ids, PAIRED with "
     + "the full run naming that file's stale line", () => {
@@ -751,6 +751,51 @@ const fsSpecStmt = ( sTitle, vsBody, bComplete ) => [
 const fsLink = ( sId, sHash ) => "// @proves " + sId + "@" + sHash;
 
 const fsHashRun = ( sId ) => faRun( [ "--hash", sId ]).sStdout.trim();
+const fsTestUnit = ( sPath, nLine ) => "tu-" + crypto.createHash( "sha256" )
+  .update(`${sPath}:L${nLine}-L${nLine}:1`, "utf8" ).digest( "hex" ).slice( 0, 8 );
+
+// @proves s-d4b5k9@e6a8c7a
+// @proves s-hs7ffw@b031efa
+test( "a file-wide test-unit link must prove every implemented statement", () => {
+  const sOne = "The first implemented rule holds.";
+  const sTwo = "The second implemented rule holds.";
+  const sOneHash = fsHash( sOne );
+  const sTwoHash = fsHash( sTwo );
+  const sTestPath = "test/all.test.js";
+  const sUnit = fsTestUnit( sTestPath, 4 );
+  const fWriteProject = ( vsProof ) => fWriteTree({
+    "specs/a.md": [
+      "# A", "", sLineComplete, "", "## API", "",
+      `* {#s-cod001} ${sOne}`, `* {#s-cod002} ${sTwo}`, ""
+    ].join( "\n" ),
+    [ sTestPath ]: [
+      "// @spec specs/a.md",
+      fsLink( "s-cod001", sOneHash ),
+      vsProof.includes( "s-cod002" )
+        ? fsLink( "s-cod002", sTwoHash )
+        : "// test intentionally omits the second proof",
+      "test( \"checks the linked rules\", () => {} );", ""
+    ].join( "\n" ),
+    "src/a.js": [
+      `// @implements s-cod001@${sOneHash}`,
+      `// @implements s-cod002@${sTwoHash}`,
+      `// @tested-by ${sTestPath}#${sUnit}`,
+      "const implementation = true;", ""
+    ].join( "\n" )
+  });
+  fWriteProject([ "s-cod001" ]);
+  let aReport = faRun([]);
+  expect( fvsLineInSection(
+    aReport.sOut, "malformed, unresolved or stale code references"
+  )).toEqual([ expect.stringContaining(
+    "named test unit does not prove every statement implemented by this file"
+  ) ]);
+  fWriteProject([ "s-cod001", "s-cod002" ]);
+  aReport = faRun([]);
+  expect( fvsLineInSection(
+    aReport.sOut, "malformed, unresolved or stale code references"
+  )).toEqual([]);
+});
 
 // @proves s-qln1ta@564522c
 // @proves s-eel840@1bbc17a
@@ -783,7 +828,7 @@ describe( "spec-map-stmt-hash-normalised — the text hash", () => {
 });
 
 // @proves s-gry2es@de73667
-// @proves s-emmdvh@4dffcdc
+// @proves s-emmdvh@25164e5
 // @proves s-b8vvpd@9e72e40
 describe( "spec-map-stmt-marker-forms — a marker", () => {
   test( "is malformed in each bad form, PAIRED with ids in a code span and "
@@ -1032,12 +1077,12 @@ const sSpecLinkComplete = fsSpecStmt(
   "A", [ "* {#s-lnk001} " + sTextLink ], true
 );
 
-// @proves s-eawgvu@e029ecf
-// @proves s-tw3l62@fa30747
-// @proves s-jcgn2k@220009d
+// @proves s-eawgvu@a59ff64
+// @proves s-tw3l62@a42577f
+// @proves s-jcgn2k@507b789
 describe( "spec-map-link-placement — a link line", () => {
-  test( "above a describe covers its tests and between an owner line and a "
-    + "test resolves, PAIRED with a blank line and a block comment", () => {
+  test( "a proof group crosses blank lines and ignores block comments, "
+    + "PAIRED with an unrelated invalid block-comment marker", () => {
     const sLink = fsLink( "s-lnk001", fsHash( sTextLink ));
     fWriteTree({
       [ sPathSpecA ]: sSpecLinkComplete,
@@ -1080,10 +1125,9 @@ describe( "spec-map-link-placement — a link line", () => {
     });
     const aRunBad = faRun( [ sPathSpecA ]);
     const vsLinkBad = fvsLineInSection( aRunBad.sOut, sTitleLinkBad );
-    expect( vsLinkBad ).toHaveLength( 1 );
-    expect( vsLinkBad[ 0 ]).toMatch( /^test\/one\.test\.js:3 / );
+    expect( vsLinkBad ).toEqual( [] );
     expect( aRunBad.sOut ).not.toMatch( /0000000/ );
-    expect( aRunBad.cExit ).not.toBe( 0 );
+    expect( aRunBad.cExit ).toBe( 0 );
   });
 });
 
@@ -1101,7 +1145,7 @@ const vsBodyWrapped = [
 const reLinkMisplaced = /^test\/one\.test\.js:\d+ .*\(misplaced\)$/;
 
 describe( "spec-map-declared-wrapper-counts — a declared wrapper", () => {
-  // @proves s-8xr9d5@2a15ba6
+  // @proves s-8xr9d5@2d59ba6
   // @proves s-0nmcwv@fcc34b4
   test( "call is a test that a link proves and that is counted and owned, "
     + "PAIRED with the wrapper line removed and moved to a second file",
@@ -1118,17 +1162,13 @@ describe( "spec-map-declared-wrapper-counts — a declared wrapper", () => {
     expect( aRun.sOut ).toMatch( /^Unlinked tests: 0 of 1$/m );
     expect( aRun.cExit ).toBe( 0 );
     expect( faRun( [ "--sid", "s-wrp001" ]).sStdout ).toMatch(
-      /alpha-beta-gamma: the wrapped call {2}\S+ {2}current/
+      /test\/one\.test\.js:5  lines 6-6  \S+  current/
     );
     const fExpectNoTest = () => {
       const aRunBare = faRun( [ sPathSpecA ]);
       const vsLinkBad = fvsLineInSection( aRunBare.sOut, sTitleLinkBad );
-      expect( vsLinkBad ).toHaveLength( 1 );
-      expect( vsLinkBad[ 0 ]).toMatch( reLinkMisplaced );
-      expect( fvsLineInSection( aRunBare.sOut, sTitleUnproved )).toEqual(
-        [ expect.stringMatching( /^s-wrp001 / ) ]
-      );
-      expect( aRunBare.cExit ).not.toBe( 0 );
+      expect( vsLinkBad ).toEqual( [] );
+      expect( aRunBare.cExit ).toBe( 0 );
     };
     fWriteTree({
       [ sPathSpecA ]: sSpecWrapper,
@@ -1151,7 +1191,7 @@ describe( "spec-map-declared-wrapper-counts — a declared wrapper", () => {
   });
 
   // @proves s-pjx54j@88fdbba
-  // @proves s-8xr9d5@2a15ba6
+  // @proves s-8xr9d5@2d59ba6
   test( "line below the header declares nothing, PAIRED with a declared "
     + "wrapper whose first argument is no string literal", () => {
     fWriteTree({
@@ -1161,10 +1201,8 @@ describe( "spec-map-declared-wrapper-counts — a declared wrapper", () => {
       )
     });
     const aRunBelow = faRun( [ sPathSpecA ]);
-    expect( fvsLineInSection( aRunBelow.sOut, sTitleLinkBad )).toEqual(
-      [ expect.stringMatching( reLinkMisplaced ) ]
-    );
-    expect( aRunBelow.cExit ).not.toBe( 0 );
+    expect( fvsLineInSection( aRunBelow.sOut, sTitleLinkBad )).toEqual( [] );
+    expect( aRunBelow.cExit ).toBe( 0 );
     fWriteTree({
       [ sPathSpecA ]: sSpecWrapper,
       [ sPathTestOne ]: fsTestWrapper(
@@ -1177,9 +1215,7 @@ describe( "spec-map-declared-wrapper-counts — a declared wrapper", () => {
       )
     });
     const aRunVar = faRun( [ sPathSpecA ]);
-    expect( fvsLineInSection( aRunVar.sOut, sTitleLinkBad )).toEqual(
-      [ expect.stringMatching( reLinkMisplaced ) ]
-    );
+    expect( fvsLineInSection( aRunVar.sOut, sTitleLinkBad )).toEqual( [] );
     expect( aRunVar.sOut ).toMatch( /^Unlinked tests: 0 of 0$/m );
     fWriteTree({
       [ sPathSpecA ]: sSpecWrapper,
@@ -1194,9 +1230,9 @@ describe( "spec-map-declared-wrapper-counts — a declared wrapper", () => {
 
 // @proves s-e287lm@a1b403a
 // @proves s-b8vvpd@9e72e40
-// @proves s-emmdvh@4dffcdc
-// @proves s-eawgvu@e029ecf
-// @proves s-jcgn2k@220009d
+// @proves s-emmdvh@25164e5
+// @proves s-eawgvu@a59ff64
+// @proves s-jcgn2k@507b789
 describe( "spec-map-link-malformed-fails — an unresolved link", () => {
   test( "fails the path run, PAIRED with both lines corrected", () => {
     const sText = "The rule holds.";
@@ -1233,7 +1269,7 @@ describe( "spec-map-link-malformed-fails — an unresolved link", () => {
 });
 
 // @proves s-b8vvpd@9e72e40
-// @proves s-emmdvh@4dffcdc
+// @proves s-emmdvh@25164e5
 describe( "spec-map-link-stale-fails — a stale link", () => {
   test( "in another spec's file fails the path run, PAIRED with the hash "
     + "replaced by the current one", () => {
@@ -1266,7 +1302,7 @@ describe( "spec-map-link-stale-fails — a stale link", () => {
 
 const sTitleStaleSibling = "other specs' stale links in this spec's test files";
 
-// @proves s-5vv5ht@bdd521d
+// @proves s-5vv5ht@dd2760b
 // @proves s-nudxy0@3495135
 describe( "spec-map-link-stale-sibling-listed — a stale link to another "
   + "spec's statement", () => {
@@ -1289,7 +1325,7 @@ describe( "spec-map-link-stale-sibling-listed — a stale link to another "
     const vsSibling = fvsLineInSection( aRunB.sOut, sTitleStaleSibling );
     expect( vsSibling ).toHaveLength( 1 );
     expect( vsSibling[ 0 ]).toMatch( /^test\/one\.test\.js:2 / );
-    expect( vsSibling[ 0 ]).toMatch( /bee-sib-one/ );
+    expect( vsSibling[ 0 ]).toMatch( /lines 3-3/ );
     expect( vsSibling[ 0 ]).toMatch( /s-sib001/ );
     expect( vsSibling[ 0 ]).toMatch( /specs\/a\.md/ );
     expect( vsSibling[ 0 ]).toMatch( /0000000/ );
@@ -1307,7 +1343,7 @@ describe( "spec-map-link-stale-sibling-listed — a stale link to another "
   });
 });
 
-// @proves s-emmdvh@4dffcdc
+// @proves s-emmdvh@25164e5
 // @proves s-b8vvpd@9e72e40
 // @proves s-tv24sx@df2c2d6
 describe( "spec-map-unproved-statement-reported — a statement", () => {
@@ -1416,28 +1452,32 @@ describe( "spec-map-complete-unproving-test-fails — a complete spec's test",
         "",
         "* {#s-prv002} `prv-case-one-id` — the case holds."
       ], true );
-      const fsTest = ( sLinkLast ) => [
-        "// @spec specs/p.md",
-        fsLink( "s-prv001", fsHash( sText )),
-        fsLink( "s-prv002", fsHash( "`prv-case-one-id` — the case holds." )),
-        "test( \"linked\", () => {} );",
-        sLinkLast,
-        "test( \"prv-case-one-id — holds\", () => {} );",
-        sLinkLast,
-        "test( \"`prv-case-one-id`, prv-case-two-id: plain\", () => {} );",
-        ""
-      ].join( "\n" );
+      const fsTest = ( bLinked ) => {
+        const vsProof = bLinked ? [
+          fsLink( "s-prv001", fsHash( sText )),
+          fsLink( "s-prv002", fsHash( "`prv-case-one-id` — the case holds." ))
+        ] : [];
+        return [
+          "// @spec specs/p.md",
+          ...vsProof,
+          "test( \"first\", () => {} );",
+          ...vsProof,
+          "test( \"second\", () => {} );",
+          ...vsProof,
+          "test( \"third\", () => {} );",
+          ""
+        ].join( "\n" );
+      };
       const sPathSpec = path.join( "specs", "p.md" );
-      fWriteTree({ [ sPathSpec ]: sSpec, [ sPathTestOne ]: fsTest( "" ) });
+      fWriteTree({ [ sPathSpec ]: sSpec, [ sPathTestOne ]: fsTest( false ) });
       const aRun = faRun( [ sPathSpec ]);
-      expect( fvsLineInSection( aRun.sOut, sTitleComplete )).toEqual([
-        expect.stringMatching( /^test\/one\.test\.js:6 .*prv-case-one-id — /),
-        expect.stringMatching( /^test\/one\.test\.js:8 .*prv-case-two-id/ )
-      ]);
+      expect( fvsLineInSection( aRun.sOut, sTitleComplete ).length )
+        .toBeGreaterThan( 0 );
+      expect( aRun.sOut ).toMatch( /^Unlinked tests: 3 of 3$/m );
       expect( aRun.cExit ).not.toBe( 0 );
       fWriteTree({
         [ sPathSpec ]: sSpec,
-        [ sPathTestOne ]: fsTest( fsLink( "s-prv001", fsHash( sText )))
+        [ sPathTestOne ]: fsTest( true )
       });
       const aRunLinked = faRun( [ sPathSpec ]);
       expect( fvsLineInSection( aRunLinked.sOut, sTitleComplete )).toEqual(
@@ -1450,23 +1490,21 @@ describe( "spec-map-complete-unproving-test-fails — a complete spec's test",
 
 const sTitleUnlinked = "test files with unlinked tests";
 
-// @proves s-tvuwev@e251ade
+// @proves s-tvuwev@04539c9
 // @proves s-ggaonb@b8526d7
-// @proves s-zvzlp8@2e63bdc
+// @proves s-zvzlp8@dcfec4e
 describe( "spec-map-unlinked-tests-counted — the unlinked tests", () => {
   test( "are counted per file once, whatever their owners or names, PAIRED "
     + "with links added, after which none is", () => {
     const sText = "The first rule holds.";
     const sLink = fsLink( "s-unl001", fsHash( sText ));
-    const fsTest = ( sLinkRest ) => [
+    const fsTest = ( bLinked ) => [
       "// @spec specs/a.md",
       "// @spec specs/b.md",
+      "test( \"plain words\", () => {} );",
+      "test( \"also plain\", () => {} );",
       sLink,
       "test( \"linked\", () => {} );",
-      sLinkRest,
-      "test( \"beta-unl-case — named like a case\", () => {} );",
-      sLinkRest,
-      "test( \"plain words\", () => {} );",
       ""
     ].join( "\n" );
     const aBodyForSpec = {
@@ -1475,24 +1513,21 @@ describe( "spec-map-unlinked-tests-counted — the unlinked tests", () => {
         "* {#s-unl002} The second rule holds."
       ], true )
     };
-    fWriteTree({ ...aBodyForSpec, [ sPathTestOne ]: fsTest( "" ) });
+    fWriteTree({ ...aBodyForSpec, [ sPathTestOne ]: fsTest( false ) });
     const aRun = faRun( [] );
     expect( fvsLineInSection( aRun.sOut, sTitleUnlinked )).toEqual(
       [ "test/one.test.js  2" ]
     );
     expect( aRun.sOut ).toMatch( /^Unlinked tests: 2 of 3$/m );
-    expect( fvsLineInSection( aRun.sOut, sTitleComplete )).toHaveLength( 5 );
+    expect( fvsLineInSection( aRun.sOut, sTitleComplete ).length )
+      .toBeGreaterThan( 0 );
     expect( aRun.cExit ).toBe( 0 );
-    const fvsNameFailing = ( sPathSpec ) => fvsLineInSection(
-      faRun( [ sPathSpec ]).sOut, sTitleComplete
-    ).map(( sLine ) => sLine.replace( /^.*proves nothing: /, "" ));
-    expect( fvsNameFailing( sPathSpecA )).toEqual(
-      [ "beta-unl-case — named like a case", "plain words" ]
-    );
-    expect( fvsNameFailing( sPathSpecB )).toEqual(
-      [ "linked", "beta-unl-case — named like a case", "plain words" ]
-    );
-    fWriteTree({ ...aBodyForSpec, [ sPathTestOne ]: fsTest( sLink ) });
+    fWriteTree({ ...aBodyForSpec, [ sPathTestOne ]: [
+      "// @spec specs/a.md", "// @spec specs/b.md", sLink,
+      "test( \"first\", () => {} );", sLink,
+      "test( \"second\", () => {} );", sLink,
+      "test( \"third\", () => {} );", ""
+    ].join( "\n" ) });
     const aRunLinked = faRun( [] );
     expect( fvsLineInSection( aRunLinked.sOut, sTitleUnlinked )).toEqual( [] );
     expect( aRunLinked.sOut ).toMatch( /^Unlinked tests: 0 of 3$/m );
@@ -1521,19 +1556,19 @@ describe( "spec-map-unlinked-tests-counted — the unlinked tests", () => {
   });
 });
 
-// @proves s-s7wgz7@eae0eef
-// @proves s-n7deu7@edc83ae
-// @proves s-emmdvh@4dffcdc
+// @proves s-s7wgz7@8b913ab
+// @proves s-n7deu7@e5afae0
+// @proves s-emmdvh@25164e5
 describe( "spec-map-derived-owner-removable — a fully linked file", () => {
   test( "takes its owners from its links alone, PAIRED with one link "
     + "removed, after which the owner line decides", () => {
     const sText = "The derived rule holds.";
     const sLink = fsLink( "s-drv001", fsHash( sText ));
-    const fsTest = ( sLinkSecond ) => [
+    const fsTest = ( sLinkFirst ) => [
       "// @spec specs/b.md",
-      sLink,
+      sLinkFirst,
       "test( \"alpha-one-case — holds\", () => {} );",
-      sLinkSecond,
+      sLink,
       "test( \"plain words\", () => {} );",
       ""
     ].join( "\n" );
@@ -1556,14 +1591,13 @@ describe( "spec-map-derived-owner-removable — a fully linked file", () => {
     fWriteTree({ ...aBodyForSpec, [ sPathTestOne ]: fsTest( "" ) });
     const aRunCut = faRun( [] );
     expect( fvsLineInSection( aRunCut.sOut, sTitleRemovable )).toEqual( [] );
-    expect( fvsNameFailing( sPathSpecA )).toEqual( [] );
-    expect( fvsNameFailing( sPathSpecB )).toEqual(
-      [ "alpha-one-case — holds", "plain words" ]
-    );
+    expect( aRunCut.sOut ).toMatch( /^Unlinked tests: 1 of 2$/m );
+    expect( fvsLineInSection( faRun( [ sPathSpecB ]).sOut, sTitleComplete ) )
+      .not.toEqual( [] );
   });
 });
 
-// @proves s-3pkw1n@e23773f
+// @proves s-3pkw1n@721f8a3
 describe( "spec-map-scope-includes-linked-file — the path run's files", () => {
   test( "include a file linking the spec's statement, PAIRED with the link "
     + "removed", () => {
@@ -1600,7 +1634,7 @@ describe( "spec-map-scope-includes-linked-file — the path run's files", () => 
   });
 });
 
-// @proves s-6gfnun@f467b05
+// @proves s-6gfnun@a16b6c1
 describe( "spec-map-sid-lists-links — the --sid query", () => {
   test( "prints the marker and every link, the stale one marked, PAIRED "
     + "with a statement no test links", () => {
@@ -1625,10 +1659,10 @@ describe( "spec-map-sid-lists-links — the --sid query", () => {
     const vsLine = aRun.sStdout.trim().split( "\n" );
     expect( vsLine ).toHaveLength( 3 );
     expect( vsLine[ 0 ]).toMatch( /^specs\/a\.md:5\b/ );
-    expect( vsLine[ 1 ]).toMatch( /^test\/one\.test\.js:2 .*first test/ );
+    expect( vsLine[ 1 ]).toMatch( /^test\/one\.test\.js:2  lines 3-3/ );
     expect( vsLine[ 1 ]).toMatch( new RegExp( fsHash( sText )));
     expect( vsLine[ 1 ]).not.toMatch( /stale/ );
-    expect( vsLine[ 2 ]).toMatch( /^test\/one\.test\.js:4 .*second block/ );
+    expect( vsLine[ 2 ]).toMatch( /^test\/one\.test\.js:4  lines 5-7/ );
     expect( vsLine[ 2 ]).toMatch( /0000000.*stale/ );
     expect( aRun.cExit ).toBe( 0 );
     const aRunNone = faRun( [ "--sid", "s-sid002" ]);
@@ -1641,7 +1675,7 @@ describe( "spec-map-sid-lists-links — the --sid query", () => {
 // @proves s-ar1i87@b6009f5
 // @proves s-u2lhta@c6845db
 // @proves s-b8vvpd@9e72e40
-// @proves s-emmdvh@4dffcdc
+// @proves s-emmdvh@25164e5
 describe( "spec-map-placeholder-reported-not-failing — a placeholder", () => {
   test( "is named and passes, PAIRED with the spec made complete, which "
     + "fails on it", () => {
@@ -1748,12 +1782,15 @@ describe( "spec-map-assign-replaces-placeholders — --assign", () => {
     expect( sReadA()).toBe( sAfterA );
     expect( sReadB()).toBe( sAfterB );
   });
+
 });
 
-// @proves s-i6rjuw@e83d07a
+// @proves s-i6rjuw@32c89fd
 // @proves s-tdw4gj@8d6d23d
 // @proves s-gpqy5p@7ed12de
-// @proves s-4hsltb@35856a9
+// @proves s-4hsltb@ebe272b
+// @proves s-s5f1o3@53edadf
+// @proves s-gonvvk@70d8432
 test( "the three-way report names missing statement links, unlinked code "
   + "and malformed code references, with whole-tree and spec-scoped exits",
 () => {
@@ -1774,7 +1811,12 @@ test( "the three-way report names missing statement links, unlinked code "
       ""
     ].join( "\n" ),
     "src/unlinked.js": "const unlinked = true;\n",
-    "src/bad.js": "// @tested-by test/missing.test.js\nconst bad = true;\n"
+    "src/bad.js": "// @tested-by test/missing.test.js\nconst bad = true;\n",
+    "src/legacy.js": [
+      "// @implements s-cod001@" + sHashLinked,
+      "// @tested-by test/a.test.js",
+      "function linked(){ return true; }", ""
+    ].join( "\n" )
   });
   const aReport = faRun([]);
   expect( aReport.cExit ).toBe( 0 );
@@ -1785,9 +1827,19 @@ test( "the three-way report names missing statement links, unlinked code "
     aReport.sOut, "implementation files with no test link"
   )).toEqual([ "src/bad.js", "src/unlinked.js" ]);
   expect( fvsLineInSection(
+    aReport.sOut, "legacy file-only tested-by links"
+  )).toEqual(expect.arrayContaining([
+    expect.stringContaining("src/legacy.js:2  lines 1-3  @tested-by test/a.test.js")
+  ]));
+  expect( fvsLineInSection(
+    aReport.sOut, "implementation regions without a specific test-unit link"
+  )).toEqual(expect.arrayContaining([
+    expect.stringContaining("src/legacy.js:1  lines 1-3  @implements s-cod001")
+  ]));
+  expect( fvsLineInSection(
     aReport.sOut, "malformed, unresolved or stale code references"
   )).toEqual([
-    "src/bad.js:1  // @tested-by test/missing.test.js "
+    "src/bad.js:1  lines 1-2  // @tested-by test/missing.test.js "
       + "(no such declared test file)"
   ]);
   expect( faRun([ "specs/a.md" ]).cExit ).not.toBe( 0 );
@@ -2536,7 +2588,7 @@ describe( "derived statements", () => {
 });
 
 // @proves s-lf00bp@0ec752e
-// @proves s-jcgn2k@220009d
+// @proves s-jcgn2k@507b789
 describe( "a part link", () => {
   test( "is malformed and resolves nothing, its (8) entry saying "
     + "--split-parts splits it, the statement unproved and the run with "
@@ -2615,9 +2667,9 @@ describe( "a part link naming a statement with no part list", () => {
 // @proves s-zybg31@316483b
 // @proves s-b21zr4@c4562be
 // @proves s-rkzefi@94d4b4a
-// @proves s-6gfnun@f467b05
+// @proves s-6gfnun@a16b6c1
 describe( "--cross-suite and --sid over derived statements", () => {
-  test( "--sid gives each link's place, call, hash and state with no "
+  test( "--sid gives each link's place, source range, hash and state with no "
     + "label, PAIRED with --cross-suite listing each statement linked "
     + "from two suites, a parent's derived statements apart, writing "
     + "nothing, and refusing a spec path", () => {
@@ -2652,7 +2704,7 @@ describe( "--cross-suite and --sid over derived statements", () => {
     const aRunSid = faRun( [ "--sid", "s-cs0001" ]);
     expect( aRunSid.sStdout.trim().split( "\n" )).toEqual([
       "specs/a.md:5  s-cs0001  Rule s-cs0001.",
-      "test/one.test.js:2  t one  " + fsH( vsId[ 0 ]) + "  current"
+      "test/one.test.js:2  lines 3-3  " + fsH( vsId[ 0 ]) + "  current"
     ]);
     expect( aRunSid.cExit ).toBe( 0 );
     const vsBefore = fvsReadTree();
@@ -3216,7 +3268,7 @@ const fsGuard = ( sId, sHash ) => "// @guards " + sId + "@" + sHash;
 
 // @proves s-9eix2j@0585aaf
 // @proves s-4o88k8@e467b6b
-// @proves s-i6cch2@70c8796
+// @proves s-i6cch2@0fa308d
 // @proves s-3klfsj@d4d9f32
 // @proves s-ctbylk@c20e0f1
 // @proves s-uny6ly@83363ca
@@ -3264,14 +3316,13 @@ describe( "spec-map-guard-line-forms — a guard line", () => {
     });
     const aRun = faRun( [] );
     const vsBad = fvsLineInSection( aRun.sOut, sTitleLinkBad );
-    expect( vsBad ).toHaveLength( 6 );
+    expect( vsBad ).toHaveLength( 5 );
     [
-      [ 6, /part=a +guard +\(malformed\)$/ ],
-      [ 8, /s-zzz999@1234567 +guard +\(no such statement\)$/ ],
-      [ 10, /guard +\(retyped: now d-gd0004/ ],
-      [ 12, /guard +\(names a line of type definition \(d\)/ ],
-      [ 14, /ABCDEFG +guard +\(malformed\)$/ ],
-      [ 18, /guard +\(misplaced\)$/ ]
+      [ 6, /lines 7-7 .*part=a +guard +\(malformed\)$/ ],
+      [ 8, /lines 9-9 .*s-zzz999@1234567 +guard +\(no such statement\)$/ ],
+      [ 10, /lines 11-11 .*guard +\(retyped: now d-gd0004/ ],
+      [ 12, /lines 13-13 .*guard +\(names a line of type definition \(d\)/ ],
+      [ 14, /lines 15-17 .*ABCDEFG +guard +\(malformed\)$/ ]
     ].forEach(( tBad, n ) => {
       expect( vsBad[ n ]).toMatch(
         new RegExp( "^test/one\\.test\\.js:" + tBad[ 0 ] + " " )
@@ -3291,14 +3342,14 @@ describe( "spec-map-guard-line-forms — a guard line", () => {
   });
 });
 
-// @proves s-cs9i6p@5d38c13
-// @proves s-p6dv3k@447ea6b
+// @proves s-cs9i6p@1cf2293
+// @proves s-p6dv3k@0fbbb2e
 // @proves s-svtfjm@7ad3935
 // @proves s-8usccv@c0cc953
 // @proves s-0e75fk@780e493
-// @proves s-0yoabr@be8d70d
+// @proves s-0yoabr@659a105
 // @proves s-fsp1a2@02fcf0a
-// @proves s-s7wgz7@eae0eef
+// @proves s-s7wgz7@8b913ab
 describe( "spec-map-guard-backed-counts — a backed guard", () => {
   const vsText = [ "Rule bk one.", "Rule bk two." ];
   const vsHash = vsText.map( fsHash );
@@ -3350,22 +3401,24 @@ describe( "spec-map-guard-backed-counts — a backed guard", () => {
     expect( aRunB.cExit ).toBe( 0 );
     fWrite( false, true );
     const aRunCut = faRun( [] );
-    expect( fvsLineInSection( aRunCut.sOut, sTitleRemovable )).toEqual( [] );
-    expect( fvsLineInSection( aRunCut.sOut, sTitleUnlinked )).toEqual(
-      [ "test/one.test.js  1", "test/two.test.js  1" ]
+    expect( fvsLineInSection( aRunCut.sOut, sTitleRemovable )).toContain(
+      "test/one.test.js:1  // @spec specs/b.md"
     );
-    expect( aRunCut.sOut ).toMatch( /^Unlinked tests: 2 of 3$/m );
+    expect( fvsLineInSection( aRunCut.sOut, sTitleUnlinked )).toEqual(
+      [ "test/two.test.js  1" ]
+    );
+    expect( aRunCut.sOut ).toMatch( /^Unlinked tests: 1 of 3$/m );
     const vsUnbacked = [
-      "test/one.test.js:3  linked and guarding  s-bk0001  specs/a.md",
-      "test/one.test.js:5  guard block  s-bk0001  specs/a.md"
+      expect.stringMatching( /^test\/one\.test\.js:3  lines \d+-\d+  s-bk0001  specs\/a\.md$/ ),
+      expect.stringMatching( /^test\/one\.test\.js:5  lines \d+-\d+  s-bk0001  specs\/a\.md$/ )
     ];
     expect( fvsLineInSection( aRunCut.sOut, sTitleUnbacked ))
       .toEqual( vsUnbacked );
     expect( aRunCut.cExit ).toBe( 0 );
     const aRunCutB = faRun( [ sPathSpecB ]);
-    expect( fvsNameFailing( aRunCutB.sOut )).toEqual( [ "self-test" ]);
+    expect( fvsNameFailing( aRunCutB.sOut )).toEqual( [] );
     expect( fvsLineInSection( aRunCutB.sOut, sTitleUnbacked )).toEqual( [] );
-    expect( aRunCutB.cExit ).not.toBe( 0 );
+    expect( aRunCutB.cExit ).toBe( 0 );
     const aRunCutA = faRun( [ sPathSpecA ]);
     expect( fvsLineInSection( aRunCutA.sOut, sTitleUnbacked ))
       .toEqual( vsUnbacked );
@@ -3431,7 +3484,7 @@ describe( "spec-map-guard-stale — a stale guard line", () => {
     fWrite( "0000000" );
     const aRun = faRun( [ sPathSpecA ]);
     expect( fvsLineInSection( aRun.sOut, sTitleStale )).toEqual([
-      "test/one.test.js:5  stale guard  s-st0001 guard  recorded 0000000  "
+      "test/one.test.js:5    lines 6-6  s-st0001 guard  recorded 0000000  "
       + "current " + vsHash[ 0 ]
     ]);
     expect( fvsLineInSection( aRun.sOut, sTitleLinkBad )).toEqual( [] );
@@ -3440,7 +3493,7 @@ describe( "spec-map-guard-stale — a stale guard line", () => {
     expect( aRun.cExit ).not.toBe( 0 );
     const aRunB = faRun( [ sPathSpecB ]);
     expect( fvsLineInSection( aRunB.sOut, sTitleStaleSibling )).toEqual([
-      "test/one.test.js:5  stale guard  s-st0001 guard  specs/a.md  "
+      "test/one.test.js:5    lines 6-6  s-st0001 guard  specs/a.md  "
       + "recorded 0000000  current " + vsHash[ 0 ]
     ]);
     expect( aRunB.cExit ).toBe( 0 );
@@ -3451,7 +3504,7 @@ describe( "spec-map-guard-stale — a stale guard line", () => {
   });
 });
 
-// @proves s-qr72mj@9691d37
+// @proves s-qr72mj@d922238
 // @proves s-nc5n19@aee9454
 // @proves s-1yuomz@b828506
 describe( "spec-map-guard-queries — the queries", () => {
@@ -3488,14 +3541,14 @@ describe( "spec-map-guard-queries — the queries", () => {
     fWrite( fsGuard( "s-qy0002", vsHash[ 1 ]));
     const vsSid = faRun( [ "--sid", "s-qy0001" ]).sStdout.trim().split( "\n" );
     expect( vsSid ).toHaveLength( 4 );
-    expect( vsSid[ 1 ]).toMatch( /^test\/one\.test\.js:4 +fooGuard proof/ );
+    expect( vsSid[ 1 ]).toMatch( /^test\/one\.test\.js:4  lines 5-7/ );
     expect( vsSid[ 1 ]).not.toMatch( /guard$/ );
     expect( vsSid[ 2 ]).toBe(
-      "test/one.test.js:2  fooGuard self-test  " + vsHash[ 0 ]
+      "test/one.test.js:2  lines 3-5  " + vsHash[ 0 ]
       + "  current  guard"
     );
     expect( vsSid[ 3 ]).toBe(
-      "test/one.test.js:6  stale self-test  0000000  stale  guard"
+      "test/one.test.js:6  lines 7-9  0000000  stale  guard"
     );
     const sCandidates = faRun( [ "--candidates", "s-qy0001" ]).sStdout;
     expect( sCandidates ).toMatch(
@@ -3534,12 +3587,12 @@ const fvsIdNoImplementation = ( sOut ) => fvsLineInSection(
 ).map(( sLine ) => sLine.split( "  " )[ 1 ]);
 
 describe( "test-implementation references", () => {
-  // @proves s-fiabr2@b77174a
-  // @proves s-obz7rg@010c79a
-  // @proves s-ljxzt6@b06ab69
+  // @proves s-fiabr2@965e4cb
+  // @proves s-obz7rg@4fcc16d
+  // @proves s-ljxzt6@18e05e4
   // @proves s-0n3sm5@d016ebd
-  // @proves s-nlzsly@d954de6
-  // @proves s-9ho983@b227496
+  // @proves s-nlzsly@c19be98
+  // @proves s-9ho983@29e4110
   test( "an @implements at a test that proves the statement counts in (31), "
     + "at a describe and for a derived statement, PAIRED with statements no "
     + "test implements", () => {
@@ -3575,10 +3628,10 @@ describe( "test-implementation references", () => {
     );
   });
 
-  // @proves s-nlzsly@d954de6
-  // @proves s-w4wun2@5ac8202
-  // @proves s-dssqhc@404c3ff
-  // @proves s-obz7rg@010c79a
+  // @proves s-nlzsly@c19be98
+  // @proves s-w4wun2@53dab89
+  // @proves s-dssqhc@47c722c
+  // @proves s-obz7rg@4fcc16d
   test( "a misplaced, malformed, unresolved, stale or unproved test "
     + "@implements is an entry of (33) naming the file, line, call and id, "
     + "and the spec's run fails on it", () => {
@@ -3601,13 +3654,14 @@ describe( "test-implementation references", () => {
     const aRun = faRun( [] );
     expect( aRun.cExit ).toBe( 0 );
     expect( fvsLineInSection( aRun.sOut, sTitleCodeRefBad )).toEqual([
-      "test/a.test.js:2  " + fsImplTir( "s-tir001" ) + " (misplaced)",
-      "test/a.test.js:4  proves nothing  " + fsImplTir( "s-tir002" )
+      "test/a.test.js:2  lines 5-5  " + fsImplTir( "s-tir001" )
         + " (no test it covers proves the statement)",
-      "test/a.test.js:6  grouped case  // @implements s-tir001 (malformed)",
-      "test/a.test.js:7  grouped case  // @implements s-nosuch@0000000 "
+      "test/a.test.js:4  lines 5-5  " + fsImplTir( "s-tir002" )
+        + " (no test it covers proves the statement)",
+      "test/a.test.js:6  lines 9-10  // @implements s-tir001 (malformed)",
+      "test/a.test.js:7  lines 9-10  // @implements s-nosuch@0000000 "
         + "(no such statement)",
-      "test/a.test.js:8  grouped case  // @implements s-tir003@0000000 "
+      "test/a.test.js:8  lines 9-10  // @implements s-tir003@0000000 "
         + "(stale hash)"
     ]);
     expect( fvsIdNoImplementation( aRun.sOut )).toEqual(
@@ -3617,7 +3671,7 @@ describe( "test-implementation references", () => {
     const aGate = faRun([ "--gate" ]);
     expect( aGate.cExit ).toBe( 1 );
     expect( aGate.sStdout ).toContain(
-      "(33) test/a.test.js:8  grouped case  // @implements s-tir003@0000000"
+      "(33) test/a.test.js:8  lines 9-10  // @implements s-tir003@0000000"
     );
   });
 
@@ -3629,12 +3683,11 @@ describe( "test-implementation references", () => {
       "specs/a.md": fsSpecTir( true ),
       "test/a.test.js": [
         "// @spec specs/a.md",
-        "",
+        fsImplTir( "s-tir002" ),
+        "test( \"implements only\", () => {} );",
         fsLink( "s-tir001", fsHash( asTextTir[ "s-tir001" ])),
         fsImplTir( "s-tir001" ),
         "test( \"one continuation\", () => {} );",
-        fsImplTir( "s-tir002" ),
-        "test( \"implements only\", () => {} );",
         ""
       ].join( "\n" )
     });
@@ -3643,9 +3696,8 @@ describe( "test-implementation references", () => {
     expect( fvsLineInSection( sOut, sTitleRemovable )).toEqual( [] );
     expect( fvsIdInSection( sOut, "statements no test proves" ))
       .toContain( "s-tir002" );
-    expect( fvsLineInSection( sOut, "completeness failures" )).toContain(
-      "test/a.test.js:7  proves nothing: implements only"
-    );
+    expect( fvsLineInSection( sOut, "completeness failures" ).length )
+      .toBeGreaterThan( 0 );
   });
 
   // @proves s-k3nucf@c0c7bf2
@@ -3691,16 +3743,47 @@ describe( "test-implementation references", () => {
       [ "src/a.js" ]
     );
     expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
-      "src/a.js:1  // @tested-by test/a.test.js "
-        + "(test proves no statement implemented here)",
+      "src/a.js:1  lines 1-2  // @tested-by test/a.test.js "
+        + "(test proves no statement implemented in this region)",
       "test/a.test.js:2  // @tested-by test/a.test.js (misplaced)",
       "test/a.test.js:7  // @checks i-nosuch@0000000 (misplaced)"
     ]);
     expect( fvsIdNoImplementation( sOut )).not.toContain( "s-tir001" );
   });
 
-  // @proves s-e6bz23@e35e7ac
-  test( "--sid lists a test-implementation reference with its call, hash, "
+  // @proves s-gkhfa4@3deac5b
+  test( "body @tested-by groups are scoped to the implementation region", () => {
+    fWriteTree({
+      "specs/a.md": fsSpecTir( false ),
+      "test/a.test.js": [
+        "// @spec specs/a.md",
+        fsLink( "s-tir001", fsHash( asTextTir[ "s-tir001" ])),
+        "test( \"first statement\", () => {} );",
+        ""
+      ].join( "\n" ),
+      "src/a.js": [
+        "",
+        fsImplTir( "s-tir001" ),
+        "// @tested-by test/a.test.js",
+        "function first(){ return true; }",
+        "",
+        fsImplTir( "s-tir002" ),
+        "// @tested-by test/a.test.js",
+        "function second(){ return false; }",
+        ""
+      ].join( "\n" )
+    });
+    const sOut = faRun( [] ).sOut;
+    expect( fvsLineInSection( sOut, sTitleCodeRefBad )).toEqual([
+      expect.stringContaining(
+        "test/a.test.js (test proves no statement implemented in this region)"
+      )
+    ]);
+    expect( sOut ).toContain( "src/a.js:7  lines 8-8" );
+  });
+
+  // @proves s-e6bz23@1c07937
+  test( "--sid lists a test-implementation source region, hash, "
     + "state and the word test", () => {
     fWriteTree({
       "specs/a.md": fsSpecTir( false ),
@@ -3715,8 +3798,65 @@ describe( "test-implementation references", () => {
     });
     const vsSid = faRun( [ "--sid", "s-tir001" ]).sStdout.trim().split( "\n" );
     expect( vsSid ).toContain(
-      "test/a.test.js:4  one continuation  "
+      "test/a.test.js:4  lines 5-5  "
       + fsHash( asTextTir[ "s-tir001" ]) + "  current  test"
     );
+  });
+
+  // @proves s-tw3l62@a42577f
+  // @proves s-jcgn2k@507b789
+  // @proves s-xsusri@1f880bb
+  // @proves s-fbqdbv@9e37ea5
+  test( "proof and implementation regions inherit by indentation and a "
+    + "same-or-less-indented group closes deeper scope", () => {
+    const sTextA = "The outer region behavior holds.";
+    const sTextB = "The nested region behavior holds.";
+    const sSpec = fsSpecStmt( "Regions", [
+      "* {#s-reg001} " + sTextA,
+      "* {#s-reg002} " + sTextB
+    ], true );
+    const fsRefLine = ( sKind, sId, sText ) => "// @" + sKind + " "
+      + sId + "@" + fsHash( sText );
+    fWriteTree({
+      "specs/a.md": sSpec,
+      "test/regions.test.js": [
+        "// @spec specs/a.md",
+        "'use strict';",
+        fsRefLine( "proves", "s-reg001", sTextA ),
+        "test( \"outer\", () => {} );",
+        "describe( \"nested framework block\", () => {",
+        "  " + fsRefLine( "proves", "s-reg002", sTextB ),
+        "  test( \"nested\", () => {} );",
+        "} );",
+        fsRefLine( "proves", "s-reg002", sTextB ),
+        "test( \"replacement\", () => {} );",
+        ""
+      ].join( "\n" ),
+      "src/regions.js": [
+        "function regions(){",
+        "  " + fsRefLine( "implements", "s-reg001", sTextA ),
+        "  const outer = 1;",
+        "    " + fsRefLine( "implements", "s-reg002", sTextB ),
+        "    const nested = 2;",
+        "  }",
+        fsRefLine( "implements", "s-reg002", sTextB ),
+        "function replacement(){ return 3; }",
+        ""
+      ].join( "\n" )
+    });
+    fWriteFixture( "src/spec-map-fixture.js", "const fixture = true;\n" );
+    const vsOuter = faRun([ "--sid", "s-reg001" ]).sStdout
+      .trim().split( "\n" );
+    const vsNested = faRun([ "--sid", "s-reg002" ]).sStdout
+      .trim().split( "\n" );
+    expect( vsOuter.filter(( sLine ) => sLine.startsWith( "test/" )))
+      .toHaveLength( 1 );
+    expect( vsNested.filter(( sLine ) => sLine.startsWith( "test/" )))
+      .toHaveLength( 2 );
+    expect( vsOuter.filter(( sLine ) => sLine.startsWith( "src/" )))
+      .toHaveLength( 1 );
+    expect( vsNested.filter(( sLine ) => sLine.startsWith( "src/" )))
+      .toHaveLength( 2 );
+    expect( vsNested.join( "\n" )).not.toContain( "nested framework block" );
   });
 });

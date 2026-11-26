@@ -84,7 +84,7 @@ test( "shared handout timestamps live under the repository tmp directory", () =>
 // @proves s-vf9dot@ee01a4a
 // @proves s-iib1an@2174339
 // @proves s-l1ejuq@74290c0
-// @proves s-mdie6i@20387f2
+// @proves s-mdie6i@630e05a
 // @proves s-q61vzh@596af51
 // @proves s-run5j3@4f313fd
 // @proves s-x5iowz@1df7600

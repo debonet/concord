@@ -1,6 +1,6 @@
 {
   "name": "@debonet/concord",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "bin": {
     "concord": "bin/concord"
   },
@@ -11,6 +11,8 @@
     "orchestration.md",
     "bin/",
     "docs/",
+    "intent/",
+    "guidance/",
     "roles/",
     "scripts/",
     "specs/"
@@ -22,7 +24,8 @@
     "spec-coverage": "bin/concord spec-coverage",
     "agents-sync": "bin/concord agents-sync",
     "hook-install": "bin/concord concord-hook install",
-    "link-propose": "bin/concord link-propose"
+    "link-propose": "bin/concord link-propose",
+    "link-refine": "bin/concord link-refine"
   },
   "engines": {
     "node": ">=20"

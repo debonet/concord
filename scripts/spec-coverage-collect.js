@@ -1,16 +1,3 @@
-// @implements s-l38b55@a9d4313
-// @implements s-yzz1r5@16c2353
-// @implements s-exgipl@7205327
-// @implements s-ddknwk@bad1045
-// @implements s-i5esri@cca5118
-// @implements s-kmo08a@7b1a38d
-// @implements s-ficxlp@91445c0
-// @implements s-pmq9t1@7fb387f
-// @implements s-ii54an@ee79563
-// @implements s-k3nfhj@45aa33f
-// @implements s-m3tqg6@8e17ef1
-// @implements s-igoasz@b481867
-// @implements s-2c5too@f5a4a7e
 // @tested-by test/spec-coverage-jest.test.js
 // @tested-by test/spec-coverage.test.js
 "use strict";
@@ -61,6 +48,7 @@ const fnPrefixInScope = ( vsPart, vsDirSource ) => vsDirSource
   .filter(( nPrefix ) => nPrefix >= 0 && nPrefix < vsPart.length )
   .reduce(( nBest, nPrefix ) => Math.max( nBest, nPrefix ), -1 );
 
+// @implements s-k3nfhj@45aa33f
 const fbBashSourcePath = ( sPathRel, sDirRoot ) => {
   if( /\.(?:sh|bash)$/.test( sPathRel )){ return true;}
   if( path.extname( sPathRel ) !== "" ){ return false;}
@@ -73,6 +61,8 @@ const fbBashSourcePath = ( sPathRel, sDirRoot ) => {
   catch( xErr ){ return false;}
 };
 
+// @implements s-k3nfhj@45aa33f
+// @implements s-pmq9t1@7fb387f
 const fbPathInScope = ( sPathRel, vsDirSource, sDirRoot ) => {
   const vsPart = sPathRel.split( "/" );
   const nPrefix = fnPrefixInScope( vsPart, vsDirSource );
@@ -85,6 +75,7 @@ const fbPathInScope = ( sPathRel, vsDirSource, sDirRoot ) => {
   );
 };
 
+// @implements s-pmq9t1@7fb387f
 const fvsDirSourceForRoot = ( sDirRoot ) => {
   const aRead = configStore.faConfig( sDirRoot );
   if( aRead.sProblem !== null ){ throw new Error( aRead.sProblem );}
@@ -129,6 +120,7 @@ const fsKeyMapFile = ( sText, sPathAbs ) => (
     : ""
 );
 
+// @implements s-kmo08a@7b1a38d
 const fvaPosStmtForSource = ( sText, sPath ) => {
   for( const bModule of [ false, true ]){
     const instrumenter = createInstrumenter({
@@ -207,6 +199,7 @@ class SourceIndex {
   }
 }
 
+// @implements s-m3tqg6@8e17ef1
 const fnLineOriginal = ( consumer, aPos, asPosCanonical ) => {
   const aOrig = consumer.originalPositionFor({
     line: aPos.line, column: aPos.column
@@ -235,6 +228,7 @@ const fbMapReachesScope = ( sDirRoot, sPathAbs, xMap ) => (
   ))
 );
 
+// @implements s-m3tqg6@8e17ef1
 const ftPlaceMapped = ({ sDirRoot, sPathAbs, aPos, consumer, index }) => {
   const aOrig = consumer.originalPositionFor({
     line: aPos.line, column: aPos.column
@@ -249,6 +243,8 @@ const ftPlaceMapped = ({ sDirRoot, sPathAbs, aPos, consumer, index }) => {
     : [ sPathSrcRel, aOrig.line ];
 };
 
+// @implements s-igoasz@b481867
+// @implements s-m3tqg6@8e17ef1
 const fvtPlaceForStmt = ({ sDirRoot, sPathAbs, vaPos, xMap, index }) => {
   const sPathRelRun = fsPathRel( sDirRoot, sPathAbs );
   if( fbInRootScope( sDirRoot, sPathRelRun )){
@@ -303,6 +299,7 @@ class LineUnits {
     });
   }
 
+  // @implements s-ddknwk@bad1045
   fAddUnmeasured( sKind, sText, vnUnit ){
     const sKey = sKind + "\0" + sText;
     const aEntry = this.aaUnmeasuredForKey.get( sKey )
@@ -311,6 +308,7 @@ class LineUnits {
     this.aaUnmeasuredForKey.set( sKey, aEntry );
   }
 
+  // @implements s-ddknwk@bad1045
   fAddRecord( aRecord ){
     Object.entries( aRecord.aFile ).forEach(([ sPath, aFile ]) => {
       aFile.vnLine.forEach(( nLine ) => this.fAdd( sPath, nLine, []));
@@ -340,6 +338,7 @@ class LineUnits {
     );
   }
 
+  // @implements s-ddknwk@bad1045
   fvaUnmeasured( cTest ){
     return Array.from( this.aaUnmeasuredForKey.values())
       .map(( aEntry ) => ({
@@ -351,6 +350,7 @@ class LineUnits {
   }
 }
 
+// @implements s-2c5too@f5a4a7e
 const fPlaceRun = ( units, aRun ) => {
   units.fAddPlaced( fvtPlaceForStmt( aRun ), aRun.vvnUnit );
   const sPathRelRun = fsPathRel( aRun.sDirRoot, aRun.sPathAbs );
@@ -365,6 +365,8 @@ const fPlaceRun = ( units, aRun ) => {
   }
 };
 
+// @implements s-yzz1r5@16c2353
+// @implements s-l38b55@a9d4313
 const fvvnUnitForStmt = ( vzTotal, vavzTest ) => vzTotal.map(( zTotal, n ) => {
   const vnUnit = [];
   let zInside = 0;
@@ -376,12 +378,14 @@ const fvvnUnitForStmt = ( vzTotal, vavzTest ) => vzTotal.map(( zTotal, n ) => {
   return zTotal > zInside ? vnUnit.concat( nUnitFile ) : vnUnit;
 });
 
+// @implements s-exgipl@7205327
 const faHitForRaised = ( vz ) => {
   const azHit = new Map();
   for( let n = 0; n < vz.length; n += 2 ){ azHit.set( vz[ n ], vz[ n + 1 ]);}
   return azHit;
 };
 
+// @implements s-ficxlp@91445c0
 const fvvnUnitForCoverage = ( aFileCov, vazTest, bWindow ) => {
   const vzTotal = fvzCount( aFileCov );
   return bWindow
@@ -389,6 +393,10 @@ const fvvnUnitForCoverage = ( aFileCov, vazTest, bWindow ) => {
     : vzTotal.map(( z ) => z > 0 ? [ nUnitFile ] : []);
 };
 
+// @implements s-exgipl@7205327
+// @implements s-ficxlp@91445c0
+// @implements s-yzz1r5@16c2353
+// @implements s-l38b55@a9d4313
 const faRecordForResult = ({
   sDirRoot, sSuite, sPathTest, aCoverage, aWindow, index
 }) => {

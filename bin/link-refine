@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+// @tested-by test/link-refine.test.js
+"use strict";
+
+const { fzMain } = require( "../scripts/link-refine.js" );
+
+process.exitCode = fzMain(
+  process.argv.slice( 2 ), process.cwd(),
+  ( s ) => process.stdout.write( s ),
+  ( s ) => process.stderr.write( s )
+);

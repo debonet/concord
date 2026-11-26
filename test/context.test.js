@@ -45,9 +45,11 @@ const fModel = () => {
   const aTest = {
     sPath: "test/feature.test.js", sText: "test source",
     vaCall: [{
-      sKind: "test", nLine: 3, sName: "covers both",
+      sKind: "test", nLine: 3, nFirstLine: 4, nLastLine: 4,
+      sUnitId: "tu-1234abcd", sName: "covers both", sBody: "test source",
       vaStmtCounted: [{ sId: "aaaaaa" }, { sId: "bbbbbb" }]
-    }]
+    }],
+    vaLink: [{ sReason: null, sId: "aaaaaa" }]
   };
   const aCode = { sPath: "src/feature.js", sText: "code source" };
   return {
@@ -73,11 +75,18 @@ const fModel = () => {
       } ],
       aLines: {
         vaImplements: [{
-          sId: "aaaaaa", sPath: "src/feature.js", nLine: 1
+          sId: "aaaaaa", sPath: "src/feature.js", nLine: 1,
+          nSourceStartLine: 1, nSourceEndLine: 2
         }],
         vaTestedBy: [{
           sKind: "tested-by", sReason: null,
-          sPath: "src/feature.js", sTarget: "test/manual.test.js", nLine: 2
+          sPath: "src/feature.js", sTarget: "test/manual.test.js", nLine: 2,
+          sTestPath: "test/manual.test.js"
+        }, {
+          sKind: "tested-by", sReason: null,
+          sPath: "src/feature.js", sTarget: "test/feature.test.js#tu-1234abcd",
+          sTestPath: "test/feature.test.js", sTestUnitId: "tu-1234abcd",
+          nLine: 3
         }]
       },
       vaCode: [ aCode ],
@@ -121,7 +130,8 @@ test( "context graph follows motive, statement, sibling motive and inclusion lin
   const vaKeys = aGraph.vaNode.map(( aNode ) => aNode.sKey).sort();
   assert.deepStrictEqual( vaKeys, [
     "sibling", "seed01", "aaaaaa", "bbbbbb", "cccccc",
-    "src/feature.js", "test/feature.test.js", "test/manual.test.js"
+    "src/feature.js", "test/feature.test.js#tu-1234abcd",
+    "test/manual.test.js"
   ].sort());
   const aIncluded = aGraph.vaNode.find(( aNode ) => aNode.sKey === "cccccc");
   assert.ok( aIncluded.vsVia.includes( "s:bbbbbb" ));
@@ -144,8 +154,9 @@ test( "context graph follows motive, statement, sibling motive and inclusion lin
   assert.deepStrictEqual( aStopWords.vaNode, [] );
 });
 
-// @proves s-1ig26d@aacd25a
+// @proves s-1ig26d@fec8eec
 // @proves s-qi3gai@63b2ad5
+// @proves s-prordk@3a3312e
 test( "fixers get linked tests and implementations while architects get pointers", () => {
   const { aModel } = fModel();
   const aFixer = faGraph( aModel, "Add Bash coverage", "fixer" );
@@ -156,20 +167,35 @@ test( "fixers get linked tests and implementations while architects get pointers
   assert.deepStrictEqual( vsRootGraphKeys, [
     "m:seed01", "m:sibling", "s:aaaaaa", "s:bbbbbb", "s:cccccc"
   ]);
-  const aTest = aFixer.vaNode.find(( aNode ) => aNode.sType === "t");
+  const aTest = aFixer.vaNode.find(( aNode ) => (
+    aNode.sKey === "test/feature.test.js#tu-1234abcd"
+  ));
   const aManualTest = aFixer.vaNode.find(( aNode ) => (
     aNode.sKey === "test/manual.test.js"
   ));
   const aCode = aFixer.vaNode.find(( aNode ) => aNode.sType === "c");
-  assert.strictEqual( aTest.sContent, "test source" );
-  assert.strictEqual( aManualTest.sContent, "manual test file" );
-  assert.strictEqual( aCode.sContent, "code source" );
+  assert.strictEqual(
+    aTest.sContent, "// test/feature.test.js:L4-L4\ntest source"
+  );
+  assert.strictEqual(
+    aManualTest.sContent, "// test/manual.test.js\nmanual test file"
+  );
+  assert.strictEqual(
+    aCode.sContent, "// src/feature.js:1-1\n1: code source"
+  );
   assert.ok( aTest.vaLocation.length >= 1 );
+  assert.ok( aTest.vaLocation.some(( aLocation ) => (
+    aLocation.sRelation === "@tested-by"
+      && aLocation.sUnitId === "tu-1234abcd"
+  )));
   assert.ok( aManualTest.vaLocation.some(( aLocation ) => (
     aLocation.sRelation === "@tested-by"
   )));
   const aArchitect = faGraph( aModel, "Add Bash coverage", "architect" );
   assert.ok( aArchitect.vaNode.some(( aNode ) => aNode.sType === "t"));
+  assert.ok( aArchitect.vaNode.some(( aNode ) => (
+    aNode.sKey === "test/feature.test.js#tu-1234abcd"
+  )));
   assert.ok( aArchitect.vaNode.some(( aNode ) => aNode.sType === "c"));
   assert.ok( aArchitect.vaNode.some(( aNode ) => (
     aNode.sKey === "test/manual.test.js"
@@ -180,9 +206,30 @@ test( "fixers get linked tests and implementations while architects get pointers
   );
 });
 
+// @proves s-1ig26d@fec8eec
+test( "fixers get an interactive check linked to the same implementation region", () => {
+  const { aModel } = fModel();
+  const aCheck = faMarker(
+    "i", "check01", "**Do:** open the page. **Look for:** the feature."
+  );
+  aModel.vaMarker.push( aCheck );
+  aModel.aLines.vaImplements[ 0 ].nSourceStartLine = 1;
+  aModel.aLines.vaImplements[ 0 ].nSourceEndLine = 5;
+  aModel.aLines.vaChecks = [{
+    sKind: "checks", sReason: null, sId: aCheck.sId,
+    sPath: "src/feature.js", nLine: 3,
+    nSourceStartLine: 2, nSourceEndLine: 5
+  }];
+  const aFixer = faGraph( aModel, "Add Bash coverage", "fixer" );
+  const aInteractive = aFixer.vaNode.find(( aNode ) => aNode.sType === "i");
+  assert.ok( aInteractive );
+  assert.match( aInteractive.sContent, /Look for/ );
+  assert.ok( aInteractive.vsVia.includes( "src/feature.js" ));
+});
+
 // @proves s-y0zs35@09f15af
 // @proves s-gmkk0o@cb2b2b5
-// @proves s-rq77hv@51be7f1
+// @proves s-rq77hv@1f9748a
 test( "context help and invalid arguments return documented statuses", () => {
   let sOut = "";
   let sErr = "";
@@ -207,7 +254,7 @@ test( "context help and invalid arguments return documented statuses", () => {
 
 // @proves s-y0zs35@09f15af
 // @proves s-64jr5f@c78e578
-// @proves s-rq77hv@51be7f1
+// @proves s-rq77hv@1f9748a
 test( "context emits a Markdown pack and rejects a budget below the pointer minimum", () => {
   const aMotive = faMarker( "m", "m-abcdef", "Human request" );
   const aStatement = faMarker( "s", "s-aaaaaa", "A supported behavior" );
@@ -278,7 +325,7 @@ test( "context emits a Markdown pack and rejects a budget below the pointer mini
 
 // @proves s-mx8w34@3474c2d
 // @proves s-iokfxu@5f70048
-// @proves s-7bh252@a30b098
+// @proves s-7bh252@2251185
 // @proves s-rj5i3n@d325e54
 // @proves s-1fnspp@7c09551
 // @proves s-hxpbqi@bda9cc2
@@ -340,7 +387,7 @@ test( "context packs keep required pointers and spend remaining budget on whole 
 });
 
 // @proves s-y0zs35@09f15af
-// @proves s-7bh252@a30b098
+// @proves s-7bh252@2251185
 test( "context reads a project's configuration and Concord artifacts", () => {
   const sRoot = fs.mkdtempSync( path.join( sDirRepo, "tmp", "context-fixture-" ));
   try{

@@ -1,6 +1,7 @@
-// @implements s-9prjr2@1a46cc4
-// @implements s-xoq4ak@39497ea
-// @tested-by test/spec-coverage-jest.test.js
+// @implements s-l38b55@a9d4313
+// @implements s-yzz1r5@16c2353
+// @implements s-m3tqg6@8e17ef1
+// @tested-by test/spec-coverage-jest.test.js#tu-b4802450
 "use strict";
 
 const path = require( "path" );

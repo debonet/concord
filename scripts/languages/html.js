@@ -1,8 +1,16 @@
 // @implements s-3fzgrr@cc19c25
 // @implements s-rh750h@cc70238
 // @implements s-p54hx2@dfa5570
-// @implements s-k9xdwy@eb62f8a
+// @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
+// @implements s-nachij@b9de24b
+// @implements s-uhmyhr@5d69172
+// @implements s-tn4ty4@2ce57be
+// @implements s-1j5z4y@58afac8
+// @implements s-2jld9b@f37640f
+// @implements s-zney60@13f1359
+// @implements s-qb233y@6930374
+// @implements s-zsxa7g@af4b09e
 "use strict";
 
 const reHtmlTagName = /[A-Za-z][\w:.-]*/y;
@@ -144,7 +152,10 @@ const fCreate = ( f ) => ({
   vsExtension: [ ".html", ".htm" ],
   vsTestSuffix: [],
   fbHasTestFiles: () => false,
-  faHeader: () => ({ nLineCode: Infinity, nLineDoc: 0 }),
+  faHeader: ( aSource ) => ({
+    nLineCode: fnLineHeaderHtml( aSource.sText, faHtmlForText( aSource.sText )),
+    nLineDoc: 0
+  }),
   faSource: () => ({ sMasked: "", asnComment: new Set() }),
   fvaTestUnit: () => [],
   fsNormal: ( sPath, sText ) => f.fsNormal(
@@ -160,11 +171,9 @@ const fCreate = ( f ) => ({
     return vsClass;
   },
   fvaCodeReference: ( aFile ) => fvaCommentForHtml( aFile.sText, f )
-    .flatMap(( aComment ) => vsKindCodeReference.map(( sKind ) => {
-      const aRef = faDirectiveForHtml( aFile.sPath, aComment, sKind, f.fsPosix );
-      return aRef !== null && !aComment.bHeader
-        ? { ...aRef, bWell: false, bMisplaced: true } : aRef;
-    })).filter( Boolean ),
+    .flatMap(( aComment ) => vsKindCodeReference.map(( sKind ) => (
+      faDirectiveForHtml( aFile.sPath, aComment, sKind, f.fsPosix )
+    ))).filter( Boolean ),
   fvaFollows: ( aFile ) => fvaCommentForHtml( aFile.sText, f )
     .map(( aComment ) => faDirectiveForHtml(
       aFile.sPath, aComment, "follows", f.fsPosix

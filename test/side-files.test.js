@@ -4,6 +4,9 @@ const fs = require( "fs" );
 const path = require( "path" );
 const crypto = require( "crypto" );
 const { spawnSync } = require( "child_process" );
+const { faContextModel } = require( "../scripts/spec-map.js" );
+const { faGraph } = require( "../scripts/context.js" );
+const { faTreeData } = require( "../scripts/tree.js" );
 const { sPathSpecMap, fsConcordJson } = require( "./concord-fixture.js" );
 
 const sDirRepo = path.join( __dirname, ".." );
@@ -23,9 +26,11 @@ const fsRef = ( sId ) => sId + "@" + fsHashText( asText[ sId ]);
 const sSpec = [
   "# Fixture",
   "",
+  "> {#m-sid000} Artifact implementation rule",
+  "",
   "## Sidecar rules",
   "",
-  "* {#s-sid001} " + asText[ "s-sid001" ],
+  "* {#s-sid001 <m-sid000} " + asText[ "s-sid001" ],
   "* {#s-sid002} " + asText[ "s-sid002" ],
   "* {#i-sid003} " + asText[ "i-sid003" ],
   "* {#g-sid004 for=fixer} " + asText[ "g-sid004" ],
@@ -80,10 +85,11 @@ afterAll(() => {
 
 // @proves s-pkmrq7@79d0e81
 // @proves s-zpv3y7@dc2aae2
-// @proves s-yecw0i@8c774c9
-// @proves s-7zyx83@70bc71a
+// @proves s-yecw0i@c83eff2
+// @proves s-i13kgq@b2a9854
 // @proves s-22a0wo@13886ff
 // @proves s-m4fr78@238c65f
+// @proves s-hux5ev@ce910fd
 test( "an eligible sidecar supplies the artifact's implementation links", () => {
   fWriteTree({
     "src/artifact.json": "{\"message\":\"hello\"}\n",
@@ -108,10 +114,22 @@ test( "an eligible sidecar supplies the artifact's implementation links", () => 
     .toContain( "src/artifact.json.concord:1" );
   expect( faRun([ "--guidance" ]).sOut )
     .toContain( "src/artifact.json.concord:4" );
+  const aModel = faContextModel( sDirFixture ).aModel;
+  const aContext = faGraph( aModel, "artifact implementation rule", "fixer" );
+  const aCodeContext = aContext.vaNode.find(( aNode ) => (
+    aNode.sKey === "src/artifact.json"
+  ));
+  expect( aCodeContext.sContent ).toContain(
+    "1: {\"message\":\"hello\"}"
+  );
+  const aTree = faTreeData( aModel );
+  expect( aTree.vaNode.some(( aNode ) => (
+    aNode.sType === "c" && aNode.sText === "{\"message\":\"hello\"}"
+  ))).toBe( true );
 });
 
 // @proves s-v7ww36@641e899
-// @proves s-8qhv2d@fe58484
+// @proves s-8qhv2d@478dcee
 // @proves s-r95w4f@6a28bae
 test( "unread sidecars name their target problem and refuse the gate", () => {
   fWriteTree({
@@ -134,7 +152,7 @@ test( "unread sidecars name their target problem and refuse the gate", () => {
   expect( faRun([ "--gate" ]).cExit ).toBe( 1 );
 });
 
-// @proves s-yecw0i@8c774c9
+// @proves s-yecw0i@c83eff2
 // @proves s-v7ww36@641e899
 test( "test directives and malformed text in a sidecar are rejected", () => {
   fWriteTree({
@@ -175,6 +193,34 @@ test( "sidecar-backed interactive checks hash the artifact's raw bytes", () => {
   expect( faRun([ "--interactive" ]).sOut ).toContain( "i-sid003  stale" );
 });
 
+// @proves s-g8r0ur@f2d68ec
+test( "a diff-sidecar @checks group hashes only its mapped source region", () => {
+  const sCheck = fsRef( "i-sid003" );
+  const sArtifact = [
+    "{",
+    "  \"checked\": 2",
+    "}",
+    ""
+  ].join( "\n" );
+  fWriteTree({
+    "src/artifact.json": sArtifact,
+    "src/artifact.json.concord": [
+      "--- a/src/artifact.json",
+      "+++ b/src/artifact.json",
+      "@@ -1,1 +1,2 @@",
+      " {",
+      "+@checks " + sCheck,
+      ""
+    ].join( "\n" )
+  });
+  expect( faRun([ "--pass", "i-sid003" ]).cExit ).toBe( 0 );
+  expect( faRun([ "--interactive" ]).sOut ).toContain( "i-sid003  passed" );
+  fWrite( "src/artifact.json", fs.readFileSync(
+    path.join( sDirFixture, "src/artifact.json" ), "utf8"
+  ).replace( "\"checked\": 2", "\"checked\": 7" ));
+  expect( faRun([ "--interactive" ]).sOut ).toContain( "i-sid003  stale" );
+});
+
 // @proves s-m9jtjo@3366616
 test( "assign rewrites a retyped implementation reference in a sidecar", () => {
   const sTypedSpec = [
@@ -204,6 +250,52 @@ test( "a changed statement makes the sidecar reference stale", () => {
     "src/artifact.bin.concord": "@implements s-sid001@0000000\n"
   });
   expect( faRun([]).sOut ).toContain(
-    "src/artifact.bin.concord:1  @implements s-sid001@0000000 (stale hash)"
+    "src/artifact.bin.concord:1  lines 1-1  @implements s-sid001@0000000 (stale hash)"
   );
+});
+
+// @proves s-fh39a3@e943bea
+// @proves s-n6yjkn@cfe625d
+// @proves s-wt7bpq@73556cf
+test( "an insertion-only sidecar diff adds a body implementation region", () => {
+  const sBody = "The artifact implements this rule.";
+  fWriteTree({
+    "src/artifact.json": "{\n  \"x\": 1\n}\n",
+    "src/artifact.json.concord": [
+      "--- a/src/artifact.json",
+      "+++ b/src/artifact.json",
+      "@@ -1,1 +1,2 @@",
+      " {",
+      "+@implements " + fsRef( "s-sid001" ),
+      ""
+    ].join( "\n" )
+  });
+  const aRun = faRun([]);
+  expect( aRun.cExit ).toBe( 0 );
+  expect( fSection( aRun.sOut, "malformed, unresolved or stale code references" ))
+    .toEqual( [] );
+  expect( fSection( aRun.sOut, "statements with no implementation link" )
+    .join( "\n" )).not.toContain( "s-sid001" );
+  expect( faRun([ "--sid", "s-sid001" ]).sOut )
+    .toContain( "src/artifact.json.concord:5  lines 2-3" );
+});
+
+// @proves s-fh39a3@e943bea
+test( "a sidecar diff that changes target content is rejected", () => {
+  fWriteTree({
+    "src/artifact.json": "{\n  \"x\": 1\n}\n",
+    "src/artifact.json.concord": [
+      "--- a/src/artifact.json",
+      "+++ b/src/artifact.json",
+      "@@ -1,2 +1,2 @@",
+      " {",
+      "-  \"x\": 1",
+      "+@implements s-sid001@0000000",
+      ""
+    ].join( "\n" )
+  });
+  const sOut = faRun([]).sOut;
+  expect( fSection( sOut, "side files that are not read" )?.join( "\n" ))
+    .toContain( "may not remove or change target lines" );
+  expect( sOut ).toContain( "side files that are not read (1)" );
 });

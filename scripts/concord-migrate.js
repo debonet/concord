@@ -1,4 +1,3 @@
-// @implements s-idlwf3@398beec
 // @tested-by test/concord-migrate.test.js
 "use strict";
 
@@ -10,6 +9,7 @@ const reLegacyAdoption = /^Read @.+\/AGENTS\.md before any other work; this proj
 const sLegacyOptOut = "This project does not use ConcordSTC.";
 const sOptOut = "This project does not use Concord.";
 
+// @implements s-idlwf3@398beec
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   const fExists = aDeps.existsSync || fs.existsSync;
   const fRead = aDeps.readFileSync || fs.readFileSync;

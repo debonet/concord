@@ -1,0 +1,1 @@
+* {#g-wnp8vi <m-bkqwxn@494ecf3 for=main via=prompt} **Show the Concord tree.** When a user asks to see the project's Concord tree, run `concord tree --output tmp/concord-tree.html` from the project root, open that file in a browser, and show the result.

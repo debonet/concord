@@ -1,10 +1,7 @@
-// @implements s-6qaxu0@d176234
-// @implements s-3dd31f@d5db4b0
-// @implements s-f728ge@f8c69ea
-// @implements s-knvuxk@5a76433
-// @implements s-ujk1xp@559fff0
-// @implements s-g4fddq@4dae6be
 // @tested-by test/spec-coverage.test.js
+// @implements s-knvuxk@5a76433
+// @implements s-g4fddq@4dae6be
+// @implements s-gcvkc4@7dd2be9
 "use strict";
 
 const fs = require( "fs" );
@@ -27,6 +24,9 @@ class SpecCoverageReporter {
     this.index = new SourceIndex();
   }
 
+  // @implements s-3dd31f@d5db4b0
+  // @implements s-f728ge@f8c69ea
+  // @implements s-ujk1xp@559fff0
   onTestResult( aTest, aResult ){
     const sPathWindow = fsPathWindow( this.sDirRun, aResult.testFilePath );
     const aRecord = faRecordForResult({
@@ -44,6 +44,7 @@ class SpecCoverageReporter {
     fs.rmSync( sPathWindow, { force: true });
   }
 
+  // @implements s-6qaxu0@d176234
   onRunComplete( setContext, aResults ){
     fs.writeFileSync(
       path.join( this.sDirRun, sFileSummary ),

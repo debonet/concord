@@ -9,30 +9,8 @@ is marked, and how Concord checks that each is satisfied.
 
 ## Line types
 
-> {#m-v9bxg2} RULING (CEO) 2026-10-19, naming the spec, test and code linking
-> framework: "stc concord" or just "concord" or "stc" or "sid" for short
 
-> {#m-k55xs4} RULING (CEO) 2026-10-21, answering which of eight kinds of
-> spec statement that no test could prove (pointers, definitions, his
-> quoted rulings, checks needing a real browser or live model, checks
-> needing a rig, absence claims, rationale, rules about how tests are
-> written) should become plain text: "I would not have "plain text".
-> Instead I'd add different spec line types: 1.  Pointer (p-xxxx) that
-> points to other files or spec lines 2. Definition (d-xxxx) 3. Motive
-> (m-xxxxx) that points to spec lines derived from it 4. Interactive tests
-> (i-xxxx) and instructions to give to the human to test it (what are they
-> looking for) 5. Make test 6. These seem like motives 7. These also seem
-> like motives 8. Guidance (g-xxxxx) instructions, not just about tests
-> but about coding style, interaction with the human etc. stuff that today
-> is a hodgepodge in the local CLAUDE.md. Tests and code  can reference
-> these when they are built one way and not another"
 
-> {#m-xjun0a <m-k55xs4@88cd8e4} RULING (CEO) 2026-10-21, on the same line types,
-> as direction for later tools: "Yup. And later we can build tools to scan
-> these lists at appropriate times (eg. A "test" in the CI step that scans
-> the interactive and decides which are worth the humans time given the
-> code change; putting the guidance into the fixer agents initial prompt,
-> etc)"
 
 * {#d-yhsx1r <m-v9bxg2@2a81a64,m-la578k@404c7f8} **Concord** — the product name and
   spec, test and code linking framework that `specs/spec-map.md` and its
@@ -84,7 +62,6 @@ is marked, and how Concord checks that each is satisfied.
 
 ### Pointers
 
-> {#m-tpuy30} USER 2026-11-02: "support for packages/modules where a spec says look in folder/*/spec/ for more specs (note the glob pattern because the master spec should NOT NEED TO KNOW what packages exist)"
 
 * {#s-7h4j0s <m-k55xs4@88cd8e4,m-tpuy30@018a42c} **Target lists.** A `p` line points within the spec set, or
   declares a project-collection target, through the target list its marker carries after its id
@@ -120,13 +97,22 @@ is marked, and how Concord checks that each is satisfied.
   malformed, each reported in (6). An `i` marker carries no target list.
 ### Code references
 
-* {#s-5i9gec <arch,m-r3llz8@7fee9b6} **Implementation reference.** `@implements s-xxxxxx@hhhhhhh` in an implementation file names one statement implemented by that file; it resolves when the id names exactly one `s` line and the recorded hash matches.
-* {#s-50dzy6 <arch,m-r3llz8@7fee9b6} **Test-file reference.** `@tested-by <path>` in an implementation file names a project-relative test file; it resolves when the path names exactly one test file the project declares.
+
+
+
+* {#s-5i9gec <arch,m-r3llz8@7fee9b6} **Implementation reference.** `@implements s-xxxxxx@hhhhhhh` names one statement implemented by an implementation file; it resolves when the id names exactly one `s` line and the recorded hash matches.
+* {#s-50dzy6 <arch,m-r3llz8@7fee9b6} **Legacy test-file reference.** `@tested-by <path>` in an implementation file names a project-relative test file; it resolves when the path names exactly one test file the project declares. It remains accepted for backward compatibility and is reported for refinement because it does not identify a specific test unit.
+* {#s-hs7ffw <arch,m-z2a132@26e4243} **Test-unit reference.** `@tested-by <path>#tu-<hash>` names one parsed test call in a project-relative test file. The hash is the first eight lowercase hexadecimal characters of SHA-256 over the UTF-8 string `<project-relative-path>:L<first-line>-L<last-line>:<occurrence>`, where the line range is the parsed call's inclusive source range and occurrence is its one-based order among parsed test calls with the same range. It resolves only when exactly one parsed test call in that file has that identity and its effective `@proves` links prove at least one statement implemented by the code region that owns the reference.
 * {#s-bqioq5 <arch,m-r3llz8@7fee9b6} **Hand-check reference.** `@checks i-xxxxxx@hhhhhhh` in an implementation file names an interactive check that the file supports; it resolves when the id names exactly one `i` line and its recorded hash matches.
-* {#s-7tlfzo <arch,m-r3llz8@7fee9b6} An implementation, test-file or hand-check reference is a directive comment of the implementation file's language reading, sits in its header, and applies to that whole file.
-* {#s-fbqdbv <arch} **Outside the header.** In an implementation file, any directive comment of its language reading whose text begins `@implements`, `@tested-by` or `@checks` is read as that reference wherever it sits, well formed or not; one that sits outside the file's header is misplaced.
-  {#s-lm68rf <arch} A misplaced reference does not resolve: it implements no statement in (31), names no test file in (32), and supports no interactive check.
-  {#s-bw4530 <arch} Each misplaced reference is an entry of (33), naming the implementation file, the line, the reference as written and the word `misplaced`.
+
+
+* {#s-7tlfzo <arch,m-r3llz8@7fee9b6,m-s984lp@a12d67a,m-2xr2e6@7e323df} **Header groups.** An initial contiguous group of one or more `@implements`, `@tested-by` or `@checks` directives at the top of an implementation file applies file-wide. A blank line or intervening non-directive comment ends the header group; subsequent directive groups are body groups, including before the first source statement. Once a body group starts, later groups remain body groups.
+* {#s-fbqdbv <arch,m-qu5x9t@d66daae,m-wacjw4@d15cf8c,m-s984lp@a12d67a,m-2xr2e6@7e323df} **Source groups.** A body group of one or more directives of the same relationship type (`@implements`, `@tested-by` or `@checks`) applies to the source region after the group through the line before the next group of that type at the same or a lesser indentation, or the end of file. Groups at deeper indentation add their links to the enclosing groups; a group at the same indentation replaces that level and closes deeper groups. Other relationship types do not end a group's region. Each group resolves its own links independently, so the same link may be named by several groups in one file.
+  {#s-lm68rf <arch,m-qu5x9t@d66daae,m-s984lp@a12d67a,m-2xr2e6@7e323df} The effective links for a source line are the union of active enclosing groups and the file-wide header group of that relationship type.
+* {#s-dkjdl0 <arch,m-2xr2e6@7e323df} An implementation directive comment whose text begins `@implements`, `@tested-by` or `@checks` is read wherever it appears in a supported comment position, well formed or not. A group that cannot resolve does not link its source region and is reported with its path and line.
+* {#s-gkhfa4 <arch,m-2xr2e6@7e323df} **Region references.** `@tested-by` and `@checks` references are valid in both header and body groups. A modern `@tested-by` link names one test unit whose effective proofs overlap statements implemented by its owned code region; a legacy path-only `@tested-by` link names a test file for backward compatibility and is reported for refinement. A resolving `@checks` link names an interactive check supported by its owned code region.
+* {#s-d4b5k9 <arch,m-z2a132@26e4243} **Specific tests are preferred.** Each implemented code region should name the individual test unit that verifies it, using a body group placed immediately before that region. A top-of-file group with a test-unit reference is valid only when that single test unit proves every specification statement implemented in the file. A legacy path-only reference in a header remains valid for compatibility but is discouraged; projects should retain it only when the named test file's tests collectively verify every specification statement implemented in the file and refinement cannot identify a narrower valid relationship.
+  {#s-bw4530 <arch} Each malformed, misplaced, unresolved or stale reference is an entry of (33), naming the implementation file, the directive line, the owned source range when available, the reference as written and the problem.
 * {#s-0hg5qn <arch} In a JavaScript or TypeScript implementation file whose first line opens `#!`, that line is part of the header and does not end it.
 * {#s-rv4wbq <arch,m-r3llz8@7fee9b6} JavaScript, TypeScript, Rust, CSS and HTML implementation files use the comment syntax of their declared language reading; no directive inside a string, literal or block comment is read unless that language's reading expressly accepts it.
 * {#s-tghouh <arch,m-r3llz8@7fee9b6} Malformed, unresolved and stale implementation, test-file and hand-check references are reported with the implementation path, line and target.
@@ -142,18 +128,24 @@ is marked, and how Concord checks that each is satisfied.
 
 ### Sidecar files
 
-> {#m-sjwtwk} RULING (CEO), 2026-11-09: "You can just learn from the branch and reimplement the idea here. Make sure it is fully spec'd an I'll tell the other thread to pick it up when you're done and committed."
 
-* {#d-049ten <m-sjwtwk@fe2b2dc} **Sidecar file** — a file named by appending `.concord` to an implementation artifact's path, in the same directory, that carries the Concord implementation references the artifact cannot carry as comments.
+
+
+
+
+* {#d-049ten <m-sjwtwk@fe2b2dc,m-z254i5@9034d48} **Sidecar file** — a file named by appending `.concord` to an implementation artifact's path, in the same directory, that describes virtual Concord directive lines inserted into the artifact without changing it.
 * {#s-pkmrq7 <m-sjwtwk@fe2b2dc} **Name and place.** For an artifact `assets/picture.json`, its sidecar is `assets/picture.json.concord` beside it. Concord discovers sidecars at any depth under the configured `read_directories`, outside ignored directories, whether or not `.concord` is a configured language extension.
 * {#s-zpv3y7 <m-sjwtwk@fe2b2dc} **Eligible target.** A sidecar is read only when removing its final `.concord` suffix yields an existing regular file under a configured `read_directories`, and no configured language reading recognizes that target as an implementation file. A sidecar is not read when its target is a comment-capable implementation file, a test file, another sidecar, absent, or not a regular file. A file with no comment syntax is not thereby assumed to be incapable of being a test; this sidecar feature applies only to implementation artifacts and does not provide test-file or test-unit annotation mapping.
-* {#s-yecw0i <m-sjwtwk@fe2b2dc} **Contents.** Each nonblank sidecar line, after trimming leading and trailing whitespace, is one directive text without a comment opener. It may begin `@implements`, `@tested-by`, `@checks` or `@follows`; blank lines are ignored. Any other nonblank line, including `@spec`, `@proves`, `@guards` and `@test-wrapper`, is malformed or misplaced and is read as no directive.
-* {#s-7zyx83 <m-sjwtwk@fe2b2dc} **As the artifact's header references.** The recognized sidecar directives are read as if they were comments in the target artifact's header. They apply to that artifact, and lists and queries report the artifact as the implementation file while showing the sidecar path and line as the directive's location. Thus `@implements` links the artifact to a statement, `@tested-by` links the artifact to a test file, `@checks` links it to an interactive check, and `@follows` cites guidance for the artifact.
+* {#s-yecw0i <m-sjwtwk@fe2b2dc,m-z254i5@9034d48,m-diijit@87a2ee5} **Contents.** A sidecar may be a unified diff that inserts Concord directive lines at locations in its target, using context lines only to locate insertions; it may not remove or change target content. It may also use the legacy directive-list format, with one directive per nonblank line. Legacy lists are normalized in memory to a synthetic diff inserting the directives at the start of the target.
+* {#s-fh39a3 <arch,m-6xfc3x@133dbfe} A diff sidecar names its target in matching `---` and `+++` headers and contains insertion-only unified-diff hunks. The hunks apply exactly, without fuzz; additions are Concord directive lines and context lines must match the target. A stale, ambiguous, malformed or modifying patch is reported and contributes no references.
+* {#s-n6yjkn <m-sjwtwk@fe2b2dc,m-6xfc3x@133dbfe} The normalized virtual file has the target's original contents plus the sidecar's virtual directive lines. Concord never writes the virtual file or changes the target. Directive references and regions resolve against the target artifact; diagnostics name both the target and sidecar location when available.
+* {#s-hux5ev <arch,m-6xfc3x@133dbfe} Every command that reads sidecar directives uses the same normalization and virtual-file representation. It retains a mapping from virtual lines to original target lines so source ranges and diagnostics refer to the target.
+* {#s-i13kgq <arch,m-z254i5@9034d48,m-g3gzui@c316288} A legacy directive list is converted to a synthetic insertion hunk at the start of the target. Its `@implements`, `@tested-by`, `@checks` and `@follows` directives retain their current file-wide meaning.
+* {#s-wt7bpq <arch,m-6xfc3x@133dbfe,m-2xr2e6@7e323df} A diff sidecar may place `@implements`, `@tested-by` and `@checks` groups at body locations and uses the same indentation and region rules as inline code relationships. Sidecar additions are Concord metadata and need not form valid source-language syntax.
 * {#s-v7ww36 <m-sjwtwk@fe2b2dc} **Invalid sidecars.** Concord reports each discovered `.concord` file that is not read because its target is absent, not a regular file, a comment-capable implementation file, a test file, or another sidecar. The report names the sidecar path and the reason. A malformed or misplaced line in a read sidecar is reported with the sidecar path, line number and text as a malformed or misplaced code reference.
 * {#s-h9tc2m <m-sjwtwk@fe2b2dc} **Artifact content hash.** The implementation content hash for an artifact read through its sidecar is computed from the artifact's raw bytes, without language normalization; changing any byte in the artifact changes the hash, while changing only the sidecar does not change the artifact content hash.
 * {#s-m9jtjo <m-sjwtwk@fe2b2dc} **Re-typed references.** `--assign` rewrites a re-typed `@implements` or `@checks` reference in a read sidecar to the current statement or interactive-check id, retaining its stamp, and reports the sidecar path and line. It does not rewrite `@tested-by` paths or any test directive.
 * {#s-k3sml3 <m-sjwtwk@fe2b2dc} **Stale references.** A change to a referenced statement or interactive check makes the corresponding sidecar reference stale under the same rules as an inline implementation reference. The stale-reference report names the sidecar path and line; the artifact remains the implementation target.
-* {#g-4ep6tn <m-sjwtwk@fe2b2dc for=architect,fixer via=prompt} When migrating an implementation artifact that cannot carry comments, move its `@implements`, `@tested-by`, `@checks` and `@follows` directives into `<artifact-path>.concord`. Keep the proving links on the test; do not put implementation references in the test on the artifact's behalf.
 
 ### Definitions
 
@@ -285,72 +277,10 @@ is marked, and how Concord checks that each is satisfied.
   groupings. {#s-aphyp7 <arch} `--for` with no label,
   or anywhere but directly after `--guidance`, maps nothing, prints the usage
   line to stderr and exits 2.
-* {#g-8luxyf <m-k55xs4@88cd8e4 for=architect via=prompt} Guidance that binds one module's tests or code is a `g`
-  line in that module's spec; guidance that holds across modules is a `g`
-  line in a spec under `specs/guidance/`, one spec per subject.
 
 ### Retyping a spec
 
-{#g-1uwei4 <arch for=architect via=prompt} A retyping batch takes one spec, or a few, and gives every line in them
-its type. Follow these lines when doing the batch.
 
-* {#g-zt5uq8 <arch for=architect via=prompt} **Rulings in a line.** A line whose
-  whole text is a ruling is retyped `m` by its marker's letter alone. A
-  line that holds a ruling mid-line, as (25) names it, is split: the
-  ruling's words, verbatim, become an `m` line of their own where they
-  stand, and the rest keeps its id and type and names that motive in its
-  root list. The rest's text, and so its hash, has changed, and the batch
-  names it in its report for the re-stamp.
-* {#g-ydumrm <arch for=architect via=prompt} **Paraphrase and verbatim.** The CEO's
-  words are a motive once, at the line that quotes them verbatim. A line
-  that restates in other words a ruling recorded verbatim at another line,
-  and adds nothing, is a `p` whose target list names the verbatim line,
-  never a second `m`; a line that restates it and adds a rule of its own
-  is an `s`, `d`, `i` or `g` line whose root list names the verbatim `m`.
-* {#g-8ockft <arch for=architect via=prompt} **Mixed provenance.** A line that
-  carries out a ruling of the CEO's and also a choice no words of his
-  support names both in its root list, as in `<arch,m-aaaaaa`, so it is
-  listed in (15) for him to ratify while showing what it derives from.
-* {#g-6jse3d <arch for=architect via=prompt} **Testability is re-judged.** A list
-  of lines judged untestable is a starting guess, not a verdict: before
-  retyping a line away from `s` as untestable, the batch checks it against
-  the pure functions its module exports, and keeps it an `s` when calling
-  one of them can show it.
-* {#g-1plpmb <m-3l97ra@46b2bd6,m-k55xs4@88cd8e4 for=architect via=prompt} **A proved
-  quote is still a motive.** A line quoting the CEO's words verbatim is
-  retyped `m` even when tests prove it. For each property those tests
-  prove, the batch names in its report the `s` line rooted in that motive
-  which states it, an existing one or one the batch writes, so the fixer
-  re-aims each test's link at it; no test is left proving nothing, and no
-  case is deleted.
-* {#g-ax26f3 <m-k55xs4@88cd8e4,m-3l97ra@46b2bd6 for=architect via=prompt} **A ruling's
-  label and his words.** Where a ruling is recorded as a label line (the
-  label, the date, the question he answered) above the lines quoting his
-  answer, the label line is an `m`, and every line holding his answer's
-  words verbatim is an `m` too, rooted in the label line's `m`; where the
-  label and his words share one line, that line is one `m`. No line
-  holding his verbatim words is an `s`, however many tests prove it. A
-  batch retypes such a line by its letter alone and never moves a label
-  into or out of a quote, since that changes the lines' text and every
-  stamp on them. Each property a test proved of the quote is stated by an
-  `s` line whose root list names the quote's `m` (A proved quote is still
-  a motive).
-* {#g-8atg83 <arch,m-k55xs4@88cd8e4 for=architect via=prompt} **An architect's ruling is
-  a motive rooted in `arch`.** A line recording an architect's ruling is
-  typed `m` and its root list holds `arch`; the lines carrying it out name
-  that motive in their root lists.
-* {#g-w6nzg2 <arch for=architect via=prompt} **Rulings in exempt sections.** A
-  ruling found under `## Purpose` or `## Dependencies` is marked `m` where
-  it stands: a marker there is read as anywhere (`specs/spec-map.md`,
-  Completeness), and (25) names a ruling left unmarked in any section.
-* {#g-qm3hj7 <arch for=main via=prompt} **Every batch ends with `--assign`.** When
-  a batch's architect has handed back and no architect is running, the
-  main thread runs `npm run spec-map -- --assign` once: it gives the
-  batch's placeholders their ids and re-aims retyped root references and
-  pointer targets in every spec (Retyped references), whichever batch ran
-  first. It then launches one fixer for the batch to re-stamp the test
-  links the batch left stale ((9)) and re-aim those naming a retyped line
-  ((8)), since `--assign` rewrites no test file.
 
 ### Queries and exits across types
 

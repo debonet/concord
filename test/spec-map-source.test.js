@@ -19,7 +19,7 @@ const {
   aListCodeRefBad
 } = require( "../scripts/spec-map.js" );
 
-// @proves s-zcb6gq@2302e9b
+// @proves s-zcb6gq@fdaa5bb
 // @proves s-1a9ecj@2117295
 // @proves s-me9dys@227966a
 describe( "source text used for target hashes", () => {
@@ -167,7 +167,7 @@ describe( "source text used for target hashes", () => {
     expect( aModel.aLines.vaCheck ).toHaveLength( 1 );
   });
 
-  // @proves s-4hsltb@35856a9
+  // @proves s-4hsltb@ebe272b
   test( "report rows name untested files and preserve bad reference locations", () => {
     const aFile = { sPath: "src/untested.js" };
     const aRef = { sPath: "src/bad.js", nLine: 4, sText: "bad reference" };
