@@ -1,6 +1,4 @@
 // @tested-by test/tree.test.js
-// @implements s-zfoabw@9492c91
-// @implements s-f6hd06@9bd776f
 "use strict";
 
 const fs = require( "fs" );
@@ -219,6 +217,7 @@ const fsSyntheticKey = ( sType, sPath, nStart, nEnd, bWholeFile = false ) => {
 // @implements s-66q4xz@6b89eca
 // @implements s-rhxy5e@4a64fdb
 // @implements s-1xji25@cf98878
+// @implements s-f6hd06@9bd776f
 const faTreeData = ( aModel ) => {
   const maNode = new Map();
   const maEdge = new Map();
@@ -607,6 +606,7 @@ const fsJsonForHtml = ( aData ) => JSON.stringify( aData )
 // @implements s-znpy76@6235307
 // @implements s-bmmmrm@ba80c44
 // @implements s-i9jl91@d8b6327
+// @implements s-f6hd06@9bd776f
 const fsTreePage = ( aData ) => {
   const sTemplate = `<!doctype html>
 <html lang="en">
@@ -808,6 +808,7 @@ const fRenderBreadcrumb = () => {
 };
 
 // @implements s-u5vc2t@12a57fb
+// @implements s-zfoabw@9492c91
 const fRenderContextPath = ( aSelected ) => {
   const ePath = document.getElementById( "context-path" );
   ePath.replaceChildren();
@@ -1057,6 +1058,7 @@ const fSetHistory = ( aState, aOptions ) => {
 
 // @implements s-h4734p@ff80843
 // @implements s-9o22fp@7cf17b6
+// @implements s-f6hd06@9bd776f
 const fSelectFile = ( sPath, aOptions = {}) => {
   const aSource = maSource.get( sPath );
   if( aSource === undefined ){ return;}
@@ -1182,6 +1184,7 @@ window.addEventListener( "popstate", ( e ) => {
 });
 
 // @implements s-xqmdu3@a942669
+// @implements s-f6hd06@9bd776f
 function fShowSource(
   sPath, sFocusTagKey = null, bScrollToTag = false, bFocusTag = false
 ){

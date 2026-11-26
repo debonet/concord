@@ -982,7 +982,7 @@ test( "concord-settings — Concord's own settings file declares Concord's "
     intent_directories: [ "intent" ],
     guidance_directories: [ "guidance" ],
     suites: [{ name: "root", directories: [ "test" ]}],
-    languages: [ "javascript" ],
+    languages: [ "javascript", "html" ],
     read_directories: [ ".", "bin", "scripts", "test" ],
     ignored_directories: [ ".concord", ".git", "node_modules", "tmp" ],
     record_file: "test/interactive-passes.jsonl",
@@ -1109,7 +1109,8 @@ test( "concord-settings — Concord's root AGENTS.md names, with their paths, "
 // @proves s-ins4p7@19e76c1
 test( "concord-settings — each role, architect and fixer among them, has its "
   + "text and each tool's metadata side by side under roles/", () => {
-  const vsName = fs.readdirSync( path.join( sDirRepo, "roles" )).sort();
+  const vsName = fs.readdirSync( path.join( sDirRepo, "roles" ))
+    .filter(( sName ) => !sName.endsWith( ".concord" )).sort();
   const vsRole = Array.from( new Set(
     vsName.map(( sName ) => sName.split( "." )[ 0 ])
   ));

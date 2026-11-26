@@ -31,8 +31,7 @@ const sUsage = (
 const fbFlagArgBad = ( s ) => s === undefined || s.startsWith( "--" );
 
 // @implements s-ms5aa9@80076b2
-// @implements s-xtahx4@5a052db
-// @tested-by test/link-propose.test.js
+// @tested-by test/link-propose.test.js#tu-d6b3cf49
 const faArgsStep = ( aArgs, vsArg, n ) => {
   const s = vsArg[ n ];
   if( s === "--top" ){
@@ -51,8 +50,8 @@ const faArgsStep = ( aArgs, vsArg, n ) => {
   return [{ ...aArgs, bBad, sPathSpec: s }, n + 1 ];
 };
 
-// @implements s-ms5aa9@80076b2
 // @implements s-xtahx4@5a052db
+// @tested-by test/link-propose.test.js#tu-61d97fb2
 const faArgs = ( vsArg ) => {
   let aArgs = { sMode: "propose", sPathSpec: null, sPath: null, nTop: null };
   let n = 0;
@@ -189,7 +188,6 @@ const fvaCandidateFor = ( proposer, aMarker ) => (
 // @implements s-ae8jdy@607e4e4
 // @implements s-577ckm@21f72df
 // @implements s-gbgn3f@f4cbab4
-// @tested-by test/link-propose.test.js
 const fsProposals = ( reading, vaMarker, fvaShown ) => {
   const proposer = faProposer( reading, vaMarker );
   const vsLine = [ fsLineCoverage( reading.faMeasurement()) ];
@@ -231,7 +229,8 @@ const favsPathForId = ( aModel ) => {
 // @implements s-n1ht3r@d1f80fd
 // @implements s-k5ttgk@52242db
 // @implements s-u56cnv@5620146
-// @tested-by test/link-propose.test.js
+// @tested-by test/link-propose.test.js#tu-c8fb5e95
+// @tested-by test/link-propose.test.js#tu-d1fcd456
 const fsEvaluation = ( reading, sPathSpec ) => {
   const avsPathForId = favsPathForId( reading.aModel );
   const vaMarker = reading.aModel.vaMarker
@@ -283,7 +282,12 @@ const fWarnSpaced = ( reading, fWriteErr ) => reading.vsPathImpl
 // @implements s-gizegg@e0e4146
 // @implements s-k5ttgk@52242db
 // @implements s-u56cnv@5620146
-// @tested-by test/link-propose.test.js
+// @tested-by test/link-propose.test.js#tu-e236fd60
+// @tested-by test/link-propose.test.js#tu-55931c13
+// @tested-by test/link-propose.test.js#tu-8e9daf2b
+// @tested-by test/link-propose.test.js#tu-80cabba2
+// @tested-by test/link-propose.test.js#tu-c8fb5e95
+// @tested-by test/link-propose.test.js#tu-d1fcd456
 const fzPropose = ( reading, aArgs, aOut ) => {
   const cTop = aArgs.nTop === null ? cTopDefault : aArgs.nTop;
   fWarnSpaced( reading, aOut.fWriteErr );
@@ -310,7 +314,9 @@ const fzPropose = ( reading, aArgs, aOut ) => {
 // @implements s-vmwsli@d444cbb
 // @implements s-5eou7w@05eaa15
 // @implements s-wx8o4v@de91e1a
-// @tested-by test/link-propose-apply.test.js
+// @tested-by test/link-propose-apply.test.js#tu-1a1c0400
+// @tested-by test/link-propose-apply.test.js#tu-8d2dc753
+// @tested-by test/link-propose-apply.test.js#tu-170bc957
 const fzWrite = ( reading, aArgs, aOut, aConfirm ) => {
   const writer = new LinkWriter({
     sDirRoot: reading.sDirRoot,
@@ -363,7 +369,7 @@ const fzConfirmBad = ( aArgs, aConfirm, fWriteErr ) => {
 
 // @implements s-5eou7w@05eaa15
 // @implements s-ner018@a3a30a2
-// @tested-by test/link-propose-apply.test.js
+// @tested-by test/link-propose-apply.test.js#tu-1a1c0400
 const fzRun = ( sDirRoot, aConfig, aArgs, aOut ) => {
   let aConfirm = null;
   if( aArgs.sMode === "--apply" ){
@@ -402,7 +408,9 @@ const fzRun = ( sDirRoot, aConfig, aArgs, aOut ) => {
 // @implements s-58lkl7@02b2533
 // @implements s-xtahx4@5a052db
 // @implements s-8qvv6k@4068ad2
-// @tested-by test/link-propose.test.js
+// @tested-by test/link-propose.test.js#tu-eefbf4e5
+// @tested-by test/link-propose.test.js#tu-61d97fb2
+// @tested-by test/link-propose.test.js#tu-174ba0ae
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   if( aRead.sProblem !== null ){

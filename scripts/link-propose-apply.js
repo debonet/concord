@@ -1,6 +1,4 @@
 // @tested-by test/link-propose-apply.test.js
-// @implements s-kx8ajy@9826e66
-// @implements s-3smw7c@122e254
 "use strict";
 
 const fs = require( "fs" );
@@ -21,6 +19,7 @@ const sKindTest = "tested-by";
 
 // @implements s-q2lggv@b84d55b
 // @implements s-ieckkc@85e1247
+// @implements s-kx8ajy@9826e66
 const faConfirmParsed = ( sText ) => {
   const aConfirm = { vaLine: [], vaBad: []};
   sText.split( "\n" ).forEach(( sLineRaw, n ) => {
@@ -179,6 +178,7 @@ class LinkWriter {
       .filter(( sPathTest ) => !asNamed.has( sPathTest ));
   }
 
+  // @implements s-3smw7c@122e254
   fRefuse( sWhere, sReason ){
     this.vsOut.push( sWhere + "  refused: " + sReason );
     this.acCount.refused++;

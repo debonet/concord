@@ -278,6 +278,22 @@ test( "an insertion-only sidecar diff adds a body implementation region", () => 
     .join( "\n" )).not.toContain( "s-sid001" );
   expect( faRun([ "--sid", "s-sid001" ]).sOut )
     .toContain( "src/artifact.json.concord:5  lines 2-3" );
+  fWriteTree({
+    "src/second.json": "{\n  \"x\": 1\n}\n",
+    "src/second.json.concord": [
+      "--- a/src/second.json",
+      "+++ b/src/second.json",
+      "@@ -1,0 +2,1 @@",
+      "+@implements " + fsRef( "s-sid001" ),
+      ""
+    ].join( "\n" )
+  });
+  const aRunNoContext = faRun([]);
+  expect( aRunNoContext.cExit ).toBe( 0 );
+  expect( fSection( aRunNoContext.sOut,
+    "malformed, unresolved or stale code references" )).toEqual( [] );
+  expect( faRun([ "--sid", "s-sid001" ]).sOut )
+    .toContain( "src/second.json.concord:4  lines 2-3" );
 });
 
 // @proves s-fh39a3@e943bea

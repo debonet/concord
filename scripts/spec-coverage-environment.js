@@ -3,7 +3,6 @@
 // @implements s-i5esri@cca5118
 // @implements s-ifdflw@601453e
 // @tested-by test/spec-coverage-jest.test.js
-// @implements s-bi8reu@bf16aef
 "use strict";
 
 const fs = require( "fs" );
@@ -186,6 +185,7 @@ const fclsInner = () => {
 
 const clsInner = fclsInner();
 
+// @implements s-bi8reu@bf16aef
 class CoverageEnvironment extends clsInner {
   constructor( aConfig, aContext ){
     super( aConfig, aContext );

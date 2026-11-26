@@ -1,6 +1,4 @@
 // @tested-by test/spec-coverage.test.js
-// @implements s-ii54an@ee79563
-// @implements s-e31j3s@8308811
 "use strict";
 
 const fs = require( "fs" );
@@ -191,6 +189,7 @@ const faMapJoined = ({ sDirRoot, aMeasurement, aLinks }) => {
   };
 };
 
+// @implements s-knvuxk@5a76433
 // @implements s-8ixmxa@32915a9
 // @implements s-m0ujxb@03a5d5b
 const faEntryForLine = ( sLine, nLine ) => {
@@ -258,6 +257,7 @@ const fbDischarging = ( aEntry, aRegion ) => (
 // @implements s-ba6b5c@a60801b
 // @implements s-jr9fxe@06e6843
 // @implements s-2ggdsa@c4eed56
+// @implements s-knvuxk@5a76433
 const faEntryResolved = ( aEntry, aMap ) => {
   const aFile = aMap.aMeasurement.aFile[ aEntry.sPath ];
   const nFirst = aFile === undefined
@@ -277,6 +277,7 @@ const faEntryResolved = ( aEntry, aMap ) => {
 
 // @implements s-kp5fav@f34662e
 // @implements s-xk9tq1@fa0d181
+// @implements s-gcvkc4@7dd2be9
 class ReviewReader {
   constructor( sDirRoot, sPathReview ){
     this.sPath = path.join( sDirRoot, sPathReview );
@@ -289,6 +290,8 @@ class ReviewReader {
 }
 
 // @implements s-jr9fxe@06e6843
+// @implements s-knvuxk@5a76433
+// @implements s-gcvkc4@7dd2be9
 const faReview = ( sText, aMap, sPathReview ) => {
   const vaEntry = sText === null ? [] : fvaEntryForReview( sText );
   const vaResolved = vaEntry
@@ -409,6 +412,8 @@ const fsLineEntry = ( sPathReview, aEntry, sWhy ) => (
   + ")"
 );
 
+// @implements s-knvuxk@5a76433
+// @implements s-gcvkc4@7dd2be9
 const fvsSectionReview = ( aReview ) => {
   const fsLine = ( aEntry, sWhy ) => fsLineEntry( aReview.sPath, aEntry, sWhy );
   const vsLine = aReview.vaMalformed

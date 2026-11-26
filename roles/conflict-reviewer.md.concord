@@ -1,0 +1,7 @@
+--- a/roles/conflict-reviewer.md
++++ b/roles/conflict-reviewer.md
+@@ -17,0 +18,1 @@
++@implements s-nc4c5e@50edcb3
+@@ -20,0 +22,2 @@
++@implements s-hr7p9x@ac3b457
++@tested-by test/concord-settings.test.js#tu-b376855c

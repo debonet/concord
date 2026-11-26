@@ -1,6 +1,3 @@
-// @implements s-l38b55@a9d4313
-// @implements s-yzz1r5@16c2353
-// @implements s-m3tqg6@8e17ef1
 // @tested-by test/spec-coverage-jest.test.js#tu-b4802450
 "use strict";
 
@@ -34,6 +31,7 @@ const favzSnapshot = ( aCoverage ) => Object.fromEntries(
   ])
 );
 
+// @implements s-l38b55@a9d4313
 const favzRaised = ( avzBefore, avzAfter ) => Object.fromEntries(
   Object.entries( avzAfter )
     .map(( tEntry ) => [
@@ -42,6 +40,9 @@ const favzRaised = ( avzBefore, avzAfter ) => Object.fromEntries(
     .filter(( tEntry ) => tEntry[ 1 ].length > 0 )
 );
 
+// @implements s-l38b55@a9d4313
+// @implements s-m3tqg6@8e17ef1
+// @implements s-yzz1r5@16c2353
 const fvnLineFrameForStack = ( sStack, sPathTest ) => (
   String( sStack || "" ).split( "\n" )
     .map(( sLine ) => sLine.match( reFrame ))

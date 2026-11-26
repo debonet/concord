@@ -1,7 +1,30 @@
 --- a/package.json
 +++ b/package.json
-@@ -0,0 +1,4 @@
-+@implements s-nur3h4@3793438
-+@implements s-s6e3j6@4aad693
-+@implements s-t99cvq@daf5b13
-+@tested-by test/concord-cli.test.js#tu-edcaa4a7
+@@ -1,20 +1,27 @@
+ {
++  @implements s-t99cvq@daf5b13
+   "name": "@debonet/concord",
+   "version": "0.0.5",
++  @implements s-nur3h4@3793438
++  @tested-by test/concord-cli.test.js#tu-edcaa4a7
+   "bin": {
+     "concord": "bin/concord"
+   },
++  @implements s-s6e3j6@4aad693
++  @tested-by test/concord-cli.test.js#tu-edcaa4a7
+   "files": [
+     "AGENTS.md",
+     "README.md",
+     "observations.md",
+     "orchestration.md",
+     "bin/",
+     "docs/",
+     "intent/",
+     "guidance/",
+     "roles/",
+     "scripts/",
+     "specs/"
+   ],
++  @implements s-aw1u7o@b1c984b
++  @tested-by test/spec-coverage.test.js#tu-126a12da
+   "scripts": {

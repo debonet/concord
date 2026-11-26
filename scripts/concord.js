@@ -1,5 +1,4 @@
 // @tested-by test/concord-cli.test.js
-// @implements s-4pq89a@7127ba0
 "use strict";
 
 const { spawnSync } = require( "child_process" );
@@ -8,6 +7,7 @@ const path = require( "path" );
 // @implements s-mo4ncx@7fcbe1b
 // @implements s-48tk0i@7bc9472
 // @implements s-qwhv92@cc699b1
+// @implements s-4pq89a@7127ba0
 const asCommands = new Set([
   "agents-sync", "concord-hook", "context", "link-propose", "link-refine", "migrate",
   "spec-conflicts", "spec-coverage", "spec-map", "tree"
@@ -28,6 +28,7 @@ const sUsage = (
 // @implements s-hp433f@86be765
 // @implements s-48tk0i@7bc9472
 // @implements s-qwhv92@cc699b1
+// @implements s-4pq89a@7127ba0
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps = {} ) => {
   const fSpawn = aDeps.spawnSync || spawnSync;
   const sNode = aDeps.sNode || process.execPath;

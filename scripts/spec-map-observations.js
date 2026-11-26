@@ -1,5 +1,4 @@
 // @tested-by test/observations.test.js
-// @implements s-8782no@e762d56
 "use strict";
 
 const reHeadingEntry = /^##[ \t]+(.*)$/;
@@ -359,6 +358,7 @@ const faEntryBad = ( aEntry, aKit ) => ({
 // @implements s-cz0mnp@08a3a79
 // @implements s-1vfjup@ed50b2f
 // @implements s-bf7qnq@a4202a9
+// @implements s-8782no@e762d56
 const faObservations = ( aInput, aKit ) => {
   const vaEntry = aInput.sTextObs === null
     ? []

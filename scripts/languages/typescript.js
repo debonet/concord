@@ -3,10 +3,6 @@
 // @implements s-p54hx2@dfa5570
 // @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
-// @implements s-qap8tu@38172ce
-// @implements s-lwbls1@62d3bb8
-// @implements s-z7g07z@6db8f99
-// @implements s-rolffo@1dccf9b
 "use strict";
 
 const babelParser = require( "@babel/parser" );
@@ -23,6 +19,7 @@ const asTypeAfterExpression = new Set([
   "TSNonNullExpression", "TSInstantiationExpression"
 ]);
 const asKeyUnvisited = new Set([ "loc", "tokens", "comments" ]);
+// @implements s-lwbls1@62d3bb8
 const fbTsx = ( sPath ) => sPath.endsWith( ".tsx" );
 
 const ftRangeErased = ( x ) => {
@@ -37,6 +34,7 @@ const ftRangeErased = ( x ) => {
   return x.declare === true ? [ x.start, x.end ] : null;
 };
 
+// @implements s-lwbls1@62d3bb8
 const faProgramForPath = ( sText, sPath ) => {
   if( !/\.(?:ts|tsx)$/.test( sPath )){ return null;}
   try{
@@ -47,6 +45,9 @@ const faProgramForPath = ( sText, sPath ) => {
   } catch( xErr ){ return null;}
 };
 
+// @implements s-lwbls1@62d3bb8
+// @implements s-z7g07z@6db8f99
+// @implements s-rolffo@1dccf9b
 const faReadingForPath = ( sText, sPath ) => {
   const aProgram = faProgramForPath( sText, sPath );
   if( aProgram === null ){ return { sSource: sText, sBlanked: sText, vsJsx: null };}
@@ -78,10 +79,14 @@ const fCreate = ( f ) => {
   const aJavaScript = fCreateJavaScript( f );
   return {
     sName: "typescript",
+    // @implements s-qap8tu@38172ce
     vsExtension: [ ".ts", ".tsx" ],
+    // @implements s-qap8tu@38172ce
     vsTestSuffix: [ "ts", "tsx" ],
+    // @implements s-qap8tu@38172ce
     fbHasTestFiles: () => true,
     faHeader: ( aSource ) => aJavaScript.faHeader( aSource ),
+    // @implements s-z7g07z@6db8f99
     faSource: ( sText, sPath ) => {
       const aReading = faReadingForPath( sText, sPath );
       const [ sMasked, asnComment ] = fCreateJavaScript.ftMaskForSource(

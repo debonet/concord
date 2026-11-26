@@ -6,7 +6,7 @@
   "suites": [
     { "name": "root", "directories": [ "test" ] }
   ],
-  "languages": [ "javascript" ],
+  "languages": [ "javascript", "html" ],
   "read_directories": [ ".", "bin", "scripts", "test" ],
   "ignored_directories": [ ".concord", ".git", "node_modules", "tmp" ],
   "record_file": "test/interactive-passes.jsonl",

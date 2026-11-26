@@ -2,13 +2,6 @@
 // @implements s-rh750h@cc70238
 // @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
-// @implements s-wthfms@d2c5ecd
-// @implements s-dnog08@dde78ed
-// @implements s-lwbls1@62d3bb8
-// @implements s-z7g07z@6db8f99
-// @implements s-9guyrl@067706f
-// @implements s-rolffo@1dccf9b
-// @implements s-pjx54j@88fdbba
 "use strict";
 
 const babelParser = require( "@babel/parser" );
@@ -26,6 +19,7 @@ const asTypeJsxHole = new Set([
 const asKeyUnvisited = new Set([ "loc", "tokens", "comments" ]);
 const asClassForJsx = { t: "c", j: "j", s: "l" };
 const asStateComment = new Set([ "fnLine", "fnBlock" ]);
+// @implements s-9guyrl@067706f
 const reFileJsx = /\.(?:jsx|tsx)$/;
 const reSpacePlus = /\s*\+\s*/y;
 const reCallTest = new RegExp(
@@ -37,7 +31,9 @@ const reCharSpace = /\s/;
 const reFileShebang = /\.(?:[cm]?js|jsx|tsx?)$/;
 const reDocblock = /\/\*\*[\s\S]*?\*\//g;
 const reJestDocblock = /@jest-environment/;
+// @implements s-pjx54j@88fdbba
 const reWrapperText = /^\s*@test-wrapper +([A-Za-z_$][\w$]*)\s*$/;
+// @implements s-pjx54j@88fdbba
 const asNameCallTest = new Set([ "describe", "test", "it" ]);
 
 class SourceMasker {
@@ -147,6 +143,9 @@ class SourceMasker {
 }
 
 const ftMaskForSource = ( sText ) => new SourceMasker( sText ).ft();
+// @implements s-lwbls1@62d3bb8
+// @implements s-z7g07z@6db8f99
+// @implements s-rolffo@1dccf9b
 const ftRangeJsx = ( x, xParent ) => {
   if( asTypeJsxTag.has( x.type )){ return [ x.start, x.end, "t" ];}
   if( x.type === "JSXText" ){ return [ x.start, x.end, "j" ];}
@@ -156,6 +155,7 @@ const ftRangeJsx = ( x, xParent ) => {
   }
   return asTypeJsxHole.has( x.type ) ? [ x.start + 1, x.end - 1, null ] : null;
 };
+// @implements s-lwbls1@62d3bb8
 class SyntaxCollector {
   constructor(){ this.vtJsx = []; }
   fNode( x, xParent ){
@@ -171,6 +171,8 @@ class SyntaxCollector {
       .forEach(( sKey ) => this.fVisit( x[ sKey ], bNode ? x : xParent ));
   }
 }
+// @implements s-lwbls1@62d3bb8
+// @implements s-9guyrl@067706f
 const faProgramForPath = ( sText, sPath ) => {
   const vsPlugin = reFileJsx.test( sPath ) ? [ "jsx" ] : [];
   if( vsPlugin.length === 0 ){ return null;}
@@ -189,6 +191,7 @@ const fsBlankedForRanges = ( sText, vtRange ) => {
   });
   return vsChar.join( "" );
 };
+// @implements s-lwbls1@62d3bb8
 const fvsKindForJsx = ( cChar, vtJsx ) => {
   const vsKind = new Array( cChar ).fill( null );
   vtJsx.forEach(([ nStart, nEnd, sKind ]) => {
@@ -196,6 +199,9 @@ const fvsKindForJsx = ( cChar, vtJsx ) => {
   });
   return vsKind;
 };
+// @implements s-lwbls1@62d3bb8
+// @implements s-9guyrl@067706f
+// @implements s-z7g07z@6db8f99
 const faReadingForPath = ( sText, sPath ) => {
   const aProgram = faProgramForPath( sText, sPath );
   if( aProgram === null ){ return { sSource: sText, sBlanked: sText, vsJsx: null };}
@@ -228,6 +234,7 @@ class SourceClassifier {
   }
 }
 
+// @implements s-rolffo@1dccf9b
 const fvsClassForReading = ( aReading ) => {
   const vsClass = new SourceClassifier( aReading.sBlanked ).fvsClass();
   return aReading.vsJsx === null
@@ -277,6 +284,7 @@ const fvaCodeReferenceForJavaScript = ( aFile, f ) => {
   return vaRef.concat( f.fvaMisplacedForFile( aFile, nLineHeaderEnd ));
 };
 
+// @implements s-pjx54j@88fdbba
 const freCallForWrapper = ( vsWrapper ) => (
   vsWrapper.length === 0 ? null : new RegExp(
     "(?<![\\w$.])(" + vsWrapper.map(( s ) => s.replace( /\$/g, "\\$" ))
@@ -293,6 +301,7 @@ const freCallWrapper = ( aSource, aHeader, f ) => {
     .filter(( sName ) => !asNameCallTest.has( sName ));
   return freCallForWrapper( Array.from( new Set( vsWrapper )));
 };
+// @implements s-pjx54j@88fdbba
 const faHeaderForJavaScript = ( aSource, f ) => {
   const nFound = aSource.vsLineMasked.findIndex(( sLine ) => sLine.trim() !== "");
   const nLineCode = nFound < 0 ? aSource.vsLine.length : nFound;
@@ -309,6 +318,7 @@ const faHeaderForJavaScript = ( aSource, f ) => {
   };
 };
 
+// @implements s-dnog08@dde78ed
 const fCreate = ( f ) => ({
   sName: "javascript",
   vsExtension: [ ".js", ".mjs", ".cjs", ".jsx" ],
@@ -320,12 +330,15 @@ const fCreate = ( f ) => ({
     const [ sMasked, asnComment ] = ftMaskForSource( aReading.sBlanked );
     return { sMasked, asnComment };
   },
+  // @implements s-pjx54j@88fdbba
   fvaTestUnit: ( aSource ) => f.fvaCallForRe(
     aSource, reCallTest, false
   ).concat( aSource.reCallWrapper === null ? []
     : f.fvaCallForRe( aSource, aSource.reCallWrapper, true )
   ).sort(( aA, aB ) => aA.nStart - aB.nStart ),
+  // @implements s-pjx54j@88fdbba
   freCallWrapper: ( aSource, aHeader ) => freCallWrapper( aSource, aHeader, f ),
+  // @implements s-rolffo@1dccf9b
   fsNormal: ( sPath, sText ) => {
     const aReading = faReadingForPath( sText, sPath );
     return f.fsCodeNormal( aReading.sSource, fvsClassForReading( aReading ));
@@ -351,5 +364,6 @@ fCreate.fvsClassForReading = fvsClassForReading;
 fCreate.ftRangeJsx = ftRangeJsx;
 fCreate.fsBlankedForRanges = fsBlankedForRanges;
 fCreate.fvsKindForJsx = fvsKindForJsx;
+// @implements s-wthfms@d2c5ecd
 fCreate.fbCanReadPath = ( sPath ) => /\.(?:js|mjs|cjs|jsx)$/.test( sPath );
 module.exports = fCreate;

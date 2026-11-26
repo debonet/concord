@@ -68,8 +68,9 @@ const faUnified = (
     const nNewStart = Number( vsHunk[ 3 ] );
     const nNewCount = Number( vsHunk[ 4 ] === undefined ? 1 : vsHunk[ 4 ] );
     const nInsertAt = nOldCount === 0 ? nOldStart : nOldStart - 1;
+    const nNewInsertAt = vsOutput.length + nInsertAt - nTarget;
     if( nInsertAt < nTarget || nInsertAt > vsTarget.length
-      || nNewStart !== vsOutput.length + 1
+      || nNewStart !== nNewInsertAt + 1
     ){
       return { bOk: false, sReason: "diff hunk position is stale or ambiguous" };
     }

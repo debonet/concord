@@ -1,6 +1,5 @@
 // @implements s-5rpo9u@633cf2e
 // @tested-by test/context.test.js
-// @implements s-prordk@3a3312e
 "use strict";
 
 const { faContextModel } = require( "./spec-map.js" );
@@ -161,6 +160,7 @@ const fsRegionDetail = ( aFile, aRef ) => {
 
 // @implements s-l7o3mk@ff8dad2
 // @implements s-1ig26d@fec8eec
+// @implements s-prordk@3a3312e
 // @implements s-ixtkjn@9b9db2e
 const faGraph = ( aModel, sIntent, sRole ) => {
   const maNode = new Map();

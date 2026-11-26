@@ -2,16 +2,11 @@
 // @implements s-rh750h@cc70238
 // @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
-// @implements s-jqqjjj@cfe7b54
-// @implements s-rdpnaf@0033647
+"use strict";
+
 // @implements s-z6r8qu@bc64f8c
 // @implements s-p069rs@d53d867
 // @implements s-wut129@714b56a
-// @implements s-n4r9dw@4bcc808
-// @implements s-zrjuk3@760428d
-// @implements s-k6leed@80135a4
-"use strict";
-
 const ftMaskRust = ( sText ) => {
   const vch = sText.split( "" );
   const vnComment = [];
@@ -108,6 +103,7 @@ const fvsClassRust = ( sText ) => {
   return vsClass;
 };
 
+// @implements s-n4r9dw@4bcc808
 const fnRustBlockEnd = ( sMasked, nOpen ) => {
   let cDepth = 0;
   for( let n = nOpen; n < sMasked.length; n++ ){
@@ -117,6 +113,8 @@ const fnRustBlockEnd = ( sMasked, nOpen ) => {
   return sMasked.length;
 };
 
+// @implements s-wut129@714b56a
+// @implements s-zrjuk3@760428d
 const fvaCodeReferenceForRust = ( aFile, f ) => {
   const [ sMasked, vnLineComment ] = ftMaskRust( aFile.sText );
   const vsLine = aFile.sText.split( "\n" );
@@ -149,6 +147,8 @@ const fvaCodeReferenceForRust = ( aFile, f ) => {
   }).concat( f.fvaMisplacedForFile( aFile, nLineCode ));
 };
 
+// @implements s-rdpnaf@0033647
+// @implements s-n4r9dw@4bcc808
 const fvaCallForRust = ( aSource, fnLineAt ) => {
   const fCall = ( sKind, sName, nStart, nAt ) => {
     const nEnd = fnRustBlockEnd(
@@ -180,9 +180,13 @@ const fvaCallForRust = ( aSource, fnLineAt ) => {
 
 const fCreate = ( f ) => ({
   sName: "rust",
+  // @implements s-jqqjjj@cfe7b54
   vsExtension: [ ".rs" ],
+  // @implements s-rdpnaf@0033647
   vsTestSuffix: [ "rs" ],
+  // @implements s-rdpnaf@0033647
   fbHasTestFiles: () => true,
+  // @implements s-zrjuk3@760428d
   faHeader: ( aSource ) => {
     const nFound = aSource.vsLineMasked.findIndex(( sLine ) => sLine.trim() !== "");
     return {
@@ -194,6 +198,7 @@ const fCreate = ( f ) => ({
     const [ sMasked, vnLine, vnBlock ] = ftMaskRust( sText );
     return { sMasked, asnComment: new Set( vnLine.concat( vnBlock )) };
   },
+  // @implements s-rdpnaf@0033647
   fvaTestUnit: ( aSource ) => fvaCallForRust( aSource, f.fnLineAt ),
   fsNormal: ( sPath, sText ) => f.fsCodeNormal( sText, fvsClassRust( sText )),
   fvsClass: ( sPath, sText ) => fvsClassRust( sText ),
@@ -203,6 +208,7 @@ const fCreate = ( f ) => ({
     const [ , vnLine, vnBlock ] = ftMaskRust( aFile.sText );
     return [ vnLine, vnBlock ];
   },
+  // @implements s-k6leed@80135a4
   freCallWrapper: () => null,
   fbDirectiveGapLine: ( sLine ) => /^\s*(?:#\[|\/\/\/|\/\/!)/.test( sLine )
 });

@@ -7,15 +7,6 @@
 // @implements s-p54hx2@dfa5570
 // @implements s-akhzjv@81fd58b
 // @tested-by test/spec-map.test.js
-// @implements s-lgrhug@02a57ce
-// @implements s-kglaz5@2c93058
-// @implements s-rmpj20@c3531c2
-// @implements s-hs7ffw@b031efa
-// @implements s-d4b5k9@e6a8c7a
-// @implements s-zi228u@46140ad
-// @implements s-zx5mcq@5669484
-// @implements s-s5f1o3@53edadf
-// @implements s-gonvvk@70d8432
 "use strict";
 
 const fs = require( "fs" );
@@ -489,7 +480,6 @@ const fbCodeTarget = ( sTarget, sPathSpecs = sDirSpecs ) => {
 };
 
 // @implements s-7h4j0s@512c0f5
-// @tested-by test/spec-map-source.test.js
 const fvsTargetForMarker = ( aMarker ) => (
   aMarker.sTargets === null ? [] : aMarker.sTargets.split( "," )
 );
@@ -497,7 +487,7 @@ const fvsTargetForMarker = ( aMarker ) => (
 // @implements s-en1xk7@b19ecef
 // @implements s-dhs2hx@db209fb
 // @implements s-7h4j0s@512c0f5
-// @tested-by test/spec-map-source.test.js
+// @tested-by test/spec-map-source.test.js#tu-fb961fd9
 const fsReasonForTargetForm = ( sTarget ) => {
   if( sTarget === "" ){ return "empty target";}
   return fsKindForTarget( sTarget ) === null
@@ -869,7 +859,6 @@ const fnAfterGroup = ( sText, nOpen ) => {
   return sText.length;
 };
 
-// @tested-by test/spec-map-source.test.js
 const fnAfterTemplate = ( sText, nOpen ) => {
   for( let n = nOpen + 1; n < sText.length; n++ ){
     if( sText[ n ] === "\\" ){ n++;}
@@ -906,7 +895,7 @@ const ftLiteralAt = ( sText, nOpen ) => {
 // @implements s-dpoj4a@064704f
 // @implements s-ns2gme@9b9beb2
 // @implements s-cwbb50@b1fa155
-// @tested-by test/spec-map-source.test.js
+// @tested-by test/spec-map-source.test.js#tu-eb85af8d
 const fsNameAt = ( sText, nOpen ) => {
   let tLiteral = ftLiteralAt( sText, nOpen );
   if( tLiteral === null ){ return null;}
@@ -963,7 +952,10 @@ const fsCodeNormal = ( sText, vsClass ) => {
 // @implements s-wp3dpp@040ef82
 // @implements s-me9dys@227966a
 // @implements s-1a9ecj@2117295
-// @tested-by test/spec-map-source.test.js
+// @tested-by test/spec-map-source.test.js#tu-f842494d
+// @tested-by test/spec-map-source.test.js#tu-e9a41563
+// @tested-by test/spec-map-source.test.js#tu-f8606bd9
+// @tested-by test/spec-map-source.test.js#tu-6ccc2603
 const fsNormalForFile = ( sPath, sText ) => {
   const aLanguage = faLanguageForPath( sPath, sText );
   return aLanguage === null ? fsNormal( sText )
@@ -1042,7 +1034,7 @@ const fvaCallForRe = ( aSource, re, bWrapper ) => (
 // @implements s-846yjd@fa50804
 // @implements s-qkq11z@1273ca2
 // @implements s-rkbz86@59f60c9
-// @tested-by test/language-readings.test.js
+// @tested-by test/language-readings.test.js#tu-d1d2a493
 const fvaCallForSource = ( aSource ) => {
   const aLanguage = faLanguageForPath( aSource.sPath, aSource.sText );
   return aLanguage === null ? [] : aLanguage.fvaTestUnit( aSource );
@@ -1330,6 +1322,7 @@ const fasOwnerForCall = ( aTest, aCall ) => {
 
 // @implements s-mijuu3@eb255fe
 // @implements s-j8ahje@91cc810
+// @implements s-rmpj20@c3531c2
 const faLineForId = ( aIndex, sId ) => {
   const vaPlace = aIndex.avaMarkerForId.get( sId ) || [];
   const vaBody = aIndex.avaMarkerForBody.get( sId.slice( 2 )) || [];
@@ -1408,6 +1401,7 @@ const fvaStmtUnique = ( vaStmt ) => Array.from(
   new Map( vaStmt.map(( aStmt ) => [ aStmt.sId, aStmt ])).values()
 );
 
+// @implements s-hs7ffw@b031efa
 const fsTestUnitId = ( sPath, aCall, nOccurrence ) => {
   const sRange = `L${aCall.nFirstLine}-L${aCall.nLastLine}:${nOccurrence}`;
   return "tu-" + crypto.createHash( "sha256" )
@@ -1711,7 +1705,7 @@ const fvaSpecIncluded = ( vaSpecRaw, aParseCache ) => {
   }));
 };
 
-// @tested-by test/spec-map-source.test.js
+// @tested-by test/spec-map-source.test.js#tu-6ccc2603
 const faModel = ({
   vaSpec, vaTest, vaCiter, vaGuided, vaSideBad, vaRecord, fbExists, aFiles, aObsInput,
   aParseCache
@@ -1938,7 +1932,6 @@ const fsTextForSlug = ( aModel, sTarget ) => {
     .join( "\n" );
 };
 
-// @tested-by test/spec-map-source.test.js
 class TargetHasher {
   constructor( aModel, aEnv ){
     this.aModel = aModel;
@@ -1987,7 +1980,7 @@ class TargetHasher {
   }
 
   // @implements s-h9tc2m@919d17b
-  // @tested-by test/side-files.test.js
+  // @tested-by test/side-files.test.js#tu-49c36791
   fsHashForFile( sPath ){
     return this.fsMemo( "file " + sPath, () => {
       const aSide = ( this.aModel.vaCode || [] ).find(( aFile ) => (
@@ -2007,7 +2000,7 @@ class TargetHasher {
   // @implements s-zcb6gq@fdaa5bb
   // @implements s-3bftr3@3529be7
   // @implements s-wp3dpp@040ef82
-  // @tested-by test/side-files.test.js
+  // @tested-by test/side-files.test.js#tu-5b0b1035
   fsHashForCheckTarget( sPath, sId ){
     return this.fsMemo( "check target " + sPath + " " + sId, () => {
       const aFile = ( this.aModel.vaCode || []).find(( aEntry ) => (
@@ -2267,6 +2260,7 @@ const faRegionIndent = ( aRef, vsLine ) => {
 // @implements s-k9xdwy@ccaee82
 // @implements s-obz7rg@4fcc16d
 // @implements s-9ho983@29e4110
+// @implements s-lgrhug@02a57ce
 const fvaRegionScope = (
   vaRef, sText, bFileWideHeader = false, vaHeaderRef = vaRef
 ) => {
@@ -2425,7 +2419,7 @@ const vsSidecarMisplaced = [ "spec", "proves", "guards", "test-wrapper" ];
 // @implements s-nrp172@56b8541
 // @implements s-yecw0i@c83eff2
 // @implements s-22a0wo@13886ff
-// @tested-by test/side-files.test.js
+// @tested-by test/side-files.test.js#tu-7f7ff918
 const fvaSidecarLine = ( aFile ) => ( aFile.vaOverlayDirective || [])
   .map(( aOverlay ) => ({
     sText: aOverlay.sText.trim(),
@@ -2453,11 +2447,11 @@ const fvaSidecarLine = ( aFile ) => ( aFile.vaOverlayDirective || [])
 
 // @implements s-nrp172@56b8541
 // @implements s-22a0wo@13886ff
-// @tested-by test/side-files.test.js
-// @implements s-k3sml3@9ef30dd
-// @implements s-wt7bpq@73556cf
+// @tested-by test/side-files.test.js#tu-7f7ff918
 const fvaCodeReferenceForSide = ( aFile ) => fvaSidecarLine( aFile )
   .filter(( aLine ) => aLine.sKind !== "follows" )
+// @implements s-wt7bpq@73556cf
+// @tested-by test/side-files.test.js#tu-53ae4634
   .map(( aLine ) => ({
     ...aLine,
     bMisplaced: aLine.bMisplaced || aLine.sKind === "none"
@@ -2515,9 +2509,10 @@ const fvaMisplacedForFile = ( aFile, nLineHeaderEnd ) => {
 // @implements s-tghouh@f811aec
 // @implements s-k3nucf@c0c7bf2
 // @implements s-sy7274@b9a1e14
-// @implements s-k3sml3@9ef30dd
 // @implements s-dkjdl0@511a833
 // @implements s-gkhfa4@3deac5b
+// @implements s-d4b5k9@e6a8c7a
+// @implements s-hs7ffw@b031efa
 const fvaCodeReferenceResolved = ( aModel ) => {
   const vaTestPath = new Set( aModel.vaTestParsed.map(( aTest ) => aTest.sPath ));
   const aResolvedForRef = new Map();
@@ -2540,6 +2535,8 @@ const fvaCodeReferenceResolved = ( aModel ) => {
         /^([a-z]-[a-z0-9]{6})@([0-9a-f]{7})$/
       );
       const aFound = vsId === null ? null : faLineForId( aModel, vsId[ 1 ] );
+      // @implements s-k3sml3@9ef30dd
+      // @tested-by test/side-files.test.js#tu-8a924761
       const sReason = aRef.bMisplaced ? "misplaced"
         : !aRef.bWell || vsId === null
         ? "malformed"
@@ -2710,7 +2707,8 @@ const fvaFollowsForScript = ( aFile ) => {
 // @implements s-3fzgrr@cc19c25
 // @implements s-k9xdwy@ccaee82
 // @implements s-rv4wbq@86ed5ff
-// @tested-by test/language-readings.test.js
+// @tested-by test/language-readings.test.js#tu-3c044b99
+// @tested-by test/language-readings.test.js#tu-14a7fcb1
 const maLanguage = faReaders({
   fsNormal,
   fsCodeNormal,
@@ -2734,7 +2732,12 @@ const maLanguage = faReaders({
 // @implements s-3mnehj@681e132
 // @implements s-qkq11z@1273ca2
 // @implements s-rkbz86@59f60c9
-// @tested-by test/language-readings.test.js
+// @tested-by test/language-readings.test.js#tu-3c044b99
+// @tested-by test/language-readings.test.js#tu-14a7fcb1
+// @tested-by test/language-readings.test.js#tu-d1d2a493
+// @tested-by test/language-readings.test.js#tu-eb04f7c1
+// @tested-by test/language-readings.test.js#tu-46da7ebd
+// @tested-by test/language-readings.test.js#tu-2653439f
 const faLanguageForPath = ( sPath, sText = "" ) => Array.from( maLanguage.values() )
   .find(( aLanguage ) => (
     typeof aLanguage.fbCanReadPath === "function"
@@ -2747,7 +2750,7 @@ const faLanguageForPath = ( sPath, sText = "" ) => Array.from( maLanguage.values
 // @implements s-0abyvp@9e5dd00
 // @implements s-2l6ys1@d966d32
 // @implements s-k9xdwy@ccaee82
-// @tested-by test/language-readings.test.js
+// @tested-by test/language-readings.test.js#tu-3c044b99
 const fbTestPathForLanguage = ( aLanguage, sPath ) => (
   typeof aLanguage.fbIsTestPath === "function"
     ? aLanguage.fbIsTestPath( sPath )
@@ -4130,6 +4133,7 @@ const fsLineForSide = ( aSide ) => aSide.sPath + "  (" + aSide.sState + ")";
 // @implements s-mn5and@058eb96
 // @implements s-emmdvh@25164e5
 // @implements s-2vgnq6@8323fcb
+// @implements s-gonvvk@70d8432
 const fvsSectionLines = ( aMap ) => [
   fsSection( "dangling targets", aMap.vaDangling.map( fsLineForDangling )),
   fsSection( "unused definitions", aMap.vaUnused.map(( aEntry ) => (
@@ -4164,6 +4168,7 @@ const fvsSectionLines = ( aMap ) => [
     aMap.vaNoTestUnit.map(( aRef ) => fsPlace( aRef ) + fsRegion( aRef )
       + "  @implements " + aRef.sId )
   ),
+  // @implements s-s5f1o3@53edadf
   fsSection(
     "legacy file-only tested-by links",
     aMap.vaLegacyTestedBy.map(( aRef ) => fsPlace( aRef ) + fsRegion( aRef )
@@ -4366,7 +4371,11 @@ const fbClean = ( aMap ) => vaListFence.every(( aList ) => (
 // @implements s-mn5and@058eb96
 // @implements s-jie6z5@09cd30a
 // @implements s-n1ztut@75bf716
-// @tested-by test/gate.test.js
+// @tested-by test/gate.test.js#tu-83b67f71
+// @tested-by test/gate.test.js#tu-602e201e
+// @tested-by test/gate.test.js#tu-353c28f1
+// @tested-by test/gate.test.js#tu-f5d1bd88
+// @tested-by test/gate.test.js#tu-06e13c55
 const fvaGateForList = ( aMap, aList, fbRefuses ) => aMap[ aList.sKey ]
   .filter(( aEntry ) => !(
     ( aList === aListUnproved || aList === aListNoImplementation )
@@ -4746,6 +4755,7 @@ const fsListWithArch = ( aList, vsRef ) => (
 // @implements s-tzxhy9@09c0d8a
 // @implements s-s0vyhy@802fc2f
 // @implements s-wqdxix@ceec0e2
+// @implements s-rmpj20@c3531c2
 const faEditForMarker = (
   aMarker, aList, asIdNewForMarker, vaTargetRetyped
 ) => {
@@ -5183,18 +5193,19 @@ class TreeReader {
     )).sort()).map(( aFile ) => this.faFile( fsPosix( aFile.sPath )));
   }
 
-  // @implements s-jt2a2g@6926fb1
-  // @implements s-89dowx@1de93c2
-  // @tested-by test/observations.test.js
   faObservationFile(){
     const sPath = this.aConfig.sPathObservations;
+    // @implements s-89dowx@1de93c2
+    // @tested-by test/observations.test.js#tu-6387259b
     if( sPath === undefined ){ return null;}
+    // @implements s-jt2a2g@6926fb1
+    // @tested-by test/observations.test.js#tu-dcefd22c
     const sText = this.fsTextAt( sPath );
     return sText === null ? null : { sPath, sText };
   }
 
   // @implements s-0w4rbg@75d948e
-  // @tested-by test/observations.test.js
+  // @tested-by test/observations.test.js#tu-eb929abd
   faObservationInput(){
     const aFile = this.faObservationFile();
     return {
@@ -5246,7 +5257,7 @@ const faModelForReader = ( reader, bTest ) => faModel({
 });
 
 // @implements s-7bh252@2251185
-// @tested-by test/context.test.js
+// @tested-by test/context.test.js#tu-1bc190a8
 const faContextModel = ( sDirRoot ) => {
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   if( aRead.sProblem !== null ){ return { sProblem: aRead.sProblem };}
@@ -5321,7 +5332,7 @@ const fsCodeTextRetyped = ( sText, vaRef ) => sText.split( "\n" )
 // @implements s-j8bplx@3ec574d
 // @implements s-i63o6a@6dbc87e
 // @implements s-m9jtjo@3366616
-// @tested-by test/side-files.test.js
+// @implements s-rmpj20@c3531c2
 const fvsLineAssignCode = ( reader, aModel ) => {
   const aRead = reader.faFilesRead();
   return aRead.vaCiter
@@ -5359,7 +5370,8 @@ const fvsLineAssignCode = ( reader, aModel ) => {
 // @implements s-2deigh@58b055c
 // @implements s-pe5j7a@8fee8c2
 // @implements s-wqdxix@ceec0e2
-// @tested-by test/observations.test.js
+// @tested-by test/observations.test.js#tu-576b8559
+// @tested-by test/observations.test.js#tu-85136f22
 const fzAssign = ( reader, fWrite ) => {
   const vaSpec = reader.fvaSpec();
   const aRead = reader.faFilesRead();
@@ -5679,7 +5691,8 @@ const fsProblemForType = ( sId, sType ) => (
 const reIdObservation = /^o-/;
 
 // @implements s-p79bim@05302e1
-// @tested-by test/observations.test.js
+// @tested-by test/observations.test.js#tu-cd11334f
+// @tested-by test/observations.test.js#tu-7ebb5201
 const fzSidObservation = ( reader, sId, fWrite, fWriteErr ) => {
   const aModel = faModelForReader( reader, true );
   const fbSatisfied = faRoots( aModel, fasIdProved( aModel )).fbSatisfied;
@@ -5777,6 +5790,8 @@ const fbForAudience = ( aMarker, sFor ) => (
 // @implements s-1xpgsb@4b63213
 // @implements s-6umdw1@f9827d2
 // @implements s-k4mfcb@f02be14
+// @implements s-zi228u@46140ad
+// @implements s-zx5mcq@5669484
 const fsGuidance = ( aModel, vsArg ) => fvsLineGrouped(
   fvaLineOfType( aModel, "g" ).filter(( aMarker ) => (
     vsArg.length < 3 || fbForAudience( aMarker, vsArg[ 2 ])
@@ -6100,7 +6115,7 @@ const reCharScriptUnsafe = new RegExp(
   "[<" + String.fromCharCode( 0x2028, 0x2029 ) + "]", "g"
 );
 
-// @tested-by test/spec-map-source.test.js
+// @tested-by test/spec-map-source.test.js#tu-a09d64a2
 const fsJsonForScript = ( x ) => JSON.stringify( x ).replace(
   reCharScriptUnsafe,
   ( ch ) => "\\u" + ch.charCodeAt( 0 ).toString( 16 ).padStart( 4, "0" )
@@ -6242,7 +6257,7 @@ const faInputForReader = ( reader, vaSpec ) => ({
 // @implements s-2vgnq6@8323fcb
 // @implements s-sfuntg@4b5ec33
 // @implements s-hgk19s@2c0c557
-// @tested-by test/observations.test.js
+// @tested-by test/observations.test.js#tu-85136f22
 const fzReport = ( reader, sArg, fWrite ) => {
   const sDirRoot = reader.sDirRoot;
   const sPathSpec = sArg === undefined
@@ -6269,8 +6284,11 @@ const fzReport = ( reader, sArg, fWrite ) => {
 // @implements s-ol2dmr@37d4979
 // @implements s-nlm91d@4f76fd6
 // @implements s-nw4u9n@3b57e9b
-// @tested-by test/project-coverage.test.js
-// @tested-by test/gate.test.js
+// @tested-by test/project-coverage.test.js#tu-15d56e9e
+// @tested-by test/gate.test.js#tu-f5d1bd88
+// @tested-by test/gate.test.js#tu-06e13c55
+// @tested-by test/gate.test.js#tu-11e8333e
+// @tested-by test/gate.test.js#tu-99c1aa95
 const fzGate = ( reader, fWrite ) => {
   const aModel = faModel( faInputForReader( reader, reader.fvaSpec()));
   const aAnalysis = faAnalysis( aModel );
@@ -6327,13 +6345,13 @@ const fbArgsValid = ( vsArg ) => {
   return vsArg.length <= 1;
 };
 
-// @tested-by test/concord.test.js
+// @tested-by test/concord.test.js#tu-94944420
 // @implements s-pa182t@8008053
 // @implements s-uffk6s@99fde62
 // @implements s-rkzefi@94d4b4a
 // @implements s-yurmkw@ee703cc
 // @implements s-gjk5r1@9d6e18f
-// @tested-by test/observations.test.js
+// @tested-by test/observations.test.js#tu-85136f22
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   // @implements s-tot8yl@9c5630f
   // @implements s-4kencv@f2a5fe1
@@ -6362,7 +6380,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
     sArg === "--cache-checksum"
   )).length;
   vsArg = vsArg.filter(( sArg ) => sArg !== "--cache-checksum" );
-  // @tested-by test/concord-settings.test.js
+  // @tested-by test/concord-settings.test.js#tu-20b7f347
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   if( aRead.sProblem !== null ){
     ( fWriteErr || fWrite )( "spec-map: " + aRead.sProblem + "\n" );
@@ -6385,7 +6403,7 @@ const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
       return fzSplitParts( reader, fWrite, fWriteErr || fWrite );
     }
     if( vsArg[ 0 ] === "--hashes" ){ return fzHashes( reader, fWrite );}
-    // @tested-by test/gate.test.js
+    // @tested-by test/gate.test.js#tu-6bfb42c3
     if( vsArg[ 0 ] === "--gate" ){ return fzGate( reader, fWrite );}
     if( Object.hasOwn( asVerdictForFlag, vsArg[ 0 ])){
       return fzRecord( reader, vsArg, fWriteErr || fWrite );

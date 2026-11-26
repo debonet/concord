@@ -3,14 +3,6 @@
 // @implements s-p54hx2@dfa5570
 // @implements s-k9xdwy@ccaee82
 // @tested-by test/language-readings.test.js
-// @implements s-nachij@b9de24b
-// @implements s-uhmyhr@5d69172
-// @implements s-tn4ty4@2ce57be
-// @implements s-1j5z4y@58afac8
-// @implements s-2jld9b@f37640f
-// @implements s-zney60@13f1359
-// @implements s-qb233y@6930374
-// @implements s-zsxa7g@af4b09e
 "use strict";
 
 const reHtmlTagName = /[A-Za-z][\w:.-]*/y;
@@ -46,6 +38,7 @@ const fsBlankedForRanges = ( sText, vtRange ) => {
   return vsChar.join( "" );
 };
 
+// @implements s-tn4ty4@2ce57be
 class HtmlScanner {
   constructor( sText ){
     this.sText = sText; this.sLower = sText.toLowerCase();
@@ -66,10 +59,12 @@ class HtmlScanner {
     }
     return nEnd;
   }
+  // @implements s-1j5z4y@58afac8
   fnAfterRaw( sName, n ){
     const nClose = this.sLower.indexOf( "</" + sName, n );
     return nClose < 0 ? this.sText.length : nClose;
   }
+  // @implements s-1j5z4y@58afac8
   fnTag( n ){
     reHtmlTagName.lastIndex = n + 1;
     const sName = reHtmlTagName.exec( this.sText )[ 0 ].toLowerCase();
@@ -96,6 +91,7 @@ class HtmlScanner {
   }
 }
 const faHtmlForText = ( sText ) => new HtmlScanner( sText ).fScan();
+// @implements s-qb233y@6930374
 const fnLineHeaderHtml = ( sText, aHtml ) => {
   const sMasked = fsBlankedForRanges(
     sText, aHtml.vtComment.concat( aHtml.vtDoctype )
@@ -107,6 +103,7 @@ const fbHtmlClosed = ( sText, nStart, nEnd ) => (
   nEnd - sHtmlCommentClose.length >= nStart + sHtmlCommentOpen.length
   && sText.startsWith( sHtmlCommentClose, nEnd - sHtmlCommentClose.length )
 );
+// @implements s-2jld9b@f37640f
 const faCommentForHtml = ( sText, aPlace, tComment, f ) => {
   const [ nStart, nEnd ] = tComment;
   const nLine = f.fnLineAt( aPlace.vnLineStart, nStart );
@@ -135,6 +132,8 @@ const fvaCommentForHtml = ( sText, f ) => {
     sText, aPlace, tComment, f
   ));
 };
+// @implements s-2jld9b@f37640f
+// @implements s-zney60@13f1359
 const faDirectiveForHtml = ( sPath, aComment, sKind, fsPosix ) => {
   if( !aComment.sBody.startsWith( "@" + sKind )){ return null;}
   const vsLoose = aComment.sBody.match( areLooseForKind[ sKind ]);
@@ -149,15 +148,21 @@ const faDirectiveForHtml = ( sPath, aComment, sKind, fsPosix ) => {
 
 const fCreate = ( f ) => ({
   sName: "html",
+  // @implements s-nachij@b9de24b
   vsExtension: [ ".html", ".htm" ],
+  // @implements s-uhmyhr@5d69172
   vsTestSuffix: [],
+  // @implements s-uhmyhr@5d69172
   fbHasTestFiles: () => false,
   faHeader: ( aSource ) => ({
     nLineCode: fnLineHeaderHtml( aSource.sText, faHtmlForText( aSource.sText )),
     nLineDoc: 0
   }),
+  // @implements s-uhmyhr@5d69172
   faSource: () => ({ sMasked: "", asnComment: new Set() }),
+  // @implements s-uhmyhr@5d69172
   fvaTestUnit: () => [],
+  // @implements s-zsxa7g@af4b09e
   fsNormal: ( sPath, sText ) => f.fsNormal(
     faHtmlForText( sText ).vtComment.reduceRight(
       ( s, [ nStart, nEnd ]) => s.slice( 0, nStart ) + s.slice( nEnd ), sText
@@ -170,10 +175,12 @@ const fCreate = ( f ) => ({
     });
     return vsClass;
   },
+  // @implements s-zney60@13f1359
   fvaCodeReference: ( aFile ) => fvaCommentForHtml( aFile.sText, f )
     .flatMap(( aComment ) => vsKindCodeReference.map(( sKind ) => (
       faDirectiveForHtml( aFile.sPath, aComment, sKind, f.fsPosix )
     ))).filter( Boolean ),
+  // @implements s-zney60@13f1359
   fvaFollows: ( aFile ) => fvaCommentForHtml( aFile.sText, f )
     .map(( aComment ) => faDirectiveForHtml(
       aFile.sPath, aComment, "follows", f.fsPosix
@@ -182,6 +189,7 @@ const fCreate = ( f ) => ({
       bWell: aRef.bWell, sId: aRef.sTarget, sHash: aRef.sStamp
     })),
   ftComments: () => [ [], [] ],
+  // @implements s-uhmyhr@5d69172
   freCallWrapper: () => null,
   fbDirectiveGapLine: () => false
 });

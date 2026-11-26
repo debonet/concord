@@ -1,26 +1,4 @@
 // @tested-by test/spec-conflicts.test.js
-// @implements s-xrmdr0@5803a25
-// @implements s-c6h4x1@77b4ace
-// @implements s-vh5m1r@2739781
-// @implements s-hp3m8v@bfec02c
-// @implements s-k4z0bs@e3c8f5e
-// @implements s-v7ca4r@403c0f3
-// @implements s-uw4f3x@b5190fe
-// @implements s-nc4c5e@50edcb3
-// @implements s-hr7p9x@ac3b457
-// @implements s-1oc3uc@ccf72fb
-// @implements s-9a4t7g@7ad74c8
-// @implements s-u5605f@d947cd4
-// @implements s-oacf60@4479a31
-// @implements s-adm6xl@3131120
-// @implements s-8utq9p@2aa3077
-// @implements s-nz8p2n@bcf0bd3
-// @implements s-jorvck@057c853
-// @implements s-run5j3@4f313fd
-// @implements s-x5iowz@1df7600
-// @implements s-rh8mff@322b7f7
-// @implements s-of7uc3@d1614af
-// @implements s-y6b91m@5d7f2ee
 "use strict";
 
 const crypto = require( "crypto" );
@@ -31,9 +9,11 @@ const path = require( "path" );
 // @implements s-o7y7jj@8aa8ddb
 const asStatus = new Set([ "new", "open", "resolved", "incorrect" ]);
 const asReportableStatus = new Set([ "new", "open" ]);
+// @implements s-rh8mff@322b7f7
 // @implements s-iixdd3@05f8734
 // @implements s-b97pxb@a56c6b2
 const cClaimTokenFrequencyMax = 64;
+// @implements s-rh8mff@322b7f7
 // @implements s-b97pxb@a56c6b2
 const cPairForClaimMax = 8;
 const cReportDefault = 100;
@@ -43,10 +23,14 @@ const cSharedTermMax = 8;
 // @implements s-auhz9l@5187048
 const sReviewFile = "spec-conflicts.json";
 const sReviewMessage = "The following is a list of potential specification conflicts. Examine each pair in depth, compare its scope, conditions, and required outcomes, and raise any likely conflict with the human operator.";
+// @implements s-y6b91m@5d7f2ee
 const sReviewInstructions = "Use `review_dispatch` as a coordinator loop: while `concord spec-conflicts --count` is greater than zero, launch as many conflict-reviewer agents in parallel as the harness allows, then wait for their results, record verdicts with --mark, and repeat. Each reviewer must get its candidate by running `concord spec-conflicts --nextreview` as its first review action. Unanswered candidates become available again after the --since cooldown. The score ranks shared wording and does not establish a contradiction.";
 const sNextReviewInstructions = "This candidate was handed out to you. Examine it in the current project context and return one verdict to the coordinator. Do not mark it or request another candidate. If you do not return, the candidate becomes available again after the --since cooldown.";
+// @implements s-8utq9p@2aa3077
 const sNextOpenInstructions = "Run the named `conflict-reviewer` agent for this candidate using the harness in a fresh context and branch. If it confirms a conflict, start the architect/fixer process to correct the owning specifications and mark it resolved only after the correction is integrated. If review establishes that there is no conflict, mark it incorrect. If it remains unresolved, mark it open again to record that review, raise it with the human operator, and then run the response's `next_command` to review the next open conflict.";
 // @implements s-6zq3hc@6004ec4
+// @implements s-v7ca4r@403c0f3
+// @implements s-1oc3uc@ccf72fb
 const aReviewDispatch = {
   required: true,
   agent: "conflict-reviewer",
@@ -107,6 +91,10 @@ const fnComparePair = ( aA, aB ) => (
 
 // @implements s-490dus@bed4927
 // @implements s-9zm2bs@bb16fa3
+// @implements s-of7uc3@d1614af
+// @implements s-run5j3@4f313fd
+// @implements s-x5iowz@1df7600
+// @implements s-rh8mff@322b7f7
 const faCandidatePairs = ( vaClaimInput ) => {
   const vaClaim = vaClaimInput.map(( aClaim ) => ({
     ...aClaim,
@@ -195,6 +183,7 @@ const faCandidatePairs = ( vaClaimInput ) => {
 // @implements s-3qdzw2@f9d8f24
 // @implements s-5holqh@f911567
 // @implements s-w3u13c@1f1013b
+// @implements s-xrmdr0@5803a25
 const faOptions = ( vsArg ) => {
   if([ "--nextreview", "--nextopen", "--count" ].includes( vsArg[ 0 ])){
     if( vsArg[ 0 ] === "--nextopen" ){ return vsArg.length === 1 ? { sNext: "open" } : null; }
@@ -292,6 +281,7 @@ const faPublicClaim = ( aClaim ) => ({
   text: aClaim.sText
 });
 
+// @implements s-y6b91m@5d7f2ee
 // @implements s-vf9dot@ee01a4a
 const fsPossibleIssue = ( aPair ) => (
   `The claims share implementation or test anchors (${aPair.asAnchor.join( ", " )}) `
@@ -417,6 +407,7 @@ const fzWriteReview = ( sDirRoot, aReview ) => {
 // @implements s-37a70o@fd48021
 // @implements s-5mgaed@94f4323
 // @implements s-s1tiy9@c8cf9e3
+// @implements s-jorvck@057c853
 const faMergeCandidates = ( aReview, vaPair ) => {
   const maRecord = new Map( aReview.conflicts.map(( aRecord ) => [ aRecord.id, aRecord ]));
   const vaDetected = vaPair.slice( 0, cReportMax );
@@ -446,6 +437,9 @@ const faMergeCandidates = ( aReview, vaPair ) => {
 // @implements s-jizeit@d73f506
 // @implements s-490dus@bed4927
 // @implements s-5holqh@f911567
+// @implements s-xrmdr0@5803a25
+// @implements s-oacf60@4479a31
+// @implements s-rh8mff@322b7f7
 const fsReportHuman = ( vaRecord, nLimit, aSummary = {} ) => {
   const vaReport = vaRecord.slice( 0, nLimit );
   const sHeader = sReviewMessage + "\n" + sReviewInstructions + "\n"
@@ -469,6 +463,7 @@ const fsReportHuman = ( vaRecord, nLimit, aSummary = {} ) => {
 
 // @implements s-a5663z@b17746a
 // @implements s-j5m8r0@d0d3d6c
+// @implements s-xrmdr0@5803a25
 const fsReportCount = ( nAvailable ) => String( nAvailable ) + "\n";
 
 // @implements s-vf9dot@ee01a4a
@@ -476,6 +471,8 @@ const fsReportCount = ( nAvailable ) => String( nAvailable ) + "\n";
 // @implements s-w1y11l@e42db74
 // @implements s-tiu5mc@5061d9b
 // @implements s-7kf4xq@50a7265
+// @implements s-nz8p2n@bcf0bd3
+// @implements s-xrmdr0@5803a25
 const fsNextJson = ( aReview, sStatus ) => {
   const aCandidate = aReview.conflicts.filter(( aRecord ) => aRecord.status === sStatus )
     .sort( sStatus === "open" ? fnCompareLastReviewed : fnCompareRecord )[ 0 ] || null;
@@ -544,6 +541,14 @@ const fzWriteClaims = ( sPath, aClaims ) => {
 // @implements s-szig7f@2053627
 // @implements s-tiu5mc@5061d9b
 // @implements s-7kf4xq@50a7265
+// @implements s-vh5m1r@2739781
+// @implements s-hp3m8v@bfec02c
+// @implements s-u5605f@d947cd4
+// @implements s-xrmdr0@5803a25
+// @implements s-k4z0bs@e3c8f5e
+// @implements s-uw4f3x@b5190fe
+// @implements s-c6h4x1@77b4ace
+// @implements s-9a4t7g@7ad74c8
 const fzClaimNext = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
   const sClaimPath = fsClaimStorePath( sDirRoot );
   try {
@@ -585,6 +590,7 @@ const fzClaimNext = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
 // @implements s-a5663z@b17746a
 // @implements s-9tz7a2@cb492ec
 // @implements s-6j3n2p@f716218
+// @implements s-xrmdr0@5803a25
 const fzCount = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
   try {
     const cAvailable = fnCountAvailable( sDirRoot, aReview, nSince );
@@ -597,6 +603,7 @@ const fzCount = ( sDirRoot, aReview, nSince, fWrite, fWriteErr ) => {
 };
 
 // @implements s-4phc2k@abbaaf8
+// @implements s-xrmdr0@5803a25
 const fnCountAvailable = ( sDirRoot, aReview, nSince ) => {
   const sClaimPath = fsClaimStorePath( sDirRoot );
   return fzWithClaimLock( sClaimPath, () => {
@@ -616,6 +623,8 @@ const sUsage = "usage: concord spec-conflicts [--human] [--limit <n>]\n"
 
 // @implements s-3qdzw2@f9d8f24
 // @implements s-e0aj7e@393ccd5
+// @implements s-xrmdr0@5803a25
+// @implements s-adm6xl@3131120
 const fzMark = ( aMark, sDirRoot, fWrite, fWriteErr ) => {
   if( !reConflictId.test( aMark.sId )){
     fWriteErr( "spec-conflicts: invalid conflict id\n" );
@@ -652,6 +661,7 @@ const fzMark = ( aMark, sDirRoot, fWrite, fWriteErr ) => {
 // @implements s-6j3n2p@f716218
 // @implements s-a7d2ke@9dbc467
 // @implements s-1o8t4f@0a2987d
+// @implements s-xrmdr0@5803a25
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr ) => {
   const fWriteError = fWriteErr || fWrite;
   const aOptions = faOptions( vsArg );

@@ -64,7 +64,7 @@ const fxRootDirExpanded = ( x, sDirSuite ) => {
 };
 
 // @implements s-1lktaq@64cbd78
-// @tested-by test/spec-coverage.test.js
+// @tested-by test/spec-coverage.test.js#tu-3414a7f7
 const fsEnvironmentResolved = ( sEnvConfig, sDirSuite ) => {
   const sEnv = sEnvConfig === undefined ? "node" : sEnvConfig;
   if( path.isAbsolute( sEnv )){ return sEnv;}
@@ -100,7 +100,8 @@ const faTransformGuarded = ( aTransform, sDirSuite, sPathTransform ) => ({
 // @implements s-qpkoc3@605c600
 // @implements s-xoq4ak@39497ea
 // @implements s-dokd3g@edd7c92
-// @tested-by test/spec-coverage.test.js
+// @tested-by test/spec-coverage.test.js#tu-b6e87b34
+// @tested-by test/spec-coverage.test.js#tu-9a9aa965
 const faConfigForSuite = ({
   aConfig,
   sDirSuite,
@@ -135,7 +136,7 @@ const faConfigForSuite = ({
 };
 
 // @implements s-qqyciz@cfdb477
-// @tested-by test/spec-coverage-bash.test.js
+// @tested-by test/spec-coverage-bash.test.js#tu-2e59c64c
 const fvnLineExecutable = ( sText, sPath ) => fCreateBash.fbCanReadPath(
   sPath, sText
 )
@@ -144,6 +145,7 @@ const fvnLineExecutable = ( sText, sPath ) => fCreateBash.fbCanReadPath(
     fvaPosStmtForSource( sText, sPath ).map(( aPos ) => aPos.line )
   )).sort(( nA, nB ) => nA - nB );
 
+// @implements s-ii54an@ee79563
 const fvsPathSourceInScope = ( sDirRoot, vsDirSource ) => {
   const configReader = new ConfigReader( sDirRoot );
   return Array.from( new Set( vsDirSource
@@ -216,6 +218,7 @@ const fvaUnmeasuredForRecords = ( vaRecord, vvnUnitGlobal ) => {
 
 const fsKeyForUnits = ( vnUnit ) => vnUnit.join( "," );
 
+// @implements s-e31j3s@8308811
 const fvaRegionForFile = ( sPath, sText, aasnUnit ) => {
   const vsLine = sText.split( "\n" );
   const vnLine = Array.from( aasnUnit.keys())
@@ -241,7 +244,8 @@ const fvaRegionForFile = ( sPath, sText, aasnUnit ) => {
 
 // @implements s-itmj4d@a1e8c28
 // @implements s-vhve0l@16601c0
-// @tested-by test/spec-coverage.test.js
+// @implements s-ii54an@ee79563
+// @tested-by test/spec-coverage.test.js#tu-f050949d
 const faMeasurementForRecords = ({
   vaRecord, avsTextForPath, aSuite, aGit, sTime
 }) => {
@@ -301,7 +305,6 @@ class SuiteRunner {
   }
 
   // @implements s-mrpnyc@03b594d
-  // @tested-by test/spec-coverage.test.js
   faRunSuite( aSuite, sDirRun ){
     if( aSuite.sRunner === "bash" ){
       return this.faRunBash( aSuite, sDirRun );
@@ -347,7 +350,9 @@ class SuiteRunner {
 // @implements s-tn2pd8@020e25c
 // @implements s-1cabsl@c392ae5
 // @implements s-ghfwp5@412ccc7
-// @tested-by test/spec-coverage-bash.test.js
+// @tested-by test/spec-coverage-bash.test.js#tu-2e59c64c
+// @tested-by test/spec-coverage-bash.test.js#tu-8b0d6899
+// @tested-by test/spec-coverage-bash.test.js#tu-9cca699e
   faRunBash( aSuite, sDirRun ){
     const sDirSuite = path.resolve( this.sDirRoot, aSuite.sDirRel );
     const vsPathTest = fs.readdirSync( sDirSuite, { recursive: true })
@@ -443,7 +448,8 @@ class SuiteRunner {
 }
 
 // @implements s-9prjr2@1a46cc4
-// @tested-by test/spec-coverage.test.js
+// @tested-by test/spec-coverage.test.js#tu-f5acb798
+// @tested-by test/spec-coverage.test.js#tu-459ed6b4
 const fsWhyIncomplete = ( aRun ) => {
   const aSummary = aRun.aSummary;
   if( aSummary === null ){ return "jest exited " + aRun.xStatus;}
@@ -479,7 +485,7 @@ const fsDirRunForSuite = ( sDirRoot, aSuite ) => path.join(
 );
 
 // @implements s-dokd3g@edd7c92
-// @tested-by test/spec-coverage.test.js
+// @tested-by test/spec-coverage.test.js#tu-9a9aa965
 const fzMeasure = ({ sDirRoot, aCoverage, runner, fWriteErr, fsTime }) => {
   fs.rmSync( path.join( fsDirOut( sDirRoot ), "run" ), {
     recursive: true, force: true

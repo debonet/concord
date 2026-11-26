@@ -1,9 +1,4 @@
 // @tested-by test/spec-coverage.test.js
-// @implements s-k77gwh@280fec1
-// @implements s-toq51s@2181080
-// @implements s-aw1u7o@b1c984b
-// @implements s-lhwdqe@03f70a8
-// @implements s-nk7r14@3eaebff
 "use strict";
 
 const fs = require( "fs" );
@@ -36,6 +31,7 @@ const faMapForRoot = ( aCtx, aMeasurement ) => faMapJoined({
 
 // @implements s-xd7yc0@45836a2
 // @implements s-vn5mcf@35ccc16
+// @implements s-g4fddq@4dae6be
 const fzReport = ( aCtx, aMeasurement ) => {
   const aMap = faMapForRoot( aCtx, aMeasurement );
   const sPathReview = aCtx.aCoverage.sPathReview;
@@ -56,6 +52,7 @@ const fsProblemForId = ( sId, cMarker ) => (
 );
 
 // @implements s-q18fnp@16fcb05
+// @implements s-lhwdqe@03f70a8
 const fzSid = ( aCtx, aMeasurement, sId ) => {
   const aMap = faMapForRoot( aCtx, aMeasurement );
   const vaMarker = aMap.aLinks.aModel.avaMarkerForId.get( sId ) || [];
@@ -113,6 +110,8 @@ const fzQuery = ( aCtx, vsArg ) => {
 // @implements s-sywry8@9ecbcbb
 // @implements s-vn5mcf@35ccc16
 // @implements s-bbd75g@9d2bf8c
+// @implements s-k77gwh@280fec1
+// @implements s-toq51s@2181080
 const fzMeasureAndReport = ( aCtx ) => {
   fs.mkdirSync( fsDirOut( aCtx.sDirRoot ), { recursive: true });
   const zMeasure = fzMeasure( aCtx );
@@ -132,6 +131,7 @@ const fsProblemForConfig = ( aRead ) => {
 // @implements s-4jegoj@05acd9f
 // @implements s-xd7yc0@45836a2
 // @implements s-bbd75g@9d2bf8c
+// @implements s-nk7r14@3eaebff
 const fzMain = ( vsArg, sDirRoot, fWrite, fWriteErr, aDeps ) => {
   const aRead = new ConfigReader( sDirRoot ).faConfig();
   const sProblem = fsProblemForConfig( aRead );
